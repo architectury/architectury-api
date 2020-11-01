@@ -1,0 +1,36 @@
+plugins {
+    id "architect-plugin" version "1.0.10"
+    id "org.cadixdev.licenser" version "0.5.0"
+}
+
+architect {
+    minecraft = rootProject.minecraft_version
+}
+
+allprojects {
+    apply plugin: "java"
+    apply plugin: "architect-plugin"
+    apply plugin: "org.cadixdev.licenser"
+
+    archivesBaseName = rootProject.archives_base_name
+    version = rootProject.mod_version
+    group = rootProject.maven_group
+
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+    }
+
+    license {
+        header = rootProject.file("HEADER")
+
+        ext {
+            name = "shedaniel"
+            year = 2020
+        }
+
+        ignoreFailures = true
+    }
+}
+
+task licenseFormatAll
+subprojects { p -> licenseFormatAll.dependsOn("${p.path}:licenseFormat") }

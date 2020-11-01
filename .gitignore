@@ -1,0 +1,16 @@
+build/
+*.ipr
+run/
+*.iws
+out/
+*.iml
+.gradle/
+output/
+bin/
+libs/
+
+.classpath
+.project
+.settings/org.eclipse.core.resources.prefs
+.idea/
+classes/

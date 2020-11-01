@@ -1,0 +1,33 @@
+plugins {
+    id "fabric-loom"
+    id "com.github.johnrengelman.shadow" version "5.0.0"
+}
+
+configurations {
+    shadow
+}
+
+dependencies {
+    minecraft("com.mojang:minecraft:${rootProject.architect.minecraft}")
+    mappings(minecraft.officialMojangMappings())
+    modCompile("net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}")
+    modCompile("net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}")
+    modCompileOnly("io.github.prospector:modmenu:${rootProject.mod_menu_version}")
+
+    compile(project(":common")) {
+        transitive = false
+    }
+    shadow(project(":common")) {
+        transitive = false
+    }
+}
+
+shadowJar {
+    configurations = [project.configurations.shadow]
+    classifier "shadow"
+}
+
+remapJar {
+    dependsOn(shadowJar)
+    input.set(shadowJar.archivePath)
+}

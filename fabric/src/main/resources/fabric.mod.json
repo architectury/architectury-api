@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "architectury",
+  "version": "${version}",
+  "name": "Architectury",
+  "description": "This is an example description! Tell everyone what your mod is about!",
+  "authors": [
+    "shedaniel"
+  ],
+  "license": "MIT",
+  "environment": "*",
+  "mixins": [
+    "architectury.mixins.json"
+  ],
+  "entrypoints": {
+    "main": [
+      "me.shedaniel.architectury.utils.fabric.GameInstanceImpl::init"
+    ],
+    "modmenu": [
+      "me.shedaniel.architectury.compat.fabric.ModMenuCompatibility"
+    ]
+  },
+  "depends": {
+    "minecraft": ">=1.16.2"
+  }
+}
