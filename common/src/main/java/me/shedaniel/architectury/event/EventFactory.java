@@ -27,7 +27,6 @@ import net.minecraft.world.InteractionResult;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Objects;
@@ -46,9 +45,12 @@ public final class EventFactory {
     
     @SuppressWarnings("UnstableApiUsage")
     public static <T> Event<T> createLoop(Class<T> clazz) {
-        return create(ts -> (T) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{clazz}, new AbstractInvocationHandler() {
+        return create(listeners -> (T) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{clazz}, new AbstractInvocationHandler() {
             @Override
-            protected Object handleInvocation(Object proxy, Method method, Object[] args) {
+            protected Object handleInvocation(Object proxy, Method method, Object[] args) throws Throwable {
+                for (T listener : listeners) {
+                    method.invoke(listener, args);
+                }
                 return null;
             }
         }));
@@ -56,10 +58,9 @@ public final class EventFactory {
     
     @SuppressWarnings("UnstableApiUsage")
     public static <T> Event<T> createInteractionResult(Class<T> clazz) {
-        return create(ts -> (T) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{clazz}, new AbstractInvocationHandler() {
+        return create(listeners -> (T) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{clazz}, new AbstractInvocationHandler() {
             @Override
             protected Object handleInvocation(Object proxy, Method method, Object[] args) throws Throwable {
-                T[] listeners = (T[]) args;
                 for (T listener : listeners) {
                     InteractionResult result = (InteractionResult) method.invoke(listener, args);
                     if (result != InteractionResult.PASS) {
