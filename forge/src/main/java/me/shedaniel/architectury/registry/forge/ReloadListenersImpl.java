@@ -13,10 +13,10 @@ import net.minecraftforge.event.AddReloadListenerEvent;
 
 import java.util.List;
 
-public class ReloadListenerRegistryImpl implements ReloadListenerRegistry.Impl {
+public class ReloadListenersImpl implements ReloadListenerRegistry.Impl {
     private List<IFutureReloadListener> serverDataReloadListeners = Lists.newArrayList();
     
-    public ReloadListenerRegistryImpl() {
+    public ReloadListenersImpl() {
         MinecraftForge.EVENT_BUS.<AddReloadListenerEvent>addListener(event -> {
             for (IFutureReloadListener listener : serverDataReloadListeners) {
                 event.addListener(listener);

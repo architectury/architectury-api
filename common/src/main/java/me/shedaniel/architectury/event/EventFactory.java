@@ -25,6 +25,7 @@ import net.fabricmc.api.Environment;
 import net.jodah.typetools.TypeResolver;
 import net.minecraft.world.InteractionResult;
 import org.apache.commons.lang3.ArrayUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
@@ -47,7 +48,7 @@ public final class EventFactory {
     public static <T> Event<T> createLoop(Class<T> clazz) {
         return create(listeners -> (T) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{clazz}, new AbstractInvocationHandler() {
             @Override
-            protected Object handleInvocation(Object proxy, Method method, Object[] args) throws Throwable {
+            protected Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {
                 for (T listener : listeners) {
                     method.invoke(listener, args);
                 }
@@ -60,7 +61,7 @@ public final class EventFactory {
     public static <T> Event<T> createInteractionResult(Class<T> clazz) {
         return create(listeners -> (T) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{clazz}, new AbstractInvocationHandler() {
             @Override
-            protected Object handleInvocation(Object proxy, Method method, Object[] args) throws Throwable {
+            protected Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {
                 for (T listener : listeners) {
                     InteractionResult result = (InteractionResult) method.invoke(listener, args);
                     if (result != InteractionResult.PASS) {

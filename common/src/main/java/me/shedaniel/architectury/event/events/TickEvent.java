@@ -27,16 +27,12 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 
 public interface TickEvent<T> {
-    @Environment(EnvType.CLIENT)
-    Event<Client> CLIENT_PRE = EventFactory.createLoop(Client.class);
-    @Environment(EnvType.CLIENT)
-    Event<Client> CLIENT_POST = EventFactory.createLoop(Client.class);
+    @Environment(EnvType.CLIENT) Event<Client> CLIENT_PRE = EventFactory.createLoop(Client.class);
+    @Environment(EnvType.CLIENT) Event<Client> CLIENT_POST = EventFactory.createLoop(Client.class);
     Event<Server> SERVER_PRE = EventFactory.createLoop(Server.class);
     Event<Server> SERVER_POST = EventFactory.createLoop(Server.class);
-    @Environment(EnvType.CLIENT)
-    Event<ClientWorld> CLIENT_WORLD_PRE = EventFactory.createLoop(ClientWorld.class);
-    @Environment(EnvType.CLIENT)
-    Event<ClientWorld> CLIENT_WORLD_POST = EventFactory.createLoop(ClientWorld.class);
+    @Environment(EnvType.CLIENT) Event<ClientWorld> CLIENT_WORLD_PRE = EventFactory.createLoop(ClientWorld.class);
+    @Environment(EnvType.CLIENT) Event<ClientWorld> CLIENT_WORLD_POST = EventFactory.createLoop(ClientWorld.class);
     Event<ServerWorld> SERVER_WORLD_PRE = EventFactory.createLoop(ServerWorld.class);
     Event<ServerWorld> SERVER_WORLD_POST = EventFactory.createLoop(ServerWorld.class);
     

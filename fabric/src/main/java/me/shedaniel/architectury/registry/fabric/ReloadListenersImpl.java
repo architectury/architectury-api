@@ -1,7 +1,7 @@
 package me.shedaniel.architectury.registry.fabric;
 
 import com.google.common.primitives.Longs;
-import me.shedaniel.architectury.registry.ReloadListenerRegistry;
+import me.shedaniel.architectury.registry.ReloadListeners;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.resources.ResourceLocation;
@@ -15,7 +15,7 @@ import java.security.SecureRandom;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-public class ReloadListenerRegistryImpl implements ReloadListenerRegistry.Impl {
+public class ReloadListenersImpl implements ReloadListeners.Impl {
     private static final SecureRandom RANDOM = new SecureRandom();
     
     @Override

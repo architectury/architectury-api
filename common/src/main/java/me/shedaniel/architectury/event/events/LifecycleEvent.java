@@ -21,17 +21,21 @@ import me.shedaniel.architectury.event.EventFactory;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+
+import java.util.logging.Level;
 
 public interface LifecycleEvent {
-    @Environment(EnvType.CLIENT)
-    Event<ClientState> CLIENT_STARTED = EventFactory.createLoop(ClientState.class);
-    @Environment(EnvType.CLIENT)
-    Event<ClientState> CLIENT_STOPPING = EventFactory.createLoop(ClientState.class);
+    @Environment(EnvType.CLIENT) Event<ClientState> CLIENT_STARTED = EventFactory.createLoop(ClientState.class);
+    @Environment(EnvType.CLIENT) Event<ClientState> CLIENT_STOPPING = EventFactory.createLoop(ClientState.class);
     Event<ServerState> SERVER_STARTING = EventFactory.createLoop(ServerState.class);
     Event<ServerState> SERVER_STARTED = EventFactory.createLoop(ServerState.class);
     Event<ServerState> SERVER_STOPPING = EventFactory.createLoop(ServerState.class);
     Event<ServerState> SERVER_STOPPED = EventFactory.createLoop(ServerState.class);
+    Event<WorldLoad> WORLD_LOAD = EventFactory.createLoop(WorldLoad.class);
+    Event<WorldSave> WORLD_SAVE = EventFactory.createLoop(WorldSave.class);
     
     interface InstanceState<T> {
         void stateChanged(T instance);
@@ -41,4 +45,12 @@ public interface LifecycleEvent {
     interface ClientState extends InstanceState<Minecraft> {}
     
     interface ServerState extends InstanceState<MinecraftServer> {}
+    
+    interface WorldLoad {
+        void load(ResourceKey<Level> key, ServerLevel world);
+    }
+    
+    interface WorldSave {
+        void save(ServerLevel world);
+    }
 }

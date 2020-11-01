@@ -5,8 +5,8 @@ import me.shedaniel.architectury.Populatable;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 
-public final class ReloadListenerRegistry {
-    private ReloadListenerRegistry() {}
+public final class ReloadListeners {
+    private ReloadListeners() {}
     
     @Populatable
     private static final Impl IMPL = null;
@@ -20,6 +20,6 @@ public final class ReloadListenerRegistry {
     }
     
     static {
-        ArchitecturyPopulator.populate(ReloadListenerRegistry.class);
+        ArchitecturyPopulator.populate(ReloadListeners.class);
     }
 }

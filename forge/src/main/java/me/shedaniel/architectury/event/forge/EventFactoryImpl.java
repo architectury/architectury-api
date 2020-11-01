@@ -19,9 +19,11 @@ package me.shedaniel.architectury.event.forge;
 import me.shedaniel.architectury.event.EventFactory;
 import me.shedaniel.architectury.event.events.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -30,6 +32,9 @@ import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.PlayerRespawnEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
@@ -72,6 +77,21 @@ public class EventFactoryImpl implements EventFactory.Impl {
         @SubscribeEvent
         public static void event(RenderGameOverlayEvent.Post event) {
             GuiEvent.RENDER_HUD.invoker().renderHud(event.getMatrixStack(), event.getPartialTicks());
+        }
+        
+        @SubscribeEvent
+        public static void event(ClientPlayerNetworkEvent.LoggedInEvent event) {
+            PlayerEvent.CLIENT_PLAYER_JOIN.invoker().join(event.getPlayer());
+        }
+        
+        @SubscribeEvent
+        public static void event(ClientPlayerNetworkEvent.LoggedOutEvent event) {
+            PlayerEvent.CLIENT_PLAYER_QUIT.invoker().quit(event.getPlayer());
+        }
+        
+        @SubscribeEvent
+        public static void event(ClientPlayerNetworkEvent.RespawnEvent event) {
+            PlayerEvent.CLIENT_PLAYER_RESPAWN.invoker().respawn(event.getOldPlayer(), event.getNewPlayer());
         }
     }
     
@@ -117,6 +137,21 @@ public class EventFactoryImpl implements EventFactory.Impl {
         @SubscribeEvent
         public static void event(RegisterCommandsEvent event) {
             CommandRegistrationEvent.EVENT.invoker().register(event.getDispatcher());
+        }
+        
+        @SubscribeEvent
+        public static void event(PlayerLoggedInEvent event) {
+            PlayerEvent.PLAYER_JOIN.invoker().join((ServerPlayerEntity) event.getPlayer());
+        }
+        
+        @SubscribeEvent
+        public static void event(PlayerLoggedOutEvent event) {
+            PlayerEvent.PLAYER_QUIT.invoker().quit((ServerPlayerEntity) event.getPlayer());
+        }
+        
+        @SubscribeEvent
+        public static void event(PlayerRespawnEvent event) {
+            PlayerEvent.PLAYER_RESPAWN.invoker().respawn((ServerPlayerEntity) event.getPlayer(), event.isEndConquered());
         }
     }
     
