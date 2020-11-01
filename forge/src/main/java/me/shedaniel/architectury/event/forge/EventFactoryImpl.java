@@ -17,16 +17,14 @@
 package me.shedaniel.architectury.event.forge;
 
 import me.shedaniel.architectury.event.EventFactory;
-import me.shedaniel.architectury.event.events.GuiEvent;
-import me.shedaniel.architectury.event.events.LifecycleEvent;
-import me.shedaniel.architectury.event.events.TickEvent;
-import me.shedaniel.architectury.event.events.TooltipEvent;
+import me.shedaniel.architectury.event.events.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
@@ -114,6 +112,11 @@ public class EventFactoryImpl implements EventFactory.Impl {
         @SubscribeEvent
         public static void event(FMLServerStoppedEvent event) {
             LifecycleEvent.SERVER_STOPPED.invoker().stateChanged(event.getServer());
+        }
+        
+        @SubscribeEvent
+        public static void event(RegisterCommandsEvent event) {
+            CommandRegistrationEvent.EVENT.invoker().register(event.getDispatcher());
         }
     }
     

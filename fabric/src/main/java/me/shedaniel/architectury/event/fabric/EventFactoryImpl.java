@@ -17,14 +17,12 @@
 package me.shedaniel.architectury.event.fabric;
 
 import me.shedaniel.architectury.event.EventFactory;
-import me.shedaniel.architectury.event.events.GuiEvent;
-import me.shedaniel.architectury.event.events.LifecycleEvent;
-import me.shedaniel.architectury.event.events.TickEvent;
-import me.shedaniel.architectury.event.events.TooltipEvent;
+import me.shedaniel.architectury.event.events.*;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
@@ -54,6 +52,8 @@ public class EventFactoryImpl implements EventFactory.Impl {
         ServerTickEvents.END_SERVER_TICK.register(TickEvent.SERVER_POST.invoker()::tick);
         ServerTickEvents.START_WORLD_TICK.register(TickEvent.SERVER_WORLD_PRE.invoker()::tick);
         ServerTickEvents.END_WORLD_TICK.register(TickEvent.SERVER_WORLD_POST.invoker()::tick);
+        
+        CommandRegistrationCallback.EVENT.register((commandDispatcher, b) -> CommandRegistrationEvent.EVENT.invoker().register(commandDispatcher));
     }
     
     @Override

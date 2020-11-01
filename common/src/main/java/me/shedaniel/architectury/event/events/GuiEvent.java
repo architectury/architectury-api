@@ -19,10 +19,14 @@ package me.shedaniel.architectury.event.events;
 import com.mojang.blaze3d.vertex.PoseStack;
 import me.shedaniel.architectury.event.Event;
 import me.shedaniel.architectury.event.EventFactory;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
+@Environment(EnvType.CLIENT)
 public interface GuiEvent {
     Event<RenderHud> RENDER_HUD = EventFactory.createLoop(RenderHud.class);
     
+    @Environment(EnvType.CLIENT)
     interface RenderHud {
         void renderHud(PoseStack matrices, float tickDelta);
     }
