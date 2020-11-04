@@ -28,8 +28,8 @@ import net.minecraft.server.level.ServerLevel;
 import java.util.logging.Level;
 
 public interface LifecycleEvent {
-    @Environment(EnvType.CLIENT) Event<ClientState> CLIENT_STARTED = EventFactory.createLoop(ClientState.class);
-    @Environment(EnvType.CLIENT) Event<ClientState> CLIENT_STOPPING = EventFactory.createLoop(ClientState.class);
+    @Deprecated @Environment(EnvType.CLIENT) Event<ClientState> CLIENT_STARTED = EventFactory.createLoop(ClientState.class);
+    @Deprecated @Environment(EnvType.CLIENT) Event<ClientState> CLIENT_STOPPING = EventFactory.createLoop(ClientState.class);
     Event<ServerState> SERVER_STARTING = EventFactory.createLoop(ServerState.class);
     Event<ServerState> SERVER_STARTED = EventFactory.createLoop(ServerState.class);
     Event<ServerState> SERVER_STOPPING = EventFactory.createLoop(ServerState.class);
@@ -41,6 +41,7 @@ public interface LifecycleEvent {
         void stateChanged(T instance);
     }
     
+    @Deprecated
     @Environment(EnvType.CLIENT)
     interface ClientState extends InstanceState<Minecraft> {}
     
