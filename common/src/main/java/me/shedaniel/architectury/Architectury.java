@@ -16,24 +16,34 @@
 
 package me.shedaniel.architectury;
 
+import com.google.common.collect.ImmutableMap;
 import org.jetbrains.annotations.ApiStatus;
+
+import java.util.Map;
 
 @ApiStatus.Internal
 public class Architectury {
     private static final String MOD_LOADER;
+    private static final ImmutableMap<String,String> MOD_LOADERS = ImmutableMap.<String,String>builder()
+            .put("net.fabricmc.loader.FabricLoader", "fabric")
+            .put("net.minecraftforge.fml.common.Mod", "forge")
+            .build();
     
     public static String getModLoader() {
         return MOD_LOADER;
     }
     
     static {
-        String loader;
-        try {
-            Class.forName("net.fabricmc.loader.FabricLoader");
-            loader = "fabric";
-        } catch (ClassNotFoundException e) {
-            loader = "forge";
+        String loader = null;
+        for (Map.Entry<String, String> entry : MOD_LOADERS.entrySet()) {
+            try {
+                Class.forName(entry.getKey());
+                loader = entry.getValue();
+                break;
+            } catch (ClassNotFoundException ignored) {}
         }
+        if (loader == null)
+            throw new IllegalStateException("No detected mod loader!");
         MOD_LOADER = loader;
     }
 }
