@@ -16,7 +16,7 @@ allprojects {
     apply plugin: "org.cadixdev.licenser"
 
     archivesBaseName = rootProject.archives_base_name
-    version = rootProject.mod_version + "." + (System.getenv("GITHUB_RUN_NUMBER") == null ? "9999" : (System.getenv("GITHUB_RUN_NUMBER").toInteger() - (int) project.last_minor_build).toString())
+    version = rootProject.mod_version + "." + (System.getenv("GITHUB_RUN_NUMBER") == null ? "9999" : (System.getenv("GITHUB_RUN_NUMBER").toInteger() - Integer.parseInt(rootProject.last_minor_build)).toString())
     group = rootProject.maven_group
 
     tasks.withType(JavaCompile) {

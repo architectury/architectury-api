@@ -72,7 +72,7 @@ reobf {
 
 publishing {
     publications {
-        mavenFabric(MavenPublication) {
+        mavenForge(MavenPublication) {
             artifact(file("${project.buildDir}/libs/${project.archivesBaseName}-${project.version}-forge.jar")) {
                 builtBy shadowJar
                 classifier "forge"

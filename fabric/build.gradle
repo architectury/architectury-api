@@ -22,6 +22,13 @@ dependencies {
     }
 }
 
+processResources {
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+    inputs.property "version", project.version
+}
+
 shadowJar {
     configurations = [project.configurations.shadow]
     classifier "shadow"
