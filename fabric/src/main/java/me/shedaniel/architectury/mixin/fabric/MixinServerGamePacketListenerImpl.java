@@ -51,7 +51,7 @@ public abstract class MixinServerGamePacketListenerImpl {
     private void handleChat(ServerboundChatPacket packet, CallbackInfo ci) {
         String string = StringUtils.normalizeSpace(packet.getMessage());
         Component component = new TranslatableComponent("chat.type.text", this.player.getDisplayName(), string);
-        InteractionResultHolder<Component> process = ChatEvent.SERVER.invoker().process(string, component);
+        InteractionResultHolder<Component> process = ChatEvent.SERVER.invoker().process(this.player, string, component);
         if (process.getResult() == InteractionResult.FAIL)
             ci.cancel();
         else if (process.getObject() != null && !process.getObject().equals(component)) {

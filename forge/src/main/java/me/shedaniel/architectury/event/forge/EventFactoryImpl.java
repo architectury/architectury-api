@@ -227,7 +227,7 @@ public class EventFactoryImpl implements EventFactory.Impl {
         
         @SubscribeEvent
         public static void event(ServerChatEvent event) {
-            ActionResult<ITextComponent> process = ChatEvent.SERVER.invoker().process(event.getMessage(), event.getComponent());
+            ActionResult<ITextComponent> process = ChatEvent.SERVER.invoker().process(event.getPlayer(), event.getMessage(), event.getComponent());
             if (process.getObject() != null)
                 event.setComponent(process.getObject());
             if (process.getResult() == ActionResultType.FAIL)

@@ -22,6 +22,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResultHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -56,6 +57,6 @@ public interface ChatEvent {
     
     interface Server {
         @NotNull
-        InteractionResultHolder<Component> process(String message, Component component);
+        InteractionResultHolder<Component> process(ServerPlayer player, String message, Component component);
     }
 }
