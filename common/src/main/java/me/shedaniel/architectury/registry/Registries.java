@@ -53,7 +53,7 @@ public final class Registries {
      * Fabric: Use registry
      */
     @Nullable
-    public <T> ResourceLocation getId(T object, ResourceKey<net.minecraft.core.Registry<T>> fallback) {
+    public static <T> ResourceLocation getId(T object, ResourceKey<net.minecraft.core.Registry<T>> fallback) {
         return IMPL.getId(object, fallback);
     }
     
@@ -62,7 +62,7 @@ public final class Registries {
      * Fabric: Use registry
      */
     @Nullable
-    public <T> ResourceLocation getId(T object, net.minecraft.core.Registry<T> fallback) {
+    public static <T> ResourceLocation getId(T object, net.minecraft.core.Registry<T> fallback) {
         return IMPL.getId(object, fallback);
     }
     
