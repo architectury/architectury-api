@@ -16,17 +16,19 @@
 
 package me.shedaniel.architectury.event.events;
 
-import com.mojang.brigadier.CommandDispatcher;
 import me.shedaniel.architectury.event.Event;
 import me.shedaniel.architectury.event.EventFactory;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.LivingEntity;
 
-public interface CommandRegistrationEvent {
+public interface EntityEvent {
     /**
-     * Invoked after server registers its commands, equivalent to forge's {@code RegisterCommandsEvent} and fabric's {@code CommandRegistrationCallback}.
+     * Invoked before LivingEntity#die, equivalent to forge's {@code LivingDeathEvent}.
      */
-    Event<CommandRegistrationEvent> EVENT = EventFactory.createLoop(CommandRegistrationEvent.class);
+    Event<LivingDeath> LIVING_DEATH = EventFactory.createInteractionResult(LivingDeath.class);
     
-    void register(CommandDispatcher<CommandSourceStack> dispatcher, Commands.CommandSelection selection);
+    interface LivingDeath {
+        InteractionResult die(LivingEntity entity, DamageSource source);
+    }
 }

@@ -24,6 +24,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.jodah.typetools.TypeResolver;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,6 +32,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public final class EventFactory {
@@ -63,6 +65,51 @@ public final class EventFactory {
             @Override
             protected Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {
                 for (T listener : listeners) {
+                    InteractionResult result = (InteractionResult) method.invoke(listener, args);
+                    if (result != InteractionResult.PASS) {
+                        return result;
+                    }
+                }
+                return InteractionResult.PASS;
+            }
+        }));
+    }
+    
+    @SuppressWarnings("UnstableApiUsage")
+    public static <T> Event<T> createInteractionResultHolder(Class<T> clazz) {
+        return create(listeners -> (T) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{clazz}, new AbstractInvocationHandler() {
+            @Override
+            protected Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {
+                for (T listener : listeners) {
+                    InteractionResultHolder result = (InteractionResultHolder) Objects.requireNonNull(method.invoke(listener, args));
+                    if (result.getResult() != InteractionResult.PASS) {
+                        return result;
+                    }
+                }
+                return InteractionResultHolder.pass(null);
+            }
+        }));
+    }
+    
+    @SuppressWarnings("UnstableApiUsage")
+    public static <T> Event<Consumer<T>> createConsumerLoop(Class<T> clazz) {
+        return create(listeners -> (Consumer<T>) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{Consumer.class}, new AbstractInvocationHandler() {
+            @Override
+            protected Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {
+                for (Consumer<T> listener : listeners) {
+                    method.invoke(listener, args);
+                }
+                return null;
+            }
+        }));
+    }
+    
+    @SuppressWarnings("UnstableApiUsage")
+    public static <T> Event<Actor<T>> createActorLoop(Class<T> clazz) {
+        return create(listeners -> (Actor<T>) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{Actor.class}, new AbstractInvocationHandler() {
+            @Override
+            protected Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {
+                for (Actor<T> listener : listeners) {
                     InteractionResult result = (InteractionResult) method.invoke(listener, args);
                     if (result != InteractionResult.PASS) {
                         return result;

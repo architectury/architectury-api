@@ -4,11 +4,14 @@
   "compatibilityLevel": "JAVA_8",
   "minVersion": "0.7.11",
   "client": [
+    "client.MixinClientLevel",
     "client.MixinClientPacketListener",
-    "client.MixinMinecraft"
+    "client.MixinDebugScreenOverlay",
+    "client.MixinMinecraft",
+    "client.MixinScreen"
   ],
   "mixins": [
-    "MixinPlayerList"
+    "LivingDeathInvoker", "MixinCommands", "MixinMinecraftServer", "MixinPlayer", "MixinPlayerList", "MixinServerGamePacketListenerImpl", "MixinServerLevel"
   ],
   "injectors": {
     "defaultRequire": 1

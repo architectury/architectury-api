@@ -20,6 +20,7 @@
       "me.shedaniel.architectury.compat.fabric.ModMenuCompatibility"
     ]
   },
+  "accessWidener": "architectury.accessWidener",
   "depends": {
     "minecraft": ">=1.16.2"
   }

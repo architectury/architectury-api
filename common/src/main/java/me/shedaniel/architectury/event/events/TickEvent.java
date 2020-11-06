@@ -35,6 +35,8 @@ public interface TickEvent<T> {
     @Environment(EnvType.CLIENT) Event<ClientWorld> CLIENT_WORLD_POST = EventFactory.createLoop(ClientWorld.class);
     Event<ServerWorld> SERVER_WORLD_PRE = EventFactory.createLoop(ServerWorld.class);
     Event<ServerWorld> SERVER_WORLD_POST = EventFactory.createLoop(ServerWorld.class);
+    Event<Player> PLAYER_PRE = EventFactory.createLoop(Player.class);
+    Event<Player> PLAYER_POST = EventFactory.createLoop(Player.class);
     
     void tick(T instance);
     
@@ -49,4 +51,6 @@ public interface TickEvent<T> {
     interface ClientWorld extends WorldTick<ClientLevel> {}
     
     interface ServerWorld extends WorldTick<ServerLevel> {}
+    
+    interface Player extends TickEvent<net.minecraft.world.entity.player.Player> {}
 }

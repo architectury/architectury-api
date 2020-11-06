@@ -43,6 +43,20 @@ public class RegistriesImpl implements Registries.Impl {
         return new RegistryProviderImpl(modId);
     }
     
+    @Override
+    public <T> ResourceLocation getId(T t, RegistryKey<net.minecraft.util.registry.Registry<T>> registryKey) {
+        if (t instanceof IForgeRegistryEntry)
+            return ((IForgeRegistryEntry<?>) t).getRegistryName();
+        return null;
+    }
+    
+    @Override
+    public <T> ResourceLocation getId(T t, net.minecraft.util.registry.Registry<T> registry) {
+        if (t instanceof IForgeRegistryEntry)
+            return ((IForgeRegistryEntry<?>) t).getRegistryName();
+        return null;
+    }
+    
     public static class RegistryProviderImpl implements Registries.RegistryProvider {
         private final String modId;
         private final IEventBus eventBus;

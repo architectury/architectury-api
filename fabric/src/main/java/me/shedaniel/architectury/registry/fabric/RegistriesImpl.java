@@ -31,6 +31,16 @@ public class RegistriesImpl implements Registries.Impl {
         return RegistryProviderImpl.INSTANCE;
     }
     
+    @Override
+    public <T> ResourceLocation getId(T object, ResourceKey<net.minecraft.core.Registry<T>> fallback) {
+        return RegistryProviderImpl.INSTANCE.get(fallback).getId(object);
+    }
+    
+    @Override
+    public <T> ResourceLocation getId(T object, net.minecraft.core.Registry<T> fallback) {
+        return RegistryProviderImpl.INSTANCE.get(fallback).getId(object);
+    }
+    
     public enum RegistryProviderImpl implements Registries.RegistryProvider {
         INSTANCE;
         

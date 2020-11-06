@@ -21,13 +21,47 @@ import me.shedaniel.architectury.event.Event;
 import me.shedaniel.architectury.event.EventFactory;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.world.InteractionResult;
+
+import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public interface GuiEvent {
+    /**
+     * Invoked after in-game hud is rendered, equivalent to forge's {@code RenderGameOverlayEvent.Post@ElementType#ALL} and fabric's {@code HudRenderCallback}.
+     */
     Event<RenderHud> RENDER_HUD = EventFactory.createLoop(RenderHud.class);
+    Event<DebugText> DEBUG_TEXT_LEFT = EventFactory.createLoop(DebugText.class);
+    Event<DebugText> DEBUG_TEXT_RIGHT = EventFactory.createLoop(DebugText.class);
+    /**
+     * Invoked during Screen#init after previous widgets are cleared, equivalent to forge's {@code GuiScreenEvent.InitGuiEvent.Pre}.
+     */
+    Event<ScreenInitPre> INIT_PRE = EventFactory.createInteractionResult(ScreenInitPre.class);
+    /**
+     * Invoked after Screen#init, equivalent to forge's {@code GuiScreenEvent.InitGuiEvent.Post}.
+     */
+    Event<ScreenInitPost> INIT_POST = EventFactory.createLoop(ScreenInitPost.class);
     
     @Environment(EnvType.CLIENT)
     interface RenderHud {
         void renderHud(PoseStack matrices, float tickDelta);
+    }
+    
+    @Environment(EnvType.CLIENT)
+    interface DebugText {
+        void gatherText(List<String> strings);
+    }
+    
+    @Environment(EnvType.CLIENT)
+    interface ScreenInitPre {
+        InteractionResult init(Screen screen, List<AbstractWidget> widgets, List<GuiEventListener> children);
+    }
+    
+    @Environment(EnvType.CLIENT)
+    interface ScreenInitPost {
+        void init(Screen screen, List<AbstractWidget> widgets, List<GuiEventListener> children);
     }
 }

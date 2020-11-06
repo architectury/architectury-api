@@ -19,6 +19,8 @@ package me.shedaniel.architectury.registry;
 import me.shedaniel.architectury.ArchitecturyPopulator;
 import me.shedaniel.architectury.Populatable;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,8 +48,30 @@ public final class Registries {
         return this.provider.get(registry);
     }
     
+    /**
+     * Forge: If the object is {@code IForgeRegistryEntry}, use `getRegistryName`, else null
+     * Fabric: Use registry
+     */
+    @Nullable
+    public <T> ResourceLocation getId(T object, ResourceKey<net.minecraft.core.Registry<T>> fallback) {
+        return IMPL.getId(object, fallback);
+    }
+    
+    /**
+     * Forge: If the object is {@code IForgeRegistryEntry}, use `getRegistryName`, else null
+     * Fabric: Use registry
+     */
+    @Nullable
+    public <T> ResourceLocation getId(T object, net.minecraft.core.Registry<T> fallback) {
+        return IMPL.getId(object, fallback);
+    }
+    
     public interface Impl {
         RegistryProvider get(String modId);
+        
+        <T> ResourceLocation getId(T object, ResourceKey<net.minecraft.core.Registry<T>> fallback);
+        
+        <T> ResourceLocation getId(T object, net.minecraft.core.Registry<T> fallback);
     }
     
     public interface RegistryProvider {

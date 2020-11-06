@@ -19,22 +19,27 @@ package me.shedaniel.architectury.event.forge;
 import me.shedaniel.architectury.event.EventFactory;
 import me.shedaniel.architectury.event.events.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.IGuiEventListener;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.TickEvent.ClientTickEvent;
-import net.minecraftforge.event.TickEvent.Phase;
-import net.minecraftforge.event.TickEvent.ServerTickEvent;
-import net.minecraftforge.event.TickEvent.WorldTickEvent;
+import net.minecraftforge.event.ServerChatEvent;
+import net.minecraftforge.event.TickEvent.*;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerRespawnEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
@@ -42,6 +47,8 @@ import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
+
+import java.util.List;
 
 public class EventFactoryImpl implements EventFactory.Impl {
     @Override
@@ -76,7 +83,8 @@ public class EventFactoryImpl implements EventFactory.Impl {
         
         @SubscribeEvent
         public static void event(RenderGameOverlayEvent.Post event) {
-            GuiEvent.RENDER_HUD.invoker().renderHud(event.getMatrixStack(), event.getPartialTicks());
+            if (event.getType() == RenderGameOverlayEvent.ElementType.ALL)
+                GuiEvent.RENDER_HUD.invoker().renderHud(event.getMatrixStack(), event.getPartialTicks());
         }
         
         @SubscribeEvent
@@ -92,6 +100,50 @@ public class EventFactoryImpl implements EventFactory.Impl {
         @SubscribeEvent
         public static void event(ClientPlayerNetworkEvent.RespawnEvent event) {
             PlayerEvent.CLIENT_PLAYER_RESPAWN.invoker().respawn(event.getOldPlayer(), event.getNewPlayer());
+        }
+        
+        @SubscribeEvent
+        public static void event(GuiScreenEvent.InitGuiEvent.Pre event) {
+            if (GuiEvent.INIT_PRE.invoker().init(event.getGui(), event.getWidgetList(), (List<IGuiEventListener>) event.getGui().children()) == ActionResultType.FAIL) {
+                event.setCanceled(true);
+            }
+        }
+        
+        @SubscribeEvent
+        public static void event(GuiScreenEvent.InitGuiEvent.Post event) {
+            GuiEvent.INIT_POST.invoker().init(event.getGui(), event.getWidgetList(), (List<IGuiEventListener>) event.getGui().children());
+        }
+        
+        @SubscribeEvent
+        public static void event(RenderGameOverlayEvent.Text event) {
+            GuiEvent.DEBUG_TEXT_LEFT.invoker().gatherText(event.getLeft());
+            GuiEvent.DEBUG_TEXT_RIGHT.invoker().gatherText(event.getRight());
+        }
+        
+        @SubscribeEvent
+        public static void event(ClientChatEvent event) {
+            ActionResult<String> process = ChatEvent.CLIENT.invoker().process(event.getMessage());
+            if (process.getObject() != null)
+                event.setMessage(process.getObject());
+            if (process.getResult() == ActionResultType.FAIL)
+                event.setCanceled(true);
+        }
+        
+        @SubscribeEvent
+        public static void event(ClientChatReceivedEvent event) {
+            ActionResult<ITextComponent> process = ChatEvent.CLIENT_RECEIVED.invoker().process(event.getType(), event.getMessage(), event.getSenderUUID());
+            if (process.getObject() != null)
+                event.setMessage(process.getObject());
+            if (process.getResult() == ActionResultType.FAIL)
+                event.setCanceled(true);
+        }
+        
+        @SubscribeEvent
+        public static void event(WorldEvent.Save event) {
+            if (event.getWorld() instanceof ClientWorld) {
+                ClientWorld world = (ClientWorld) event.getWorld();
+                LifecycleEvent.CLIENT_WORLD_LOAD.invoker().act(world);
+            }
         }
     }
     
@@ -136,7 +188,7 @@ public class EventFactoryImpl implements EventFactory.Impl {
         
         @SubscribeEvent
         public static void event(RegisterCommandsEvent event) {
-            CommandRegistrationEvent.EVENT.invoker().register(event.getDispatcher());
+            CommandRegistrationEvent.EVENT.invoker().register(event.getDispatcher(), event.getEnvironment());
         }
         
         @SubscribeEvent
@@ -152,6 +204,57 @@ public class EventFactoryImpl implements EventFactory.Impl {
         @SubscribeEvent
         public static void event(PlayerRespawnEvent event) {
             PlayerEvent.PLAYER_RESPAWN.invoker().respawn((ServerPlayerEntity) event.getPlayer(), event.isEndConquered());
+        }
+        
+        @SubscribeEvent
+        public static void event(CommandEvent event) {
+            CommandPerformEvent performEvent = new CommandPerformEvent(event.getParseResults(), event.getException());
+            if (CommandPerformEvent.EVENT.invoker().act(performEvent) == ActionResultType.FAIL) {
+                event.setCanceled(true);
+            }
+            event.setParseResults(performEvent.getResults());
+            event.setException(performEvent.getThrowable());
+        }
+        
+        @SubscribeEvent
+        public static void event(PlayerTickEvent event) {
+            if (event.phase == Phase.START) {
+                TickEvent.PLAYER_PRE.invoker().tick(event.player);
+            } else if (event.phase == Phase.END) {
+                TickEvent.PLAYER_POST.invoker().tick(event.player);
+            }
+        }
+        
+        @SubscribeEvent
+        public static void event(ServerChatEvent event) {
+            ActionResult<ITextComponent> process = ChatEvent.SERVER.invoker().process(event.getMessage(), event.getComponent());
+            if (process.getObject() != null)
+                event.setComponent(process.getObject());
+            if (process.getResult() == ActionResultType.FAIL)
+                event.setCanceled(true);
+        }
+        
+        @SubscribeEvent
+        public static void event(WorldEvent.Load event) {
+            if (event.getWorld() instanceof ServerWorld) {
+                ServerWorld world = (ServerWorld) event.getWorld();
+                LifecycleEvent.SERVER_WORLD_LOAD.invoker().act(world);
+            }
+        }
+        
+        @SubscribeEvent
+        public static void event(WorldEvent.Save event) {
+            if (event.getWorld() instanceof ServerWorld) {
+                ServerWorld world = (ServerWorld) event.getWorld();
+                LifecycleEvent.SERVER_WORLD_SAVE.invoker().act(world);
+            }
+        }
+        
+        @SubscribeEvent
+        public static void event(LivingDeathEvent event) {
+            if (EntityEvent.LIVING_DEATH.invoker().die(event.getEntityLiving(), event.getSource()) == ActionResultType.FAIL) {
+                event.setCanceled(true);
+            }
         }
     }
     
