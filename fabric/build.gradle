@@ -30,4 +30,16 @@ shadowJar {
 remapJar {
     dependsOn(shadowJar)
     input.set(shadowJar.archivePath)
+    archiveClassifier = "fabric"
+}
+
+publishing {
+    publications {
+        mavenFabric(MavenPublication) {
+            artifact(file("${project.buildDir}/libs/${project.archivesBaseName}-${project.version}-fabric.jar")) {
+                builtBy build
+                classifier "fabric"
+            }
+        }
+    }
 }

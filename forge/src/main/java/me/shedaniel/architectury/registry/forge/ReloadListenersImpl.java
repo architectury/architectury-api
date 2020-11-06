@@ -1,7 +1,7 @@
 package me.shedaniel.architectury.registry.forge;
 
 import com.google.common.collect.Lists;
-import me.shedaniel.architectury.registry.ReloadListenerRegistry;
+import me.shedaniel.architectury.registry.ReloadListeners;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.IFutureReloadListener;
 import net.minecraft.resources.IReloadableResourceManager;
@@ -13,7 +13,7 @@ import net.minecraftforge.event.AddReloadListenerEvent;
 
 import java.util.List;
 
-public class ReloadListenersImpl implements ReloadListenerRegistry.Impl {
+public class ReloadListenersImpl implements ReloadListeners.Impl {
     private List<IFutureReloadListener> serverDataReloadListeners = Lists.newArrayList();
     
     public ReloadListenersImpl() {

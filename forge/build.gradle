@@ -63,9 +63,20 @@ shadowJar {
     exclude "fabric.mod.json"
 
     configurations = [project.configurations.shadow]
-    classifier null
+    classifier "forge"
 }
 
 reobf {
     shadowJar {}
+}
+
+publishing {
+    publications {
+        mavenFabric(MavenPublication) {
+            artifact(file("${project.buildDir}/libs/${project.archivesBaseName}-${project.version}-forge.jar")) {
+                builtBy shadowJar
+                classifier "forge"
+            }
+        }
+    }
 }

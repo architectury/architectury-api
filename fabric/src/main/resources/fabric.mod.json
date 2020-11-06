@@ -3,7 +3,7 @@
   "id": "architectury",
   "version": "${version}",
   "name": "Architectury",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "description": "A intermediary api aimed to ease developing multiplatform mods.",
   "authors": [
     "shedaniel"
   ],

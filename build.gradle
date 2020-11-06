@@ -1,6 +1,9 @@
 plugins {
     id "architect-plugin" version "1.0.10"
     id "org.cadixdev.licenser" version "0.5.0"
+    id "com.jfrog.bintray" version "1.8.4"
+    id "maven"
+    id "maven-publish"
 }
 
 architect {
@@ -13,7 +16,7 @@ allprojects {
     apply plugin: "org.cadixdev.licenser"
 
     archivesBaseName = rootProject.archives_base_name
-    version = rootProject.mod_version
+    version = rootProject.mod_version + "." + (System.getenv("GITHUB_RUN_NUMBER") == null ? "9999" : (System.getenv("GITHUB_RUN_NUMBER").toInteger() - (int) project.last_minor_build).toString())
     group = rootProject.maven_group
 
     tasks.withType(JavaCompile) {
@@ -34,3 +37,19 @@ allprojects {
 
 task licenseFormatAll
 subprojects { p -> licenseFormatAll.dependsOn("${p.path}:licenseFormat") }
+
+bintray {
+    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
+    key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_KEY')
+    publications = ["mavenCommon", "mavenFabric", "mavenForge"]
+    publish = true
+    pkg {
+        repo = "cloth"
+        name = "architectury"
+        userOrg = "shedaniel"
+        licenses = ["Apache-2.0"]
+        version {
+            vcsUrl = "https://github.com/shedaniel/architectury.git"
+        }
+    }
+}
