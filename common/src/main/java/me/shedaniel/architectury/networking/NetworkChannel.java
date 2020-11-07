@@ -59,7 +59,7 @@ public final class NetworkChannel {
     }
     
     public <T> void register(Optional<NetworkManager.Side> side, Class<T> type, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<PacketContext>> messageConsumer) {
-        for (int i = 0; ; i++) {
+        for (int i = 0; true; i++) {
             if (!takenIds.contains(i)) {
                 register(side, i, type, encoder, decoder, messageConsumer);
                 break;
