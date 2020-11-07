@@ -62,6 +62,7 @@ public final class Registries {
      * Fabric: Use registry
      */
     @Nullable
+    @Deprecated
     public static <T> ResourceLocation getId(T object, net.minecraft.core.Registry<T> fallback) {
         return IMPL.getId(object, fallback);
     }
