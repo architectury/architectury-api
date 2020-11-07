@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package me.shedaniel.architectury.registry;
+package me.shedaniel.architectury.hooks.forge;
 
-public interface BlockPropertiesExtension {
-    default BlockProperties tool(ToolType type) {
-        return tool(type, 0);
+import me.shedaniel.architectury.hooks.EntityHooks;
+import net.minecraft.entity.Entity;
+
+public class EntityHooksImpl implements EntityHooks.Impl {
+    @Override
+    public String getEncodeId(Entity entity) {
+        return entity.getEncodeId();
     }
-    
-    BlockProperties tool(ToolType type, int level);
 }
