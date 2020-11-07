@@ -53,7 +53,7 @@ public final class Registries {
      * Fabric: Use registry
      */
     @Nullable
-    public static <T> ResourceLocation getId(T object, ResourceKey<net.minecraft.core.Registry<T>> fallback) {
+    public static <T> ResourceLocation getId(T object, @Nullable ResourceKey<net.minecraft.core.Registry<T>> fallback) {
         return IMPL.getId(object, fallback);
     }
     
@@ -63,8 +63,18 @@ public final class Registries {
      */
     @Nullable
     @Deprecated
-    public static <T> ResourceLocation getId(T object, net.minecraft.core.Registry<T> fallback) {
+    public static <T> ResourceLocation getId(T object, @Nullable net.minecraft.core.Registry<T> fallback) {
         return IMPL.getId(object, fallback);
+    }
+    
+    /**
+     * Forge: If the object is {@code IForgeRegistryEntry}, use `getRegistryName`, else null
+     * Fabric: null
+     */
+    @Deprecated
+    @Nullable
+    public static <T> ResourceLocation getRegistryName(T object) {
+        return IMPL.getId(object, (ResourceKey<net.minecraft.core.Registry<T>>) null);
     }
     
     public interface Impl {

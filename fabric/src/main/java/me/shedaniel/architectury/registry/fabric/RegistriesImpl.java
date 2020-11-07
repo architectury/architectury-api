@@ -38,11 +38,15 @@ public class RegistriesImpl implements Registries.Impl {
     
     @Override
     public <T> ResourceLocation getId(T object, ResourceKey<net.minecraft.core.Registry<T>> fallback) {
+        if (fallback == null)
+            return null;
         return RegistryProviderImpl.INSTANCE.get(fallback).getId(object);
     }
     
     @Override
     public <T> ResourceLocation getId(T object, net.minecraft.core.Registry<T> fallback) {
+        if (fallback == null)
+            return null;
         return RegistryProviderImpl.INSTANCE.get(fallback).getId(object);
     }
     
@@ -83,42 +87,42 @@ public class RegistriesImpl implements Registries.Impl {
         public @Nullable ResourceLocation getId(T obj) {
             return delegate.getKey(obj);
         }
-    
+        
         @Override
         public Optional<ResourceKey<T>> getKey(T obj) {
             return delegate.getResourceKey(obj);
         }
-    
+        
         @Override
         public @Nullable T get(ResourceLocation id) {
             return delegate.get(id);
         }
-    
+        
         @Override
         public boolean contains(ResourceLocation id) {
             return delegate.containsKey(id);
         }
-    
+        
         @Override
         public boolean containsValue(T obj) {
             return delegate.getResourceKey(obj).isPresent();
         }
-    
+        
         @Override
         public Set<ResourceLocation> getIds() {
             return delegate.keySet();
         }
-    
+        
         @Override
         public Set<Map.Entry<ResourceKey<T>, T>> entrySet() {
             return delegate.entrySet();
         }
-    
+        
         @Override
         public ResourceKey<? extends net.minecraft.core.Registry<T>> key() {
             return delegate.key();
         }
-    
+        
         @NotNull
         @Override
         public Iterator<T> iterator() {
