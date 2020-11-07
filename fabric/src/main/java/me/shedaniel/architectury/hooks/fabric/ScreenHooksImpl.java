@@ -23,8 +23,15 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 
+import java.util.List;
+
 @Environment(EnvType.CLIENT)
 public class ScreenHooksImpl implements ScreenHooks.Impl {
+    @Override
+    public List<AbstractWidget> getButtons(Screen screen) {
+        return screen.buttons;
+    }
+    
     @Override
     public <T extends AbstractWidget> T addButton(Screen screen, T widget) {
         return screen.addButton(widget);

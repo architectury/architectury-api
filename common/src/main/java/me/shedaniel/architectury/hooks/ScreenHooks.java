@@ -24,12 +24,18 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 
+import java.util.List;
+
 @Environment(EnvType.CLIENT)
 public final class ScreenHooks {
     private ScreenHooks() {}
     
     @Populatable
     private static final Impl IMPL = null;
+    
+    public static List<AbstractWidget> getButtons(Screen screen) {
+        return IMPL.getButtons(screen);
+    }
     
     public static <T extends AbstractWidget> T addButton(Screen screen, T widget) {
         return IMPL.addButton(screen, widget);
@@ -40,6 +46,8 @@ public final class ScreenHooks {
     }
     
     public interface Impl {
+        List<AbstractWidget> getButtons(Screen screen);
+        
         <T extends AbstractWidget> T addButton(Screen screen, T widget);
         
         <T extends GuiEventListener> T addChild(Screen screen, T listener);

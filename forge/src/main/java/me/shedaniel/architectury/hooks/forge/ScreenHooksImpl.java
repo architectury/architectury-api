@@ -23,8 +23,18 @@ import net.minecraft.client.gui.widget.Widget;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 public class ScreenHooksImpl implements ScreenHooks.Impl {
+    @Override
+    public List<Widget> getButtons(Screen screen) {
+        try {
+            return (List<Widget>) ObfuscationReflectionHelper.findField(Screen.class, "field_230710_m_").get(screen);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
     @Override
     public <T extends Widget> T addButton(Screen screen, T t) {
         try {
