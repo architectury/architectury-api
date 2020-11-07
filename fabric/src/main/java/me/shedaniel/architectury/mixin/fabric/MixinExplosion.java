@@ -24,10 +24,7 @@ import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -43,7 +40,7 @@ public class MixinExplosion implements ExplosionHooksImpl.ExplosionExtensions {
     @Shadow @Final private double y;
     @Shadow @Final private double z;
     @Shadow @Final @Nullable private Entity source;
-    @Shadow @Final private float radius;
+    @Shadow @Final @Mutable private float radius;
     @Unique Vec3 position;
     
     @Inject(method = "explode", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/Vec3;<init>(DDD)V", ordinal = 0),
@@ -68,5 +65,10 @@ public class MixinExplosion implements ExplosionHooksImpl.ExplosionExtensions {
     @Override
     public float architectury_getRadius() {
         return radius;
+    }
+    
+    @Override
+    public void architectury_setRadius(float v) {
+        radius = v;
     }
 }

@@ -41,4 +41,13 @@ public class ExplosionHooksImpl implements ExplosionHooks.Impl {
             throw new RuntimeException(e);
         }
     }
+    
+    @Override
+    public void setRadius(Explosion explosion, float v) {
+        try {
+            ObfuscationReflectionHelper.findField(Explosion.class, "field_77280_f").set(explosion, v);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

@@ -37,11 +37,18 @@ public class ExplosionHooksImpl implements ExplosionHooks.Impl {
         return ((ExplosionExtensions) explosion).architectury_getRadius();
     }
     
+    @Override
+    public void setRadius(Explosion explosion, float radius) {
+        ((ExplosionExtensions) explosion).architectury_setRadius(radius);
+    }
+    
     public interface ExplosionExtensions {
         Vec3 architectury_getPosition();
         
         Entity architectury_getSource();
         
         float architectury_getRadius();
+        
+        void architectury_setRadius(float v);
     }
 }
