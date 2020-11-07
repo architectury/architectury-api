@@ -31,6 +31,9 @@ allprojects {
             year = 2020
         }
 
+        exclude "**/NbtType.java"
+        exclude "**/*.accessWidener"
+
         ignoreFailures = true
     }
 }
