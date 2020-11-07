@@ -24,6 +24,14 @@ import java.lang.reflect.Modifier;
 public final class ArchitecturyPopulator {
     private ArchitecturyPopulator() {}
     
+    public static void populate() {
+        try {
+            populate(Class.forName(Thread.currentThread().getStackTrace()[2].getClassName()));
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
     public static void populate(Object o) {
         try {
             if (o instanceof Class) {

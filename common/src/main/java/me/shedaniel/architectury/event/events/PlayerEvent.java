@@ -23,6 +23,10 @@ import net.fabricmc.api.Environment;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 public interface PlayerEvent {
     Event<PlayerJoin> PLAYER_JOIN = EventFactory.createLoop(PlayerJoin.class);
@@ -33,6 +37,9 @@ public interface PlayerEvent {
     @Environment(EnvType.CLIENT) Event<ClientPlayerRespawn> CLIENT_PLAYER_RESPAWN = EventFactory.createLoop(ClientPlayerRespawn.class);
     Event<PlayerAdvancement> PLAYER_ADVANCEMENT = EventFactory.createLoop(PlayerAdvancement.class);
     Event<PlayerClone> PLAYER_CLONE = EventFactory.createLoop(PlayerClone.class);
+    Event<SmeltItem> SMELT_ITEM = EventFactory.createLoop(SmeltItem.class);
+    Event<PickupItemPredicate> PICKUP_ITEM_PRE = EventFactory.createInteractionResult(PickupItemPredicate.class);
+    Event<PickupItem> PICKUP_ITEM_POST = EventFactory.createLoop(PickupItem.class);
     
     interface PlayerJoin {
         void join(ServerPlayer player);
@@ -52,6 +59,18 @@ public interface PlayerEvent {
     
     interface PlayerAdvancement {
         void award(ServerPlayer player, Advancement advancement);
+    }
+    
+    interface SmeltItem {
+        void smelt(Player player, ItemStack smelted);
+    }
+    
+    interface PickupItemPredicate {
+        InteractionResult canPickup(Player player, ItemEntity entity, ItemStack smelted);
+    }
+    
+    interface PickupItem {
+        void pickup(Player player, ItemEntity entity, ItemStack smelted);
     }
     
     @Environment(EnvType.CLIENT)

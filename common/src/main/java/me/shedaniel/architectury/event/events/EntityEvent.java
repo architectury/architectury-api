@@ -20,15 +20,33 @@ import me.shedaniel.architectury.event.Event;
 import me.shedaniel.architectury.event.EventFactory;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
 
 public interface EntityEvent {
     /**
      * Invoked before LivingEntity#die, equivalent to forge's {@code LivingDeathEvent}.
      */
     Event<LivingDeath> LIVING_DEATH = EventFactory.createInteractionResult(LivingDeath.class);
+    /**
+     * Invoked before LivingEntity#hurt, equivalent to forge's {@code LivingAttackEvent}.
+     */
+    Event<LivingAttack> LIVING_ATTACK = EventFactory.createInteractionResult(LivingAttack.class);
+    /**
+     * Invoked before entity is added to a world, equivalent to forge's {@code EntityJoinWorldEvent}.
+     */
+    Event<Add> ADD = EventFactory.createInteractionResult(Add.class);
     
     interface LivingDeath {
         InteractionResult die(LivingEntity entity, DamageSource source);
+    }
+    
+    interface LivingAttack {
+        InteractionResult attack(LivingEntity entity, DamageSource source, float amount);
+    }
+    
+    interface Add {
+        InteractionResult add(Entity entity, Level world);
     }
 }

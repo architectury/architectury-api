@@ -28,11 +28,7 @@ import java.util.List;
 public class ScreenHooksImpl implements ScreenHooks.Impl {
     @Override
     public List<Widget> getButtons(Screen screen) {
-        try {
-            return (List<Widget>) ObfuscationReflectionHelper.findField(Screen.class, "field_230710_m_").get(screen);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+        return screen.buttons;
     }
     
     @Override

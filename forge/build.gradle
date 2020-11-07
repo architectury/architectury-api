@@ -23,7 +23,7 @@ minecraft {
         client {
             workingDirectory project.file("run")
             mods {
-                examplemod {
+                architectury {
                     source sourceSets.main
                 }
             }
@@ -31,7 +31,7 @@ minecraft {
         server {
             workingDirectory project.file("run")
             mods {
-                examplemod {
+                architectury {
                     source sourceSets.main
                 }
             }

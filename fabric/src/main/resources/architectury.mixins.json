@@ -12,8 +12,9 @@
     "client.MixinScreen"
   ],
   "mixins": [
-    "ExplosionPreInvoker", "LivingDeathInvoker", "MixinCommands", "MixinExplosion", "MixinPlayer", "MixinPlayerAdvancements", "MixinPlayerList",
-    "MixinServerGamePacketListenerImpl", "MixinServerLevel", "MixinServerPlayer"
+    "ExplosionPreInvoker", "LivingDeathInvoker", "MixinCommands", "MixinExplosion", "MixinFurnaceResultSlot", "MixinItemEntity", "MixinLivingEntity",
+    "MixinPlayer", "MixinPlayerAdvancements", "MixinPlayerList", "MixinServerGamePacketListenerImpl", "MixinServerLevel", "MixinServerPlayer",
+    "PlayerAttackInvoker"
   ],
   "injectors": {
     "defaultRequire": 1

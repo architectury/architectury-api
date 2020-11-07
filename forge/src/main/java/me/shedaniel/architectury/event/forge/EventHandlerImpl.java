@@ -34,13 +34,13 @@ import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent.*;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.AdvancementEvent;
+import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent.Clone;
-import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent.PlayerRespawnEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.*;
 import net.minecraftforge.event.world.ExplosionEvent.Detonate;
 import net.minecraftforge.event.world.ExplosionEvent.Start;
 import net.minecraftforge.event.world.WorldEvent;
@@ -305,6 +305,35 @@ public class EventHandlerImpl implements EventHandler.Impl {
         @SubscribeEvent
         public static void event(Detonate event) {
             ExplosionEvent.DETONATE.invoker().explode(event.getWorld(), event.getExplosion(), event.getAffectedEntities());
+        }
+        
+        @SubscribeEvent
+        public static void event(LivingAttackEvent event) {
+            if (EntityEvent.LIVING_ATTACK.invoker().attack(event.getEntityLiving(), event.getSource(), event.getAmount()) == ActionResultType.FAIL) {
+                event.setCanceled(true);
+            }
+        }
+        
+        @SubscribeEvent
+        public static void event(EntityJoinWorldEvent event) {
+            if (EntityEvent.ADD.invoker().add(event.getEntity(), event.getWorld()) == ActionResultType.FAIL) {
+                event.setCanceled(true);
+            }
+        }
+        
+        @SubscribeEvent
+        public static void event(ItemSmeltedEvent event) {
+            PlayerEvent.SMELT_ITEM.invoker().smelt(event.getPlayer(), event.getSmelting());
+        }
+        
+        @SubscribeEvent
+        public static void event(EntityItemPickupEvent event) {
+            PlayerEvent.PICKUP_ITEM_PRE.invoker().canPickup(event.getPlayer(), event.getItem(), event.getItem().getItem());
+        }
+        
+        @SubscribeEvent
+        public static void event(ItemPickupEvent event) {
+            PlayerEvent.PICKUP_ITEM_POST.invoker().pickup(event.getPlayer(), event.getOriginalEntity(), event.getStack());
         }
     }
     

@@ -2,6 +2,10 @@ plugins {
     id "fabric-loom"
 }
 
+loom {
+    accessWidener = file("src/main/resources/architectury-common.accessWidener")
+}
+
 dependencies {
     minecraft "com.mojang:minecraft:${rootProject.architect.minecraft}"
     mappings minecraft.officialMojangMappings()
