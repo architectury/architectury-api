@@ -13,8 +13,8 @@
   ],
   "mixins": [
     "ExplosionPreInvoker", "LivingDeathInvoker", "MixinCommands", "MixinExplosion", "MixinFurnaceResultSlot", "MixinItemEntity", "MixinLivingEntity",
-    "MixinPlayer", "MixinPlayerAdvancements", "MixinPlayerList", "MixinServerGamePacketListenerImpl", "MixinServerLevel", "MixinServerPlayer",
-    "PlayerAttackInvoker"
+    "MixinPlayer", "MixinPlayerAdvancements", "MixinPlayerList", "MixinResultSlot", "MixinServerGamePacketListenerImpl", "MixinServerLevel",
+    "MixinServerPlayer", "PlayerAttackInvoker"
   ],
   "injectors": {
     "defaultRequire": 1

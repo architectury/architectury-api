@@ -23,9 +23,11 @@ import net.fabricmc.api.Environment;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 
 public interface PlayerEvent {
@@ -37,9 +39,13 @@ public interface PlayerEvent {
     @Environment(EnvType.CLIENT) Event<ClientPlayerRespawn> CLIENT_PLAYER_RESPAWN = EventFactory.createLoop(ClientPlayerRespawn.class);
     Event<PlayerAdvancement> PLAYER_ADVANCEMENT = EventFactory.createLoop(PlayerAdvancement.class);
     Event<PlayerClone> PLAYER_CLONE = EventFactory.createLoop(PlayerClone.class);
+    Event<CraftItem> CRAFT_ITEM = EventFactory.createLoop(CraftItem.class);
     Event<SmeltItem> SMELT_ITEM = EventFactory.createLoop(SmeltItem.class);
     Event<PickupItemPredicate> PICKUP_ITEM_PRE = EventFactory.createInteractionResult(PickupItemPredicate.class);
     Event<PickupItem> PICKUP_ITEM_POST = EventFactory.createLoop(PickupItem.class);
+    Event<DropItem> DROP_ITEM = EventFactory.createLoop(DropItem.class);
+    Event<OpenMenu> OPEN_MENU = EventFactory.createLoop(OpenMenu.class);
+    Event<CloseMenu> CLOSE_MENU = EventFactory.createLoop(CloseMenu.class);
     
     interface PlayerJoin {
         void join(ServerPlayer player);
@@ -61,16 +67,32 @@ public interface PlayerEvent {
         void award(ServerPlayer player, Advancement advancement);
     }
     
+    interface CraftItem {
+        void craft(Player player, ItemStack smelted, Container inventory);
+    }
+    
     interface SmeltItem {
         void smelt(Player player, ItemStack smelted);
     }
     
     interface PickupItemPredicate {
-        InteractionResult canPickup(Player player, ItemEntity entity, ItemStack smelted);
+        InteractionResult canPickup(Player player, ItemEntity entity, ItemStack stack);
     }
     
     interface PickupItem {
-        void pickup(Player player, ItemEntity entity, ItemStack smelted);
+        void pickup(Player player, ItemEntity entity, ItemStack stack);
+    }
+    
+    interface DropItem {
+        InteractionResult drop(Player player, ItemEntity entity);
+    }
+    
+    interface OpenMenu {
+        void open(Player player, AbstractContainerMenu menu);
+    }
+    
+    interface CloseMenu {
+        void close(Player player, AbstractContainerMenu menu);
     }
     
     @Environment(EnvType.CLIENT)

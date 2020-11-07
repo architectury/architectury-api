@@ -35,11 +35,13 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent.*;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.AdvancementEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.*;
 import net.minecraftforge.event.world.ExplosionEvent.Detonate;
 import net.minecraftforge.event.world.ExplosionEvent.Start;
@@ -322,6 +324,11 @@ public class EventHandlerImpl implements EventHandler.Impl {
         }
         
         @SubscribeEvent
+        public static void event(ItemCraftedEvent event) {
+            PlayerEvent.CRAFT_ITEM.invoker().craft(event.getPlayer(), event.getCrafting(), event.getInventory());
+        }
+        
+        @SubscribeEvent
         public static void event(ItemSmeltedEvent event) {
             PlayerEvent.SMELT_ITEM.invoker().smelt(event.getPlayer(), event.getSmelting());
         }
@@ -334,6 +341,21 @@ public class EventHandlerImpl implements EventHandler.Impl {
         @SubscribeEvent
         public static void event(ItemPickupEvent event) {
             PlayerEvent.PICKUP_ITEM_POST.invoker().pickup(event.getPlayer(), event.getOriginalEntity(), event.getStack());
+        }
+        
+        @SubscribeEvent
+        public static void event(ItemTossEvent event) {
+            PlayerEvent.DROP_ITEM.invoker().drop(event.getPlayer(), event.getEntityItem());
+        }
+    
+        @SubscribeEvent
+        public static void event(PlayerContainerEvent.Open event) {
+            PlayerEvent.OPEN_MENU.invoker().open(event.getPlayer(), event.getContainer());
+        }
+    
+        @SubscribeEvent
+        public static void event(PlayerContainerEvent.Close event) {
+            PlayerEvent.CLOSE_MENU.invoker().close(event.getPlayer(), event.getContainer());
         }
     }
     

@@ -16,12 +16,17 @@
 
 package me.shedaniel.architectury.mixin.fabric;
 
+import me.shedaniel.architectury.event.events.PlayerEvent;
 import me.shedaniel.architectury.event.events.TickEvent;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Player.class)
 public class MixinPlayer {
@@ -33,5 +38,12 @@ public class MixinPlayer {
     @Inject(method = "tick", at = @At("RETURN"))
     private void postTick(CallbackInfo ci) {
         TickEvent.PLAYER_POST.invoker().tick((Player) (Object) this);
+    }
+    
+    @Inject(method = "drop(Lnet/minecraft/world/item/ItemStack;ZZ)Lnet/minecraft/world/entity/item/ItemEntity;", at = @At("RETURN"), cancellable = true)
+    private void drop(ItemStack itemStack, boolean bl, boolean bl2, CallbackInfoReturnable<ItemEntity> cir) {
+        if (PlayerEvent.DROP_ITEM.invoker().drop((Player) (Object) this, cir.getReturnValue()) == InteractionResult.FAIL) {
+            cir.setReturnValue(null);
+        }
     }
 }
