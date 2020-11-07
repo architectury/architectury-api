@@ -17,13 +17,17 @@
 package me.shedaniel.architectury.mixin.fabric;
 
 import me.shedaniel.architectury.event.events.ExplosionEvent;
+import me.shedaniel.architectury.hooks.fabric.ExplosionHooksImpl;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -33,11 +37,30 @@ import java.util.List;
 import java.util.Set;
 
 @Mixin(Explosion.class)
-public class MixinExplosion {
+public class MixinExplosion implements ExplosionHooksImpl.ExplosionExtensions {
     @Shadow @Final private Level level;
+    @Shadow @Final private double x;
+    @Shadow @Final private double y;
+    @Shadow @Final private double z;
+    @Shadow @Final @Nullable private Entity source;
+    @Unique Vec3 position;
     
-    @Inject(method = "explode", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/Vec3;<init>(DDD)V", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "explode", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/Vec3;<init>(DDD)V", ordinal = 0),
+            locals = LocalCapture.CAPTURE_FAILHARD)
     private void explodePost(CallbackInfo ci, Set<BlockPos> set, float q, int r, int s, int t, int u, int v, int w, List<Entity> list) {
         ExplosionEvent.DETONATE.invoker().explode(level, (Explosion) (Object) this, list);
+    }
+    
+    @Override
+    public Vec3 architectury_getPosition() {
+        if (position == null) {
+            return position = new Vec3(x, y, z);
+        }
+        return position;
+    }
+    
+    @Override
+    public Entity architectury_getSource() {
+        return source;
     }
 }
