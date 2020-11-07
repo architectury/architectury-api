@@ -32,9 +32,16 @@ public class ExplosionHooksImpl implements ExplosionHooks.Impl {
         return ((ExplosionExtensions) explosion).architectury_getSource();
     }
     
+    @Override
+    public float getRadius(Explosion explosion) {
+        return ((ExplosionExtensions) explosion).architectury_getRadius();
+    }
+    
     public interface ExplosionExtensions {
         Vec3 architectury_getPosition();
         
         Entity architectury_getSource();
+        
+        float architectury_getRadius();
     }
 }

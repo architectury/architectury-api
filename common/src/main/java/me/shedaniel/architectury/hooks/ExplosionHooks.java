@@ -41,10 +41,16 @@ public final class ExplosionHooks {
         return IMPL.getSource(explosion);
     }
     
+    public static float getRadius(Explosion explosion) {
+        return IMPL.getRadius(explosion);
+    }
+    
     public interface Impl {
         Vec3 getPosition(Explosion explosion);
         
         Entity getSource(Explosion explosion);
+        
+        float getRadius(Explosion explosion);
     }
     
     static {

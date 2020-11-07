@@ -20,6 +20,7 @@ import me.shedaniel.architectury.hooks.ExplosionHooks;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Explosion;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 public class ExplosionHooksImpl implements ExplosionHooks.Impl {
     @Override
@@ -30,5 +31,14 @@ public class ExplosionHooksImpl implements ExplosionHooks.Impl {
     @Override
     public Entity getSource(Explosion explosion) {
         return explosion.getExploder();
+    }
+    
+    @Override
+    public float getRadius(Explosion explosion) {
+        try {
+            return (float) ObfuscationReflectionHelper.findField(Explosion.class, "field_77280_f").get(explosion);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

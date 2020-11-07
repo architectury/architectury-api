@@ -43,6 +43,7 @@ public class MixinExplosion implements ExplosionHooksImpl.ExplosionExtensions {
     @Shadow @Final private double y;
     @Shadow @Final private double z;
     @Shadow @Final @Nullable private Entity source;
+    @Shadow @Final private float radius;
     @Unique Vec3 position;
     
     @Inject(method = "explode", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/Vec3;<init>(DDD)V", ordinal = 0),
@@ -62,5 +63,10 @@ public class MixinExplosion implements ExplosionHooksImpl.ExplosionExtensions {
     @Override
     public Entity architectury_getSource() {
         return source;
+    }
+    
+    @Override
+    public float architectury_getRadius() {
+        return radius;
     }
 }
