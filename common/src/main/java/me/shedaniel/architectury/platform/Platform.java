@@ -20,10 +20,12 @@ import me.shedaniel.architectury.Architectury;
 import me.shedaniel.architectury.ArchitecturyPopulator;
 import me.shedaniel.architectury.Populatable;
 import net.fabricmc.api.EnvType;
+import net.minecraft.SharedConstants;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Optional;
 
 public final class Platform {
     private Platform() {}
@@ -37,6 +39,11 @@ public final class Platform {
     @NotNull
     public static String getModLoader() {
         return Architectury.getModLoader();
+    }
+    
+    @NotNull
+    public static String getMinecraftVersion() {
+        return SharedConstants.getCurrentVersion().getId();
     }
     
     @NotNull
@@ -64,8 +71,26 @@ public final class Platform {
     }
     
     @NotNull
+    public static Optional<Mod> getOptionalMod(String id) {
+        try {
+            return Optional.of(IMPL.getMod(id));
+        } catch (NullPointerException e) {
+            return Optional.empty();
+        }
+    }
+    
+    @NotNull
     public static Collection<Mod> getMods() {
         return IMPL.getMods();
+    }
+    
+    @NotNull
+    public static Collection<String> getModIds() {
+        return IMPL.getModIds();
+    }
+    
+    public static boolean isDevelopmentEnvironment() {
+        return IMPL.isDevelopmentEnvironment();
     }
     
     public interface Impl {
@@ -82,6 +107,10 @@ public final class Platform {
         Mod getMod(String id);
         
         Collection<Mod> getMods();
+        
+        Collection<String> getModIds();
+        
+        boolean isDevelopmentEnvironment();
     }
     
     static {

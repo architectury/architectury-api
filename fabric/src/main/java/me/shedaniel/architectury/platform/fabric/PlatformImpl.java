@@ -28,6 +28,7 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class PlatformImpl implements Platform.Impl {
     public static final Map<String, Mod.ConfigurationScreenProvider> CONFIG_SCREENS = new HashMap<>();
@@ -69,6 +70,16 @@ public class PlatformImpl implements Platform.Impl {
             getMod(mod.getMetadata().getId());
         }
         return this.mods.values();
+    }
+    
+    @Override
+    public Collection<String> getModIds() {
+        return FabricLoader.getInstance().getAllMods().stream().map(ModContainer::getMetadata).map(ModMetadata::getId).collect(Collectors.toList());
+    }
+    
+    @Override
+    public boolean isDevelopmentEnvironment() {
+        return FabricLoader.getInstance().isDevelopmentEnvironment();
     }
     
     private static class ModImpl implements Mod {

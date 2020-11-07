@@ -23,7 +23,9 @@ import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
 import net.minecraftforge.forgespi.language.IModInfo;
 
 import javax.annotation.Nonnull;
@@ -31,6 +33,7 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class PlatformImpl implements Platform.Impl {
     private final Map<String, Mod> mods = new HashMap<>();
@@ -71,6 +74,16 @@ public class PlatformImpl implements Platform.Impl {
             getMod(mod.getModId());
         }
         return this.mods.values();
+    }
+    
+    @Override
+    public Collection<String> getModIds() {
+        return ModList.get().getMods().stream().map(ModInfo::getModId).collect(Collectors.toList());
+    }
+    
+    @Override
+    public boolean isDevelopmentEnvironment() {
+        return !FMLLoader.isProduction();
     }
     
     private static class ModImpl implements Mod {
