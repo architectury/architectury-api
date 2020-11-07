@@ -17,6 +17,8 @@ dependencies {
     modCompile("net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}")
     modCompile("net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}")
     modCompileOnly("io.github.prospector:modmenu:${rootProject.mod_menu_version}")
+    implementation "net.jodah:typetools:0.6.2"
+    shadow "net.jodah:typetools:0.6.2"
 
     compile(project(":common")) {
         transitive = false
@@ -34,6 +36,7 @@ processResources {
 }
 
 shadowJar {
+    relocate "net.jodah.typetools", "me.shedaniel.architectury.shadowed.impl.net.jodah.typetools"
     configurations = [project.configurations.shadow]
     classifier "shadow"
 }

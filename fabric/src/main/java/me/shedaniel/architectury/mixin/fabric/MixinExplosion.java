@@ -16,11 +16,10 @@
 
 package me.shedaniel.architectury.mixin.fabric;
 
-import me.shedaniel.architectury.event.events.LifecycleEvent;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.progress.ChunkProgressListener;
+import me.shedaniel.architectury.event.events.ExplosionEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,17 +27,17 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import java.util.Map;
+import java.util.List;
+import java.util.Set;
 
-@Mixin(MinecraftServer.class)
-public class MixinMinecraftServer {
-    @Shadow @Final private Map<ResourceKey<Level>, ServerLevel> levels;
+@Mixin(Explosion.class)
+public class MixinExplosion {
+    @Shadow @Final private Level level;
     
-    @Inject(method = "createLevels", at = @At("RETURN"))
-    private void createLevels(ChunkProgressListener chunkProgressListener, CallbackInfo ci) {
-        for (ServerLevel level : levels.values()) {
-            LifecycleEvent.SERVER_WORLD_LOAD.invoker().act(level);
-        }
+    @Inject(method = "explode", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/Vec3;<init>(DDD)V", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
+    private void explodePost(CallbackInfo ci, Set<BlockPos> set, float q, int r, int s, int t, int u, int v, int w, List<Entity> list) {
+        ExplosionEvent.DETONATE.invoker().explode(level, (Explosion) (Object) this, list);
     }
 }

@@ -53,9 +53,13 @@ public interface LifecycleEvent {
      */
     Event<ServerState> SERVER_STOPPED = EventFactory.createLoop(ServerState.class);
     /**
-     * Invoked after a world is loaded only on server, equivalent to forge's {@code WorldEvent.Load}.
+     * Invoked after a world is loaded only on server, equivalent to forge's {@code WorldEvent.Load} and fabric's {@code ServerWorldEvents#LOAD}.
      */
     Event<ServerWorldState> SERVER_WORLD_LOAD = EventFactory.createLoop(ServerWorldState.class);
+    /**
+     * Invoked after a world is unloaded, equivalent to forge's {@code WorldEvent.Unload} and fabric's {@code ServerWorldEvents#UNLOAD}.
+     */
+    Event<ServerWorldState> SERVER_WORLD_UNLOAD = EventFactory.createLoop(ServerWorldState.class);
     /**
      * Invoked during a world is saved, equivalent to forge's {@code WorldEvent.Save}.
      */

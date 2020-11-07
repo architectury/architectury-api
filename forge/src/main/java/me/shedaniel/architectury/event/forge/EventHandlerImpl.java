@@ -16,7 +16,7 @@
 
 package me.shedaniel.architectury.event.forge;
 
-import me.shedaniel.architectury.event.EventFactory;
+import me.shedaniel.architectury.event.EventHandler;
 import me.shedaniel.architectury.event.events.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IGuiEventListener;
@@ -35,10 +35,14 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent.*;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.player.AdvancementEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.Clone;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerRespawnEvent;
+import net.minecraftforge.event.world.ExplosionEvent.Detonate;
+import net.minecraftforge.event.world.ExplosionEvent.Start;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
@@ -50,7 +54,7 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.util.List;
 
-public class EventFactoryImpl implements EventFactory.Impl {
+public class EventHandlerImpl implements EventHandler.Impl {
     @Override
     public void registerClient() {
         MinecraftForge.EVENT_BUS.register(Client.class);
@@ -144,6 +148,18 @@ public class EventFactoryImpl implements EventFactory.Impl {
                 ClientWorld world = (ClientWorld) event.getWorld();
                 LifecycleEvent.CLIENT_WORLD_LOAD.invoker().act(world);
             }
+        }
+        
+        @SubscribeEvent
+        public static void event(GuiScreenEvent.DrawScreenEvent.Pre event) {
+            if (GuiEvent.RENDER_PRE.invoker().render(event.getGui(), event.getMatrixStack(), event.getMouseX(), event.getMouseY(), event.getRenderPartialTicks()) == ActionResultType.FAIL) {
+                event.setCanceled(true);
+            }
+        }
+        
+        @SubscribeEvent
+        public static void event(GuiScreenEvent.DrawScreenEvent.Post event) {
+            GuiEvent.RENDER_POST.invoker().render(event.getGui(), event.getMatrixStack(), event.getMouseX(), event.getMouseY(), event.getRenderPartialTicks());
         }
     }
     
@@ -243,6 +259,14 @@ public class EventFactoryImpl implements EventFactory.Impl {
         }
         
         @SubscribeEvent
+        public static void event(WorldEvent.Unload event) {
+            if (event.getWorld() instanceof ServerWorld) {
+                ServerWorld world = (ServerWorld) event.getWorld();
+                LifecycleEvent.SERVER_WORLD_UNLOAD.invoker().act(world);
+            }
+        }
+        
+        @SubscribeEvent
         public static void event(WorldEvent.Save event) {
             if (event.getWorld() instanceof ServerWorld) {
                 ServerWorld world = (ServerWorld) event.getWorld();
@@ -255,6 +279,32 @@ public class EventFactoryImpl implements EventFactory.Impl {
             if (EntityEvent.LIVING_DEATH.invoker().die(event.getEntityLiving(), event.getSource()) == ActionResultType.FAIL) {
                 event.setCanceled(true);
             }
+        }
+        
+        @SubscribeEvent
+        public static void event(AdvancementEvent event) {
+            if (event.getPlayer() instanceof ServerPlayerEntity) {
+                PlayerEvent.PLAYER_ADVANCEMENT.invoker().award((ServerPlayerEntity) event.getPlayer(), event.getAdvancement());
+            }
+        }
+        
+        @SubscribeEvent
+        public static void event(Clone event) {
+            if (event.getOriginal() instanceof ServerPlayerEntity && event.getPlayer() instanceof ServerPlayerEntity) {
+                PlayerEvent.PLAYER_CLONE.invoker().clone((ServerPlayerEntity) event.getOriginal(), (ServerPlayerEntity) event.getPlayer(), !event.isWasDeath());
+            }
+        }
+        
+        @SubscribeEvent
+        public static void event(Start event) {
+            if (ExplosionEvent.PRE.invoker().explode(event.getWorld(), event.getExplosion()) == ActionResultType.FAIL) {
+                event.setCanceled(true);
+            }
+        }
+        
+        @SubscribeEvent
+        public static void event(Detonate event) {
+            ExplosionEvent.DETONATE.invoker().explode(event.getWorld(), event.getExplosion(), event.getAffectedEntities());
         }
     }
     

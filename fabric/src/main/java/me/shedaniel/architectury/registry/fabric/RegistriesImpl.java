@@ -21,8 +21,13 @@ import me.shedaniel.architectury.registry.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.LazyLoadedValue;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Supplier;
 
 public class RegistriesImpl implements Registries.Impl {
@@ -78,10 +83,46 @@ public class RegistriesImpl implements Registries.Impl {
         public @Nullable ResourceLocation getId(T obj) {
             return delegate.getKey(obj);
         }
-        
+    
+        @Override
+        public Optional<ResourceKey<T>> getKey(T obj) {
+            return delegate.getResourceKey(obj);
+        }
+    
         @Override
         public @Nullable T get(ResourceLocation id) {
             return delegate.get(id);
+        }
+    
+        @Override
+        public boolean contains(ResourceLocation id) {
+            return delegate.containsKey(id);
+        }
+    
+        @Override
+        public boolean containsValue(T obj) {
+            return delegate.getResourceKey(obj).isPresent();
+        }
+    
+        @Override
+        public Set<ResourceLocation> getIds() {
+            return delegate.keySet();
+        }
+    
+        @Override
+        public Set<Map.Entry<ResourceKey<T>, T>> entrySet() {
+            return delegate.entrySet();
+        }
+    
+        @Override
+        public ResourceKey<? extends net.minecraft.core.Registry<T>> key() {
+            return delegate.key();
+        }
+    
+        @NotNull
+        @Override
+        public Iterator<T> iterator() {
+            return delegate.iterator();
         }
     }
 }

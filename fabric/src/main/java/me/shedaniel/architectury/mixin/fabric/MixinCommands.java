@@ -32,7 +32,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(Commands.class)
 public class MixinCommands {
     @Redirect(method = "performCommand",
-              at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/CommandDispatcher;execute(Lcom/mojang/brigadier/StringReader;Ljava/lang/Object;)I"))
+              at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/CommandDispatcher;execute(Lcom/mojang/brigadier/StringReader;Ljava/lang/Object;)I", remap = false))
     private int performCommand(CommandDispatcher<CommandSourceStack> dispatcher, StringReader input, Object source) throws CommandSyntaxException {
         CommandSourceStack stack = (CommandSourceStack) source;
         ParseResults<CommandSourceStack> parse = dispatcher.parse(input, stack);

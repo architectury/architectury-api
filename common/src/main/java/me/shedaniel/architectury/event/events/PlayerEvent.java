@@ -20,6 +20,7 @@ import me.shedaniel.architectury.event.Event;
 import me.shedaniel.architectury.event.EventFactory;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -30,6 +31,8 @@ public interface PlayerEvent {
     @Environment(EnvType.CLIENT) Event<ClientPlayerJoin> CLIENT_PLAYER_JOIN = EventFactory.createLoop(ClientPlayerJoin.class);
     @Environment(EnvType.CLIENT) Event<ClientPlayerQuit> CLIENT_PLAYER_QUIT = EventFactory.createLoop(ClientPlayerQuit.class);
     @Environment(EnvType.CLIENT) Event<ClientPlayerRespawn> CLIENT_PLAYER_RESPAWN = EventFactory.createLoop(ClientPlayerRespawn.class);
+    Event<PlayerAdvancement> PLAYER_ADVANCEMENT = EventFactory.createLoop(PlayerAdvancement.class);
+    Event<PlayerClone> PLAYER_CLONE = EventFactory.createLoop(PlayerClone.class);
     
     interface PlayerJoin {
         void join(ServerPlayer player);
@@ -41,6 +44,14 @@ public interface PlayerEvent {
     
     interface PlayerRespawn {
         void respawn(ServerPlayer newPlayer, boolean conqueredEnd);
+    }
+    
+    interface PlayerClone {
+        void clone(ServerPlayer oldPlayer, ServerPlayer newPlayer, boolean wonGame);
+    }
+    
+    interface PlayerAdvancement {
+        void award(ServerPlayer player, Advancement advancement);
     }
     
     @Environment(EnvType.CLIENT)

@@ -16,12 +16,16 @@
 
 package me.shedaniel.architectury.registry;
 
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Supplier;
 
-public interface Registry<T> {
+public interface Registry<T> extends Iterable<T> {
     Supplier<T> delegate(ResourceLocation id);
     
     Supplier<T> register(ResourceLocation id, Supplier<T> supplier);
@@ -29,6 +33,18 @@ public interface Registry<T> {
     @Nullable
     ResourceLocation getId(T obj);
     
+    Optional<ResourceKey<T>> getKey(T obj);
+    
     @Nullable
     T get(ResourceLocation id);
+    
+    boolean contains(ResourceLocation id);
+    
+    boolean containsValue(T obj);
+    
+    Set<ResourceLocation> getIds();
+    
+    Set<Map.Entry<ResourceKey<T>, T>> entrySet();
+    
+    ResourceKey<? extends net.minecraft.core.Registry<T>> key();
 }

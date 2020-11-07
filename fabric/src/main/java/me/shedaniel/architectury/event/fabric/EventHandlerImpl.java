@@ -16,7 +16,7 @@
 
 package me.shedaniel.architectury.event.fabric;
 
-import me.shedaniel.architectury.event.EventFactory;
+import me.shedaniel.architectury.event.EventHandler;
 import me.shedaniel.architectury.event.events.*;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -25,9 +25,10 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.minecraft.commands.Commands;
 
-public class EventFactoryImpl implements EventFactory.Impl {
+public class EventHandlerImpl implements EventHandler.Impl {
     @Override
     public void registerClient() {
         ClientLifecycleEvents.CLIENT_STARTED.register(LifecycleEvent.CLIENT_STARTED.invoker()::stateChanged);
@@ -53,6 +54,9 @@ public class EventFactoryImpl implements EventFactory.Impl {
         ServerTickEvents.END_SERVER_TICK.register(TickEvent.SERVER_POST.invoker()::tick);
         ServerTickEvents.START_WORLD_TICK.register(TickEvent.SERVER_WORLD_PRE.invoker()::tick);
         ServerTickEvents.END_WORLD_TICK.register(TickEvent.SERVER_WORLD_POST.invoker()::tick);
+        
+        ServerWorldEvents.LOAD.register((server, world) -> LifecycleEvent.SERVER_WORLD_LOAD.invoker().act(world));
+        ServerWorldEvents.UNLOAD.register((server, world) -> LifecycleEvent.SERVER_WORLD_UNLOAD.invoker().act(world));
         
         CommandRegistrationCallback.EVENT.register((commandDispatcher, b) -> CommandRegistrationEvent.EVENT.invoker().register(commandDispatcher, b ? Commands.CommandSelection.DEDICATED : Commands.CommandSelection.INTEGRATED));
     }

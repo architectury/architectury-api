@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.shedaniel.architectury.me.shedaniel.architectury.hooks.forge;
+package me.shedaniel.architectury.hooks.forge;
 
 import me.shedaniel.architectury.hooks.ScreenHooks;
 import net.minecraft.client.gui.IGuiEventListener;

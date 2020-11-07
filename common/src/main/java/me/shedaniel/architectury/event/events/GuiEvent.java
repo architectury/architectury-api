@@ -44,6 +44,8 @@ public interface GuiEvent {
      * Invoked after Screen#init, equivalent to forge's {@code GuiScreenEvent.InitGuiEvent.Post}.
      */
     Event<ScreenInitPost> INIT_POST = EventFactory.createLoop(ScreenInitPost.class);
+    Event<ScreenRenderPre> RENDER_PRE = EventFactory.createInteractionResult(ScreenRenderPre.class);
+    Event<ScreenRenderPost> RENDER_POST = EventFactory.createInteractionResult(ScreenRenderPost.class);
     
     @Environment(EnvType.CLIENT)
     interface RenderHud {
@@ -63,5 +65,15 @@ public interface GuiEvent {
     @Environment(EnvType.CLIENT)
     interface ScreenInitPost {
         void init(Screen screen, List<AbstractWidget> widgets, List<GuiEventListener> children);
+    }
+    
+    @Environment(EnvType.CLIENT)
+    interface ScreenRenderPre {
+        InteractionResult render(Screen screen, PoseStack matrices, int mouseX, int mouseY, float delta);
+    }
+    
+    @Environment(EnvType.CLIENT)
+    interface ScreenRenderPost {
+        void render(Screen screen, PoseStack matrices, int mouseX, int mouseY, float delta);
     }
 }

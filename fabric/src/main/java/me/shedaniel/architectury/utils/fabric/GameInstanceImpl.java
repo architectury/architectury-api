@@ -16,6 +16,7 @@
 
 package me.shedaniel.architectury.utils.fabric;
 
+import me.shedaniel.architectury.event.EventHandler;
 import me.shedaniel.architectury.event.events.LifecycleEvent;
 import me.shedaniel.architectury.platform.Platform;
 import me.shedaniel.architectury.utils.GameInstance;
@@ -38,6 +39,7 @@ public class GameInstanceImpl implements GameInstance.Impl {
     }
     
     public static void init() {
+        EventHandler.init();
         LifecycleEvent.SERVER_STARTING.register(server -> GameInstanceImpl.server = server);
         LifecycleEvent.SERVER_STOPPED.register(server -> GameInstanceImpl.server = null);
     }

@@ -17,11 +17,6 @@
 package me.shedaniel.architectury.event;
 
 import com.google.common.reflect.AbstractInvocationHandler;
-import me.shedaniel.architectury.ArchitecturyPopulator;
-import me.shedaniel.architectury.Populatable;
-import me.shedaniel.architectury.platform.Platform;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.jodah.typetools.TypeResolver;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -37,9 +32,6 @@ import java.util.function.Function;
 
 public final class EventFactory {
     private EventFactory() {}
-    
-    @Populatable
-    private static final Impl IMPL = null;
     
     public static <T> Event<T> create(Function<T[], T> function) {
         Class<?>[] arguments = TypeResolver.resolveRawArguments(Function.class, function.getClass());
@@ -176,24 +168,5 @@ public final class EventFactory {
                 invoker = function.apply(listeners);
             }
         }
-    }
-    
-    public interface Impl {
-        @Environment(EnvType.CLIENT)
-        void registerClient();
-        
-        void registerCommon();
-        
-        @Environment(EnvType.SERVER)
-        void registerServer();
-    }
-    
-    static {
-        ArchitecturyPopulator.populate(EventFactory.class);
-        if (Platform.getEnv() == EnvType.CLIENT)
-            IMPL.registerClient();
-        IMPL.registerCommon();
-        if (Platform.getEnv() == EnvType.SERVER)
-            IMPL.registerServer();
     }
 }

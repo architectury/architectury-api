@@ -34,7 +34,10 @@ import net.minecraftforge.registries.RegistryManager;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Supplier;
 
 public class RegistriesImpl implements Registries.Impl {
@@ -119,11 +122,46 @@ public class RegistriesImpl implements Registries.Impl {
         public ResourceLocation getId(T obj) {
             return delegate.getKey(obj);
         }
-        
+    
+        @Override
+        public Optional<RegistryKey<T>> getKey(T t) {
+            return delegate.getResourceKey(t);
+        }
+    
         @Override
         @Nullable
         public T get(ResourceLocation id) {
             return delegate.get(id);
+        }
+    
+        @Override
+        public boolean contains(ResourceLocation resourceLocation) {
+            return delegate.containsKey(resourceLocation);
+        }
+    
+        @Override
+        public boolean containsValue(T t) {
+            return delegate.getResourceKey(t).isPresent();
+        }
+    
+        @Override
+        public Set<ResourceLocation> getIds() {
+            return delegate.keySet();
+        }
+    
+        @Override
+        public Set<Map.Entry<RegistryKey<T>, T>> entrySet() {
+            return delegate.entrySet();
+        }
+    
+        @Override
+        public RegistryKey<? extends net.minecraft.util.registry.Registry<T>> key() {
+            return delegate.key();
+        }
+    
+        @Override
+        public Iterator<T> iterator() {
+            return delegate.iterator();
         }
     }
     
@@ -154,11 +192,46 @@ public class RegistriesImpl implements Registries.Impl {
         public ResourceLocation getId(T obj) {
             return delegate.getKey(obj);
         }
-        
+    
+        @Override
+        public Optional<RegistryKey<T>> getKey(T t) {
+            return Optional.ofNullable(getId(t)).map(id -> RegistryKey.create(key(), id));
+        }
+    
         @Override
         @Nullable
         public T get(ResourceLocation id) {
             return delegate.getValue(id);
+        }
+    
+        @Override
+        public boolean contains(ResourceLocation resourceLocation) {
+            return delegate.containsKey(resourceLocation);
+        }
+    
+        @Override
+        public boolean containsValue(T t) {
+            return delegate.containsValue(t);
+        }
+    
+        @Override
+        public Set<ResourceLocation> getIds() {
+            return delegate.getKeys();
+        }
+    
+        @Override
+        public Set<Map.Entry<RegistryKey<T>, T>> entrySet() {
+            return delegate.getEntries();
+        }
+    
+        @Override
+        public RegistryKey<? extends net.minecraft.util.registry.Registry<T>> key() {
+            return RegistryKey.createRegistryKey(delegate.getRegistryName());
+        }
+    
+        @Override
+        public Iterator<T> iterator() {
+            return delegate.iterator();
         }
     }
 }

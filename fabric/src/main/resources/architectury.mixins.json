@@ -7,11 +7,13 @@
     "client.MixinClientLevel",
     "client.MixinClientPacketListener",
     "client.MixinDebugScreenOverlay",
+    "client.MixinGameRenderer",
     "client.MixinMinecraft",
     "client.MixinScreen"
   ],
   "mixins": [
-    "LivingDeathInvoker", "MixinCommands", "MixinMinecraftServer", "MixinPlayer", "MixinPlayerList", "MixinServerGamePacketListenerImpl", "MixinServerLevel"
+    "ExplosionPreInvoker", "LivingDeathInvoker", "MixinCommands", "MixinExplosion", "MixinPlayer", "MixinPlayerAdvancements", "MixinPlayerList",
+    "MixinServerGamePacketListenerImpl", "MixinServerLevel", "MixinServerPlayer"
   ],
   "injectors": {
     "defaultRequire": 1

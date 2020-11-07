@@ -33,7 +33,7 @@ public final class ArchitecturyPopulator {
                     if (Modifier.isStatic(field.getModifiers())) {
                         FieldUtils.removeFinalModifier(field);
                         field.setAccessible(true);
-                        String type = field.getType().toString().replace("$", "");
+                        String type = field.getType().getName().replace("$", "");
                         Class<?> newClass = Class.forName(type.substring(0, type.lastIndexOf('.')) + "." + Architectury.getModLoader() + "." + type.substring(type.lastIndexOf('.') + 1));
                         field.set(null, newClass.getConstructor().newInstance());
                     }
@@ -44,7 +44,7 @@ public final class ArchitecturyPopulator {
                     if (!Modifier.isStatic(field.getModifiers())) {
                         FieldUtils.removeFinalModifier(field);
                         field.setAccessible(true);
-                        String type = field.getType().toString().replace("$", "");
+                        String type = field.getType().getName().replace("$", "");
                         Class<?> newClass = Class.forName(type.substring(0, type.lastIndexOf('.')) + "." + Architectury.getModLoader() + "." + type.substring(type.lastIndexOf('.') + 1));
                         field.set(o, newClass.getConstructor().newInstance());
                     }
