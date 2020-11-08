@@ -48,3 +48,6 @@ mutable field net/minecraft/world/level/block/state/BlockBehaviour$Properties em
 accessible field net/minecraft/world/level/block/state/BlockBehaviour$Properties dynamicShape Z
 mutable field net/minecraft/world/level/block/state/BlockBehaviour$Properties dynamicShape Z
 accessible method net/minecraft/world/entity/Entity getEncodeId ()Ljava/lang/String;
+accessible field net/minecraft/server/packs/repository/PackRepository sources Ljava/util/Set;
+mutable field net/minecraft/server/packs/repository/PackRepository sources Ljava/util/Set;
+accessible field net/minecraft/world/item/DyeColor textureDiffuseColor I
