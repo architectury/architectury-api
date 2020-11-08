@@ -18,6 +18,7 @@ package me.shedaniel.architectury.event.forge;
 
 import me.shedaniel.architectury.event.EventHandler;
 import me.shedaniel.architectury.event.events.PlayerEvent;
+import me.shedaniel.architectury.event.events.TextureStitchEvent;
 import me.shedaniel.architectury.event.events.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IGuiEventListener;
@@ -172,6 +173,16 @@ public class EventHandlerImpl implements EventHandler.Impl {
         @SubscribeEvent
         public static void event(PlayerInteractEvent.LeftClickEmpty event) {
             InteractionEvent.CLIENT_LEFT_CLICK_AIR.invoker().click(event.getPlayer(), event.getHand());
+        }
+        
+        @SubscribeEvent
+        public static void event(net.minecraftforge.client.event.TextureStitchEvent.Pre event) {
+            TextureStitchEvent.PRE.invoker().stitch(event.getMap(), event::addSprite);
+        }
+        
+        @SubscribeEvent
+        public static void event(net.minecraftforge.client.event.TextureStitchEvent.Post event) {
+            TextureStitchEvent.POST.invoker().stitch(event.getMap());
         }
     }
     

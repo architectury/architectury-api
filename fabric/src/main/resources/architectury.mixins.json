@@ -10,7 +10,8 @@
     "client.MixinGameRenderer",
     "client.MixinMinecraft",
     "client.MixinMultiPlayerGameMode",
-    "client.MixinScreen"
+    "client.MixinScreen",
+    "client.MixinTextureAtlas"
   ],
   "mixins": [
     "ExplosionPreInvoker", "LivingDeathInvoker", "MixinCommands", "MixinExplosion", "MixinFurnaceResultSlot", "MixinItemEntity", "MixinLivingEntity",
