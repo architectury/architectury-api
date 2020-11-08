@@ -16,9 +16,12 @@
 
 package me.shedaniel.architectury.mixin.fabric;
 
+import me.shedaniel.architectury.event.events.InteractionEvent;
 import me.shedaniel.architectury.event.events.PlayerEvent;
 import me.shedaniel.architectury.event.events.TickEvent;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -44,6 +47,17 @@ public class MixinPlayer {
     private void drop(ItemStack itemStack, boolean bl, boolean bl2, CallbackInfoReturnable<ItemEntity> cir) {
         if (PlayerEvent.DROP_ITEM.invoker().drop((Player) (Object) this, cir.getReturnValue()) == InteractionResult.FAIL) {
             cir.setReturnValue(null);
+        }
+    }
+    
+    @Inject(method = "interactOn", at = @At(value = "INVOKE",
+                                            target = "Lnet/minecraft/world/entity/player/Player;getItemInHand(Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/item/ItemStack;",
+                                            ordinal = 0),
+            cancellable = true)
+    private void entityInteract(Entity entity, InteractionHand interactionHand, CallbackInfoReturnable<InteractionResult> cir) {
+        InteractionResult result = InteractionEvent.INTERACT_ENTITY.invoker().interact((Player) (Object) this, entity, interactionHand);
+        if (result != InteractionResult.PASS) {
+            cir.setReturnValue(result);
         }
     }
 }

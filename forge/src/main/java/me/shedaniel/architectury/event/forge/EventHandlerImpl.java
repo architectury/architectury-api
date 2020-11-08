@@ -17,11 +17,13 @@
 package me.shedaniel.architectury.event.forge;
 
 import me.shedaniel.architectury.event.EventHandler;
+import me.shedaniel.architectury.event.events.PlayerEvent;
 import me.shedaniel.architectury.event.events.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.text.ITextComponent;
@@ -38,14 +40,12 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.player.AdvancementEvent;
-import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.event.entity.player.PlayerContainerEvent;
+import net.minecraftforge.event.entity.player.*;
 import net.minecraftforge.event.entity.player.PlayerEvent.*;
 import net.minecraftforge.event.world.ExplosionEvent.Detonate;
 import net.minecraftforge.event.world.ExplosionEvent.Start;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
@@ -162,6 +162,16 @@ public class EventHandlerImpl implements EventHandler.Impl {
         @SubscribeEvent
         public static void event(GuiScreenEvent.DrawScreenEvent.Post event) {
             GuiEvent.RENDER_POST.invoker().render(event.getGui(), event.getMatrixStack(), event.getMouseX(), event.getMouseY(), event.getRenderPartialTicks());
+        }
+        
+        @SubscribeEvent
+        public static void event(PlayerInteractEvent.RightClickEmpty event) {
+            InteractionEvent.CLIENT_RIGHT_CLICK_AIR.invoker().click(event.getPlayer(), event.getHand());
+        }
+        
+        @SubscribeEvent
+        public static void event(PlayerInteractEvent.LeftClickEmpty event) {
+            InteractionEvent.CLIENT_LEFT_CLICK_AIR.invoker().click(event.getPlayer(), event.getHand());
         }
     }
     
@@ -347,15 +357,55 @@ public class EventHandlerImpl implements EventHandler.Impl {
         public static void event(ItemTossEvent event) {
             PlayerEvent.DROP_ITEM.invoker().drop(event.getPlayer(), event.getEntityItem());
         }
-    
+        
         @SubscribeEvent
         public static void event(PlayerContainerEvent.Open event) {
             PlayerEvent.OPEN_MENU.invoker().open(event.getPlayer(), event.getContainer());
         }
-    
+        
         @SubscribeEvent
         public static void event(PlayerContainerEvent.Close event) {
             PlayerEvent.CLOSE_MENU.invoker().close(event.getPlayer(), event.getContainer());
+        }
+        
+        @SubscribeEvent
+        public static void event(PlayerInteractEvent.RightClickItem event) {
+            ActionResult<ItemStack> result = InteractionEvent.RIGHT_CLICK_ITEM.invoker().click(event.getPlayer(), event.getHand());
+            if (result.getResult() != ActionResultType.PASS) {
+                event.setCanceled(true);
+                event.setCancellationResult(result.getResult());
+            }
+        }
+        
+        @SubscribeEvent
+        public static void event(PlayerInteractEvent.RightClickBlock event) {
+            ActionResultType result = InteractionEvent.RIGHT_CLICK_BLOCK.invoker().click(event.getPlayer(), event.getHand(), event.getPos(), event.getFace());
+            if (result != ActionResultType.PASS) {
+                event.setCanceled(true);
+                event.setCancellationResult(result);
+                event.setUseBlock(Event.Result.DENY);
+                event.setUseItem(Event.Result.DENY);
+            }
+        }
+        
+        @SubscribeEvent
+        public static void event(PlayerInteractEvent.EntityInteract event) {
+            ActionResultType result = InteractionEvent.INTERACT_ENTITY.invoker().interact(event.getPlayer(), event.getTarget(), event.getHand());
+            if (result != ActionResultType.PASS) {
+                event.setCanceled(true);
+                event.setCancellationResult(result);
+            }
+        }
+        
+        @SubscribeEvent
+        public static void event(PlayerInteractEvent.LeftClickBlock event) {
+            ActionResultType result = InteractionEvent.LEFT_CLICK_BLOCK.invoker().click(event.getPlayer(), event.getHand(), event.getPos(), event.getFace());
+            if (result != ActionResultType.PASS) {
+                event.setCanceled(true);
+                event.setCancellationResult(result);
+                event.setUseBlock(Event.Result.DENY);
+                event.setUseItem(Event.Result.DENY);
+            }
         }
     }
     

@@ -9,6 +9,7 @@
     "client.MixinDebugScreenOverlay",
     "client.MixinGameRenderer",
     "client.MixinMinecraft",
+    "client.MixinMultiPlayerGameMode",
     "client.MixinScreen"
   ],
   "mixins": [
