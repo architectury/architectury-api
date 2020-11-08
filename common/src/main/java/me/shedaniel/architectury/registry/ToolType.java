@@ -16,10 +16,12 @@
 
 package me.shedaniel.architectury.registry;
 
+import com.google.common.collect.Maps;
 import me.shedaniel.architectury.Populatable;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.item.Item;
 
+import java.util.Map;
 import java.util.function.Supplier;
 
 public final class ToolType {
@@ -46,6 +48,7 @@ public final class ToolType {
         return IMPL.shovelTag();
     }
     
+    private static final Map<String, ToolType> TYPES = Maps.newConcurrentMap();
     public final String forgeName;
     public final Supplier<Tag<Item>> fabricTag;
     private Object obj;
@@ -56,7 +59,11 @@ public final class ToolType {
     }
     
     public static ToolType create(String forgeName, Supplier<Tag<Item>> fabricTag) {
-        return new ToolType(forgeName, fabricTag);
+        return TYPES.computeIfAbsent(forgeName, s -> new ToolType(s, fabricTag));
+    }
+    
+    public static ToolType byName(String forgeName) {
+        return TYPES.get(forgeName);
     }
     
     public interface Impl {
