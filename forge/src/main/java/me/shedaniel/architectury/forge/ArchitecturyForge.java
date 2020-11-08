@@ -17,11 +17,16 @@
 package me.shedaniel.architectury.forge;
 
 import me.shedaniel.architectury.event.EventHandler;
+import me.shedaniel.architectury.platform.forge.EventBuses;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-@Mod("architectury")
+@Mod(ArchitecturyForge.MOD_ID)
 public class ArchitecturyForge {
+    public static final String MOD_ID = "architectury";
+    
     public ArchitecturyForge() {
+        EventBuses.registerModEventBus(ArchitecturyForge.MOD_ID, FMLJavaModLoadingContext.get().getModEventBus());
         EventHandler.init();
     }
 }

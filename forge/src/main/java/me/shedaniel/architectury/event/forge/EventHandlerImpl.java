@@ -20,6 +20,8 @@ import me.shedaniel.architectury.event.EventHandler;
 import me.shedaniel.architectury.event.events.PlayerEvent;
 import me.shedaniel.architectury.event.events.TextureStitchEvent;
 import me.shedaniel.architectury.event.events.*;
+import me.shedaniel.architectury.forge.ArchitecturyForge;
+import me.shedaniel.architectury.platform.forge.EventBuses;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.world.ClientWorld;
@@ -61,16 +63,19 @@ public class EventHandlerImpl implements EventHandler.Impl {
     @Override
     public void registerClient() {
         MinecraftForge.EVENT_BUS.register(Client.class);
+        EventBuses.getModEventBus(ArchitecturyForge.MOD_ID).orElseThrow(() -> new IllegalStateException("Where is architectury?")).register(ModBasedEventHandlerImpl.Client.class);
     }
     
     @Override
     public void registerCommon() {
         MinecraftForge.EVENT_BUS.register(Common.class);
+        EventBuses.getModEventBus(ArchitecturyForge.MOD_ID).orElseThrow(() -> new IllegalStateException("Where is architectury?")).register(ModBasedEventHandlerImpl.Common.class);
     }
     
     @Override
     public void registerServer() {
         MinecraftForge.EVENT_BUS.register(Server.class);
+        EventBuses.getModEventBus(ArchitecturyForge.MOD_ID).orElseThrow(() -> new IllegalStateException("Where is architectury?")).register(ModBasedEventHandlerImpl.Server.class);
     }
     
     @OnlyIn(Dist.CLIENT)
