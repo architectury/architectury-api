@@ -33,8 +33,14 @@ public final class PlayerHooks {
         return IMPL.isFake(player);
     }
     
+    public static void closeContainer(Player player) {
+        IMPL.closeContainer(player);
+    }
+    
     public interface Impl {
         boolean isFake(Player player);
+        
+        void closeContainer(Player player);
     }
     
     static {

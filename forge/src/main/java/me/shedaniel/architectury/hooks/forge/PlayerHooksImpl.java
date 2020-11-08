@@ -25,4 +25,9 @@ public class PlayerHooksImpl implements PlayerHooks.Impl {
     public boolean isFake(PlayerEntity playerEntity) {
         return playerEntity instanceof FakePlayer;
     }
+    
+    @Override
+    public void closeContainer(PlayerEntity playerEntity) {
+        playerEntity.closeContainer();
+    }
 }
