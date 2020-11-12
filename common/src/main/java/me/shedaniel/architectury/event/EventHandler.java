@@ -16,8 +16,7 @@
 
 package me.shedaniel.architectury.event;
 
-import me.shedaniel.architectury.ArchitecturyPopulator;
-import me.shedaniel.architectury.Populatable;
+import me.shedaniel.architectury.ExpectPlatform;
 import me.shedaniel.architectury.platform.Platform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -25,31 +24,32 @@ import net.fabricmc.api.Environment;
 public final class EventHandler {
     private EventHandler() {}
     
-    @Populatable
-    private static final Impl IMPL = null;
     private static boolean initialized = false;
     
     public static void init() {
         if (initialized) return;
         initialized = true;
         if (Platform.getEnv() == EnvType.CLIENT)
-            IMPL.registerClient();
-        IMPL.registerCommon();
+            registerClient();
+        registerCommon();
         if (Platform.getEnv() == EnvType.SERVER)
-            IMPL.registerServer();
+            registerServer();
     }
     
-    public interface Impl {
-        @Environment(EnvType.CLIENT)
-        void registerClient();
-        
-        void registerCommon();
-        
-        @Environment(EnvType.SERVER)
-        void registerServer();
+    @ExpectPlatform
+    @Environment(EnvType.CLIENT)
+    private static void registerClient() {
+        throw new AssertionError();
     }
     
-    static {
-        ArchitecturyPopulator.populate(EventHandler.class);
+    @ExpectPlatform
+    private static void registerCommon() {
+        throw new AssertionError();
+    }
+    
+    @ExpectPlatform
+    @Environment(EnvType.SERVER)
+    private static void registerServer() {
+        throw new AssertionError();
     }
 }

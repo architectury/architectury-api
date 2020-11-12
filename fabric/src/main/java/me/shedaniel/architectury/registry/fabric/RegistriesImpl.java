@@ -30,21 +30,18 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 
-public class RegistriesImpl implements Registries.Impl {
-    @Override
-    public Registries.RegistryProvider get(String modId) {
+public class RegistriesImpl {
+    public static Registries.RegistryProvider _get(String modId) {
         return RegistryProviderImpl.INSTANCE;
     }
     
-    @Override
-    public <T> ResourceLocation getId(T object, ResourceKey<net.minecraft.core.Registry<T>> fallback) {
+    public static <T> ResourceLocation getId(T object, ResourceKey<net.minecraft.core.Registry<T>> fallback) {
         if (fallback == null)
             return null;
         return RegistryProviderImpl.INSTANCE.get(fallback).getId(object);
     }
     
-    @Override
-    public <T> ResourceLocation getId(T object, net.minecraft.core.Registry<T> fallback) {
+    public static <T> ResourceLocation getId(T object, net.minecraft.core.Registry<T> fallback) {
         if (fallback == null)
             return null;
         return RegistryProviderImpl.INSTANCE.get(fallback).getId(object);

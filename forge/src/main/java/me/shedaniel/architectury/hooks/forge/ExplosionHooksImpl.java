@@ -16,29 +16,24 @@
 
 package me.shedaniel.architectury.hooks.forge;
 
-import me.shedaniel.architectury.hooks.ExplosionHooks;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Explosion;
 
-public class ExplosionHooksImpl implements ExplosionHooks.Impl {
-    @Override
-    public Vector3d getPosition(Explosion explosion) {
+public class ExplosionHooksImpl {
+    public static Vector3d getPosition(Explosion explosion) {
         return explosion.getPosition();
     }
     
-    @Override
-    public Entity getSource(Explosion explosion) {
+    public static Entity getSource(Explosion explosion) {
         return explosion.getExploder();
     }
     
-    @Override
-    public float getRadius(Explosion explosion) {
+    public static float getRadius(Explosion explosion) {
         return explosion.radius;
     }
     
-    @Override
-    public void setRadius(Explosion explosion, float v) {
+    public static void setRadius(Explosion explosion, float v) {
         explosion.radius = v;
     }
 }

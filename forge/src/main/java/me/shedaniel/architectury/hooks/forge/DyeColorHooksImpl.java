@@ -16,12 +16,10 @@
 
 package me.shedaniel.architectury.hooks.forge;
 
-import me.shedaniel.architectury.hooks.DyeColorHooks;
 import net.minecraft.item.DyeColor;
 
-public class DyeColorHooksImpl implements DyeColorHooks.Impl {
-    @Override
-    public int getColorValue(DyeColor dyeColor) {
+public class DyeColorHooksImpl {
+    public static int getColorValue(DyeColor dyeColor) {
         return dyeColor.getColorValue();
     }
 }

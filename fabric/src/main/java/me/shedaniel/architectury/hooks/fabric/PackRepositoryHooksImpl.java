@@ -17,16 +17,14 @@
 package me.shedaniel.architectury.hooks.fabric;
 
 import com.google.common.collect.ImmutableSet;
-import me.shedaniel.architectury.hooks.PackRepositoryHooks;
 import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.server.packs.repository.RepositorySource;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PackRepositoryHooksImpl implements PackRepositoryHooks.Impl {
-    @Override
-    public void addSource(PackRepository repository, RepositorySource source) {
+public class PackRepositoryHooksImpl {
+    public static void addSource(PackRepository repository, RepositorySource source) {
         List<RepositorySource> set = new ArrayList<>(repository.sources);
         set.add(source);
         repository.sources = ImmutableSet.copyOf(set);

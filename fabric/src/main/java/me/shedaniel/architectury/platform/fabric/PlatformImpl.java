@@ -17,7 +17,6 @@
 package me.shedaniel.architectury.platform.fabric;
 
 import me.shedaniel.architectury.platform.Mod;
-import me.shedaniel.architectury.platform.Platform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
@@ -30,55 +29,46 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class PlatformImpl implements Platform.Impl {
+public class PlatformImpl {
     public static final Map<String, Mod.ConfigurationScreenProvider> CONFIG_SCREENS = new HashMap<>();
-    private final Map<String, Mod> mods = new HashMap<>();
+    private static final Map<String, Mod> mods = new HashMap<>();
     
-    @Override
-    public Path getGameFolder() {
+    public static Path getGameFolder() {
         return FabricLoader.getInstance().getGameDir();
     }
     
-    @Override
-    public Path getConfigFolder() {
+    public static Path getConfigFolder() {
         return FabricLoader.getInstance().getConfigDir();
     }
     
-    @Override
-    public Path getModsFolder() {
+    public static Path getModsFolder() {
         return getGameFolder().resolve("mods");
     }
     
-    @Override
-    public EnvType getEnv() {
+    public static EnvType getEnv() {
         return FabricLoader.getInstance().getEnvironmentType();
     }
     
-    @Override
-    public boolean isModLoaded(String id) {
+    public static boolean isModLoaded(String id) {
         return FabricLoader.getInstance().isModLoaded(id);
     }
     
-    @Override
-    public Mod getMod(String id) {
-        return this.mods.computeIfAbsent(id, ModImpl::new);
+    public static Mod getMod(String id) {
+        return mods.computeIfAbsent(id, ModImpl::new);
     }
     
-    @Override
-    public Collection<Mod> getMods() {
+    public static Collection<Mod> getMods() {
         for (ModContainer mod : FabricLoader.getInstance().getAllMods()) {
             getMod(mod.getMetadata().getId());
         }
-        return this.mods.values();
+        return mods.values();
     }
     
-    @Override
-    public Collection<String> getModIds() {
+    public static Collection<String> getModIds() {
         return FabricLoader.getInstance().getAllMods().stream().map(ModContainer::getMetadata).map(ModMetadata::getId).collect(Collectors.toList());
     }
     
-    @Override
-    public boolean isDevelopmentEnvironment() {
+    public static boolean isDevelopmentEnvironment() {
         return FabricLoader.getInstance().isDevelopmentEnvironment();
     }
     

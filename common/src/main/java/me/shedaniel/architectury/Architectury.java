@@ -37,7 +37,7 @@ public class Architectury {
         String loader = null;
         for (Map.Entry<String, String> entry : MOD_LOADERS.entrySet()) {
             try {
-                Class.forName(entry.getKey());
+                Class.forName(entry.getKey(), false, Architectury.class.getClassLoader());
                 loader = entry.getValue();
                 break;
             } catch (ClassNotFoundException ignored) {}

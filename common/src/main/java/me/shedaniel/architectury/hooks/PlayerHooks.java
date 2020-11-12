@@ -16,8 +16,7 @@
 
 package me.shedaniel.architectury.hooks;
 
-import me.shedaniel.architectury.ArchitecturyPopulator;
-import me.shedaniel.architectury.Populatable;
+import me.shedaniel.architectury.ExpectPlatform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.player.Player;
@@ -26,24 +25,13 @@ import net.minecraft.world.entity.player.Player;
 public final class PlayerHooks {
     private PlayerHooks() {}
     
-    @Populatable
-    private static final Impl IMPL = null;
-    
+    @ExpectPlatform
     public static boolean isFake(Player player) {
-        return IMPL.isFake(player);
+        throw new AssertionError();
     }
     
+    @ExpectPlatform
     public static void closeContainer(Player player) {
-        IMPL.closeContainer(player);
-    }
-    
-    public interface Impl {
-        boolean isFake(Player player);
-        
-        void closeContainer(Player player);
-    }
-    
-    static {
-        ArchitecturyPopulator.populate(PlayerHooks.class);
+        throw new AssertionError();
     }
 }

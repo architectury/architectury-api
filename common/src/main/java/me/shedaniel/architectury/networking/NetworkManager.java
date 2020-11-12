@@ -16,8 +16,7 @@
 
 package me.shedaniel.architectury.networking;
 
-import me.shedaniel.architectury.ArchitecturyPopulator;
-import me.shedaniel.architectury.Populatable;
+import me.shedaniel.architectury.ExpectPlatform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -28,15 +27,14 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
 public final class NetworkManager {
-    @Populatable
-    private static final Impl IMPL = null;
-    
+    @ExpectPlatform
     public static void registerReceiver(Side side, ResourceLocation id, NetworkReceiver receiver) {
-        IMPL.registerReceiver(side, id, receiver);
+        throw new AssertionError();
     }
     
+    @ExpectPlatform
     public static Packet<?> toPacket(Side side, ResourceLocation id, FriendlyByteBuf buf) {
-        return IMPL.toPacket(side, id, buf);
+        throw new AssertionError();
     }
     
     public static void sendToPlayer(ServerPlayer player, ResourceLocation id, FriendlyByteBuf buf) {
@@ -56,23 +54,14 @@ public final class NetworkManager {
     }
     
     @Environment(EnvType.CLIENT)
+    @ExpectPlatform
     public static boolean canServerReceive(ResourceLocation id) {
-        return IMPL.canServerReceive(id);
+        throw new AssertionError();
     }
     
+    @ExpectPlatform
     public static boolean canPlayerReceive(ServerPlayer player, ResourceLocation id) {
-        return IMPL.canPlayerReceive(player, id);
-    }
-    
-    public interface Impl {
-        void registerReceiver(Side side, ResourceLocation id, NetworkReceiver receiver);
-        
-        Packet<?> toPacket(Side side, ResourceLocation id, FriendlyByteBuf buf);
-        
-        @Environment(EnvType.CLIENT)
-        boolean canServerReceive(ResourceLocation id);
-        
-        boolean canPlayerReceive(ServerPlayer player, ResourceLocation id);
+        throw new AssertionError();
     }
     
     @FunctionalInterface
@@ -107,9 +96,5 @@ public final class NetworkManager {
     public enum Side {
         S2C,
         C2S
-    }
-    
-    static {
-        ArchitecturyPopulator.populate(NetworkManager.class);
     }
 }

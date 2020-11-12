@@ -17,8 +17,7 @@
 package me.shedaniel.architectury.platform;
 
 import me.shedaniel.architectury.Architectury;
-import me.shedaniel.architectury.ArchitecturyPopulator;
-import me.shedaniel.architectury.Populatable;
+import me.shedaniel.architectury.ExpectPlatform;
 import net.fabricmc.api.EnvType;
 import net.minecraft.SharedConstants;
 import org.jetbrains.annotations.NotNull;
@@ -29,9 +28,6 @@ import java.util.Optional;
 
 public final class Platform {
     private Platform() {}
-    
-    @Populatable
-    private static final Impl IMPL = null;
     
     /**
      * @return the current mod loader, either "fabric" or "forge"
@@ -47,73 +43,57 @@ public final class Platform {
     }
     
     @NotNull
+    @ExpectPlatform
     public static Path getGameFolder() {
-        return IMPL.getGameFolder();
+        throw new AssertionError();
     }
     
     @NotNull
+    @ExpectPlatform
     public static Path getConfigFolder() {
-        return IMPL.getConfigFolder();
+        throw new AssertionError();
     }
     
     @NotNull
+    @ExpectPlatform
     public static EnvType getEnv() {
-        return IMPL.getEnv();
+        throw new AssertionError();
     }
     
+    @ExpectPlatform
     public static boolean isModLoaded(String id) {
-        return IMPL.isModLoaded(id);
+        throw new AssertionError();
     }
     
     @NotNull
+    @ExpectPlatform
     public static Mod getMod(String id) {
-        return IMPL.getMod(id);
+        throw new AssertionError();
     }
     
     @NotNull
     public static Optional<Mod> getOptionalMod(String id) {
         try {
-            return Optional.of(IMPL.getMod(id));
+            return Optional.of(getMod(id));
         } catch (NullPointerException e) {
             return Optional.empty();
         }
     }
     
     @NotNull
+    @ExpectPlatform
     public static Collection<Mod> getMods() {
-        return IMPL.getMods();
+        throw new AssertionError();
     }
     
     @NotNull
+    @ExpectPlatform
     public static Collection<String> getModIds() {
-        return IMPL.getModIds();
+        throw new AssertionError();
     }
     
+    @ExpectPlatform
     public static boolean isDevelopmentEnvironment() {
-        return IMPL.isDevelopmentEnvironment();
-    }
-    
-    public interface Impl {
-        Path getGameFolder();
-        
-        Path getConfigFolder();
-        
-        Path getModsFolder();
-        
-        EnvType getEnv();
-        
-        boolean isModLoaded(String id);
-        
-        Mod getMod(String id);
-        
-        Collection<Mod> getMods();
-        
-        Collection<String> getModIds();
-        
-        boolean isDevelopmentEnvironment();
-    }
-    
-    static {
-        ArchitecturyPopulator.populate(Platform.class);
+        throw new AssertionError();
     }
 }

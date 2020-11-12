@@ -17,7 +17,6 @@
 package me.shedaniel.architectury.platform.forge;
 
 import me.shedaniel.architectury.platform.Mod;
-import me.shedaniel.architectury.platform.Platform;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModContainer;
@@ -35,54 +34,45 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class PlatformImpl implements Platform.Impl {
-    private final Map<String, Mod> mods = new HashMap<>();
+public class PlatformImpl {
+    private static final Map<String, Mod> mods = new HashMap<>();
     
-    @Override
-    public Path getGameFolder() {
+    public static Path getGameFolder() {
         return FMLPaths.GAMEDIR.get();
     }
     
-    @Override
-    public Path getConfigFolder() {
+    public static Path getConfigFolder() {
         return FMLPaths.CONFIGDIR.get();
     }
     
-    @Override
-    public Path getModsFolder() {
+    public static Path getModsFolder() {
         return FMLPaths.MODSDIR.get();
     }
     
-    @Override
-    public Dist getEnv() {
+    public static Dist getEnv() {
         return FMLEnvironment.dist;
     }
     
-    @Override
-    public boolean isModLoaded(String id) {
+    public static boolean isModLoaded(String id) {
         return ModList.get().isLoaded(id);
     }
     
-    @Override
-    public Mod getMod(String id) {
-        return this.mods.computeIfAbsent(id, ModImpl::new);
+    public static Mod getMod(String id) {
+        return mods.computeIfAbsent(id, ModImpl::new);
     }
     
-    @Override
-    public Collection<Mod> getMods() {
+    public static Collection<Mod> getMods() {
         for (IModInfo mod : ModList.get().getMods()) {
             getMod(mod.getModId());
         }
-        return this.mods.values();
+        return mods.values();
     }
     
-    @Override
-    public Collection<String> getModIds() {
+    public static Collection<String> getModIds() {
         return ModList.get().getMods().stream().map(ModInfo::getModId).collect(Collectors.toList());
     }
     
-    @Override
-    public boolean isDevelopmentEnvironment() {
+    public static boolean isDevelopmentEnvironment() {
         return !FMLLoader.isProduction();
     }
     

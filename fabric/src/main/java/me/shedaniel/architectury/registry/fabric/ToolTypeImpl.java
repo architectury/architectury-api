@@ -16,29 +16,24 @@
 
 package me.shedaniel.architectury.registry.fabric;
 
-import me.shedaniel.architectury.registry.ToolType;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.item.Item;
 
-public class ToolTypeImpl implements ToolType.Impl {
-    @Override
-    public Tag<Item> pickaxeTag() {
+public class ToolTypeImpl {
+    public static Tag<Item> pickaxeTag() {
         return FabricToolTags.PICKAXES;
     }
     
-    @Override
-    public Tag<Item> axeTag() {
+    public static Tag<Item> axeTag() {
         return FabricToolTags.AXES;
     }
     
-    @Override
-    public Tag<Item> hoeTag() {
+    public static Tag<Item> hoeTag() {
         return FabricToolTags.HOES;
     }
     
-    @Override
-    public Tag<Item> shovelTag() {
+    public static Tag<Item> shovelTag() {
         return FabricToolTags.SHOVELS;
     }
 }

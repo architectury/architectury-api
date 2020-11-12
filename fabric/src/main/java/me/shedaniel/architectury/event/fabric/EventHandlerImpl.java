@@ -16,7 +16,6 @@
 
 package me.shedaniel.architectury.event.fabric;
 
-import me.shedaniel.architectury.event.EventHandler;
 import me.shedaniel.architectury.event.events.*;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -31,9 +30,8 @@ import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.commands.Commands;
 
-public class EventHandlerImpl implements EventHandler.Impl {
-    @Override
-    public void registerClient() {
+public class EventHandlerImpl {
+    public static void registerClient() {
         ClientLifecycleEvents.CLIENT_STARTED.register(LifecycleEvent.CLIENT_STARTED.invoker()::stateChanged);
         ClientLifecycleEvents.CLIENT_STOPPING.register(LifecycleEvent.CLIENT_STOPPING.invoker()::stateChanged);
         
@@ -46,8 +44,7 @@ public class EventHandlerImpl implements EventHandler.Impl {
         HudRenderCallback.EVENT.register(GuiEvent.RENDER_HUD.invoker()::renderHud);
     }
     
-    @Override
-    public void registerCommon() {
+    public static void registerCommon() {
         ServerLifecycleEvents.SERVER_STARTING.register(LifecycleEvent.SERVER_STARTING.invoker()::stateChanged);
         ServerLifecycleEvents.SERVER_STARTED.register(LifecycleEvent.SERVER_STARTED.invoker()::stateChanged);
         ServerLifecycleEvents.SERVER_STOPPING.register(LifecycleEvent.SERVER_STOPPING.invoker()::stateChanged);
@@ -68,8 +65,7 @@ public class EventHandlerImpl implements EventHandler.Impl {
         AttackBlockCallback.EVENT.register((player, world, hand, pos, face) -> InteractionEvent.LEFT_CLICK_BLOCK.invoker().click(player, hand, pos, face));
     }
     
-    @Override
-    public void registerServer() {
+    public static void registerServer() {
         
     }
 }

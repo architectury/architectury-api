@@ -16,8 +16,7 @@
 
 package me.shedaniel.architectury.registry;
 
-import me.shedaniel.architectury.ArchitecturyPopulator;
-import me.shedaniel.architectury.Populatable;
+import me.shedaniel.architectury.ExpectPlatform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.color.block.BlockColor;
@@ -29,24 +28,13 @@ import net.minecraft.world.level.block.Block;
 public final class ColorHandlers {
     private ColorHandlers() {}
     
-    @Populatable
-    private static final Impl IMPL = null;
-    
+    @ExpectPlatform
     public static void registerItemColors(ItemColor color, ItemLike... items) {
-        IMPL.registerItemColors(color, items);
+        throw new AssertionError();
     }
     
+    @ExpectPlatform
     public static void registerBlockColors(BlockColor color, Block... blocks) {
-        IMPL.registerBlockColors(color, blocks);
-    }
-    
-    public interface Impl {
-        void registerItemColors(ItemColor color, ItemLike... items);
-        
-        void registerBlockColors(BlockColor color, Block... blocks);
-    }
-    
-    static {
-        ArchitecturyPopulator.populate(ColorHandlers.class);
+        throw new AssertionError();
     }
 }

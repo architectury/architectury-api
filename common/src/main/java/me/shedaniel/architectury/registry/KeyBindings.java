@@ -16,8 +16,7 @@
 
 package me.shedaniel.architectury.registry;
 
-import me.shedaniel.architectury.ArchitecturyPopulator;
-import me.shedaniel.architectury.Populatable;
+import me.shedaniel.architectury.ExpectPlatform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.KeyMapping;
@@ -26,18 +25,8 @@ import net.minecraft.client.KeyMapping;
 public final class KeyBindings {
     private KeyBindings() {}
     
-    @Populatable
-    private static final Impl IMPL = null;
-    
+    @ExpectPlatform
     public static void registerKeyBinding(KeyMapping binding) {
-        IMPL.registerKeyBinding(binding);
-    }
-    
-    public interface Impl {
-        void registerKeyBinding(KeyMapping binding);
-    }
-    
-    static {
-        ArchitecturyPopulator.populate(KeyBindings.class);
+        throw new AssertionError();
     }
 }

@@ -16,26 +16,15 @@
 
 package me.shedaniel.architectury.hooks;
 
-import me.shedaniel.architectury.ArchitecturyPopulator;
-import me.shedaniel.architectury.Populatable;
+import me.shedaniel.architectury.ExpectPlatform;
 import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.server.packs.repository.RepositorySource;
 
 public class PackRepositoryHooks {
     private PackRepositoryHooks() {}
     
-    @Populatable
-    private static final Impl IMPL = null;
-    
+    @ExpectPlatform
     public static void addSource(PackRepository repository, RepositorySource source) {
-        IMPL.addSource(repository, source);
-    }
-    
-    public interface Impl {
-        void addSource(PackRepository repository, RepositorySource source);
-    }
-    
-    static {
-        ArchitecturyPopulator.populate();
+        throw new AssertionError();
     }
 }

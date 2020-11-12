@@ -16,8 +16,7 @@
 
 package me.shedaniel.architectury.registry;
 
-import me.shedaniel.architectury.ArchitecturyPopulator;
-import me.shedaniel.architectury.Populatable;
+import me.shedaniel.architectury.ExpectPlatform;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
@@ -26,8 +25,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class Registries {
-    @Populatable
-    private static final Impl IMPL = null;
     private static final Map<String, Registries> REGISTRIES = new HashMap<>();
     private final RegistryProvider provider;
     
@@ -36,7 +33,7 @@ public final class Registries {
     }
     
     private Registries(String modId) {
-        this.provider = IMPL.get(modId);
+        this.provider = _get(modId);
     }
     
     public <T> Registry<T> get(ResourceKey<net.minecraft.core.Registry<T>> key) {
@@ -53,8 +50,9 @@ public final class Registries {
      * Fabric: Use registry
      */
     @Nullable
+    @ExpectPlatform
     public static <T> ResourceLocation getId(T object, @Nullable ResourceKey<net.minecraft.core.Registry<T>> fallback) {
-        return IMPL.getId(object, fallback);
+        throw new AssertionError();
     }
     
     /**
@@ -63,8 +61,9 @@ public final class Registries {
      */
     @Nullable
     @Deprecated
+    @ExpectPlatform
     public static <T> ResourceLocation getId(T object, @Nullable net.minecraft.core.Registry<T> fallback) {
-        return IMPL.getId(object, fallback);
+        throw new AssertionError();
     }
     
     /**
@@ -74,15 +73,12 @@ public final class Registries {
     @Deprecated
     @Nullable
     public static <T> ResourceLocation getRegistryName(T object) {
-        return IMPL.getId(object, (ResourceKey<net.minecraft.core.Registry<T>>) null);
+        return getId(object, (ResourceKey<net.minecraft.core.Registry<T>>) null);
     }
     
-    public interface Impl {
-        RegistryProvider get(String modId);
-        
-        <T> ResourceLocation getId(T object, ResourceKey<net.minecraft.core.Registry<T>> fallback);
-        
-        <T> ResourceLocation getId(T object, net.minecraft.core.Registry<T> fallback);
+    @ExpectPlatform
+    private static RegistryProvider _get(String modId) {
+        throw new AssertionError();
     }
     
     public interface RegistryProvider {
@@ -90,9 +86,5 @@ public final class Registries {
         
         @Deprecated
         <T> Registry<T> get(net.minecraft.core.Registry<T> registry);
-    }
-    
-    static {
-        ArchitecturyPopulator.populate(Registries.class);
     }
 }

@@ -40,21 +40,18 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 
-public class RegistriesImpl implements Registries.Impl {
-    @Override
-    public Registries.RegistryProvider get(String modId) {
+public class RegistriesImpl {
+    public static Registries.RegistryProvider _get(String modId) {
         return new RegistryProviderImpl(modId);
     }
     
-    @Override
-    public <T> ResourceLocation getId(T t, RegistryKey<net.minecraft.util.registry.Registry<T>> registryKey) {
+    public static <T> ResourceLocation getId(T t, RegistryKey<net.minecraft.util.registry.Registry<T>> registryKey) {
         if (t instanceof IForgeRegistryEntry)
             return ((IForgeRegistryEntry<?>) t).getRegistryName();
         return null;
     }
     
-    @Override
-    public <T> ResourceLocation getId(T t, net.minecraft.util.registry.Registry<T> registry) {
+    public static <T> ResourceLocation getId(T t, net.minecraft.util.registry.Registry<T> registry) {
         if (t instanceof IForgeRegistryEntry)
             return ((IForgeRegistryEntry<?>) t).getRegistryName();
         return null;

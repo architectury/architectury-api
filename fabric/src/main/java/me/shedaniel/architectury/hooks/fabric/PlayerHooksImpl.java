@@ -16,17 +16,14 @@
 
 package me.shedaniel.architectury.hooks.fabric;
 
-import me.shedaniel.architectury.hooks.PlayerHooks;
 import net.minecraft.world.entity.player.Player;
 
-public class PlayerHooksImpl implements PlayerHooks.Impl {
-    @Override
-    public boolean isFake(Player player) {
+public class PlayerHooksImpl {
+    public static boolean isFake(Player player) {
         return false;
     }
     
-    @Override
-    public void closeContainer(Player player) {
+    public static void closeContainer(Player player) {
         player.closeContainer();
     }
 }

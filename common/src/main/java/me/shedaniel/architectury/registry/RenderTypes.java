@@ -16,8 +16,7 @@
 
 package me.shedaniel.architectury.registry;
 
-import me.shedaniel.architectury.ArchitecturyPopulator;
-import me.shedaniel.architectury.Populatable;
+import me.shedaniel.architectury.ExpectPlatform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.RenderType;
@@ -28,25 +27,15 @@ import net.minecraft.world.level.material.Fluid;
 public final class RenderTypes {
     private RenderTypes() {}
     
-    @Populatable
-    private static final Impl IMPL = null;
-    
+    @ExpectPlatform
     public static void register(RenderType type, Block... blocks) {
-        IMPL.register(type, blocks);
+        throw new AssertionError();
     }
     
+    @ExpectPlatform
     public static void register(RenderType type, Fluid... fluids) {
-        IMPL.register(type, fluids);
+        throw new AssertionError();
     }
     
-    public interface Impl {
-        void register(RenderType type, Block... blocks);
-        
-        void register(RenderType type, Fluid... fluids);
-    }
-    
-    static {
-        ArchitecturyPopulator.populate(RenderTypes.class);
-    }
 }
 

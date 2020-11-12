@@ -16,8 +16,7 @@
 
 package me.shedaniel.architectury.hooks;
 
-import me.shedaniel.architectury.ArchitecturyPopulator;
-import me.shedaniel.architectury.Populatable;
+import me.shedaniel.architectury.ExpectPlatform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.Entity;
@@ -26,18 +25,8 @@ import net.minecraft.world.entity.Entity;
 public final class EntityHooks {
     private EntityHooks() {}
     
-    @Populatable
-    private static final Impl IMPL = null;
-    
+    @ExpectPlatform
     public static String getEncodeId(Entity entity) {
-        return IMPL.getEncodeId(entity);
-    }
-    
-    public interface Impl {
-        String getEncodeId(Entity entity);
-    }
-    
-    static {
-        ArchitecturyPopulator.populate(ItemEntityHooks.class);
+        throw new AssertionError();
     }
 }

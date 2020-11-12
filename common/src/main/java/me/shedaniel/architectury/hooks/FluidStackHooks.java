@@ -16,8 +16,7 @@
 
 package me.shedaniel.architectury.hooks;
 
-import me.shedaniel.architectury.ArchitecturyPopulator;
-import me.shedaniel.architectury.Populatable;
+import me.shedaniel.architectury.ExpectPlatform;
 import me.shedaniel.architectury.fluid.FluidStack;
 import me.shedaniel.architectury.utils.Fraction;
 import net.minecraft.nbt.CompoundTag;
@@ -27,43 +26,46 @@ import net.minecraft.network.chat.Component;
 public class FluidStackHooks {
     private FluidStackHooks() {}
     
-    @Populatable
-    private static final Impl IMPL = null;
-    
+    @ExpectPlatform
     public static Component getName(FluidStack stack) {
-        return IMPL.getName(stack);
+        throw new AssertionError();
     }
     
+    @ExpectPlatform
     public static String getTranslationKey(FluidStack stack) {
-        return IMPL.getTranslationKey(stack);
+        throw new AssertionError();
     }
     
     /**
      * Platform-specific FluidStack read.
      */
+    @ExpectPlatform
     public static FluidStack read(FriendlyByteBuf buf) {
-        return IMPL.read(buf);
+        throw new AssertionError();
     }
     
     /**
      * Platform-specific FluidStack write.
      */
+    @ExpectPlatform
     public static void write(FluidStack stack, FriendlyByteBuf buf) {
-        IMPL.write(stack, buf);
+        throw new AssertionError();
     }
     
     /**
      * Platform-specific FluidStack read.
      */
+    @ExpectPlatform
     public static FluidStack read(CompoundTag tag) {
-        return IMPL.read(tag);
+        throw new AssertionError();
     }
     
     /**
      * Platform-specific FluidStack write.
      */
+    @ExpectPlatform
     public static CompoundTag write(FluidStack stack, CompoundTag tag) {
-        return IMPL.write(stack, tag);
+        throw new AssertionError();
     }
     
     /**
@@ -71,27 +73,8 @@ public class FluidStackHooks {
      * Forge: 1000
      * Fabric: 1
      */
+    @ExpectPlatform
     public static Fraction bucketAmount() {
-        return IMPL.bucketAmount();
-    }
-    
-    public interface Impl {
-        Fraction bucketAmount();
-        
-        Component getName(FluidStack stack);
-        
-        String getTranslationKey(FluidStack stack);
-        
-        FluidStack read(FriendlyByteBuf buf);
-        
-        void write(FluidStack stack, FriendlyByteBuf buf);
-        
-        FluidStack read(CompoundTag tag);
-        
-        CompoundTag write(FluidStack stack, CompoundTag tag);
-    }
-    
-    static {
-        ArchitecturyPopulator.populate();
+        throw new AssertionError();
     }
 }

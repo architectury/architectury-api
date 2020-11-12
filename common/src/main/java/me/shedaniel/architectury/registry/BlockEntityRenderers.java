@@ -16,8 +16,7 @@
 
 package me.shedaniel.architectury.registry;
 
-import me.shedaniel.architectury.ArchitecturyPopulator;
-import me.shedaniel.architectury.Populatable;
+import me.shedaniel.architectury.ExpectPlatform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
@@ -31,18 +30,8 @@ import java.util.function.Function;
 public final class BlockEntityRenderers {
     private BlockEntityRenderers() {}
     
-    @Populatable
-    private static final Impl IMPL = null;
-    
+    @ExpectPlatform
     public static <T extends BlockEntity> void registerRenderer(BlockEntityType<T> type, Function<BlockEntityRenderDispatcher, BlockEntityRenderer<T>> provider) {
-        IMPL.registerRenderer(type, provider);
-    }
-    
-    public interface Impl {
-        <T extends BlockEntity> void registerRenderer(BlockEntityType<T> type, Function<BlockEntityRenderDispatcher, BlockEntityRenderer<T>> provider);
-    }
-    
-    static {
-        ArchitecturyPopulator.populate(BlockEntityRenderers.class);
+        throw new AssertionError();
     }
 }

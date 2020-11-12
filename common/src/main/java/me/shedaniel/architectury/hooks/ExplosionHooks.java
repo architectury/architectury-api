@@ -16,8 +16,7 @@
 
 package me.shedaniel.architectury.hooks;
 
-import me.shedaniel.architectury.ArchitecturyPopulator;
-import me.shedaniel.architectury.Populatable;
+import me.shedaniel.architectury.ExpectPlatform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.Entity;
@@ -29,37 +28,24 @@ import org.jetbrains.annotations.Nullable;
 public final class ExplosionHooks {
     private ExplosionHooks() {}
     
-    @Populatable
-    private static final Impl IMPL = null;
-    
+    @ExpectPlatform
     public static Vec3 getPosition(Explosion explosion) {
-        return IMPL.getPosition(explosion);
+        throw new AssertionError();
     }
     
     @Nullable
+    @ExpectPlatform
     public static Entity getSource(Explosion explosion) {
-        return IMPL.getSource(explosion);
+        throw new AssertionError();
     }
     
+    @ExpectPlatform
     public static float getRadius(Explosion explosion) {
-        return IMPL.getRadius(explosion);
+        throw new AssertionError();
     }
     
+    @ExpectPlatform
     public static void setRadius(Explosion explosion, float radius) {
-        IMPL.setRadius(explosion, radius);
-    }
-    
-    public interface Impl {
-        Vec3 getPosition(Explosion explosion);
-        
-        Entity getSource(Explosion explosion);
-        
-        float getRadius(Explosion explosion);
-        
-        void setRadius(Explosion explosion, float radius);
-    }
-    
-    static {
-        ArchitecturyPopulator.populate(ExplosionHooks.class);
+        throw new AssertionError();
     }
 }

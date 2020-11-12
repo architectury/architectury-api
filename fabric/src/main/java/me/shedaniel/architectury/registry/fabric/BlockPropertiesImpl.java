@@ -27,24 +27,20 @@ import net.minecraft.world.level.material.MaterialColor;
 
 import java.util.function.Function;
 
-public class BlockPropertiesImpl implements BlockProperties.Impl {
-    @Override
-    public BlockProperties of(Material material, MaterialColor color) {
+public class BlockPropertiesImpl {
+    public static BlockProperties of(Material material, MaterialColor color) {
         return new Impl(material, (state) -> color);
     }
     
-    @Override
-    public BlockProperties of(Material material, Function<BlockState, MaterialColor> color) {
+    public static BlockProperties of(Material material, Function<BlockState, MaterialColor> color) {
         return new Impl(material, color);
     }
     
-    @Override
-    public BlockProperties copy(BlockBehaviour old) {
+    public static BlockProperties copy(BlockBehaviour old) {
         return copy(old.properties);
     }
     
-    @Override
-    public BlockProperties copy(BlockBehaviour.Properties old) {
+    public static BlockProperties copy(BlockBehaviour.Properties old) {
         BlockProperties properties = of(old.material, old.materialColor);
         properties.material = old.material;
         properties.destroyTime = old.destroyTime;
@@ -63,7 +59,7 @@ public class BlockPropertiesImpl implements BlockProperties.Impl {
         BlockSettingsInternals otherInternals = (BlockSettingsInternals) old;
         FabricBlockInternals.ExtraData extraData = otherInternals.getExtraData();
         if (extraData != null) {
-            ((BlockSettingsInternals) this).setExtraData(extraData);
+            ((BlockSettingsInternals) properties).setExtraData(extraData);
         }
         return properties;
     }

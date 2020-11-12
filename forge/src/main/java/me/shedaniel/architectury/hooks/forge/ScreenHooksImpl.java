@@ -16,7 +16,6 @@
 
 package me.shedaniel.architectury.hooks.forge;
 
-import me.shedaniel.architectury.hooks.ScreenHooks;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.Widget;
@@ -25,14 +24,12 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-public class ScreenHooksImpl implements ScreenHooks.Impl {
-    @Override
-    public List<Widget> getButtons(Screen screen) {
+public class ScreenHooksImpl {
+    public static List<Widget> getButtons(Screen screen) {
         return screen.buttons;
     }
     
-    @Override
-    public <T extends Widget> T addButton(Screen screen, T t) {
+    public static <T extends Widget> T addButton(Screen screen, T t) {
         try {
             return (T) ObfuscationReflectionHelper.findMethod(Screen.class, "func_230480_a_", Widget.class).invoke(screen, t);
         } catch (IllegalAccessException | InvocationTargetException e) {
@@ -40,8 +37,7 @@ public class ScreenHooksImpl implements ScreenHooks.Impl {
         }
     }
     
-    @Override
-    public <T extends IGuiEventListener> T addChild(Screen screen, T t) {
+    public static <T extends IGuiEventListener> T addChild(Screen screen, T t) {
         try {
             return (T) ObfuscationReflectionHelper.findMethod(Screen.class, "func_230481_d_", IGuiEventListener.class).invoke(screen, t);
         } catch (IllegalAccessException | InvocationTargetException e) {

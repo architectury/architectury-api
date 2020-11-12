@@ -16,7 +16,6 @@
 
 package me.shedaniel.architectury.hooks.fabric;
 
-import me.shedaniel.architectury.hooks.ScreenHooks;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -26,19 +25,16 @@ import net.minecraft.client.gui.screens.Screen;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
-public class ScreenHooksImpl implements ScreenHooks.Impl {
-    @Override
-    public List<AbstractWidget> getButtons(Screen screen) {
+public class ScreenHooksImpl {
+    public static List<AbstractWidget> getButtons(Screen screen) {
         return screen.buttons;
     }
     
-    @Override
-    public <T extends AbstractWidget> T addButton(Screen screen, T widget) {
+    public static <T extends AbstractWidget> T addButton(Screen screen, T widget) {
         return screen.addButton(widget);
     }
     
-    @Override
-    public <T extends GuiEventListener> T addChild(Screen screen, T listener) {
+    public static <T extends GuiEventListener> T addChild(Screen screen, T listener) {
         return screen.addWidget(listener);
     }
 }

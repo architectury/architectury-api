@@ -16,13 +16,11 @@
 
 package me.shedaniel.architectury.hooks.forge;
 
-import me.shedaniel.architectury.hooks.PackRepositoryHooks;
 import net.minecraft.resources.IPackFinder;
 import net.minecraft.resources.ResourcePackList;
 
-public class PackRepositoryHooksImpl implements PackRepositoryHooks.Impl{
-    @Override
-    public void addSource(ResourcePackList resourcePackList, IPackFinder iPackFinder) {
+public class PackRepositoryHooksImpl {
+    public static void addSource(ResourcePackList resourcePackList, IPackFinder iPackFinder) {
         resourcePackList.addPackFinder(iPackFinder);
     }
 }

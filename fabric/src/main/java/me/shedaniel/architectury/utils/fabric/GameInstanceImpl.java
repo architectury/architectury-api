@@ -19,17 +19,15 @@ package me.shedaniel.architectury.utils.fabric;
 import me.shedaniel.architectury.event.EventHandler;
 import me.shedaniel.architectury.event.events.LifecycleEvent;
 import me.shedaniel.architectury.platform.Platform;
-import me.shedaniel.architectury.utils.GameInstance;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.MinecraftServer;
 
-public class GameInstanceImpl implements GameInstance.Impl {
+public class GameInstanceImpl {
     private static MinecraftServer server = null;
     
-    @Override
-    public MinecraftServer getServer() {
+    public static MinecraftServer getServer() {
         MinecraftServer server = null;
         if (GameInstanceImpl.server != null) server = GameInstanceImpl.server;
         if (Platform.getEnv() == EnvType.CLIENT) {

@@ -16,8 +16,7 @@
 
 package me.shedaniel.architectury.hooks;
 
-import me.shedaniel.architectury.ArchitecturyPopulator;
-import me.shedaniel.architectury.Populatable;
+import me.shedaniel.architectury.ExpectPlatform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -30,30 +29,18 @@ import java.util.List;
 public final class ScreenHooks {
     private ScreenHooks() {}
     
-    @Populatable
-    private static final Impl IMPL = null;
-    
+    @ExpectPlatform
     public static List<AbstractWidget> getButtons(Screen screen) {
-        return IMPL.getButtons(screen);
+        throw new AssertionError();
     }
     
+    @ExpectPlatform
     public static <T extends AbstractWidget> T addButton(Screen screen, T widget) {
-        return IMPL.addButton(screen, widget);
+        throw new AssertionError();
     }
     
+    @ExpectPlatform
     public static <T extends GuiEventListener> T addChild(Screen screen, T listener) {
-        return IMPL.addChild(screen, listener);
-    }
-    
-    public interface Impl {
-        List<AbstractWidget> getButtons(Screen screen);
-        
-        <T extends AbstractWidget> T addButton(Screen screen, T widget);
-        
-        <T extends GuiEventListener> T addChild(Screen screen, T listener);
-    }
-    
-    static {
-        ArchitecturyPopulator.populate(ScreenHooks.class);
+        throw new AssertionError();
     }
 }

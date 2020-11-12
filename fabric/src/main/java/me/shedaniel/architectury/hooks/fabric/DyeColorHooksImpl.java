@@ -16,12 +16,10 @@
 
 package me.shedaniel.architectury.hooks.fabric;
 
-import me.shedaniel.architectury.hooks.DyeColorHooks;
 import net.minecraft.world.item.DyeColor;
 
-public class DyeColorHooksImpl implements DyeColorHooks.Impl {
-    @Override
-    public int getColorValue(DyeColor color) {
+public class DyeColorHooksImpl {
+    public static int getColorValue(DyeColor color) {
         return color.textureDiffuseColor;
     }
 }

@@ -16,21 +16,18 @@
 
 package me.shedaniel.architectury.registry.fabric;
 
-import me.shedaniel.architectury.registry.ColorHandlers;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 
-public class ColorHandlersImpl implements ColorHandlers.Impl {
-    @Override
-    public void registerItemColors(ItemColor color, ItemLike... items) {
+public class ColorHandlersImpl {
+    public static void registerItemColors(ItemColor color, ItemLike... items) {
         ColorProviderRegistry.ITEM.register(color, items);
     }
     
-    @Override
-    public void registerBlockColors(BlockColor color, Block... blocks) {
+    public static void registerBlockColors(BlockColor color, Block... blocks) {
         ColorProviderRegistry.BLOCK.register(color, blocks);
     }
 }

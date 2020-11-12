@@ -43,9 +43,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
-public class NetworkManagerImpl implements NetworkManager.Impl {
-    @Override
-    public void registerReceiver(NetworkManager.Side side, ResourceLocation id, NetworkReceiver receiver) {
+public class NetworkManagerImpl {
+    public static void registerReceiver(NetworkManager.Side side, ResourceLocation id, NetworkReceiver receiver) {
         if (side == NetworkManager.Side.C2S) {
             registerC2SReceiver(id, receiver);
         } else if (side == NetworkManager.Side.S2C) {
@@ -53,8 +52,7 @@ public class NetworkManagerImpl implements NetworkManager.Impl {
         }
     }
     
-    @Override
-    public IPacket<?> toPacket(NetworkManager.Side side, ResourceLocation id, PacketBuffer buffer) {
+    public static IPacket<?> toPacket(NetworkManager.Side side, ResourceLocation id, PacketBuffer buffer) {
         PacketBuffer packetBuffer = new PacketBuffer(Unpooled.buffer());
         packetBuffer.writeResourceLocation(id);
         packetBuffer.writeBytes(buffer);
@@ -69,10 +67,10 @@ public class NetworkManagerImpl implements NetworkManager.Impl {
     static final Set<ResourceLocation> serverReceivables = Sets.newHashSet();
     private static final Multimap<PlayerEntity, ResourceLocation> clientReceivables = Multimaps.newMultimap(Maps.newHashMap(), Sets::newHashSet);
     
-    public NetworkManagerImpl() {
+    static  {
         CHANNEL.addListener(createPacketHandler(NetworkEvent.ClientCustomPayloadEvent.class, C2S));
         
-        DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> ClientNetworkingManager::initClient).accept(this);
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> ClientNetworkingManager::initClient);
         
         MinecraftForge.EVENT_BUS.<PlayerEvent.PlayerLoggedInEvent>addListener(event -> NetworkManager.sendToPlayer((ServerPlayerEntity) event.getPlayer(), SYNC_IDS, sendSyncPacket(C2S)));
         MinecraftForge.EVENT_BUS.<PlayerEvent.PlayerLoggedOutEvent>addListener(event -> clientReceivables.removeAll(event.getPlayer()));
@@ -123,21 +121,19 @@ public class NetworkManagerImpl implements NetworkManager.Impl {
     }
     
     @OnlyIn(Dist.CLIENT)
-    public void registerS2CReceiver(ResourceLocation id, NetworkReceiver receiver) {
+    public static void registerS2CReceiver(ResourceLocation id, NetworkReceiver receiver) {
         S2C.put(id, receiver);
     }
     
-    public void registerC2SReceiver(ResourceLocation id, NetworkReceiver receiver) {
+    public static void registerC2SReceiver(ResourceLocation id, NetworkReceiver receiver) {
         C2S.put(id, receiver);
     }
     
-    @Override
-    public boolean canServerReceive(ResourceLocation id) {
+    public static boolean canServerReceive(ResourceLocation id) {
         return serverReceivables.contains(id);
     }
     
-    @Override
-    public boolean canPlayerReceive(ServerPlayerEntity player, ResourceLocation id) {
+    public static boolean canPlayerReceive(ServerPlayerEntity player, ResourceLocation id) {
         return clientReceivables.get(player).contains(id);
     }
     

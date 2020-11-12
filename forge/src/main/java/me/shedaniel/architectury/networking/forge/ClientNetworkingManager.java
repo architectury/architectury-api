@@ -27,18 +27,17 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.Set;
-import java.util.function.Consumer;
 
 import static me.shedaniel.architectury.networking.forge.NetworkManagerImpl.C2S;
 import static me.shedaniel.architectury.networking.forge.NetworkManagerImpl.SYNC_IDS;
 
 @OnlyIn(Dist.CLIENT)
 public class ClientNetworkingManager {
-    public static Consumer<NetworkManagerImpl> initClient() {
+    public static void initClient() {
         NetworkManagerImpl.CHANNEL.addListener(NetworkManagerImpl.createPacketHandler(NetworkEvent.ServerCustomPayloadEvent.class, NetworkManagerImpl.S2C));
         MinecraftForge.EVENT_BUS.<ClientPlayerNetworkEvent.LoggedOutEvent>addListener(event -> NetworkManagerImpl.serverReceivables.clear());
         
-        return impl -> impl.registerS2CReceiver(SYNC_IDS, (buffer, context) -> {
+        NetworkManagerImpl.registerS2CReceiver(SYNC_IDS, (buffer, context) -> {
             Set<ResourceLocation> receivables = NetworkManagerImpl.serverReceivables;
             int size = buffer.readInt();
             receivables.clear();

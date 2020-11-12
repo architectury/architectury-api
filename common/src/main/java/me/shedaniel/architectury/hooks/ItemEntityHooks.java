@@ -16,8 +16,7 @@
 
 package me.shedaniel.architectury.hooks;
 
-import me.shedaniel.architectury.ArchitecturyPopulator;
-import me.shedaniel.architectury.Populatable;
+import me.shedaniel.architectury.ExpectPlatform;
 import me.shedaniel.architectury.utils.IntValue;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -27,23 +26,13 @@ import net.minecraft.world.entity.item.ItemEntity;
 public final class ItemEntityHooks {
     private ItemEntityHooks() {}
     
-    @Populatable
-    private static final Impl IMPL = null;
-    
     /**
      * The lifespan of an {@link ItemEntity}.
      * Fabric: Since it doesn't have this, the value will be a readable-only value of 6000.
      * Forge: Value of lifespan of the forge hook.
      */
+    @ExpectPlatform
     public static IntValue lifespan(ItemEntity entity) {
-        return IMPL.lifespan(entity);
-    }
-    
-    public interface Impl {
-        IntValue lifespan(ItemEntity entity);
-    }
-    
-    static {
-        ArchitecturyPopulator.populate(ItemEntityHooks.class);
+        throw new AssertionError();
     }
 }

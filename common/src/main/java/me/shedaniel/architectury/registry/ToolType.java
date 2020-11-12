@@ -17,7 +17,7 @@
 package me.shedaniel.architectury.registry;
 
 import com.google.common.collect.Maps;
-import me.shedaniel.architectury.Populatable;
+import me.shedaniel.architectury.ExpectPlatform;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.item.Item;
 
@@ -29,23 +29,25 @@ public final class ToolType {
     public static final ToolType AXE = create("axe", ToolType::axeTag);
     public static final ToolType HOE = create("hoe", ToolType::hoeTag);
     public static final ToolType SHOVEL = create("shovel", ToolType::shovelTag);
-    @Populatable
-    private static final Impl IMPL = null;
     
+    @ExpectPlatform
     private static Tag<Item> pickaxeTag() {
-        return IMPL.pickaxeTag();
+        throw new AssertionError();
     }
     
+    @ExpectPlatform
     private static Tag<Item> axeTag() {
-        return IMPL.axeTag();
+        throw new AssertionError();
     }
     
+    @ExpectPlatform
     private static Tag<Item> hoeTag() {
-        return IMPL.hoeTag();
+        throw new AssertionError();
     }
     
+    @ExpectPlatform
     private static Tag<Item> shovelTag() {
-        return IMPL.shovelTag();
+        throw new AssertionError();
     }
     
     private static final Map<String, ToolType> TYPES = Maps.newConcurrentMap();
@@ -64,15 +66,5 @@ public final class ToolType {
     
     public static ToolType byName(String forgeName) {
         return TYPES.get(forgeName);
-    }
-    
-    public interface Impl {
-        Tag<Item> pickaxeTag();
-        
-        Tag<Item> axeTag();
-        
-        Tag<Item> hoeTag();
-        
-        Tag<Item> shovelTag();
     }
 }

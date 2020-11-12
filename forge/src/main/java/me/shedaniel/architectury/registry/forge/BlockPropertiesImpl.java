@@ -25,24 +25,20 @@ import net.minecraft.block.material.MaterialColor;
 
 import java.util.function.Function;
 
-public class BlockPropertiesImpl implements BlockProperties.Impl {
-    @Override
-    public BlockProperties of(Material material, MaterialColor materialColor) {
+public class BlockPropertiesImpl {
+    public static BlockProperties of(Material material, MaterialColor materialColor) {
         return new Impl(material, (state) -> materialColor);
     }
     
-    @Override
-    public BlockProperties of(Material material, Function<BlockState, MaterialColor> function) {
+    public static BlockProperties of(Material material, Function<BlockState, MaterialColor> function) {
         return new Impl(material, function);
     }
     
-    @Override
-    public BlockProperties copy(AbstractBlock abstractBlock) {
+    public static BlockProperties copy(AbstractBlock abstractBlock) {
         return copy(abstractBlock.properties);
     }
     
-    @Override
-    public BlockProperties copy(AbstractBlock.Properties old) {
+    public static BlockProperties copy(AbstractBlock.Properties old) {
         BlockProperties properties = of(old.material, old.materialColor);
         properties.material = old.material;
         properties.destroyTime = old.destroyTime;

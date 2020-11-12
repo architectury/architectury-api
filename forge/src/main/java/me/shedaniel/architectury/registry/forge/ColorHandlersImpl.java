@@ -17,7 +17,6 @@
 package me.shedaniel.architectury.registry.forge;
 
 import com.google.common.collect.Lists;
-import me.shedaniel.architectury.registry.ColorHandlers;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.color.IBlockColor;
@@ -29,11 +28,11 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 
-public class ColorHandlersImpl implements ColorHandlers.Impl {
+public class ColorHandlersImpl {
     private static final List<Pair<IItemColor, IItemProvider[]>> ITEM_COLORS = Lists.newArrayList();
     private static final List<Pair<IBlockColor, Block[]>> BLOCK_COLORS = Lists.newArrayList();
     
-    public ColorHandlersImpl() {
+    static {
         MinecraftForge.EVENT_BUS.<ColorHandlerEvent.Item>addListener(event -> {
             for (Pair<IItemColor, IItemProvider[]> pair : ITEM_COLORS) {
                 event.getItemColors().register(pair.getLeft(), pair.getRight());
@@ -46,8 +45,7 @@ public class ColorHandlersImpl implements ColorHandlers.Impl {
         });
     }
     
-    @Override
-    public void registerItemColors(IItemColor itemColor, IItemProvider... items) {
+    public static void registerItemColors(IItemColor itemColor, IItemProvider... items) {
         if (Minecraft.getInstance().getItemColors() == null) {
             ITEM_COLORS.add(Pair.of(itemColor, items));
         } else {
@@ -55,8 +53,7 @@ public class ColorHandlersImpl implements ColorHandlers.Impl {
         }
     }
     
-    @Override
-    public void registerBlockColors(IBlockColor blockColor, Block... blocks) {
+    public static void registerBlockColors(IBlockColor blockColor, Block... blocks) {
         if (Minecraft.getInstance().getBlockColors() == null) {
             BLOCK_COLORS.add(Pair.of(blockColor, blocks));
         } else {

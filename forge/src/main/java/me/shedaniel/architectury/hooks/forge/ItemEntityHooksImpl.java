@@ -16,13 +16,11 @@
 
 package me.shedaniel.architectury.hooks.forge;
 
-import me.shedaniel.architectury.hooks.ItemEntityHooks;
 import me.shedaniel.architectury.utils.IntValue;
 import net.minecraft.entity.item.ItemEntity;
 
-public class ItemEntityHooksImpl implements ItemEntityHooks.Impl {
-    @Override
-    public IntValue lifespan(ItemEntity entity) {
+public class ItemEntityHooksImpl {
+    public static IntValue lifespan(ItemEntity entity) {
         return new IntValue() {
             @Override
             public void accept(int value) {

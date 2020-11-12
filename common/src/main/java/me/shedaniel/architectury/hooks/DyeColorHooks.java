@@ -16,25 +16,14 @@
 
 package me.shedaniel.architectury.hooks;
 
-import me.shedaniel.architectury.ArchitecturyPopulator;
-import me.shedaniel.architectury.Populatable;
+import me.shedaniel.architectury.ExpectPlatform;
 import net.minecraft.world.item.DyeColor;
 
 public class DyeColorHooks {
     private DyeColorHooks() {}
     
-    @Populatable
-    private static final Impl IMPL = null;
-    
+    @ExpectPlatform
     public static int getColorValue(DyeColor color) {
-        return IMPL.getColorValue(color);
-    }
-    
-    public interface Impl {
-        int getColorValue(DyeColor color);
-    }
-    
-    static {
-        ArchitecturyPopulator.populate();
+        throw new AssertionError();
     }
 }

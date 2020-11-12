@@ -16,18 +16,15 @@
 
 package me.shedaniel.architectury.hooks.forge;
 
-import me.shedaniel.architectury.hooks.PlayerHooks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.common.util.FakePlayer;
 
-public class PlayerHooksImpl implements PlayerHooks.Impl {
-    @Override
-    public boolean isFake(PlayerEntity playerEntity) {
+public class PlayerHooksImpl {
+    public static boolean isFake(PlayerEntity playerEntity) {
         return playerEntity instanceof FakePlayer;
     }
     
-    @Override
-    public void closeContainer(PlayerEntity playerEntity) {
+    public static void closeContainer(PlayerEntity playerEntity) {
         playerEntity.closeContainer();
     }
 }

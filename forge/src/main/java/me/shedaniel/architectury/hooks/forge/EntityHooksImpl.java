@@ -16,12 +16,10 @@
 
 package me.shedaniel.architectury.hooks.forge;
 
-import me.shedaniel.architectury.hooks.EntityHooks;
 import net.minecraft.entity.Entity;
 
-public class EntityHooksImpl implements EntityHooks.Impl {
-    @Override
-    public String getEncodeId(Entity entity) {
+public class EntityHooksImpl {
+    public static String getEncodeId(Entity entity) {
         return entity.getEncodeId();
     }
 }
