@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public final class ToolType {
+    private static final Map<String, ToolType> TYPES = Maps.newConcurrentMap();
     public static final ToolType PICKAXE = create("pickaxe", ToolType::pickaxeTag);
     public static final ToolType AXE = create("axe", ToolType::axeTag);
     public static final ToolType HOE = create("hoe", ToolType::hoeTag);
@@ -50,7 +51,6 @@ public final class ToolType {
         throw new AssertionError();
     }
     
-    private static final Map<String, ToolType> TYPES = Maps.newConcurrentMap();
     public final String forgeName;
     public final Supplier<Tag<Item>> fabricTag;
     private Object obj;
