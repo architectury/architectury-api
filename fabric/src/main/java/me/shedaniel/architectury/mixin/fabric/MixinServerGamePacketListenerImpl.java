@@ -45,13 +45,13 @@ public abstract class MixinServerGamePacketListenerImpl {
     @Shadow
     public abstract void disconnect(Component component);
     
-    @Inject(method = "handleChat", at = @At(value = "INVOKE",
-                                            target = "Lnet/minecraft/server/players/PlayerList;broadcastMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/ChatType;Ljava/util/UUID;)V"),
+    @Inject(method = "handleChat(Ljava/lang/String;)V",
+            at = @At(value = "INVOKE",
+                     target = "Lnet/minecraft/server/players/PlayerList;broadcastMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/ChatType;Ljava/util/UUID;)V"),
             cancellable = true)
-    private void handleChat(ServerboundChatPacket packet, CallbackInfo ci) {
-        String string = StringUtils.normalizeSpace(packet.getMessage());
-        Component component = new TranslatableComponent("chat.type.text", this.player.getDisplayName(), string);
-        InteractionResultHolder<Component> process = ChatEvent.SERVER.invoker().process(this.player, string, component);
+    private void handleChat(String message, CallbackInfo ci) {
+        Component component = new TranslatableComponent("chat.type.text", this.player.getDisplayName(), message);
+        InteractionResultHolder<Component> process = ChatEvent.SERVER.invoker().process(this.player, message, component);
         if (process.getResult() == InteractionResult.FAIL)
             ci.cancel();
         else if (process.getObject() != null && !process.getObject().equals(component)) {
