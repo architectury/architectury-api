@@ -122,7 +122,6 @@ public final class EventFactory {
             this.clazz = Objects.requireNonNull(clazz);
             this.function = function;
             this.listeners = emptyArray();
-            update();
         }
         
         private T[] emptyArray() {
@@ -135,19 +134,22 @@ public final class EventFactory {
         
         @Override
         public T invoker() {
+            if (invoker == null) {
+                update();
+            }
             return invoker;
         }
         
         @Override
         public void register(T listener) {
             listeners = ArrayUtils.add(listeners, listener);
-            update();
+            invoker = null;
         }
         
         @Override
         public void unregister(T listener) {
             listeners = ArrayUtils.removeElement(listeners, listener);
-            update();
+            invoker = null;
         }
         
         @Override
@@ -158,7 +160,7 @@ public final class EventFactory {
         @Override
         public void clearListeners() {
             listeners = emptyArray();
-            update();
+            invoker = null;
         }
         
         public void update() {
