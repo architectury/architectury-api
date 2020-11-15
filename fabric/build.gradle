@@ -77,7 +77,7 @@ curseforge {
             relations {
                 requiredDependency "fabric-api"
             }
-            mainArtifact(remapJar.archivePath.toFile()) {
+            mainArtifact(remapJar.archivePath) {
                 displayName = "[Fabric $rootProject.supported_version] v$project.version"
             }
             afterEvaluate {
