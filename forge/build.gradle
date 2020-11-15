@@ -51,6 +51,8 @@ configurations {
 
 dependencies {
     minecraft("net.minecraftforge:forge:${rootProject.architect.minecraft}-${rootProject.forge_version}")
+    implementation "net.jodah:typetools:0.6.2"
+    shadow "net.jodah:typetools:0.6.2"
 
     compile(project(path: ":common", configuration: "mcpGenerateMod")) {
         transitive = false
@@ -61,6 +63,7 @@ dependencies {
 }
 
 shadowJar {
+    relocate "net.jodah.typetools", "me.shedaniel.architectury.shadowed.impl.net.jodah.typetools"
     exclude "fabric.mod.json"
 
     configurations = [project.configurations.shadow]
@@ -70,6 +73,8 @@ shadowJar {
 reobf {
     shadowJar {}
 }
+
+build.dependsOn(shadowJar)
 
 publishing {
     publications {
