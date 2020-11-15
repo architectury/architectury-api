@@ -18,6 +18,7 @@ package me.shedaniel.architectury.event;
 
 import com.google.common.reflect.AbstractInvocationHandler;
 import me.shedaniel.architectury.ExpectPlatform;
+import me.shedaniel.architectury.ForgeEvent;
 import net.jodah.typetools.TypeResolver;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -86,7 +87,7 @@ public final class EventFactory {
     
     @SuppressWarnings("UnstableApiUsage")
     public static <T> Event<Consumer<T>> createConsumerLoop(Class<T> clazz) {
-        return create(listeners -> (Consumer<T>) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{Consumer.class}, new AbstractInvocationHandler() {
+        Event<Consumer<T>> event = create(listeners -> (Consumer<T>) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{Consumer.class}, new AbstractInvocationHandler() {
             @Override
             protected Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {
                 for (Consumer<T> listener : listeners) {
@@ -95,6 +96,14 @@ public final class EventFactory {
                 return null;
             }
         }));
+        Class<?> superClass = clazz;
+        do {
+            if (superClass.isAnnotationPresent(ForgeEvent.class)) {
+                return attachToForge(event);
+            }
+            superClass = superClass.getSuperclass();
+        } while (superClass != null);
+        return event;
     }
     
     @SuppressWarnings("UnstableApiUsage")
