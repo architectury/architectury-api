@@ -110,4 +110,4 @@ curseforge {
     }
 }
 
-rootProject.tasks.getByName("curseforgePublish").dependsOn curseforge
+rootProject.tasks.getByName("curseforgePublish").dependsOn tasks.getByName("curseforge")
