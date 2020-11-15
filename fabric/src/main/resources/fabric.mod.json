@@ -22,6 +22,6 @@
   },
   "accessWidener": "architectury.accessWidener",
   "depends": {
-    "minecraft": ">=1.16.2"
+    "minecraft": ">=1.16.4"
   }
 }

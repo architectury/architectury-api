@@ -2,6 +2,7 @@ plugins {
     id "architect-plugin" version "1.1.15"
     id "org.cadixdev.licenser" version "0.5.0"
     id "com.jfrog.bintray" version "1.8.4"
+    id "com.matthewprenger.cursegradle" version "1.4.0" apply false
     id "maven"
     id "maven-publish"
 }
@@ -55,4 +56,37 @@ bintray {
             vcsUrl = "https://github.com/shedaniel/architectury.git"
         }
     }
+}
+
+def releaseChangelog = "No changelog"
+task curseforgePublish {
+    def dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm")
+    dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"))
+    def branch
+    if (System.env.BRANCH_NAME) {
+        branch = System.env.BRANCH_NAME
+        branch = branch.substring(branch.lastIndexOf("/") + 1)
+    } else {
+        branch = "git rev-parse --abbrev-ref HEAD".execute().in.text.trim()
+    }
+    if (branch == "HEAD") {
+        branch = "git rev-parse --short HEAD".execute().in.text.trim()
+    }
+    def time = dateFormat.format(new Date())
+    def changes = new StringBuilder()
+    changes << "<h2>Architectury v$project.version for $project.supported_version</h2>Updated at <b>$time</b>.<br><a href=\"https://www.github.com/architectury/architectury/commits/$branch\">Click here for changelog</a>"
+    def proc = "git log --max-count=200 --pretty=format:%s".execute()
+    proc.in.eachLine { line ->
+        def processedLine = line.toString()
+        if (!processedLine.contains("New translations") && !processedLine.contains("Merge") && !processedLine.contains("branch")) {
+            changes << "<br>- ${processedLine.capitalize()}"
+        }
+    }
+    proc.waitFor()
+    releaseChangelog = changes.toString()
+}
+
+afterEvaluate {
+//    curseforgePublish.dependsOn project("fabric").tasks.getByName("curseforge")
+//    curseforgePublish.dependsOn project("forge").tasks.getByName("curseforge")
 }
