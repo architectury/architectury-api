@@ -89,7 +89,7 @@ curseforge {
             id = "419699"
             releaseType = "release"
             changelogType = "html"
-            changelog = rootProject.releaseChangelog
+            changelog = releaseChangelog()
             addGameVersion "1.16.4"
             addGameVersion "Java 8"
             addGameVersion "Forge"
@@ -109,3 +109,5 @@ curseforge {
         javaVersionAutoDetect = false
     }
 }
+
+rootProject.tasks.getByName("curseforgePublish").dependsOn curseforge
