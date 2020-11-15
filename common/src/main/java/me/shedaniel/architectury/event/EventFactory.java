@@ -17,6 +17,7 @@
 package me.shedaniel.architectury.event;
 
 import com.google.common.reflect.AbstractInvocationHandler;
+import me.shedaniel.architectury.ExpectPlatform;
 import net.jodah.typetools.TypeResolver;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -110,6 +111,11 @@ public final class EventFactory {
                 return InteractionResult.PASS;
             }
         }));
+    }
+    
+    @ExpectPlatform
+    public static <T> Event<Consumer<T>> attachToForge(Event<Consumer<T>> event) {
+        throw new AssertionError();
     }
     
     private static class EventImpl<T> implements Event<T> {
