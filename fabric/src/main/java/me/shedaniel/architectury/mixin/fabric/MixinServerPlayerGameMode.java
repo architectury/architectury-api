@@ -41,7 +41,7 @@ public class MixinServerPlayerGameMode {
                                               ordinal = 0),
             locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
     private void onBreak(BlockPos blockPos, CallbackInfoReturnable<Boolean> cir, BlockState state) {
-        if (PlayerEvent.BREAK_BLOCK.invoker().breakBlock(this.level, blockPos, state, this.player) == InteractionResult.FAIL) {
+        if (PlayerEvent.BREAK_BLOCK.invoker().breakBlock(this.level, blockPos, state, this.player, null) == InteractionResult.FAIL) {
             cir.setReturnValue(false);
         }
     }

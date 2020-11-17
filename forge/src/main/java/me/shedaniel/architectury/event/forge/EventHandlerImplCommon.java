@@ -17,6 +17,7 @@
 package me.shedaniel.architectury.event.forge;
 
 import me.shedaniel.architectury.event.events.*;
+import me.shedaniel.architectury.utils.IntValue;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
@@ -289,7 +290,17 @@ public class EventHandlerImplCommon {
     @SubscribeEvent
     public static void event(BlockEvent.BreakEvent event) {
         if (event.getPlayer() instanceof ServerPlayerEntity && event.getWorld() instanceof World) {
-            ActionResultType result = PlayerEvent.BREAK_BLOCK.invoker().breakBlock((World) event.getWorld(), event.getPos(), event.getState(), (ServerPlayerEntity) event.getPlayer());
+            ActionResultType result = PlayerEvent.BREAK_BLOCK.invoker().breakBlock((World) event.getWorld(), event.getPos(), event.getState(), (ServerPlayerEntity) event.getPlayer(), new IntValue() {
+                @Override
+                public int getAsInt() {
+                    return event.getExpToDrop();
+                }
+                
+                @Override
+                public void accept(int value) {
+                    event.setExpToDrop(value);
+                }
+            });
             if (result != ActionResultType.PASS) {
                 event.setCanceled(true);
             }

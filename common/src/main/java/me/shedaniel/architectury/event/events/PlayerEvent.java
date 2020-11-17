@@ -18,6 +18,7 @@ package me.shedaniel.architectury.event.events;
 
 import me.shedaniel.architectury.event.Event;
 import me.shedaniel.architectury.event.EventFactory;
+import me.shedaniel.architectury.utils.IntValue;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.advancements.Advancement;
@@ -32,6 +33,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 public interface PlayerEvent {
     Event<PlayerJoin> PLAYER_JOIN = EventFactory.createLoop(PlayerJoin.class);
@@ -92,7 +94,7 @@ public interface PlayerEvent {
     }
     
     interface BreakBlock {
-        InteractionResult breakBlock(Level world, BlockPos pos, BlockState state, ServerPlayer player);
+        InteractionResult breakBlock(Level world, BlockPos pos, BlockState state, ServerPlayer player, @Nullable IntValue xp);
     }
     
     interface OpenMenu {
