@@ -22,6 +22,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionResult;
@@ -29,6 +30,8 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 public interface PlayerEvent {
     Event<PlayerJoin> PLAYER_JOIN = EventFactory.createLoop(PlayerJoin.class);
@@ -46,6 +49,7 @@ public interface PlayerEvent {
     Event<DropItem> DROP_ITEM = EventFactory.createLoop(DropItem.class);
     Event<OpenMenu> OPEN_MENU = EventFactory.createLoop(OpenMenu.class);
     Event<CloseMenu> CLOSE_MENU = EventFactory.createLoop(CloseMenu.class);
+    Event<BreakBlock> BREAK_BLOCK = EventFactory.createInteractionResult(BreakBlock.class);
     
     interface PlayerJoin {
         void join(ServerPlayer player);
@@ -85,6 +89,10 @@ public interface PlayerEvent {
     
     interface DropItem {
         InteractionResult drop(Player player, ItemEntity entity);
+    }
+    
+    interface BreakBlock {
+        InteractionResult breakBlock(Level world, BlockPos pos, BlockState state, ServerPlayer player);
     }
     
     interface OpenMenu {

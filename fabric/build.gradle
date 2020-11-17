@@ -21,7 +21,7 @@ dependencies {
     implementation "net.jodah:typetools:0.6.2"
     shadow "net.jodah:typetools:0.6.2"
 
-    compileOnly(project(path: ":common", configuration: "transformed")) {
+    compileOnly(project(path: ":common")) {
         transitive = false
     }
     runtimeOnly(project(path: ":common", configuration: "transformed")) {

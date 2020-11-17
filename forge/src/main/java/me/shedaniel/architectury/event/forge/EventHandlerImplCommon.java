@@ -1,3 +1,19 @@
+/*
+ * Copyright 2020 shedaniel
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package me.shedaniel.architectury.event.forge;
 
 import me.shedaniel.architectury.event.events.*;
@@ -6,6 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -23,6 +40,7 @@ import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.*;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ExplosionEvent.Detonate;
 import net.minecraftforge.event.world.ExplosionEvent.Start;
 import net.minecraftforge.event.world.WorldEvent;
@@ -265,6 +283,26 @@ public class EventHandlerImplCommon {
             event.setCancellationResult(result);
             event.setUseBlock(Event.Result.DENY);
             event.setUseItem(Event.Result.DENY);
+        }
+    }
+    
+    @SubscribeEvent
+    public static void event(BlockEvent.BreakEvent event) {
+        if (event.getPlayer() instanceof ServerPlayerEntity && event.getWorld() instanceof World) {
+            ActionResultType result = PlayerEvent.BREAK_BLOCK.invoker().breakBlock((World) event.getWorld(), event.getPos(), event.getState(), (ServerPlayerEntity) event.getPlayer());
+            if (result != ActionResultType.PASS) {
+                event.setCanceled(true);
+            }
+        }
+    }
+    
+    @SubscribeEvent
+    public static void event(BlockEvent.EntityPlaceEvent event) {
+        if (event.getWorld() instanceof World) {
+            ActionResultType result = EntityEvent.PLACE_BLOCK.invoker().placeBlock((World) event.getWorld(), event.getPos(), event.getState(), event.getEntity());
+            if (result != ActionResultType.PASS) {
+                event.setCanceled(true);
+            }
         }
     }
     

@@ -18,11 +18,14 @@ package me.shedaniel.architectury.event.events;
 
 import me.shedaniel.architectury.event.Event;
 import me.shedaniel.architectury.event.EventFactory;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 public interface EntityEvent {
     /**
@@ -37,6 +40,7 @@ public interface EntityEvent {
      * Invoked before entity is added to a world, equivalent to forge's {@code EntityJoinWorldEvent}.
      */
     Event<Add> ADD = EventFactory.createInteractionResult(Add.class);
+    Event<PlaceBlock> PLACE_BLOCK = EventFactory.createInteractionResult(PlaceBlock.class);
     
     interface LivingDeath {
         InteractionResult die(LivingEntity entity, DamageSource source);
@@ -48,5 +52,9 @@ public interface EntityEvent {
     
     interface Add {
         InteractionResult add(Entity entity, Level world);
+    }
+    
+    interface PlaceBlock {
+        InteractionResult placeBlock(Level world, BlockPos pos, BlockState state, @Nullable Entity placer);
     }
 }
