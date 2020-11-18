@@ -1,17 +1,20 @@
 /*
- * Copyright 2020 shedaniel
+ * This file is part of architectury.
+ * Copyright (C) 2020 shedaniel
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
 package me.shedaniel.architectury.platform.forge;
@@ -26,12 +29,13 @@ import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
 import net.minecraftforge.forgespi.language.IModInfo;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
+import java.net.URL;
 import java.nio.file.Path;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class PlatformImpl {
@@ -78,35 +82,77 @@ public class PlatformImpl {
     
     private static class ModImpl implements Mod {
         private final ModContainer container;
-        private final IModInfo metadata;
+        private final ModInfo info;
         
         public ModImpl(String id) {
             this.container = ModList.get().getModContainerById(id).get();
-            this.metadata = container.getModInfo();
+            this.info = ModList.get().getMods().stream()
+                    .filter(modInfo -> Objects.equals(modInfo.getModId(), id))
+                    .findAny()
+                    .get();
         }
         
         @Override
         @Nonnull
         public String getModId() {
-            return metadata.getModId();
+            return info.getModId();
         }
         
         @Override
         @Nonnull
         public String getVersion() {
-            return metadata.getVersion().toString();
+            return info.getVersion().toString();
         }
         
         @Override
         @Nonnull
         public String getName() {
-            return metadata.getDisplayName();
+            return info.getDisplayName();
         }
         
         @Override
         @Nonnull
         public String getDescription() {
-            return metadata.getDescription();
+            return info.getDescription();
+        }
+        
+        @Override
+        public @NotNull Optional<String> getLogoFile(int i) {
+            return this.info.getLogoFile();
+        }
+        
+        @Override
+        public @NotNull Path getFilePath() {
+            return this.info.getOwningFile().getFile().getFilePath();
+        }
+    
+        @Override
+        public @NotNull Collection<String> getAuthors() {
+            Optional<String> optional = this.info.getConfigElement("authors")
+                    .map(String::valueOf);
+            return optional.isPresent() ? Collections.singleton(optional.get()) : Collections.emptyList();
+        }
+    
+        @Override
+        public @Nullable Collection<String> getLicense() {
+            return Collections.singleton(this.info.getOwningFile().getLicense());
+        }
+        
+        @Override
+        public @Nullable Optional<String> getHomepage() {
+            return this.info.getConfigElement("displayURL")
+                    .map(String::valueOf);
+        }
+        
+        @Override
+        public @Nullable Optional<String> getSources() {
+            return Optional.empty();
+        }
+        
+        @Override
+        public @Nullable Optional<String> getIssueTracker() {
+            return Optional.ofNullable(this.info.getOwningFile().getIssueURL())
+                    .map(URL::toString);
         }
         
         @Override

@@ -1,17 +1,20 @@
 /*
- * Copyright 2020 shedaniel
+ * This file is part of architectury.
+ * Copyright (C) 2020 shedaniel
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
 package me.shedaniel.architectury.platform.fabric;
@@ -21,12 +24,15 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ModMetadata;
+import net.fabricmc.loader.api.metadata.Person;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class PlatformImpl {
@@ -73,10 +79,12 @@ public class PlatformImpl {
     }
     
     private static class ModImpl implements Mod {
+        private final ModContainer container;
         private final ModMetadata metadata;
         
         public ModImpl(String id) {
-            this.metadata = FabricLoader.getInstance().getModContainer(id).get().getMetadata();
+            this.container = FabricLoader.getInstance().getModContainer(id).get();
+            this.metadata = this.container.getMetadata();
         }
         
         @Override
@@ -97,6 +105,43 @@ public class PlatformImpl {
         @Override
         public @NotNull String getDescription() {
             return metadata.getDescription();
+        }
+        
+        @Override
+        public @NotNull Optional<String> getLogoFile(int preferredSize) {
+            return metadata.getIconPath(preferredSize);
+        }
+        
+        @Override
+        public @NotNull Path getFilePath() {
+            return container.getRootPath();
+        }
+    
+        @Override
+        public @NotNull Collection<String> getAuthors() {
+            return metadata.getAuthors().stream()
+                    .map(Person::getName)
+                    .collect(Collectors.toList());
+        }
+    
+        @Override
+        public @Nullable Collection<String> getLicense() {
+            return metadata.getLicense();
+        }
+        
+        @Override
+        public @Nullable Optional<String> getHomepage() {
+            return metadata.getContact().get("homepage");
+        }
+        
+        @Override
+        public @Nullable Optional<String> getSources() {
+            return metadata.getContact().get("issues");
+        }
+        
+        @Override
+        public @Nullable Optional<String> getIssueTracker() {
+            return metadata.getContact().get("sources");
         }
         
         @Override
