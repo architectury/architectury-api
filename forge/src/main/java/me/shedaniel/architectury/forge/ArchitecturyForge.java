@@ -20,21 +20,16 @@
 package me.shedaniel.architectury.forge;
 
 import me.shedaniel.architectury.event.EventHandler;
-import me.shedaniel.architectury.platform.Platform;
+import me.shedaniel.architectury.event.events.GuiEvent;
 import me.shedaniel.architectury.platform.forge.EventBuses;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-
-import java.util.stream.Collectors;
 
 @Mod(ArchitecturyForge.MOD_ID)
 public class ArchitecturyForge {
     public static final String MOD_ID = "architectury";
     
     public ArchitecturyForge() {
-        System.out.println(Platform.getMods().stream()
-                .map(me.shedaniel.architectury.platform.Mod::getModId)
-                .collect(Collectors.joining(", ")));
         EventBuses.registerModEventBus(ArchitecturyForge.MOD_ID, FMLJavaModLoadingContext.get().getModEventBus());
         EventHandler.init();
     }

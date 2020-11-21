@@ -25,12 +25,12 @@ import me.shedaniel.architectury.ForgeEvent;
 import net.jodah.typetools.TypeResolver;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
-import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -133,13 +133,13 @@ public final class EventFactory {
     private static class EventImpl<T> implements Event<T> {
         private final Function<T[], T> function;
         private T invoker = null;
-        private T[] listeners;
+        private ArrayList<T> listeners;
         private Class<?> clazz;
         
         public EventImpl(Class<?> clazz, Function<T[], T> function) {
             this.clazz = Objects.requireNonNull(clazz);
             this.function = function;
-            this.listeners = emptyArray();
+            this.listeners = new ArrayList<>();
         }
         
         private T[] emptyArray() {
@@ -160,32 +160,34 @@ public final class EventFactory {
         
         @Override
         public void register(T listener) {
-            listeners = ArrayUtils.add(listeners, listener);
+            listeners.add(listener);
             invoker = null;
         }
         
         @Override
         public void unregister(T listener) {
-            listeners = ArrayUtils.removeElement(listeners, listener);
+            listeners.remove(listener);
+            listeners.trimToSize();
             invoker = null;
         }
         
         @Override
         public boolean isRegistered(T listener) {
-            return ArrayUtils.contains(listeners, listener);
+            return listeners.contains(listener);
         }
         
         @Override
         public void clearListeners() {
-            listeners = emptyArray();
+            listeners.clear();
+            listeners.trimToSize();
             invoker = null;
         }
         
         public void update() {
-            if (listeners.length == 1) {
-                invoker = listeners[0];
+            if (listeners.size() == 1) {
+                invoker = listeners.get(0);
             } else {
-                invoker = function.apply(listeners);
+                invoker = function.apply(listeners.toArray(emptyArray()));
             }
         }
     }
