@@ -24,6 +24,7 @@ import me.shedaniel.architectury.event.events.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.network.play.server.SUpdateRecipesPacket;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.text.ITextComponent;
@@ -138,6 +139,11 @@ public class EventHandlerImplClient {
     @SubscribeEvent
     public static void event(PlayerInteractEvent.LeftClickEmpty event) {
         InteractionEvent.CLIENT_LEFT_CLICK_AIR.invoker().click(event.getPlayer(), event.getHand());
+    }
+    
+    @SubscribeEvent
+    public static void event(RecipesUpdatedEvent event) {
+        RecipeUpdateEvent.EVENT.invoker().update(event.getRecipeManager());
     }
     
     @OnlyIn(Dist.CLIENT)

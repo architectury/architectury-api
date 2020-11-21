@@ -21,6 +21,7 @@ package me.shedaniel.architectury.mixin.fabric.client;
 
 import me.shedaniel.architectury.event.events.ChatEvent;
 import me.shedaniel.architectury.event.events.PlayerEvent;
+import me.shedaniel.architectury.event.events.RecipeUpdateEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
@@ -28,8 +29,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundChatPacket;
 import net.minecraft.network.protocol.game.ClientboundLoginPacket;
 import net.minecraft.network.protocol.game.ClientboundRespawnPacket;
+import net.minecraft.network.protocol.game.ClientboundUpdateRecipesPacket;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.item.crafting.RecipeManager;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -40,6 +44,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ClientPacketListener.class)
 public class MixinClientPacketListener {
     @Shadow private Minecraft minecraft;
+    @Shadow @Final private RecipeManager recipeManager;
     @Unique private LocalPlayer tmpPlayer;
     
     @Inject(method = "handleLogin", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Options;broadcastOptions()V"))
@@ -70,5 +75,10 @@ public class MixinClientPacketListener {
             this.minecraft.gui.handleChat(packet.getType(), packet.getMessage(), packet.getSender());
             ci.cancel();
         }
+    }
+    
+    @Inject(method = "handleUpdateRecipes", at = @At("RETURN"))
+    private void handleUpdateRecipes(ClientboundUpdateRecipesPacket clientboundUpdateRecipesPacket, CallbackInfo ci) {
+        RecipeUpdateEvent.EVENT.invoker().update(recipeManager);
     }
 }
