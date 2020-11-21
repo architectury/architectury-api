@@ -23,6 +23,7 @@ import me.shedaniel.architectury.Architectury;
 import me.shedaniel.architectury.ExpectPlatform;
 import net.fabricmc.api.EnvType;
 import net.minecraft.SharedConstants;
+import net.minecraft.util.LazyLoadedValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
@@ -31,6 +32,7 @@ import java.util.Optional;
 
 public final class Platform {
     private Platform() {}
+    private static int simpleLoaderCache = -1;
     
     /**
      * @return the current mod loader, either "fabric" or "forge"
@@ -38,6 +40,27 @@ public final class Platform {
     @NotNull
     public static String getModLoader() {
         return Architectury.getModLoader();
+    }
+    
+    public static boolean isFabric() {
+        updateLoaderCache();
+        return simpleLoaderCache == 0;
+    }
+    
+    public static boolean isForge() {
+        updateLoaderCache();
+        return simpleLoaderCache == 1;
+    }
+    
+    private static void updateLoaderCache() {
+        switch (getModLoader()) {
+            case "fabric":
+                simpleLoaderCache = 0;
+                return;
+            case "forge":
+                simpleLoaderCache = 1;
+                return;
+        }
     }
     
     @NotNull
