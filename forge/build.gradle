@@ -105,9 +105,6 @@ curseforge {
             addGameVersion "1.16.4"
             addGameVersion "Java 8"
             addGameVersion "Forge"
-            relations {
-                requiredDependency "fabric-api"
-            }
             mainArtifact(shadowJar.archivePath) {
                 displayName = "[Forge $rootProject.supported_version] v$project.version"
             }
