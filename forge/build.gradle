@@ -40,6 +40,13 @@ minecraft {
     }
 }
 
+processResources {
+    filesMatching("META-INF/mods.toml") {
+        expand "version": project.version
+    }
+    inputs.property "META-INF/mods.toml", project.version
+}
+
 repositories {
     jcenter()
     maven { url "https://files.minecraftforge.net/maven" }
