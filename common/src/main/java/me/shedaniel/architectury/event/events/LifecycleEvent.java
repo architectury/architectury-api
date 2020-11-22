@@ -21,24 +21,11 @@ package me.shedaniel.architectury.event.events;
 
 import me.shedaniel.architectury.event.Event;
 import me.shedaniel.architectury.event.EventFactory;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 
-
 public interface LifecycleEvent {
-    /**
-     * Invoked when client has been initialised, not available in forge.
-     */
-    @Deprecated @Environment(EnvType.CLIENT) Event<ClientState> CLIENT_STARTED = EventFactory.createLoop(ClientState.class);
-    /**
-     * Invoked when client is initialising, not available in forge.
-     */
-    @Deprecated @Environment(EnvType.CLIENT) Event<ClientState> CLIENT_STOPPING = EventFactory.createLoop(ClientState.class);
     /**
      * Invoked when server is starting, equivalent to forge's {@code FMLServerStartingEvent} and fabric's {@code ServerLifecycleEvents#SERVER_STARTING}.
      */
@@ -67,27 +54,16 @@ public interface LifecycleEvent {
      * Invoked during a world is saved, equivalent to forge's {@code WorldEvent.Save}.
      */
     Event<ServerWorldState> SERVER_WORLD_SAVE = EventFactory.createLoop(ServerWorldState.class);
-    /**
-     * Invoked after a world is loaded only on client, equivalent to forge's {@code WorldEvent.Load}.
-     */
-    @Environment(EnvType.CLIENT) Event<ClientWorldState> CLIENT_WORLD_LOAD = EventFactory.createLoop(ClientWorldState.class);
     
     interface InstanceState<T> {
         void stateChanged(T instance);
     }
-    
-    @Deprecated
-    @Environment(EnvType.CLIENT)
-    interface ClientState extends InstanceState<Minecraft> {}
     
     interface ServerState extends InstanceState<MinecraftServer> {}
     
     interface WorldState<T extends Level> {
         void act(T world);
     }
-    
-    @Environment(EnvType.CLIENT)
-    interface ClientWorldState extends WorldState<ClientLevel> {}
     
     interface ServerWorldState extends WorldState<ServerLevel> {}
 }

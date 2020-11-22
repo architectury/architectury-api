@@ -20,6 +20,10 @@
 package me.shedaniel.architectury.event.fabric;
 
 import me.shedaniel.architectury.event.events.*;
+import me.shedaniel.architectury.event.events.client.ClientLifecycleEvent;
+import me.shedaniel.architectury.event.events.client.ClientTickEvent;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
@@ -34,14 +38,15 @@ import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.commands.Commands;
 
 public class EventHandlerImpl {
+    @Environment(EnvType.CLIENT)
     public static void registerClient() {
-        ClientLifecycleEvents.CLIENT_STARTED.register(LifecycleEvent.CLIENT_STARTED.invoker()::stateChanged);
-        ClientLifecycleEvents.CLIENT_STOPPING.register(LifecycleEvent.CLIENT_STOPPING.invoker()::stateChanged);
+        ClientLifecycleEvents.CLIENT_STARTED.register(ClientLifecycleEvent.CLIENT_STARTED.invoker()::stateChanged);
+        ClientLifecycleEvents.CLIENT_STOPPING.register(ClientLifecycleEvent.CLIENT_STOPPING.invoker()::stateChanged);
         
-        ClientTickEvents.START_CLIENT_TICK.register(TickEvent.CLIENT_PRE.invoker()::tick);
-        ClientTickEvents.END_CLIENT_TICK.register(TickEvent.CLIENT_POST.invoker()::tick);
-        ClientTickEvents.START_WORLD_TICK.register(TickEvent.CLIENT_WORLD_PRE.invoker()::tick);
-        ClientTickEvents.END_WORLD_TICK.register(TickEvent.CLIENT_WORLD_POST.invoker()::tick);
+        ClientTickEvents.START_CLIENT_TICK.register(ClientTickEvent.CLIENT_PRE.invoker()::tick);
+        ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvent.CLIENT_POST.invoker()::tick);
+        ClientTickEvents.START_WORLD_TICK.register(ClientTickEvent.CLIENT_WORLD_PRE.invoker()::tick);
+        ClientTickEvents.END_WORLD_TICK.register(ClientTickEvent.CLIENT_WORLD_POST.invoker()::tick);
         
         ItemTooltipCallback.EVENT.register((itemStack, tooltipFlag, list) -> TooltipEvent.ITEM.invoker().append(itemStack, list, tooltipFlag));
         HudRenderCallback.EVENT.register(GuiEvent.RENDER_HUD.invoker()::renderHud);
@@ -68,6 +73,7 @@ public class EventHandlerImpl {
         AttackBlockCallback.EVENT.register((player, world, hand, pos, face) -> InteractionEvent.LEFT_CLICK_BLOCK.invoker().click(player, hand, pos, face));
     }
     
+    @Environment(EnvType.SERVER)
     public static void registerServer() {
         
     }

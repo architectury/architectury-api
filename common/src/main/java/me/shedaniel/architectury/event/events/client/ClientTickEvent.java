@@ -17,23 +17,27 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package me.shedaniel.architectury.event.events;
+package me.shedaniel.architectury.event.events.client;
 
 import me.shedaniel.architectury.event.Event;
 import me.shedaniel.architectury.event.EventFactory;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionResultHolder;
-import org.jetbrains.annotations.NotNull;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 
-public interface ChatEvent {
-    /**
-     * Invoked when server receives a message, equivalent to forge's {@code ServerChatEvent}.
-     */
-    Event<Server> SERVER = EventFactory.createInteractionResultHolder(Server.class);
+@Environment(EnvType.CLIENT)
+public interface ClientTickEvent<T> {
+    Event<Client> CLIENT_PRE = EventFactory.createLoop(Client.class);
+    Event<Client> CLIENT_POST = EventFactory.createLoop(Client.class);
+    Event<ClientWorld> CLIENT_WORLD_PRE = EventFactory.createLoop(ClientWorld.class);
+    Event<ClientWorld> CLIENT_WORLD_POST = EventFactory.createLoop(ClientWorld.class);
     
-    interface Server {
-        @NotNull
-        InteractionResultHolder<Component> process(ServerPlayer player, String message, Component component);
-    }
+    void tick(T instance);
+    
+    @Environment(EnvType.CLIENT)
+    interface Client extends ClientTickEvent<Minecraft> {}
+    
+    @Environment(EnvType.CLIENT)
+    interface ClientWorld extends ClientTickEvent<ClientLevel> {}
 }

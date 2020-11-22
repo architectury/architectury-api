@@ -17,23 +17,32 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package me.shedaniel.architectury.event.events;
+package me.shedaniel.architectury.event.events.client;
 
 import me.shedaniel.architectury.event.Event;
 import me.shedaniel.architectury.event.EventFactory;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionResultHolder;
-import org.jetbrains.annotations.NotNull;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.player.LocalPlayer;
 
-public interface ChatEvent {
-    /**
-     * Invoked when server receives a message, equivalent to forge's {@code ServerChatEvent}.
-     */
-    Event<Server> SERVER = EventFactory.createInteractionResultHolder(Server.class);
+@Environment(EnvType.CLIENT)
+public interface ClientPlayerEvent {
+    Event<ClientPlayerJoin> CLIENT_PLAYER_JOIN = EventFactory.createLoop(ClientPlayerJoin.class);
+    Event<ClientPlayerQuit> CLIENT_PLAYER_QUIT = EventFactory.createLoop(ClientPlayerQuit.class);
+    Event<ClientPlayerRespawn> CLIENT_PLAYER_RESPAWN = EventFactory.createLoop(ClientPlayerRespawn.class);
     
-    interface Server {
-        @NotNull
-        InteractionResultHolder<Component> process(ServerPlayer player, String message, Component component);
+    @Environment(EnvType.CLIENT)
+    interface ClientPlayerJoin {
+        void join(LocalPlayer player);
+    }
+    
+    @Environment(EnvType.CLIENT)
+    interface ClientPlayerQuit {
+        void quit(LocalPlayer player);
+    }
+    
+    @Environment(EnvType.CLIENT)
+    interface ClientPlayerRespawn {
+        void respawn(LocalPlayer oldPlayer, LocalPlayer newPlayer);
     }
 }

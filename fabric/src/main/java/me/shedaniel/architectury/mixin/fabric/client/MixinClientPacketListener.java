@@ -19,9 +19,9 @@
 
 package me.shedaniel.architectury.mixin.fabric.client;
 
-import me.shedaniel.architectury.event.events.ChatEvent;
-import me.shedaniel.architectury.event.events.PlayerEvent;
 import me.shedaniel.architectury.event.events.RecipeUpdateEvent;
+import me.shedaniel.architectury.event.events.client.ClientChatEvent;
+import me.shedaniel.architectury.event.events.client.ClientPlayerEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
@@ -49,7 +49,7 @@ public class MixinClientPacketListener {
     
     @Inject(method = "handleLogin", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Options;broadcastOptions()V"))
     private void handleLogin(ClientboundLoginPacket packet, CallbackInfo ci) {
-        PlayerEvent.CLIENT_PLAYER_JOIN.invoker().join(minecraft.player);
+        ClientPlayerEvent.CLIENT_PLAYER_JOIN.invoker().join(minecraft.player);
     }
     
     @Inject(method = "handleRespawn", at = @At("HEAD"))
@@ -60,7 +60,7 @@ public class MixinClientPacketListener {
     @Inject(method = "handleRespawn", at = @At(value = "INVOKE",
                                                target = "Lnet/minecraft/client/multiplayer/ClientLevel;addPlayer(ILnet/minecraft/client/player/AbstractClientPlayer;)V"))
     private void handleRespawn(ClientboundRespawnPacket packet, CallbackInfo ci) {
-        PlayerEvent.CLIENT_PLAYER_RESPAWN.invoker().respawn(tmpPlayer, minecraft.player);
+        ClientPlayerEvent.CLIENT_PLAYER_RESPAWN.invoker().respawn(tmpPlayer, minecraft.player);
         this.tmpPlayer = null;
     }
     
@@ -68,7 +68,7 @@ public class MixinClientPacketListener {
                                             target = "Lnet/minecraft/client/gui/Gui;handleChat(Lnet/minecraft/network/chat/ChatType;Lnet/minecraft/network/chat/Component;Ljava/util/UUID;)V"),
             cancellable = true)
     private void handleChat(ClientboundChatPacket packet, CallbackInfo ci) {
-        InteractionResultHolder<Component> process = ChatEvent.CLIENT_RECEIVED.invoker().process(packet.getType(), packet.getMessage(), packet.getSender());
+        InteractionResultHolder<Component> process = ClientChatEvent.CLIENT_RECEIVED.invoker().process(packet.getType(), packet.getMessage(), packet.getSender());
         if (process.getResult() == InteractionResult.FAIL)
             ci.cancel();
         else if (process.getObject() != null && !process.getObject().equals(packet.getMessage())) {

@@ -21,17 +21,19 @@ package me.shedaniel.architectury.event.forge;
 
 import me.shedaniel.architectury.event.events.TextureStitchEvent;
 import me.shedaniel.architectury.event.events.*;
+import me.shedaniel.architectury.event.events.client.ClientChatEvent;
+import me.shedaniel.architectury.event.events.client.ClientLifecycleEvent;
+import me.shedaniel.architectury.event.events.client.ClientPlayerEvent;
+import me.shedaniel.architectury.event.events.client.ClientTickEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.network.play.server.SUpdateRecipesPacket;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
-import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -47,11 +49,11 @@ public class EventHandlerImplClient {
     }
     
     @SubscribeEvent
-    public static void event(ClientTickEvent event) {
+    public static void event(net.minecraftforge.event.TickEvent.ClientTickEvent event) {
         if (event.phase == net.minecraftforge.event.TickEvent.Phase.START)
-            TickEvent.CLIENT_PRE.invoker().tick(Minecraft.getInstance());
+            ClientTickEvent.CLIENT_PRE.invoker().tick(Minecraft.getInstance());
         else if (event.phase == net.minecraftforge.event.TickEvent.Phase.END)
-            TickEvent.CLIENT_POST.invoker().tick(Minecraft.getInstance());
+            ClientTickEvent.CLIENT_POST.invoker().tick(Minecraft.getInstance());
     }
     
     @SubscribeEvent
@@ -62,17 +64,17 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent
     public static void event(ClientPlayerNetworkEvent.LoggedInEvent event) {
-        PlayerEvent.CLIENT_PLAYER_JOIN.invoker().join(event.getPlayer());
+        ClientPlayerEvent.CLIENT_PLAYER_JOIN.invoker().join(event.getPlayer());
     }
     
     @SubscribeEvent
     public static void event(ClientPlayerNetworkEvent.LoggedOutEvent event) {
-        PlayerEvent.CLIENT_PLAYER_QUIT.invoker().quit(event.getPlayer());
+        ClientPlayerEvent.CLIENT_PLAYER_QUIT.invoker().quit(event.getPlayer());
     }
     
     @SubscribeEvent
     public static void event(ClientPlayerNetworkEvent.RespawnEvent event) {
-        PlayerEvent.CLIENT_PLAYER_RESPAWN.invoker().respawn(event.getOldPlayer(), event.getNewPlayer());
+        ClientPlayerEvent.CLIENT_PLAYER_RESPAWN.invoker().respawn(event.getOldPlayer(), event.getNewPlayer());
     }
     
     @SubscribeEvent
@@ -94,8 +96,8 @@ public class EventHandlerImplClient {
     }
     
     @SubscribeEvent
-    public static void event(ClientChatEvent event) {
-        ActionResult<String> process = ChatEvent.CLIENT.invoker().process(event.getMessage());
+    public static void event(net.minecraftforge.client.event.ClientChatEvent event) {
+        ActionResult<String> process = ClientChatEvent.CLIENT.invoker().process(event.getMessage());
         if (process.getObject() != null)
             event.setMessage(process.getObject());
         if (process.getResult() == ActionResultType.FAIL)
@@ -104,7 +106,7 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent
     public static void event(ClientChatReceivedEvent event) {
-        ActionResult<ITextComponent> process = ChatEvent.CLIENT_RECEIVED.invoker().process(event.getType(), event.getMessage(), event.getSenderUUID());
+        ActionResult<ITextComponent> process = ClientChatEvent.CLIENT_RECEIVED.invoker().process(event.getType(), event.getMessage(), event.getSenderUUID());
         if (process.getObject() != null)
             event.setMessage(process.getObject());
         if (process.getResult() == ActionResultType.FAIL)
@@ -115,7 +117,7 @@ public class EventHandlerImplClient {
     public static void event(WorldEvent.Save event) {
         if (event.getWorld() instanceof ClientWorld) {
             ClientWorld world = (ClientWorld) event.getWorld();
-            LifecycleEvent.CLIENT_WORLD_LOAD.invoker().act(world);
+            ClientLifecycleEvent.CLIENT_WORLD_LOAD.invoker().act(world);
         }
     }
     

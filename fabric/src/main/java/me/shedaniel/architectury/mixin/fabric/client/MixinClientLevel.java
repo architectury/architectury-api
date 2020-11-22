@@ -20,7 +20,7 @@
 package me.shedaniel.architectury.mixin.fabric.client;
 
 import me.shedaniel.architectury.event.events.EntityEvent;
-import me.shedaniel.architectury.event.events.LifecycleEvent;
+import me.shedaniel.architectury.event.events.client.ClientLifecycleEvent;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -41,7 +41,7 @@ import java.util.function.Supplier;
 public class MixinClientLevel {
     @Inject(method = "<init>", at = @At("RETURN"))
     private void construct(ClientPacketListener clientPacketListener, ClientLevel.ClientLevelData clientLevelData, ResourceKey<Level> resourceKey, DimensionType dimensionType, int i, Supplier<ProfilerFiller> supplier, LevelRenderer levelRenderer, boolean bl, long l, CallbackInfo ci) {
-        LifecycleEvent.CLIENT_WORLD_LOAD.invoker().act((ClientLevel) (Object) this);
+        ClientLifecycleEvent.CLIENT_WORLD_LOAD.invoker().act((ClientLevel) (Object) this);
     }
     
     @Inject(method = "addEntity", at = @At("HEAD"), cancellable = true)

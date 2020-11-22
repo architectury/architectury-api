@@ -17,23 +17,40 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package me.shedaniel.architectury.event.events;
+package me.shedaniel.architectury.event.events.client;
 
 import me.shedaniel.architectury.event.Event;
 import me.shedaniel.architectury.event.EventFactory;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResultHolder;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public interface ChatEvent {
+import java.util.UUID;
+
+@Environment(EnvType.CLIENT)
+public interface ClientChatEvent {
     /**
-     * Invoked when server receives a message, equivalent to forge's {@code ServerChatEvent}.
+     * Invoked when client tries to send a message, equivalent to forge's {@code ClientChatEvent}.
      */
-    Event<Server> SERVER = EventFactory.createInteractionResultHolder(Server.class);
+    Event<Client> CLIENT = EventFactory.createInteractionResultHolder(Client.class);
+    /**
+     * Invoked when client receives a message, equivalent to forge's {@code ClientChatReceivedEvent}.
+     */
+    Event<ClientReceived> CLIENT_RECEIVED = EventFactory.createInteractionResultHolder(ClientReceived.class);
     
-    interface Server {
+    @Environment(EnvType.CLIENT)
+    interface Client {
         @NotNull
-        InteractionResultHolder<Component> process(ServerPlayer player, String message, Component component);
+        InteractionResultHolder<String> process(String message);
+    }
+    
+    @Environment(EnvType.CLIENT)
+    interface ClientReceived {
+        @NotNull
+        InteractionResultHolder<Component> process(ChatType type, Component message, @Nullable UUID sender);
     }
 }

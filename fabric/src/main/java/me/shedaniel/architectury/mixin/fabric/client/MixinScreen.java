@@ -19,8 +19,8 @@
 
 package me.shedaniel.architectury.mixin.fabric.client;
 
-import me.shedaniel.architectury.event.events.ChatEvent;
 import me.shedaniel.architectury.event.events.GuiEvent;
+import me.shedaniel.architectury.event.events.client.ClientChatEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -59,7 +59,7 @@ public abstract class MixinScreen {
     
     @ModifyVariable(method = "sendMessage(Ljava/lang/String;Z)V", at = @At("HEAD"), argsOnly = true, ordinal = 0)
     private String modifyMessage(String message) {
-        InteractionResultHolder<String> process = ChatEvent.CLIENT.invoker().process(message);
+        InteractionResultHolder<String> process = ClientChatEvent.CLIENT.invoker().process(message);
         if (process.getResult() == InteractionResult.FAIL)
             return "";
         if (process.getObject() != null)

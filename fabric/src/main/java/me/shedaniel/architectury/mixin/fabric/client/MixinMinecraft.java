@@ -20,7 +20,7 @@
 package me.shedaniel.architectury.mixin.fabric.client;
 
 import me.shedaniel.architectury.event.events.InteractionEvent;
-import me.shedaniel.architectury.event.events.PlayerEvent;
+import me.shedaniel.architectury.event.events.client.ClientPlayerEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
@@ -44,7 +44,7 @@ public class MixinMinecraft {
     @Inject(method = "clearLevel(Lnet/minecraft/client/gui/screens/Screen;)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/chat/NarratorChatListener;clear()V"))
     private void handleLogin(Screen screen, CallbackInfo ci) {
-        PlayerEvent.CLIENT_PLAYER_QUIT.invoker().quit(player);
+        ClientPlayerEvent.CLIENT_PLAYER_QUIT.invoker().quit(player);
     }
     
     @Inject(method = "startUseItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;isEmpty()Z", ordinal = 1),

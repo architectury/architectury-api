@@ -33,6 +33,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 public final class FluidStack {
+    private static final FluidStack EMPTY = create(Fluids.EMPTY, Fraction.zero());
     private Fraction amount;
     @Nullable
     private CompoundTag tag;
@@ -42,6 +43,18 @@ public final class FluidStack {
         this.fluid = Objects.requireNonNull(fluid);
         this.amount = Objects.requireNonNull(amount);
         this.tag = tag == null ? null : tag.copy();
+    }
+    
+    public static FluidStack empty() {
+        return EMPTY;
+    }
+    
+    public static FluidStack create(Fluid fluid, Fraction amount, @Nullable CompoundTag tag) {
+        return create(() -> fluid, amount, tag);
+    }
+    
+    public static FluidStack create(Fluid fluid, Fraction amount) {
+        return create(fluid, amount, null);
     }
     
     public static FluidStack create(Supplier<Fluid> fluid, Fraction amount, @Nullable CompoundTag tag) {

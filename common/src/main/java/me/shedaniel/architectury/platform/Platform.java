@@ -23,7 +23,6 @@ import me.shedaniel.architectury.Architectury;
 import me.shedaniel.architectury.ExpectPlatform;
 import net.fabricmc.api.EnvType;
 import net.minecraft.SharedConstants;
-import net.minecraft.util.LazyLoadedValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
@@ -32,6 +31,7 @@ import java.util.Optional;
 
 public final class Platform {
     private Platform() {}
+    
     private static int simpleLoaderCache = -1;
     
     /**
@@ -53,6 +53,10 @@ public final class Platform {
     }
     
     private static void updateLoaderCache() {
+        if (simpleLoaderCache != -1) {
+            return;
+        }
+        
         switch (getModLoader()) {
             case "fabric":
                 simpleLoaderCache = 0;

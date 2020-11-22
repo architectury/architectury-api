@@ -22,10 +22,7 @@ package me.shedaniel.architectury.event.events;
 import me.shedaniel.architectury.event.Event;
 import me.shedaniel.architectury.event.EventFactory;
 import me.shedaniel.architectury.utils.IntValue;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -42,9 +39,6 @@ public interface PlayerEvent {
     Event<PlayerJoin> PLAYER_JOIN = EventFactory.createLoop(PlayerJoin.class);
     Event<PlayerQuit> PLAYER_QUIT = EventFactory.createLoop(PlayerQuit.class);
     Event<PlayerRespawn> PLAYER_RESPAWN = EventFactory.createLoop(PlayerRespawn.class);
-    @Environment(EnvType.CLIENT) Event<ClientPlayerJoin> CLIENT_PLAYER_JOIN = EventFactory.createLoop(ClientPlayerJoin.class);
-    @Environment(EnvType.CLIENT) Event<ClientPlayerQuit> CLIENT_PLAYER_QUIT = EventFactory.createLoop(ClientPlayerQuit.class);
-    @Environment(EnvType.CLIENT) Event<ClientPlayerRespawn> CLIENT_PLAYER_RESPAWN = EventFactory.createLoop(ClientPlayerRespawn.class);
     Event<PlayerAdvancement> PLAYER_ADVANCEMENT = EventFactory.createLoop(PlayerAdvancement.class);
     Event<PlayerClone> PLAYER_CLONE = EventFactory.createLoop(PlayerClone.class);
     Event<CraftItem> CRAFT_ITEM = EventFactory.createLoop(CraftItem.class);
@@ -106,20 +100,5 @@ public interface PlayerEvent {
     
     interface CloseMenu {
         void close(Player player, AbstractContainerMenu menu);
-    }
-    
-    @Environment(EnvType.CLIENT)
-    interface ClientPlayerJoin {
-        void join(LocalPlayer player);
-    }
-    
-    @Environment(EnvType.CLIENT)
-    interface ClientPlayerQuit {
-        void quit(LocalPlayer player);
-    }
-    
-    @Environment(EnvType.CLIENT)
-    interface ClientPlayerRespawn {
-        void respawn(LocalPlayer oldPlayer, LocalPlayer newPlayer);
     }
 }
