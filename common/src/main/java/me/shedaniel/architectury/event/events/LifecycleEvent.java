@@ -27,7 +27,11 @@ import net.minecraft.world.level.Level;
 
 public interface LifecycleEvent {
     /**
-     * Invoked when server is starting, equivalent to forge's {@code FMLServerStartingEvent} and fabric's {@code ServerLifecycleEvents#SERVER_STARTING}.
+     * Invoked when server is starting, equivalent to forge's {@code FMLServerAboutToStartEvent} and fabric's {@code ServerLifecycleEvents#SERVER_STARTING}.
+     */
+    Event<ServerState> SERVER_BEFORE_START = EventFactory.createLoop(ServerState.class);
+    /**
+     * Invoked when server is starting, equivalent to forge's {@code FMLServerStartingEvent}.
      */
     Event<ServerState> SERVER_STARTING = EventFactory.createLoop(ServerState.class);
     /**

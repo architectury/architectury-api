@@ -41,7 +41,7 @@ public class GameInstanceImpl {
     
     public static void init() {
         EventHandler.init();
-        LifecycleEvent.SERVER_STARTING.register(server -> GameInstanceImpl.server = server);
+        LifecycleEvent.SERVER_BEFORE_START.register(server -> GameInstanceImpl.server = server);
         LifecycleEvent.SERVER_STOPPED.register(server -> GameInstanceImpl.server = null);
     }
     

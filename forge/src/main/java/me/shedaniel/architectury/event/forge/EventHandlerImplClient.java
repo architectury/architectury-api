@@ -25,6 +25,8 @@ import me.shedaniel.architectury.event.events.client.ClientChatEvent;
 import me.shedaniel.architectury.event.events.client.ClientLifecycleEvent;
 import me.shedaniel.architectury.event.events.client.ClientPlayerEvent;
 import me.shedaniel.architectury.event.events.client.ClientTickEvent;
+import me.shedaniel.architectury.impl.TooltipEventColorContextImpl;
+import me.shedaniel.architectury.impl.TooltipEventPositionContextImpl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.world.ClientWorld;
@@ -146,6 +148,36 @@ public class EventHandlerImplClient {
     @SubscribeEvent
     public static void event(RecipesUpdatedEvent event) {
         RecipeUpdateEvent.EVENT.invoker().update(event.getRecipeManager());
+    }
+    
+    private static final ThreadLocal<TooltipEventColorContextImpl> tooltipColorContext = ThreadLocal.withInitial(TooltipEventColorContextImpl::new);
+    private static final ThreadLocal<TooltipEventPositionContextImpl> tooltipPositionContext = ThreadLocal.withInitial(TooltipEventPositionContextImpl::new);
+    
+    @SubscribeEvent
+    public static void event(RenderTooltipEvent.Pre event) {
+        if (TooltipEvent.RENDER_FORGE_PRE.invoker().renderTooltip(event.getMatrixStack(), event.getLines(), event.getX(), event.getY()) == ActionResultType.FAIL) {
+            event.setCanceled(true);
+            return;
+        }
+        
+        TooltipEventPositionContextImpl positionContext = tooltipPositionContext.get();
+        positionContext.reset(event.getX(), event.getY());
+        TooltipEvent.RENDER_MODIFY_POSITION.invoker().renderTooltip(event.getMatrixStack(), positionContext);
+        event.setX(positionContext.getTooltipX());
+        event.setY(positionContext.getTooltipY());
+    }
+    
+    @SubscribeEvent
+    public static void event(RenderTooltipEvent.Color event) {
+        TooltipEventColorContextImpl colorContext = tooltipColorContext.get();
+        colorContext.reset();
+        colorContext.setBackgroundColor(event.getBackground());
+        colorContext.setOutlineGradientTopColor(event.getBorderStart());
+        colorContext.setOutlineGradientBottomColor(event.getBorderEnd());
+        TooltipEvent.RENDER_MODIFY_COLOR.invoker().renderTooltip(event.getMatrixStack(), event.getX(), event.getY(), colorContext);
+        event.setBackground(colorContext.getBackgroundColor());
+        event.setBorderEnd(colorContext.getOutlineGradientBottomColor());
+        event.setBorderStart(colorContext.getOutlineGradientTopColor());
     }
     
     @OnlyIn(Dist.CLIENT)

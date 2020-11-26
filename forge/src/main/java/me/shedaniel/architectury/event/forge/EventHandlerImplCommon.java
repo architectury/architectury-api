@@ -51,10 +51,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
-import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
-import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
+import net.minecraftforge.fml.event.server.*;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class EventHandlerImplCommon {
@@ -318,6 +315,11 @@ public class EventHandlerImplCommon {
                 event.setCanceled(true);
             }
         }
+    }
+    
+    @SubscribeEvent
+    public static void event(FMLServerAboutToStartEvent event) {
+        LifecycleEvent.SERVER_BEFORE_START.invoker().stateChanged(event.getServer());
     }
     
     public static class ModBasedEventHandler {

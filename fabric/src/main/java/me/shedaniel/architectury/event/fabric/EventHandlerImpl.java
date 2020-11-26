@@ -53,7 +53,7 @@ public class EventHandlerImpl {
     }
     
     public static void registerCommon() {
-        ServerLifecycleEvents.SERVER_STARTING.register(LifecycleEvent.SERVER_STARTING.invoker()::stateChanged);
+        ServerLifecycleEvents.SERVER_STARTING.register(LifecycleEvent.SERVER_BEFORE_START.invoker()::stateChanged);
         ServerLifecycleEvents.SERVER_STARTED.register(LifecycleEvent.SERVER_STARTED.invoker()::stateChanged);
         ServerLifecycleEvents.SERVER_STOPPING.register(LifecycleEvent.SERVER_STOPPING.invoker()::stateChanged);
         ServerLifecycleEvents.SERVER_STOPPED.register(LifecycleEvent.SERVER_STOPPED.invoker()::stateChanged);

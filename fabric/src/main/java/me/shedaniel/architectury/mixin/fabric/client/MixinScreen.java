@@ -19,27 +19,33 @@
 
 package me.shedaniel.architectury.mixin.fabric.client;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import me.shedaniel.architectury.event.events.GuiEvent;
+import me.shedaniel.architectury.event.events.TooltipEvent;
 import me.shedaniel.architectury.event.events.client.ClientChatEvent;
+import me.shedaniel.architectury.impl.TooltipEventColorContextImpl;
+import me.shedaniel.architectury.impl.TooltipEventPositionContextImpl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 
 @Mixin(Screen.class)
 public abstract class MixinScreen {
-    @Shadow @Final protected List<AbstractWidget> buttons;
+    @Shadow @Final public List<AbstractWidget> buttons;
+    @Unique private static ThreadLocal<TooltipEventPositionContextImpl> tooltipPositionContext = ThreadLocal.withInitial(TooltipEventPositionContextImpl::new);
+    @Unique private static ThreadLocal<TooltipEventColorContextImpl> tooltipColorContext = ThreadLocal.withInitial(TooltipEventColorContextImpl::new);
     
     @Shadow
     public abstract List<? extends GuiEventListener> children();
@@ -65,5 +71,48 @@ public abstract class MixinScreen {
         if (process.getObject() != null)
             return process.getObject();
         return message;
+    }
+    
+    @Inject(method = "renderTooltip(Lcom/mojang/blaze3d/vertex/PoseStack;Ljava/util/List;II)V", at = @At("HEAD"), cancellable = true)
+    private void renderTooltip(PoseStack poseStack, List<? extends FormattedCharSequence> list, int x, int y, CallbackInfo ci) {
+        if (!list.isEmpty()) {
+            TooltipEventColorContextImpl colorContext = tooltipColorContext.get();
+            colorContext.reset();
+            TooltipEventPositionContextImpl positionContext = tooltipPositionContext.get();
+            positionContext.reset(x, y);
+            if (TooltipEvent.RENDER_VANILLA_PRE.invoker().renderTooltip(poseStack, list, x, y) == InteractionResult.FAIL) {
+                ci.cancel();
+            } else {
+                TooltipEvent.RENDER_MODIFY_COLOR.invoker().renderTooltip(poseStack, x, y, colorContext);
+                TooltipEvent.RENDER_MODIFY_POSITION.invoker().renderTooltip(poseStack, positionContext);
+            }
+        }
+    }
+    
+    @ModifyVariable(method = "renderTooltip(Lcom/mojang/blaze3d/vertex/PoseStack;Ljava/util/List;II)V",
+                    at = @At(value = "HEAD"), ordinal = 0)
+    private int modifyTooltipX(int original) {
+        return tooltipPositionContext.get().getTooltipX();
+    }
+    
+    @ModifyVariable(method = "renderTooltip(Lcom/mojang/blaze3d/vertex/PoseStack;Ljava/util/List;II)V",
+                    at = @At(value = "HEAD"), ordinal = 1)
+    private int modifyTooltipY(int original) {
+        return tooltipPositionContext.get().getTooltipY();
+    }
+    
+    @ModifyConstant(method = "renderTooltip(Lcom/mojang/blaze3d/vertex/PoseStack;Ljava/util/List;II)V", constant = @Constant(intValue = 0xf0100010))
+    private int modifyTooltipBackgroundColor(int original) {
+        return tooltipColorContext.get().getBackgroundColor();
+    }
+    
+    @ModifyConstant(method = "renderTooltip(Lcom/mojang/blaze3d/vertex/PoseStack;Ljava/util/List;II)V", constant = @Constant(intValue = 0x505000ff))
+    private int modifyTooltipOutlineGradientTopColor(int original) {
+        return tooltipColorContext.get().getOutlineGradientTopColor();
+    }
+    
+    @ModifyConstant(method = "renderTooltip(Lcom/mojang/blaze3d/vertex/PoseStack;Ljava/util/List;II)V", constant = @Constant(intValue = 0x5028007f))
+    private int modifyTooltipOutlineGradientBottomColor(int original) {
+        return tooltipColorContext.get().getOutlineGradientBottomColor();
     }
 }
