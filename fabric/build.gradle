@@ -54,7 +54,7 @@ remapJar {
 publishing {
     publications {
         mavenFabric(MavenPublication) {
-            artifact(remapJar.archivePath) {
+            artifact(shadowJar.archivePath) {
                 builtBy build
                 classifier "fabric"
             }
