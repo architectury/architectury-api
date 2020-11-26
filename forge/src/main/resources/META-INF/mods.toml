@@ -1,7 +1,7 @@
 modLoader = "javafml"
 loaderVersion = "[33,)"
 issueTrackerURL = "https://github.com/shedaniel/architectury/issues"
-license = "Apache-2.0"
+license = "LGPL-3"
 
 [[mods]]
 modId = "architectury"
@@ -11,4 +11,4 @@ authors = "shedaniel"
 description = '''
 A intermediary api aimed to ease developing multiplatform mods.
 '''
-license = "Apache-2.0"
+license = "LGPL-3"

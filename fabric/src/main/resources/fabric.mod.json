@@ -7,7 +7,7 @@
   "authors": [
     "shedaniel"
   ],
-  "license": "Apache-2.0",
+  "license": "LGPL-3",
   "environment": "*",
   "mixins": [
     "architectury.mixins.json"

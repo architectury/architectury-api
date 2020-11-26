@@ -54,8 +54,7 @@ public final class EventFactory {
     }
     
     public static <T> Event<T> of(Function<List<T>, T> function) {
-        Class<?>[] arguments = TypeResolver.resolveRawArguments(Function.class, function.getClass());
-        return new EventImpl<>(arguments[1], function);
+        return new EventImpl<>(function);
     }
     
     @SuppressWarnings("UnstableApiUsage")
@@ -149,10 +148,8 @@ public final class EventFactory {
         private final Function<List<T>, T> function;
         private T invoker = null;
         private ArrayList<T> listeners;
-        private Class<?> clazz;
         
-        public EventImpl(Class<?> clazz, Function<List<T>, T> function) {
-            this.clazz = Objects.requireNonNull(clazz);
+        public EventImpl(Function<List<T>, T> function) {
             this.function = function;
             this.listeners = new ArrayList<>();
         }
