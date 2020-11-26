@@ -25,12 +25,14 @@ import me.shedaniel.architectury.ForgeEvent;
 import net.jodah.typetools.TypeResolver;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -38,14 +40,27 @@ import java.util.function.Function;
 public final class EventFactory {
     private EventFactory() {}
     
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval
     public static <T> Event<T> create(Function<T[], T> function) {
+        Class<?>[] arguments = TypeResolver.resolveRawArguments(Function.class, function.getClass());
+        T[] array;
+        try {
+            array = (T[]) Array.newInstance(arguments[1], 0);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return of(list -> function.apply(list.toArray(array)));
+    }
+    
+    public static <T> Event<T> of(Function<List<T>, T> function) {
         Class<?>[] arguments = TypeResolver.resolveRawArguments(Function.class, function.getClass());
         return new EventImpl<>(arguments[1], function);
     }
     
     @SuppressWarnings("UnstableApiUsage")
     public static <T> Event<T> createLoop(Class<T> clazz) {
-        return create(listeners -> (T) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{clazz}, new AbstractInvocationHandler() {
+        return of(listeners -> (T) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{clazz}, new AbstractInvocationHandler() {
             @Override
             protected Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {
                 for (T listener : listeners) {
@@ -58,7 +73,7 @@ public final class EventFactory {
     
     @SuppressWarnings("UnstableApiUsage")
     public static <T> Event<T> createInteractionResult(Class<T> clazz) {
-        return create(listeners -> (T) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{clazz}, new AbstractInvocationHandler() {
+        return of(listeners -> (T) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{clazz}, new AbstractInvocationHandler() {
             @Override
             protected Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {
                 for (T listener : listeners) {
@@ -74,7 +89,7 @@ public final class EventFactory {
     
     @SuppressWarnings("UnstableApiUsage")
     public static <T> Event<T> createInteractionResultHolder(Class<T> clazz) {
-        return create(listeners -> (T) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{clazz}, new AbstractInvocationHandler() {
+        return of(listeners -> (T) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{clazz}, new AbstractInvocationHandler() {
             @Override
             protected Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {
                 for (T listener : listeners) {
@@ -90,7 +105,7 @@ public final class EventFactory {
     
     @SuppressWarnings("UnstableApiUsage")
     public static <T> Event<Consumer<T>> createConsumerLoop(Class<T> clazz) {
-        Event<Consumer<T>> event = create(listeners -> (Consumer<T>) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{Consumer.class}, new AbstractInvocationHandler() {
+        Event<Consumer<T>> event = of(listeners -> (Consumer<T>) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{Consumer.class}, new AbstractInvocationHandler() {
             @Override
             protected Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {
                 for (Consumer<T> listener : listeners) {
@@ -111,7 +126,7 @@ public final class EventFactory {
     
     @SuppressWarnings("UnstableApiUsage")
     public static <T> Event<Actor<T>> createActorLoop(Class<T> clazz) {
-        return create(listeners -> (Actor<T>) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{Actor.class}, new AbstractInvocationHandler() {
+        return of(listeners -> (Actor<T>) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{Actor.class}, new AbstractInvocationHandler() {
             @Override
             protected Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {
                 for (Actor<T> listener : listeners) {
@@ -131,23 +146,15 @@ public final class EventFactory {
     }
     
     private static class EventImpl<T> implements Event<T> {
-        private final Function<T[], T> function;
+        private final Function<List<T>, T> function;
         private T invoker = null;
         private ArrayList<T> listeners;
         private Class<?> clazz;
         
-        public EventImpl(Class<?> clazz, Function<T[], T> function) {
+        public EventImpl(Class<?> clazz, Function<List<T>, T> function) {
             this.clazz = Objects.requireNonNull(clazz);
             this.function = function;
             this.listeners = new ArrayList<>();
-        }
-        
-        private T[] emptyArray() {
-            try {
-                return (T[]) Array.newInstance(clazz, 0);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
         }
         
         @Override
@@ -187,7 +194,7 @@ public final class EventFactory {
             if (listeners.size() == 1) {
                 invoker = listeners.get(0);
             } else {
-                invoker = function.apply(listeners.toArray(emptyArray()));
+                invoker = function.apply(listeners);
             }
         }
     }
