@@ -19,20 +19,36 @@
 
 package me.shedaniel.architectury;
 
+import me.shedaniel.architectury.utils.PlatformExpectedError;
 import org.jetbrains.annotations.ApiStatus;
 
-import java.lang.invoke.CallSite;
-import java.lang.invoke.ConstantCallSite;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
+import java.lang.invoke.*;
 
 @ApiStatus.Internal
 public class PlatformMethods {
-    public static CallSite platform(MethodHandles.Lookup lookup, String name, MethodType type)
-            throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException {
+    public static CallSite platform(MethodHandles.Lookup lookup, String name, MethodType type) {
         Class<?> lookupClass = lookup.lookupClass();
         String lookupType = lookupClass.getName().replace("$", "") + "Impl";
-        Class<?> newClass = Class.forName(lookupType.substring(0, lookupType.lastIndexOf('.')) + "." + Architectury.getModLoader() + "." + lookupType.substring(lookupType.lastIndexOf('.') + 1), false, lookupClass.getClassLoader());
-        return new ConstantCallSite(lookup.findStatic(newClass, name, type));
+        
+        String platformExpectedClass = lookupType.substring(0, lookupType.lastIndexOf('.')) + "." + Architectury.getModLoader() + "." +
+                                       lookupType.substring(lookupType.lastIndexOf('.') + 1);
+        Class<?> newClass;
+        try {
+            newClass = Class.forName(platformExpectedClass, false, lookupClass.getClassLoader());
+        } catch (ClassNotFoundException exception) {
+            throw new PlatformExpectedError(lookupClass.getName() + "#" + name + " expected platform implementation in " + platformExpectedClass +
+                                            "#" + name + ", but the class doesn't exist!", exception);
+        }
+        MethodHandle platformMethod;
+        try {
+            platformMethod = lookup.findStatic(newClass, name, type);
+        } catch (NoSuchMethodException exception) {
+            throw new PlatformExpectedError(lookupClass.getName() + "#" + name + " expected platform implementation in " + platformExpectedClass +
+                                            "#" + name + ", but the method doesn't exist!", exception);
+        } catch (IllegalAccessException exception) {
+            throw new PlatformExpectedError(lookupClass.getName() + "#" + name + " expected platform implementation in " + platformExpectedClass +
+                                            "#" + name + ", but the method's modifier doesn't match the access requirements!", exception);
+        }
+        return new ConstantCallSite(platformMethod);
     }
 }
