@@ -82,7 +82,7 @@ curseforge {
         apiKey = project.hasProperty("curse_api_key") ? project.property("curse_api_key") : System.getenv("curse_api_key")
         project {
             id = "419697"
-            releaseType = "release"
+            releaseType = "$rootProject.cf_type"
             changelogType = "html"
             changelog = releaseChangelog()
             addGameVersion "1.16-Snapshot"

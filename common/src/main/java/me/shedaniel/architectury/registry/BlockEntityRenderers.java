@@ -24,6 +24,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
@@ -33,8 +34,12 @@ import java.util.function.Function;
 public final class BlockEntityRenderers {
     private BlockEntityRenderers() {}
     
-    @ExpectPlatform
     public static <T extends BlockEntity> void registerRenderer(BlockEntityType<T> type, Function<BlockEntityRenderDispatcher, BlockEntityRenderer<T>> provider) {
+        registerRenderer(type, (BlockEntityRendererProvider.Context context) -> provider.apply(context.getBlockEntityRenderDispatcher()));
+    }
+    
+    @ExpectPlatform
+    public static <T extends BlockEntity> void registerRenderer(BlockEntityType<T> type, BlockEntityRendererProvider<T> provider) {
         throw new AssertionError();
     }
 }

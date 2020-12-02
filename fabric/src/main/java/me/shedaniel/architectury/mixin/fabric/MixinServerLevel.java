@@ -19,14 +19,15 @@
 
 package me.shedaniel.architectury.mixin.fabric;
 
-import me.shedaniel.architectury.event.events.EntityEvent;
 import me.shedaniel.architectury.event.events.LifecycleEvent;
+import me.shedaniel.architectury.hooks.fabric.PersistentEntitySectionManagerHooks;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ProgressListener;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.entity.PersistentEntitySectionManager;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -34,32 +35,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ServerLevel.class)
 public class MixinServerLevel {
+    @Shadow @Final private PersistentEntitySectionManager<Entity> entityManager;
+    
     @Inject(method = "save", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerChunkCache;save(Z)V"))
     private void save(ProgressListener progressListener, boolean bl, boolean bl2, CallbackInfo ci) {
         LifecycleEvent.SERVER_WORLD_SAVE.invoker().act((ServerLevel) (Object) this);
     }
     
     @Inject(method = "addEntity", at = @At(value = "INVOKE",
-                                           target = "Lnet/minecraft/server/level/ServerLevel;getChunk(IILnet/minecraft/world/level/chunk/ChunkStatus;Z)Lnet/minecraft/world/level/chunk/ChunkAccess;"),
+                                           target = "Lnet/minecraft/world/level/entity/PersistentEntitySectionManager;addNewEntity(Lnet/minecraft/world/level/entity/EntityAccess;)Z"),
             cancellable = true)
     private void addEntity(Entity entity, CallbackInfoReturnable<Boolean> cir) {
-        if (EntityEvent.ADD.invoker().add(entity, (ServerLevel) (Object) this) == InteractionResult.FAIL) {
-            cir.setReturnValue(false);
-        }
-    }
-    
-    @Inject(method = "addPlayer", at = @At("HEAD"), cancellable = true)
-    private void addPlayer(ServerPlayer serverPlayer, CallbackInfo ci) {
-        if (EntityEvent.ADD.invoker().add(serverPlayer, (ServerLevel) (Object) this) == InteractionResult.FAIL) {
-            ci.cancel();
-        }
-    }
-    
-    @Inject(method = "loadFromChunk", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;add(Lnet/minecraft/world/entity/Entity;)V"),
-            cancellable = true)
-    private void loadFromChunk(Entity entity, CallbackInfoReturnable<Boolean> cir) {
-        if (EntityEvent.ADD.invoker().add(entity, (ServerLevel) (Object) this) == InteractionResult.FAIL) {
-            cir.setReturnValue(false);
-        }
+        ((PersistentEntitySectionManagerHooks) this.entityManager).architectury_attachLevel((ServerLevel) (Object) this);
     }
 }

@@ -85,7 +85,7 @@ public abstract class MixinScreen implements ScreenInputDelegate {
         return message;
     }
     
-    @Inject(method = "renderTooltip(Lcom/mojang/blaze3d/vertex/PoseStack;Ljava/util/List;II)V", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "renderTooltipInternal", at = @At("HEAD"), cancellable = true)
     private void renderTooltip(PoseStack poseStack, List<? extends FormattedCharSequence> list, int x, int y, CallbackInfo ci) {
         if (!list.isEmpty()) {
             TooltipEventColorContextImpl colorContext = tooltipColorContext.get();
@@ -101,29 +101,29 @@ public abstract class MixinScreen implements ScreenInputDelegate {
         }
     }
     
-    @ModifyVariable(method = "renderTooltip(Lcom/mojang/blaze3d/vertex/PoseStack;Ljava/util/List;II)V",
+    @ModifyVariable(method = "renderTooltipInternal",
                     at = @At(value = "HEAD"), ordinal = 0)
     private int modifyTooltipX(int original) {
         return tooltipPositionContext.get().getTooltipX();
     }
     
-    @ModifyVariable(method = "renderTooltip(Lcom/mojang/blaze3d/vertex/PoseStack;Ljava/util/List;II)V",
+    @ModifyVariable(method = "renderTooltipInternal",
                     at = @At(value = "HEAD"), ordinal = 1)
     private int modifyTooltipY(int original) {
         return tooltipPositionContext.get().getTooltipY();
     }
     
-    @ModifyConstant(method = "renderTooltip(Lcom/mojang/blaze3d/vertex/PoseStack;Ljava/util/List;II)V", constant = @Constant(intValue = 0xf0100010))
+    @ModifyConstant(method = "renderTooltipInternal", constant = @Constant(intValue = 0xf0100010))
     private int modifyTooltipBackgroundColor(int original) {
         return tooltipColorContext.get().getBackgroundColor();
     }
     
-    @ModifyConstant(method = "renderTooltip(Lcom/mojang/blaze3d/vertex/PoseStack;Ljava/util/List;II)V", constant = @Constant(intValue = 0x505000ff))
+    @ModifyConstant(method = "renderTooltipInternal", constant = @Constant(intValue = 0x505000ff))
     private int modifyTooltipOutlineGradientTopColor(int original) {
         return tooltipColorContext.get().getOutlineGradientTopColor();
     }
     
-    @ModifyConstant(method = "renderTooltip(Lcom/mojang/blaze3d/vertex/PoseStack;Ljava/util/List;II)V", constant = @Constant(intValue = 0x5028007f))
+    @ModifyConstant(method = "renderTooltipInternal", constant = @Constant(intValue = 0x5028007f))
     private int modifyTooltipOutlineGradientBottomColor(int original) {
         return tooltipColorContext.get().getOutlineGradientBottomColor();
     }
