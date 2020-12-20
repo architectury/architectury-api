@@ -19,16 +19,16 @@
 
 package me.shedaniel.architectury.registry.forge;
 
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
 import java.util.function.Supplier;
 
 public class CreativeTabsImpl {
-    public static ItemGroup create(ResourceLocation resourceLocation, Supplier<ItemStack> supplier) {
-        return new ItemGroup(String.format("%s.%s", resourceLocation.getNamespace(), resourceLocation.getPath())) {
+    public static CreativeModeTab create(ResourceLocation resourceLocation, Supplier<ItemStack> supplier) {
+        return new CreativeModeTab(String.format("%s.%s", resourceLocation.getNamespace(), resourceLocation.getPath())) {
             @Override
             @Nonnull
             public ItemStack makeIcon() {

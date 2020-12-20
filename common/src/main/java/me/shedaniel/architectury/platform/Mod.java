@@ -42,6 +42,12 @@ public interface Mod {
     @NotNull
     String getDescription();
     
+    /**
+     * Gets the logo file path of the mod
+     *
+     * @param preferredSize the preferred logo size, only used in fabric
+     * @return the logo file path relative to the file
+     */
     @NotNull
     Optional<String> getLogoFile(int preferredSize);
     
@@ -54,13 +60,13 @@ public interface Mod {
     @Nullable
     Collection<String> getLicense();
     
-    @Nullable
+    @NotNull
     Optional<String> getHomepage();
     
-    @Nullable
+    @NotNull
     Optional<String> getSources();
     
-    @Nullable
+    @NotNull
     Optional<String> getIssueTracker();
     
     @Environment(EnvType.CLIENT)

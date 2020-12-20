@@ -28,11 +28,11 @@ import me.shedaniel.architectury.event.events.client.ClientTickEvent;
 import me.shedaniel.architectury.impl.TooltipEventColorContextImpl;
 import me.shedaniel.architectury.impl.TooltipEventPositionContextImpl;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
@@ -81,14 +81,14 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent
     public static void event(GuiScreenEvent.InitGuiEvent.Pre event) {
-        if (GuiEvent.INIT_PRE.invoker().init(event.getGui(), event.getWidgetList(), (List<IGuiEventListener>) event.getGui().children()) == ActionResultType.FAIL) {
+        if (GuiEvent.INIT_PRE.invoker().init(event.getGui(), event.getWidgetList(), (List<GuiEventListener>) event.getGui().children()) == InteractionResult.FAIL) {
             event.setCanceled(true);
         }
     }
     
     @SubscribeEvent
     public static void event(GuiScreenEvent.InitGuiEvent.Post event) {
-        GuiEvent.INIT_POST.invoker().init(event.getGui(), event.getWidgetList(), (List<IGuiEventListener>) event.getGui().children());
+        GuiEvent.INIT_POST.invoker().init(event.getGui(), event.getWidgetList(), (List<GuiEventListener>) event.getGui().children());
     }
     
     @SubscribeEvent
@@ -99,33 +99,33 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent
     public static void event(net.minecraftforge.client.event.ClientChatEvent event) {
-        ActionResult<String> process = ClientChatEvent.CLIENT.invoker().process(event.getMessage());
+        InteractionResultHolder<String> process = ClientChatEvent.CLIENT.invoker().process(event.getMessage());
         if (process.getObject() != null)
             event.setMessage(process.getObject());
-        if (process.getResult() == ActionResultType.FAIL)
+        if (process.getResult() == InteractionResult.FAIL)
             event.setCanceled(true);
     }
     
     @SubscribeEvent
     public static void event(ClientChatReceivedEvent event) {
-        ActionResult<ITextComponent> process = ClientChatEvent.CLIENT_RECEIVED.invoker().process(event.getType(), event.getMessage(), event.getSenderUUID());
+        InteractionResultHolder<Component> process = ClientChatEvent.CLIENT_RECEIVED.invoker().process(event.getType(), event.getMessage(), event.getSenderUUID());
         if (process.getObject() != null)
             event.setMessage(process.getObject());
-        if (process.getResult() == ActionResultType.FAIL)
+        if (process.getResult() == InteractionResult.FAIL)
             event.setCanceled(true);
     }
     
     @SubscribeEvent
     public static void event(WorldEvent.Save event) {
-        if (event.getWorld() instanceof ClientWorld) {
-            ClientWorld world = (ClientWorld) event.getWorld();
+        if (event.getWorld() instanceof ClientLevel) {
+            ClientLevel world = (ClientLevel) event.getWorld();
             ClientLifecycleEvent.CLIENT_WORLD_LOAD.invoker().act(world);
         }
     }
     
     @SubscribeEvent
     public static void event(GuiScreenEvent.DrawScreenEvent.Pre event) {
-        if (GuiEvent.RENDER_PRE.invoker().render(event.getGui(), event.getMatrixStack(), event.getMouseX(), event.getMouseY(), event.getRenderPartialTicks()) == ActionResultType.FAIL) {
+        if (GuiEvent.RENDER_PRE.invoker().render(event.getGui(), event.getMatrixStack(), event.getMouseX(), event.getMouseY(), event.getRenderPartialTicks()) == InteractionResult.FAIL) {
             event.setCanceled(true);
         }
     }
@@ -155,7 +155,7 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent
     public static void event(RenderTooltipEvent.Pre event) {
-        if (TooltipEvent.RENDER_FORGE_PRE.invoker().renderTooltip(event.getMatrixStack(), event.getLines(), event.getX(), event.getY()) == ActionResultType.FAIL) {
+        if (TooltipEvent.RENDER_FORGE_PRE.invoker().renderTooltip(event.getMatrixStack(), event.getLines(), event.getX(), event.getY()) == InteractionResult.FAIL) {
             event.setCanceled(true);
             return;
         }

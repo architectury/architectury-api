@@ -21,37 +21,33 @@ package me.shedaniel.architectury.hooks.forge;
 
 import me.shedaniel.architectury.fluid.FluidStack;
 import me.shedaniel.architectury.utils.Fraction;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 
 public class FluidStackHooksImpl {
-    public static ITextComponent getName(FluidStack stack) {
-        return stack.getFluid().getAttributes().getDisplayName(
-                new net.minecraftforge.fluids.FluidStack(stack.getRawFluid(), stack.getAmount().intValue(), stack.getTag()));
+    public static Component getName(FluidStack stack) {
+        return stack.getFluid().getAttributes().getDisplayName(FluidStackHooksForge.toForge(stack));
     }
     
     public static String getTranslationKey(FluidStack stack) {
-        return stack.getFluid().getAttributes().getTranslationKey(
-                new net.minecraftforge.fluids.FluidStack(stack.getRawFluid(), stack.getAmount().intValue(), stack.getTag()));
+        return stack.getFluid().getAttributes().getTranslationKey(FluidStackHooksForge.toForge(stack));
     }
     
-    public static FluidStack read(PacketBuffer buf) {
-        net.minecraftforge.fluids.FluidStack stack = net.minecraftforge.fluids.FluidStack.readFromPacket(buf);
-        return FluidStack.create(stack.getFluid().delegate, Fraction.ofWhole(stack.getAmount()), stack.getTag());
+    public static FluidStack read(FriendlyByteBuf buf) {
+        return FluidStackHooksForge.fromForge(net.minecraftforge.fluids.FluidStack.readFromPacket(buf));
     }
     
-    public static void write(FluidStack stack, PacketBuffer buf) {
-        new net.minecraftforge.fluids.FluidStack(stack.getRawFluid(), stack.getAmount().intValue(), stack.getTag()).writeToPacket(buf);
+    public static void write(FluidStack stack, FriendlyByteBuf buf) {
+        FluidStackHooksForge.toForge(stack).writeToPacket(buf);
     }
     
-    public static FluidStack read(CompoundNBT tag) {
-        net.minecraftforge.fluids.FluidStack stack = net.minecraftforge.fluids.FluidStack.loadFluidStackFromNBT(tag);
-        return FluidStack.create(stack.getFluid().delegate, Fraction.ofWhole(stack.getAmount()), stack.getTag());
+    public static FluidStack read(CompoundTag tag) {
+        return FluidStackHooksForge.fromForge(net.minecraftforge.fluids.FluidStack.loadFluidStackFromNBT(tag));
     }
     
-    public static CompoundNBT write(FluidStack stack, CompoundNBT tag) {
-        return new net.minecraftforge.fluids.FluidStack(stack.getRawFluid(), stack.getAmount().intValue(), stack.getTag()).writeToNBT(tag);
+    public static CompoundTag write(FluidStack stack, CompoundTag tag) {
+        return FluidStackHooksForge.toForge(stack).writeToNBT(tag);
     }
     
     public static Fraction bucketAmount() {

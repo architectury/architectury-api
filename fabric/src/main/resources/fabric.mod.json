@@ -23,5 +23,8 @@
   "accessWidener": "architectury.accessWidener",
   "depends": {
     "minecraft": ">=1.16.4"
+  },
+  "custom": {
+    "modmenu:api": true
   }
 }

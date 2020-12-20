@@ -19,11 +19,11 @@
 
 package me.shedaniel.architectury.registry.forge;
 
-import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.KeyMapping;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 public class KeyBindingsImpl {
-    public static void registerKeyBinding(KeyBinding keyBinding) {
+    public static void registerKeyBinding(KeyMapping keyBinding) {
         ClientRegistry.registerKeyBinding(keyBinding);
     }
 }

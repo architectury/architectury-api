@@ -22,6 +22,7 @@ package me.shedaniel.architectury.utils.fabric;
 import me.shedaniel.architectury.event.EventHandler;
 import me.shedaniel.architectury.event.events.LifecycleEvent;
 import me.shedaniel.architectury.platform.Platform;
+import me.shedaniel.architectury.utils.Env;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -33,7 +34,7 @@ public class GameInstanceImpl {
     public static MinecraftServer getServer() {
         MinecraftServer server = null;
         if (GameInstanceImpl.server != null) server = GameInstanceImpl.server;
-        if (Platform.getEnv() == EnvType.CLIENT) {
+        if (Platform.getEnvironment() == Env.CLIENT) {
             server = getServerFromClient();
         }
         return server;

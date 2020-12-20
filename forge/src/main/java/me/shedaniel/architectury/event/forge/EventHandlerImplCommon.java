@@ -21,13 +21,13 @@ package me.shedaniel.architectury.event.forge;
 
 import me.shedaniel.architectury.event.events.*;
 import me.shedaniel.architectury.utils.IntValue;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.ServerChatEvent;
@@ -67,9 +67,9 @@ public class EventHandlerImplCommon {
     public static void event(WorldTickEvent event) {
         if (event.side == LogicalSide.SERVER) {
             if (event.phase == Phase.START)
-                TickEvent.SERVER_WORLD_PRE.invoker().tick((ServerWorld) event.world);
+                TickEvent.SERVER_WORLD_PRE.invoker().tick((ServerLevel) event.world);
             else if (event.phase == Phase.END)
-                TickEvent.SERVER_WORLD_POST.invoker().tick((ServerWorld) event.world);
+                TickEvent.SERVER_WORLD_POST.invoker().tick((ServerLevel) event.world);
         }
     }
     
@@ -100,23 +100,23 @@ public class EventHandlerImplCommon {
     
     @SubscribeEvent
     public static void event(PlayerLoggedInEvent event) {
-        PlayerEvent.PLAYER_JOIN.invoker().join((ServerPlayerEntity) event.getPlayer());
+        PlayerEvent.PLAYER_JOIN.invoker().join((ServerPlayer) event.getPlayer());
     }
     
     @SubscribeEvent
     public static void event(PlayerLoggedOutEvent event) {
-        PlayerEvent.PLAYER_QUIT.invoker().quit((ServerPlayerEntity) event.getPlayer());
+        PlayerEvent.PLAYER_QUIT.invoker().quit((ServerPlayer) event.getPlayer());
     }
     
     @SubscribeEvent
     public static void event(PlayerRespawnEvent event) {
-        PlayerEvent.PLAYER_RESPAWN.invoker().respawn((ServerPlayerEntity) event.getPlayer(), event.isEndConquered());
+        PlayerEvent.PLAYER_RESPAWN.invoker().respawn((ServerPlayer) event.getPlayer(), event.isEndConquered());
     }
     
     @SubscribeEvent
     public static void event(CommandEvent event) {
         CommandPerformEvent performEvent = new CommandPerformEvent(event.getParseResults(), event.getException());
-        if (CommandPerformEvent.EVENT.invoker().act(performEvent) == ActionResultType.FAIL) {
+        if (CommandPerformEvent.EVENT.invoker().act(performEvent) == InteractionResult.FAIL) {
             event.setCanceled(true);
         }
         event.setParseResults(performEvent.getResults());
@@ -134,61 +134,61 @@ public class EventHandlerImplCommon {
     
     @SubscribeEvent
     public static void event(ServerChatEvent event) {
-        ActionResult<ITextComponent> process = ChatEvent.SERVER.invoker().process(event.getPlayer(), event.getMessage(), event.getComponent());
+        InteractionResultHolder<Component> process = ChatEvent.SERVER.invoker().process(event.getPlayer(), event.getMessage(), event.getComponent());
         if (process.getObject() != null)
             event.setComponent(process.getObject());
-        if (process.getResult() == ActionResultType.FAIL)
+        if (process.getResult() == InteractionResult.FAIL)
             event.setCanceled(true);
     }
     
     @SubscribeEvent
     public static void event(WorldEvent.Load event) {
-        if (event.getWorld() instanceof ServerWorld) {
-            ServerWorld world = (ServerWorld) event.getWorld();
+        if (event.getWorld() instanceof ServerLevel) {
+            ServerLevel world = (ServerLevel) event.getWorld();
             LifecycleEvent.SERVER_WORLD_LOAD.invoker().act(world);
         }
     }
     
     @SubscribeEvent
     public static void event(WorldEvent.Unload event) {
-        if (event.getWorld() instanceof ServerWorld) {
-            ServerWorld world = (ServerWorld) event.getWorld();
+        if (event.getWorld() instanceof ServerLevel) {
+            ServerLevel world = (ServerLevel) event.getWorld();
             LifecycleEvent.SERVER_WORLD_UNLOAD.invoker().act(world);
         }
     }
     
     @SubscribeEvent
     public static void event(WorldEvent.Save event) {
-        if (event.getWorld() instanceof ServerWorld) {
-            ServerWorld world = (ServerWorld) event.getWorld();
+        if (event.getWorld() instanceof ServerLevel) {
+            ServerLevel world = (ServerLevel) event.getWorld();
             LifecycleEvent.SERVER_WORLD_SAVE.invoker().act(world);
         }
     }
     
     @SubscribeEvent
     public static void event(LivingDeathEvent event) {
-        if (EntityEvent.LIVING_DEATH.invoker().die(event.getEntityLiving(), event.getSource()) == ActionResultType.FAIL) {
+        if (EntityEvent.LIVING_DEATH.invoker().die(event.getEntityLiving(), event.getSource()) == InteractionResult.FAIL) {
             event.setCanceled(true);
         }
     }
     
     @SubscribeEvent
     public static void event(AdvancementEvent event) {
-        if (event.getPlayer() instanceof ServerPlayerEntity) {
-            PlayerEvent.PLAYER_ADVANCEMENT.invoker().award((ServerPlayerEntity) event.getPlayer(), event.getAdvancement());
+        if (event.getPlayer() instanceof ServerPlayer) {
+            PlayerEvent.PLAYER_ADVANCEMENT.invoker().award((ServerPlayer) event.getPlayer(), event.getAdvancement());
         }
     }
     
     @SubscribeEvent
     public static void event(Clone event) {
-        if (event.getOriginal() instanceof ServerPlayerEntity && event.getPlayer() instanceof ServerPlayerEntity) {
-            PlayerEvent.PLAYER_CLONE.invoker().clone((ServerPlayerEntity) event.getOriginal(), (ServerPlayerEntity) event.getPlayer(), !event.isWasDeath());
+        if (event.getOriginal() instanceof ServerPlayer && event.getPlayer() instanceof ServerPlayer) {
+            PlayerEvent.PLAYER_CLONE.invoker().clone((ServerPlayer) event.getOriginal(), (ServerPlayer) event.getPlayer(), !event.isWasDeath());
         }
     }
     
     @SubscribeEvent
     public static void event(Start event) {
-        if (ExplosionEvent.PRE.invoker().explode(event.getWorld(), event.getExplosion()) == ActionResultType.FAIL) {
+        if (ExplosionEvent.PRE.invoker().explode(event.getWorld(), event.getExplosion()) == InteractionResult.FAIL) {
             event.setCanceled(true);
         }
     }
@@ -200,14 +200,14 @@ public class EventHandlerImplCommon {
     
     @SubscribeEvent
     public static void event(LivingAttackEvent event) {
-        if (EntityEvent.LIVING_ATTACK.invoker().attack(event.getEntityLiving(), event.getSource(), event.getAmount()) == ActionResultType.FAIL) {
+        if (EntityEvent.LIVING_ATTACK.invoker().attack(event.getEntityLiving(), event.getSource(), event.getAmount()) == InteractionResult.FAIL) {
             event.setCanceled(true);
         }
     }
     
     @SubscribeEvent
     public static void event(EntityJoinWorldEvent event) {
-        if (EntityEvent.ADD.invoker().add(event.getEntity(), event.getWorld()) == ActionResultType.FAIL) {
+        if (EntityEvent.ADD.invoker().add(event.getEntity(), event.getWorld()) == InteractionResult.FAIL) {
             event.setCanceled(true);
         }
     }
@@ -249,8 +249,8 @@ public class EventHandlerImplCommon {
     
     @SubscribeEvent
     public static void event(PlayerInteractEvent.RightClickItem event) {
-        ActionResult<ItemStack> result = InteractionEvent.RIGHT_CLICK_ITEM.invoker().click(event.getPlayer(), event.getHand());
-        if (result.getResult() != ActionResultType.PASS) {
+        InteractionResultHolder<ItemStack> result = InteractionEvent.RIGHT_CLICK_ITEM.invoker().click(event.getPlayer(), event.getHand());
+        if (result.getResult() != InteractionResult.PASS) {
             event.setCanceled(true);
             event.setCancellationResult(result.getResult());
         }
@@ -258,8 +258,8 @@ public class EventHandlerImplCommon {
     
     @SubscribeEvent
     public static void event(PlayerInteractEvent.RightClickBlock event) {
-        ActionResultType result = InteractionEvent.RIGHT_CLICK_BLOCK.invoker().click(event.getPlayer(), event.getHand(), event.getPos(), event.getFace());
-        if (result != ActionResultType.PASS) {
+        InteractionResult result = InteractionEvent.RIGHT_CLICK_BLOCK.invoker().click(event.getPlayer(), event.getHand(), event.getPos(), event.getFace());
+        if (result != InteractionResult.PASS) {
             event.setCanceled(true);
             event.setCancellationResult(result);
             event.setUseBlock(Event.Result.DENY);
@@ -269,8 +269,8 @@ public class EventHandlerImplCommon {
     
     @SubscribeEvent
     public static void event(PlayerInteractEvent.EntityInteract event) {
-        ActionResultType result = InteractionEvent.INTERACT_ENTITY.invoker().interact(event.getPlayer(), event.getTarget(), event.getHand());
-        if (result != ActionResultType.PASS) {
+        InteractionResult result = InteractionEvent.INTERACT_ENTITY.invoker().interact(event.getPlayer(), event.getTarget(), event.getHand());
+        if (result != InteractionResult.PASS) {
             event.setCanceled(true);
             event.setCancellationResult(result);
         }
@@ -278,8 +278,8 @@ public class EventHandlerImplCommon {
     
     @SubscribeEvent
     public static void event(PlayerInteractEvent.LeftClickBlock event) {
-        ActionResultType result = InteractionEvent.LEFT_CLICK_BLOCK.invoker().click(event.getPlayer(), event.getHand(), event.getPos(), event.getFace());
-        if (result != ActionResultType.PASS) {
+        InteractionResult result = InteractionEvent.LEFT_CLICK_BLOCK.invoker().click(event.getPlayer(), event.getHand(), event.getPos(), event.getFace());
+        if (result != InteractionResult.PASS) {
             event.setCanceled(true);
             event.setCancellationResult(result);
             event.setUseBlock(Event.Result.DENY);
@@ -289,8 +289,8 @@ public class EventHandlerImplCommon {
     
     @SubscribeEvent
     public static void event(BlockEvent.BreakEvent event) {
-        if (event.getPlayer() instanceof ServerPlayerEntity && event.getWorld() instanceof World) {
-            ActionResultType result = PlayerEvent.BREAK_BLOCK.invoker().breakBlock((World) event.getWorld(), event.getPos(), event.getState(), (ServerPlayerEntity) event.getPlayer(), new IntValue() {
+        if (event.getPlayer() instanceof ServerPlayer && event.getWorld() instanceof Level) {
+            InteractionResult result = PlayerEvent.BREAK_BLOCK.invoker().breakBlock((Level) event.getWorld(), event.getPos(), event.getState(), (ServerPlayer) event.getPlayer(), new IntValue() {
                 @Override
                 public int getAsInt() {
                     return event.getExpToDrop();
@@ -301,7 +301,7 @@ public class EventHandlerImplCommon {
                     event.setExpToDrop(value);
                 }
             });
-            if (result != ActionResultType.PASS) {
+            if (result != InteractionResult.PASS) {
                 event.setCanceled(true);
             }
         }
@@ -309,9 +309,9 @@ public class EventHandlerImplCommon {
     
     @SubscribeEvent
     public static void event(BlockEvent.EntityPlaceEvent event) {
-        if (event.getWorld() instanceof World) {
-            ActionResultType result = EntityEvent.PLACE_BLOCK.invoker().placeBlock((World) event.getWorld(), event.getPos(), event.getState(), event.getEntity());
-            if (result != ActionResultType.PASS) {
+        if (event.getWorld() instanceof Level) {
+            InteractionResult result = EntityEvent.PLACE_BLOCK.invoker().placeBlock((Level) event.getWorld(), event.getPos(), event.getState(), event.getEntity());
+            if (result != InteractionResult.PASS) {
                 event.setCanceled(true);
             }
         }

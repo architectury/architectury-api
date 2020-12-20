@@ -21,10 +21,10 @@ package me.shedaniel.architectury.registry.forge;
 
 import me.shedaniel.architectury.registry.BlockProperties;
 import me.shedaniel.architectury.registry.ToolType;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.MaterialColor;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
 
 import java.util.function.Function;
 
@@ -37,11 +37,11 @@ public class BlockPropertiesImpl {
         return new Impl(material, function);
     }
     
-    public static BlockProperties copy(AbstractBlock abstractBlock) {
+    public static BlockProperties copy(BlockBehaviour abstractBlock) {
         return copy(abstractBlock.properties);
     }
     
-    public static BlockProperties copy(AbstractBlock.Properties old) {
+    public static BlockProperties copy(BlockBehaviour.Properties old) {
         BlockProperties properties = of(old.material, old.materialColor);
         properties.material = old.material;
         properties.destroyTime = old.destroyTime;

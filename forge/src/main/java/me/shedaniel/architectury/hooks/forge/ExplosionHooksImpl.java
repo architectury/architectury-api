@@ -19,12 +19,12 @@
 
 package me.shedaniel.architectury.hooks.forge;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.Explosion;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.phys.Vec3;
 
 public class ExplosionHooksImpl {
-    public static Vector3d getPosition(Explosion explosion) {
+    public static Vec3 getPosition(Explosion explosion) {
         return explosion.getPosition();
     }
     

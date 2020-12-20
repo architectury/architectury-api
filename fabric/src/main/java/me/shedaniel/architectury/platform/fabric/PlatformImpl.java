@@ -20,6 +20,7 @@
 package me.shedaniel.architectury.platform.fabric;
 
 import me.shedaniel.architectury.platform.Mod;
+import me.shedaniel.architectury.utils.Env;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
@@ -49,6 +50,10 @@ public class PlatformImpl {
     
     public static Path getModsFolder() {
         return getGameFolder().resolve("mods");
+    }
+    
+    public static Env getEnvironment() {
+        return Env.fromPlatform(getEnv());
     }
     
     public static EnvType getEnv() {
@@ -116,31 +121,31 @@ public class PlatformImpl {
         public @NotNull Path getFilePath() {
             return container.getRootPath();
         }
-    
+        
         @Override
         public @NotNull Collection<String> getAuthors() {
             return metadata.getAuthors().stream()
                     .map(Person::getName)
                     .collect(Collectors.toList());
         }
-    
+        
         @Override
         public @Nullable Collection<String> getLicense() {
             return metadata.getLicense();
         }
         
         @Override
-        public @Nullable Optional<String> getHomepage() {
+        public @NotNull Optional<String> getHomepage() {
             return metadata.getContact().get("homepage");
         }
         
         @Override
-        public @Nullable Optional<String> getSources() {
+        public @NotNull Optional<String> getSources() {
             return metadata.getContact().get("issues");
         }
         
         @Override
-        public @Nullable Optional<String> getIssueTracker() {
+        public @NotNull Optional<String> getIssueTracker() {
             return metadata.getContact().get("sources");
         }
         

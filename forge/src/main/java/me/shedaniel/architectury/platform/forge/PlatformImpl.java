@@ -20,6 +20,7 @@
 package me.shedaniel.architectury.platform.forge;
 
 import me.shedaniel.architectury.platform.Mod;
+import me.shedaniel.architectury.utils.Env;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModContainer;
@@ -51,6 +52,10 @@ public class PlatformImpl {
     
     public static Path getModsFolder() {
         return FMLPaths.MODSDIR.get();
+    }
+    
+    public static Env getEnvironment() {
+        return Env.fromPlatform(getEnv());
     }
     
     public static Dist getEnv() {
@@ -125,32 +130,32 @@ public class PlatformImpl {
         public @NotNull Path getFilePath() {
             return this.info.getOwningFile().getFile().getFilePath();
         }
-    
+        
         @Override
         public @NotNull Collection<String> getAuthors() {
             Optional<String> optional = this.info.getConfigElement("authors")
                     .map(String::valueOf);
             return optional.isPresent() ? Collections.singleton(optional.get()) : Collections.emptyList();
         }
-    
+        
         @Override
         public @Nullable Collection<String> getLicense() {
             return Collections.singleton(this.info.getOwningFile().getLicense());
         }
         
         @Override
-        public @Nullable Optional<String> getHomepage() {
+        public @NotNull Optional<String> getHomepage() {
             return this.info.getConfigElement("displayURL")
                     .map(String::valueOf);
         }
         
         @Override
-        public @Nullable Optional<String> getSources() {
+        public @NotNull Optional<String> getSources() {
             return Optional.empty();
         }
         
         @Override
-        public @Nullable Optional<String> getIssueTracker() {
+        public @NotNull Optional<String> getIssueTracker() {
             return Optional.ofNullable(this.info.getOwningFile().getIssueURL())
                     .map(URL::toString);
         }

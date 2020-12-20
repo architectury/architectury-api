@@ -1,42 +1,36 @@
-buildscript {
-    repositories {
-        maven { url "https://files.minecraftforge.net/maven" }
-        jcenter()
-        mavenCentral()
-    }
-    dependencies {
-        classpath(group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "3.+", changing: true)
-    }
-}
-
 plugins {
     id "com.github.johnrengelman.shadow" version "5.0.0"
-    id "eclipse"
     id "com.matthewprenger.cursegradle"
 }
 
-apply plugin: "net.minecraftforge.gradle"
+loom {
+    silentMojangMappingsLicense()
+    mixinConfig = "architectury.mixins.json"
+}
 
-minecraft {
-    mappings(channel: "official", version: rootProject.architect.minecraft)
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-    runs {
-        client {
-            workingDirectory project.file("run")
-            mods {
-                architectury {
-                    source sourceSets.main
-                }
-            }
-        }
-        server {
-            workingDirectory project.file("run")
-            mods {
-                architectury {
-                    source sourceSets.main
-                }
-            }
-        }
+configurations {
+    shadow
+}
+
+architectury {
+    platformSetupLoomIde()
+}
+
+dependencies {
+    minecraft("com.mojang:minecraft:${rootProject.architect.minecraft}")
+    mappings(minecraft.officialMojangMappings())
+    forge("net.minecraftforge:forge:${rootProject.architect.minecraft}-${rootProject.forge_version}")
+    implementation "net.jodah:typetools:0.6.2"
+    shadow "net.jodah:typetools:0.6.2"
+
+    compileOnly(project(path: ":common")) {
+        transitive = false
+    }
+    runtimeOnly(project(path: ":common", configuration: "transformForgeFakeMod")) {
+        transitive = false
+    }
+    shadow(project(path: ":common", configuration: "transformForge")) {
+        transitive = false
     }
 }
 
@@ -47,47 +41,26 @@ processResources {
     inputs.property "META-INF/mods.toml", project.version
 }
 
-repositories {
-    jcenter()
-    maven { url "https://files.minecraftforge.net/maven" }
-}
-
-configurations {
-    shadow
-}
-
-dependencies {
-    minecraft("net.minecraftforge:forge:${rootProject.architect.minecraft}-${rootProject.forge_version}")
-    implementation "net.jodah:typetools:0.6.2"
-    shadow "net.jodah:typetools:0.6.2"
-
-    compile(project(path: ":common", configuration: "mcpGenerateMod")) {
-        transitive = false
-    }
-    shadow(project(path: ":common", configuration: "mcp")) {
-        transitive = false
-    }
-}
-
 shadowJar {
     relocate "net.jodah.typetools", "me.shedaniel.architectury.shadowed.impl.net.jodah.typetools"
     exclude "fabric.mod.json"
+    exclude "architectury-common.accessWidener"
 
     configurations = [project.configurations.shadow]
-    classifier "forge"
+    classifier "shadow"
 }
 
-reobf {
-    shadowJar {}
+remapJar {
+    dependsOn(shadowJar)
+    input.set(shadowJar.archivePath)
+    archiveClassifier = "forge"
 }
-
-build.dependsOn(shadowJar)
 
 publishing {
     publications {
         mavenForge(MavenPublication) {
-            artifact(shadowJar.archivePath) {
-                builtBy shadowJar
+            artifact(remapJar.archivePath) {
+                builtBy build
                 classifier "forge"
             }
         }
@@ -105,7 +78,7 @@ curseforge {
             addGameVersion "1.16.4"
             addGameVersion "Java 8"
             addGameVersion "Forge"
-            mainArtifact(shadowJar.archivePath) {
+            mainArtifact(remapJar.archivePath) {
                 displayName = "[Forge $rootProject.supported_version] v$project.version"
             }
             afterEvaluate {

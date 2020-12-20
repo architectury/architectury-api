@@ -19,22 +19,28 @@
 
 package me.shedaniel.architectury.utils;
 
-import me.shedaniel.architectury.ExpectPlatform;
 import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.Minecraft;
-import net.minecraft.server.MinecraftServer;
-import org.jetbrains.annotations.Nullable;
 
-public final class GameInstance {
-    @Environment(EnvType.CLIENT)
-    public static Minecraft getClient() {
-        return Minecraft.getInstance();
+public enum Env {
+    CLIENT,
+    SERVER;
+    
+    /**
+     * Converts platform-specific environment enum to platform-agnostic environment enum.
+     *
+     * @param type the platform-specific environment enum, could be {@link net.fabricmc.api.EnvType} or {@link net.minecraftforge.api.distmarker.Dist}
+     * @return the platform-agnostic environment enum
+     */
+    public static Env fromPlatform(Object type) {
+        return type == EnvType.CLIENT ? CLIENT : type == EnvType.SERVER ? SERVER : null;
     }
     
-    @Nullable
-    @ExpectPlatform
-    public static MinecraftServer getServer() {
-        throw new AssertionError();
+    /**
+     * Converts platform-agnostic environment enum to platform-specific environment enum.
+     *
+     * @return the platform-specific environment enum, could be {@link net.fabricmc.api.EnvType} or {@link net.minecraftforge.api.distmarker.Dist}
+     */
+    public EnvType toPlatform() {
+        return this == CLIENT ? EnvType.CLIENT : EnvType.SERVER;
     }
 }

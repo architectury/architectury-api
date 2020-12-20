@@ -20,7 +20,6 @@
 package me.shedaniel.architectury.forge;
 
 import me.shedaniel.architectury.event.EventHandler;
-import me.shedaniel.architectury.event.events.GuiEvent;
 import me.shedaniel.architectury.platform.forge.EventBuses;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;

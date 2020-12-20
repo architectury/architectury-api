@@ -20,11 +20,11 @@
 package me.shedaniel.architectury.registry.forge;
 
 import com.google.common.collect.Lists;
-import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.color.IBlockColor;
-import net.minecraft.client.renderer.color.IItemColor;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.client.color.item.ItemColor;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.commons.lang3.tuple.Pair;
@@ -32,23 +32,23 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.List;
 
 public class ColorHandlersImpl {
-    private static final List<Pair<IItemColor, IItemProvider[]>> ITEM_COLORS = Lists.newArrayList();
-    private static final List<Pair<IBlockColor, Block[]>> BLOCK_COLORS = Lists.newArrayList();
+    private static final List<Pair<ItemColor, ItemLike[]>> ITEM_COLORS = Lists.newArrayList();
+    private static final List<Pair<BlockColor, Block[]>> BLOCK_COLORS = Lists.newArrayList();
     
     static {
         MinecraftForge.EVENT_BUS.<ColorHandlerEvent.Item>addListener(event -> {
-            for (Pair<IItemColor, IItemProvider[]> pair : ITEM_COLORS) {
+            for (Pair<ItemColor, ItemLike[]> pair : ITEM_COLORS) {
                 event.getItemColors().register(pair.getLeft(), pair.getRight());
             }
         });
         MinecraftForge.EVENT_BUS.<ColorHandlerEvent.Block>addListener(event -> {
-            for (Pair<IBlockColor, Block[]> pair : BLOCK_COLORS) {
+            for (Pair<BlockColor, Block[]> pair : BLOCK_COLORS) {
                 event.getBlockColors().register(pair.getLeft(), pair.getRight());
             }
         });
     }
     
-    public static void registerItemColors(IItemColor itemColor, IItemProvider... items) {
+    public static void registerItemColors(ItemColor itemColor, ItemLike... items) {
         if (Minecraft.getInstance().getItemColors() == null) {
             ITEM_COLORS.add(Pair.of(itemColor, items));
         } else {
@@ -56,7 +56,7 @@ public class ColorHandlersImpl {
         }
     }
     
-    public static void registerBlockColors(IBlockColor blockColor, Block... blocks) {
+    public static void registerBlockColors(BlockColor blockColor, Block... blocks) {
         if (Minecraft.getInstance().getBlockColors() == null) {
             BLOCK_COLORS.add(Pair.of(blockColor, blocks));
         } else {

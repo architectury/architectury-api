@@ -17,26 +17,34 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package me.shedaniel.architectury.registry.forge;
+package me.shedaniel.architectury.hooks.biome;
 
+import net.minecraft.world.level.biome.Biome.Precipitation;
+import net.minecraft.world.level.biome.Biome.TemperatureModifier;
+import org.jetbrains.annotations.NotNull;
 
-import net.minecraft.tags.Tag;
-import net.minecraft.world.item.Item;
-
-public class ToolTypeImpl {
-    public static Tag<Item> pickaxeTag() {
-        return null;
-    }
+public interface ClimateProperties {
+    @NotNull
+    Precipitation getPrecipitation();
     
-    public static Tag<Item> axeTag() {
-        return null;
-    }
+    float getTemperature();
     
-    public static Tag<Item> hoeTag() {
-        return null;
-    }
+    @NotNull
+    TemperatureModifier getTemperatureModifier();
     
-    public static Tag<Item> shovelTag() {
-        return null;
+    float getDownfall();
+    
+    interface Mutable extends ClimateProperties {
+        @NotNull
+        Mutable setPrecipitation(@NotNull Precipitation precipitation);
+        
+        @NotNull
+        Mutable setTemperature(float temperature);
+        
+        @NotNull
+        Mutable setTemperatureModifier(@NotNull TemperatureModifier temperatureModifier);
+        
+        @NotNull
+        Mutable setDownfall(float downfall);
     }
 }

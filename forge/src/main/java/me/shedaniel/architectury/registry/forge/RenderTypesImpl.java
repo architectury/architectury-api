@@ -19,21 +19,21 @@
 
 package me.shedaniel.architectury.registry.forge;
 
-import net.minecraft.block.Block;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.fluid.Fluid;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluid;
 
 public class RenderTypesImpl {
     public static void register(RenderType type, Block... blocks) {
         for (Block block : blocks) {
-            RenderTypeLookup.setRenderLayer(block, type);
+            ItemBlockRenderTypes.setRenderLayer(block, type);
         }
     }
     
     public static void register(RenderType type, Fluid... fluids) {
         for (Fluid fluid : fluids) {
-            RenderTypeLookup.setRenderLayer(fluid, type);
+            ItemBlockRenderTypes.setRenderLayer(fluid, type);
         }
     }
 }

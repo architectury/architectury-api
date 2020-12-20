@@ -27,13 +27,21 @@ import java.util.function.Supplier;
 
 public final class EnvExecutor {
     public static void runInEnv(EnvType type, Supplier<Runnable> runnableSupplier) {
-        if (Platform.getEnv() == type) {
+        runInEnv(Env.fromPlatform(type), runnableSupplier);
+    }
+    
+    public static void runInEnv(Env type, Supplier<Runnable> runnableSupplier) {
+        if (Platform.getEnvironment() == type) {
             runnableSupplier.get().run();
         }
     }
     
     public static <T> Optional<T> getInEnv(EnvType type, Supplier<Supplier<T>> runnableSupplier) {
-        if (Platform.getEnv() == type) {
+        return getInEnv(Env.fromPlatform(type), runnableSupplier);
+    }
+    
+    public static <T> Optional<T> getInEnv(Env type, Supplier<Supplier<T>> runnableSupplier) {
+        if (Platform.getEnvironment() == type) {
             return Optional.ofNullable(runnableSupplier.get().get());
         }
         
@@ -41,7 +49,7 @@ public final class EnvExecutor {
     }
     
     public static <T> T getEnvSpecific(Supplier<Supplier<T>> client, Supplier<Supplier<T>> server) {
-        if (Platform.getEnv() == EnvType.CLIENT) {
+        if (Platform.getEnvironment() == Env.CLIENT) {
             return client.get().get();
         } else {
             return server.get().get();

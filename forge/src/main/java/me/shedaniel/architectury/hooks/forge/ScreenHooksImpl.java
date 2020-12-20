@@ -19,30 +19,30 @@
 
 package me.shedaniel.architectury.hooks.forge;
 
-import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 public class ScreenHooksImpl {
-    public static List<Widget> getButtons(Screen screen) {
+    public static List<AbstractWidget> getButtons(Screen screen) {
         return screen.buttons;
     }
     
-    public static <T extends Widget> T addButton(Screen screen, T t) {
+    public static <T extends AbstractWidget> T addButton(Screen screen, T t) {
         try {
-            return (T) ObfuscationReflectionHelper.findMethod(Screen.class, "func_230480_a_", Widget.class).invoke(screen, t);
+            return (T) ObfuscationReflectionHelper.findMethod(Screen.class, "func_230480_a_", AbstractWidget.class).invoke(screen, t);
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
     }
     
-    public static <T extends IGuiEventListener> T addChild(Screen screen, T t) {
+    public static <T extends GuiEventListener> T addChild(Screen screen, T t) {
         try {
-            return (T) ObfuscationReflectionHelper.findMethod(Screen.class, "func_230481_d_", IGuiEventListener.class).invoke(screen, t);
+            return (T) ObfuscationReflectionHelper.findMethod(Screen.class, "func_230481_d_", GuiEventListener.class).invoke(screen, t);
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }

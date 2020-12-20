@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "me.shedaniel.architectury.mixin.forge",
+  "compatibilityLevel": "JAVA_8",
+  "minVersion": "0.8",
+  "client": [
+  ],
+  "mixins": ["BiomeGenerationSettingsBuilderAccessor", "BiomeSpecialEffectsAccessor", "MobSpawnSettingsBuilderAccessor"],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

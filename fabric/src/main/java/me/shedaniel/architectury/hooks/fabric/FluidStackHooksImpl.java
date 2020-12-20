@@ -21,6 +21,7 @@ package me.shedaniel.architectury.hooks.fabric;
 
 import me.shedaniel.architectury.fluid.FluidStack;
 import me.shedaniel.architectury.platform.Platform;
+import me.shedaniel.architectury.utils.Env;
 import me.shedaniel.architectury.utils.Fraction;
 import me.shedaniel.architectury.utils.NbtType;
 import net.fabricmc.api.EnvType;
@@ -38,7 +39,7 @@ import java.util.Objects;
 
 public class FluidStackHooksImpl {
     public static Component getName(FluidStack stack) {
-        if (Platform.getEnv() == EnvType.CLIENT) {
+        if (Platform.getEnvironment() == Env.CLIENT) {
             return getNameClient(stack);
         }
         

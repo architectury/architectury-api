@@ -21,6 +21,7 @@ package me.shedaniel.architectury.platform;
 
 import me.shedaniel.architectury.Architectury;
 import me.shedaniel.architectury.ExpectPlatform;
+import me.shedaniel.architectury.utils.Env;
 import net.fabricmc.api.EnvType;
 import net.minecraft.SharedConstants;
 import org.jetbrains.annotations.NotNull;
@@ -81,6 +82,12 @@ public final class Platform {
     @NotNull
     @ExpectPlatform
     public static Path getConfigFolder() {
+        throw new AssertionError();
+    }
+    
+    @NotNull
+    @ExpectPlatform
+    public static Env getEnvironment() {
         throw new AssertionError();
     }
     

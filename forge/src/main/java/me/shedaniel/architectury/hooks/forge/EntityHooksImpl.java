@@ -19,7 +19,7 @@
 
 package me.shedaniel.architectury.hooks.forge;
 
-import net.minecraft.entity.Entity;
+import net.minecraft.world.entity.Entity;
 
 public class EntityHooksImpl {
     public static String getEncodeId(Entity entity) {

@@ -20,6 +20,7 @@
 package me.shedaniel.architectury.networking;
 
 import me.shedaniel.architectury.ExpectPlatform;
+import me.shedaniel.architectury.utils.Env;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -76,8 +77,12 @@ public final class NetworkManager {
         Player getPlayer();
         
         void queue(Runnable runnable);
+    
+        Env getEnvironment();
         
-        EnvType getEnv();
+        default EnvType getEnv() {
+            return getEnvironment().toPlatform();
+        }
     }
     
     public static Side s2c() {

@@ -24,9 +24,9 @@ import com.google.common.collect.Table;
 import me.shedaniel.architectury.platform.forge.EventBuses;
 import me.shedaniel.architectury.registry.Registries;
 import me.shedaniel.architectury.registry.Registry;
-import net.minecraft.util.LazyValue;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.LazyLoadedValue;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -48,13 +48,13 @@ public class RegistriesImpl {
         return new RegistryProviderImpl(modId);
     }
     
-    public static <T> ResourceLocation getId(T t, RegistryKey<net.minecraft.util.registry.Registry<T>> registryKey) {
+    public static <T> ResourceLocation getId(T t, ResourceKey<net.minecraft.core.Registry<T>> registryKey) {
         if (t instanceof IForgeRegistryEntry)
             return ((IForgeRegistryEntry<?>) t).getRegistryName();
         return null;
     }
     
-    public static <T> ResourceLocation getId(T t, net.minecraft.util.registry.Registry<T> registry) {
+    public static <T> ResourceLocation getId(T t, net.minecraft.core.Registry<T> registry) {
         if (t instanceof IForgeRegistryEntry)
             return ((IForgeRegistryEntry<?>) t).getRegistryName();
         return null;
@@ -72,12 +72,12 @@ public class RegistriesImpl {
         }
         
         @Override
-        public <T> Registry<T> get(RegistryKey<net.minecraft.util.registry.Registry<T>> registryKey) {
+        public <T> Registry<T> get(ResourceKey<net.minecraft.core.Registry<T>> registryKey) {
             return new ForgeBackedRegistryImpl<>(registry, (IForgeRegistry) RegistryManager.ACTIVE.getRegistry(registryKey.location()));
         }
         
         @Override
-        public <T> Registry<T> get(net.minecraft.util.registry.Registry<T> registry) {
+        public <T> Registry<T> get(net.minecraft.core.Registry<T> registry) {
             return new VanillaBackedRegistryImpl<>(registry);
         }
         
@@ -99,21 +99,21 @@ public class RegistriesImpl {
     }
     
     public static class VanillaBackedRegistryImpl<T> implements Registry<T> {
-        private net.minecraft.util.registry.Registry<T> delegate;
+        private net.minecraft.core.Registry<T> delegate;
         
-        public VanillaBackedRegistryImpl(net.minecraft.util.registry.Registry<T> delegate) {
+        public VanillaBackedRegistryImpl(net.minecraft.core.Registry<T> delegate) {
             this.delegate = delegate;
         }
         
         @Override
         public Supplier<T> delegate(ResourceLocation id) {
-            LazyValue<T> value = new LazyValue<>(() -> get(id));
+            LazyLoadedValue<T> value = new LazyLoadedValue<>(() -> get(id));
             return value::get;
         }
         
         @Override
         public Supplier<T> register(ResourceLocation id, Supplier<T> supplier) {
-            net.minecraft.util.registry.Registry.register(delegate, id, supplier.get());
+            net.minecraft.core.Registry.register(delegate, id, supplier.get());
             return delegate(id);
         }
         
@@ -122,43 +122,43 @@ public class RegistriesImpl {
         public ResourceLocation getId(T obj) {
             return delegate.getKey(obj);
         }
-    
+        
         @Override
-        public Optional<RegistryKey<T>> getKey(T t) {
+        public Optional<ResourceKey<T>> getKey(T t) {
             return delegate.getResourceKey(t);
         }
-    
+        
         @Override
         @Nullable
         public T get(ResourceLocation id) {
             return delegate.get(id);
         }
-    
+        
         @Override
         public boolean contains(ResourceLocation resourceLocation) {
             return delegate.containsKey(resourceLocation);
         }
-    
+        
         @Override
         public boolean containsValue(T t) {
             return delegate.getResourceKey(t).isPresent();
         }
-    
+        
         @Override
         public Set<ResourceLocation> getIds() {
             return delegate.keySet();
         }
-    
+        
         @Override
-        public Set<Map.Entry<RegistryKey<T>, T>> entrySet() {
+        public Set<Map.Entry<ResourceKey<T>, T>> entrySet() {
             return delegate.entrySet();
         }
-    
+        
         @Override
-        public RegistryKey<? extends net.minecraft.util.registry.Registry<T>> key() {
+        public ResourceKey<? extends net.minecraft.core.Registry<T>> key() {
             return delegate.key();
         }
-    
+        
         @Override
         public Iterator<T> iterator() {
             return delegate.iterator();
@@ -176,7 +176,7 @@ public class RegistriesImpl {
         
         @Override
         public Supplier<T> delegate(ResourceLocation id) {
-            LazyValue<T> value = new LazyValue<>(() -> get(id));
+            LazyLoadedValue<T> value = new LazyLoadedValue<>(() -> get(id));
             return value::get;
         }
         
@@ -192,43 +192,43 @@ public class RegistriesImpl {
         public ResourceLocation getId(T obj) {
             return delegate.getKey(obj);
         }
-    
+        
         @Override
-        public Optional<RegistryKey<T>> getKey(T t) {
-            return Optional.ofNullable(getId(t)).map(id -> RegistryKey.create(key(), id));
+        public Optional<ResourceKey<T>> getKey(T t) {
+            return Optional.ofNullable(getId(t)).map(id -> ResourceKey.create(key(), id));
         }
-    
+        
         @Override
         @Nullable
         public T get(ResourceLocation id) {
             return delegate.getValue(id);
         }
-    
+        
         @Override
         public boolean contains(ResourceLocation resourceLocation) {
             return delegate.containsKey(resourceLocation);
         }
-    
+        
         @Override
         public boolean containsValue(T t) {
             return delegate.containsValue(t);
         }
-    
+        
         @Override
         public Set<ResourceLocation> getIds() {
             return delegate.getKeys();
         }
-    
+        
         @Override
-        public Set<Map.Entry<RegistryKey<T>, T>> entrySet() {
+        public Set<Map.Entry<ResourceKey<T>, T>> entrySet() {
             return delegate.getEntries();
         }
-    
+        
         @Override
-        public RegistryKey<? extends net.minecraft.util.registry.Registry<T>> key() {
-            return RegistryKey.createRegistryKey(delegate.getRegistryName());
+        public ResourceKey<? extends net.minecraft.core.Registry<T>> key() {
+            return ResourceKey.createRegistryKey(delegate.getRegistryName());
         }
-    
+        
         @Override
         public Iterator<T> iterator() {
             return delegate.iterator();

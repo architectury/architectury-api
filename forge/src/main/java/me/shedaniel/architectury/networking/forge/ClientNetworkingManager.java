@@ -21,8 +21,8 @@ package me.shedaniel.architectury.networking.forge;
 
 import me.shedaniel.architectury.networking.NetworkManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
@@ -51,7 +51,7 @@ public class ClientNetworkingManager {
         });
     }
     
-    public static PlayerEntity getClientPlayer() {
+    public static Player getClientPlayer() {
         return Minecraft.getInstance().player;
     }
 }

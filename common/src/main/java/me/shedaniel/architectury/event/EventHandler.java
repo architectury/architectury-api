@@ -21,6 +21,7 @@ package me.shedaniel.architectury.event;
 
 import me.shedaniel.architectury.ExpectPlatform;
 import me.shedaniel.architectury.platform.Platform;
+import me.shedaniel.architectury.utils.Env;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -32,10 +33,10 @@ public final class EventHandler {
     public static void init() {
         if (initialized) return;
         initialized = true;
-        if (Platform.getEnv() == EnvType.CLIENT)
+        if (Platform.getEnvironment() == Env.CLIENT)
             registerClient();
         registerCommon();
-        if (Platform.getEnv() == EnvType.SERVER)
+        if (Platform.getEnvironment() == Env.SERVER)
             registerServer();
     }
     

@@ -1,9 +1,6 @@
-plugins {
-    id "fabric-loom"
-}
-
 loom {
-    accessWidener = file("src/main/resources/architectury-common.accessWidener")
+    accessWidener = file("src/main/resources/architectury.accessWidener")
+    silentMojangMappingsLicense()
 }
 
 dependencies {
@@ -15,7 +12,7 @@ dependencies {
     implementation "net.jodah:typetools:0.6.2"
 }
 
-architect {
+architectury {
     common()
 }
 

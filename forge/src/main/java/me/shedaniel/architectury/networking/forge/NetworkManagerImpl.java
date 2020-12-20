@@ -24,11 +24,12 @@ import com.google.common.collect.*;
 import io.netty.buffer.Unpooled;
 import me.shedaniel.architectury.networking.NetworkManager;
 import me.shedaniel.architectury.networking.NetworkManager.NetworkReceiver;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import me.shedaniel.architectury.utils.Env;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -55,8 +56,8 @@ public class NetworkManagerImpl {
         }
     }
     
-    public static IPacket<?> toPacket(NetworkManager.Side side, ResourceLocation id, PacketBuffer buffer) {
-        PacketBuffer packetBuffer = new PacketBuffer(Unpooled.buffer());
+    public static Packet<?> toPacket(NetworkManager.Side side, ResourceLocation id, FriendlyByteBuf buffer) {
+        FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
         packetBuffer.writeResourceLocation(id);
         packetBuffer.writeBytes(buffer);
         return (side == NetworkManager.Side.C2S ? NetworkDirection.PLAY_TO_SERVER : NetworkDirection.PLAY_TO_CLIENT).buildPacket(Pair.of(packetBuffer, 0), CHANNEL_ID).getThis();
@@ -68,14 +69,14 @@ public class NetworkManagerImpl {
     static final Map<ResourceLocation, NetworkReceiver> S2C = Maps.newHashMap();
     static final Map<ResourceLocation, NetworkReceiver> C2S = Maps.newHashMap();
     static final Set<ResourceLocation> serverReceivables = Sets.newHashSet();
-    private static final Multimap<PlayerEntity, ResourceLocation> clientReceivables = Multimaps.newMultimap(Maps.newHashMap(), Sets::newHashSet);
+    private static final Multimap<Player, ResourceLocation> clientReceivables = Multimaps.newMultimap(Maps.newHashMap(), Sets::newHashSet);
     
-    static  {
+    static {
         CHANNEL.addListener(createPacketHandler(NetworkEvent.ClientCustomPayloadEvent.class, C2S));
         
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> ClientNetworkingManager::initClient);
         
-        MinecraftForge.EVENT_BUS.<PlayerEvent.PlayerLoggedInEvent>addListener(event -> NetworkManager.sendToPlayer((ServerPlayerEntity) event.getPlayer(), SYNC_IDS, sendSyncPacket(C2S)));
+        MinecraftForge.EVENT_BUS.<PlayerEvent.PlayerLoggedInEvent>addListener(event -> NetworkManager.sendToPlayer((ServerPlayer) event.getPlayer(), SYNC_IDS, sendSyncPacket(C2S)));
         MinecraftForge.EVENT_BUS.<PlayerEvent.PlayerLoggedOutEvent>addListener(event -> clientReceivables.removeAll(event.getPlayer()));
         
         registerC2SReceiver(SYNC_IDS, (buffer, context) -> {
@@ -93,15 +94,15 @@ public class NetworkManagerImpl {
             if (event.getClass() != clazz) return;
             NetworkEvent.Context context = event.getSource().get();
             if (context.getPacketHandled()) return;
-            PacketBuffer buffer = new PacketBuffer(event.getPayload().copy());
+            FriendlyByteBuf buffer = new FriendlyByteBuf(event.getPayload().copy());
             ResourceLocation type = buffer.readResourceLocation();
             NetworkReceiver receiver = map.get(type);
             
             if (receiver != null) {
                 receiver.receive(buffer, new NetworkManager.PacketContext() {
                     @Override
-                    public PlayerEntity getPlayer() {
-                        return getEnv() == Dist.CLIENT ? getClientPlayer() : context.getSender();
+                    public Player getPlayer() {
+                        return getEnvironment() == Env.CLIENT ? getClientPlayer() : context.getSender();
                     }
                     
                     @Override
@@ -110,11 +111,11 @@ public class NetworkManagerImpl {
                     }
                     
                     @Override
-                    public Dist getEnv() {
-                        return context.getDirection().getReceptionSide() == LogicalSide.CLIENT ? Dist.CLIENT : Dist.DEDICATED_SERVER;
+                    public Env getEnvironment() {
+                        return context.getDirection().getReceptionSide() == LogicalSide.CLIENT ? Env.CLIENT : Env.SERVER;
                     }
                     
-                    private PlayerEntity getClientPlayer() {
+                    private Player getClientPlayer() {
                         return DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> ClientNetworkingManager::getClientPlayer);
                     }
                 });
@@ -136,13 +137,13 @@ public class NetworkManagerImpl {
         return serverReceivables.contains(id);
     }
     
-    public static boolean canPlayerReceive(ServerPlayerEntity player, ResourceLocation id) {
+    public static boolean canPlayerReceive(ServerPlayer player, ResourceLocation id) {
         return clientReceivables.get(player).contains(id);
     }
     
-    static PacketBuffer sendSyncPacket(Map<ResourceLocation, NetworkReceiver> map) {
+    static FriendlyByteBuf sendSyncPacket(Map<ResourceLocation, NetworkReceiver> map) {
         List<ResourceLocation> availableIds = Lists.newArrayList(map.keySet());
-        PacketBuffer packetBuffer = new PacketBuffer(Unpooled.buffer());
+        FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
         packetBuffer.writeInt(availableIds.size());
         for (ResourceLocation availableId : availableIds) {
             packetBuffer.writeResourceLocation(availableId);

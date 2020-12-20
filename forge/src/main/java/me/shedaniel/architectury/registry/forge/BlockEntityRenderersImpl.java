@@ -19,16 +19,16 @@
 
 package me.shedaniel.architectury.registry.forge;
 
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 import java.util.function.Function;
 
 public class BlockEntityRenderersImpl {
-    public static <T extends TileEntity> void registerRenderer(TileEntityType<T> type, Function<TileEntityRendererDispatcher, TileEntityRenderer<T>> provider) {
+    public static <T extends BlockEntity> void registerRenderer(BlockEntityType<T> type, Function<BlockEntityRenderDispatcher, BlockEntityRenderer<T>> provider) {
         ClientRegistry.bindTileEntityRenderer(type, provider);
     }
 }

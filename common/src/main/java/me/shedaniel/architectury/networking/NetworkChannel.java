@@ -26,6 +26,7 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import me.shedaniel.architectury.networking.NetworkManager.PacketContext;
 import me.shedaniel.architectury.platform.Platform;
+import me.shedaniel.architectury.utils.Env;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -78,7 +79,7 @@ public final class NetworkChannel {
         takenIds.add(id);
         ResourceLocation messageId = new ResourceLocation(this.id.getNamespace(), this.id.getPath() + "_" + id);
         if (!side.isPresent() || side.get() == NetworkManager.s2c()) {
-            if (Platform.getEnv() == EnvType.CLIENT) {
+            if (Platform.getEnvironment() == Env.CLIENT) {
                 NetworkManager.registerReceiver(NetworkManager.s2c(), messageId, (buf, context) -> {
                     messageConsumer.accept(decoder.apply(buf), () -> context);
                 });

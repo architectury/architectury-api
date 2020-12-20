@@ -25,11 +25,18 @@ import org.jetbrains.annotations.NotNull;
 import java.text.DecimalFormat;
 
 public final class Fraction extends Number implements Comparable<Fraction> {
+    private static final Fraction[] SIMPLE_CACHE = new Fraction[2048];
     private static final Fraction ZERO = ofWhole(0);
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("###.###");
     private final long numerator;
     private final long denominator;
     private boolean simplified;
+    
+    static {
+        for (int i = 0; i < 2048; i++) {
+            SIMPLE_CACHE[i] = new Fraction(i - 1024, 1);
+        }
+    }
     
     private Fraction(long numerator, long denominator) {
         if (denominator > 0) {
@@ -49,10 +56,17 @@ public final class Fraction extends Number implements Comparable<Fraction> {
     }
     
     public static Fraction ofWhole(long whole) {
+        if (whole >= -1024 && whole < 1024) {
+            return SIMPLE_CACHE[(int) whole + 1024];
+        }
         return new Fraction(whole, 1);
     }
     
     public static Fraction of(long numerator, long denominator) {
+        if (denominator == 1)
+            return ofWhole(numerator);
+        if (denominator == -1)
+            return ofWhole(-numerator);
         return new Fraction(numerator, denominator);
     }
     

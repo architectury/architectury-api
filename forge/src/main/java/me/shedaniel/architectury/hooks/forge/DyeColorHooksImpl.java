@@ -19,7 +19,7 @@
 
 package me.shedaniel.architectury.hooks.forge;
 
-import net.minecraft.item.DyeColor;
+import net.minecraft.world.item.DyeColor;
 
 public class DyeColorHooksImpl {
     public static int getColorValue(DyeColor dyeColor) {

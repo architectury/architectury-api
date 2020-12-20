@@ -19,11 +19,11 @@
 
 package me.shedaniel.architectury.hooks.forge;
 
-import net.minecraft.resources.IPackFinder;
-import net.minecraft.resources.ResourcePackList;
+import net.minecraft.server.packs.repository.PackRepository;
+import net.minecraft.server.packs.repository.RepositorySource;
 
 public class PackRepositoryHooksImpl {
-    public static void addSource(ResourcePackList resourcePackList, IPackFinder iPackFinder) {
-        resourcePackList.addPackFinder(iPackFinder);
+    public static void addSource(PackRepository repository, RepositorySource source) {
+        repository.addPackFinder(source);
     }
 }

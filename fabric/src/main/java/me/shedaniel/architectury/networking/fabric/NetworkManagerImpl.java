@@ -21,6 +21,7 @@ package me.shedaniel.architectury.networking.fabric;
 
 import me.shedaniel.architectury.networking.NetworkManager;
 import me.shedaniel.architectury.networking.NetworkManager.NetworkReceiver;
+import me.shedaniel.architectury.utils.Env;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
@@ -63,8 +64,8 @@ public class NetworkManagerImpl {
             }
             
             @Override
-            public EnvType getEnv() {
-                return context.getPacketEnvironment();
+            public Env getEnvironment() {
+                return Env.fromPlatform(context.getPacketEnvironment());
             }
         };
     }

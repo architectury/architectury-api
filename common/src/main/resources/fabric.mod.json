@@ -3,5 +3,5 @@
   "schemaVersion": 1,
   "id": "architectury-common",
   "version": "0.0.1",
-  "accessWidener": "architectury-common.accessWidener"
+  "accessWidener": "architectury.accessWidener"
 }

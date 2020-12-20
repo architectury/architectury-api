@@ -1,5 +1,5 @@
 plugins {
-    id "architect-plugin" version "1.1.19"
+    id "architect-plugin" version "1.2.28"
     id "org.cadixdev.licenser" version "0.5.0"
     id "com.jfrog.bintray" version "1.8.4"
     id "com.matthewprenger.cursegradle" version "1.4.0" apply false
@@ -7,8 +7,12 @@ plugins {
     id "maven-publish"
 }
 
-architect {
+architectury {
     minecraft = rootProject.minecraft_version
+}
+
+subprojects {
+    apply plugin: "forgified-fabric-loom"
 }
 
 allprojects {
@@ -32,8 +36,8 @@ allprojects {
             year = 2020
         }
 
+        include "*.java"
         exclude "**/NbtType.java"
-        exclude "**/*.accessWidener"
 
         ignoreFailures = true
     }

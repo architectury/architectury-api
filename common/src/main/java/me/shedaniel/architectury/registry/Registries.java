@@ -22,13 +22,17 @@ package me.shedaniel.architectury.registry;
 import me.shedaniel.architectury.ExpectPlatform;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Platform-agnostic wrapper of minecraft registries, should be used to register content.
+ */
 public final class Registries {
-    private static final Map<String, Registries> REGISTRIES = new HashMap<>();
+    private static final Map<String, Registries> REGISTRIES = new ConcurrentHashMap<>();
     private final RegistryProvider provider;
     
     public static Registries get(String modId) {
@@ -84,6 +88,7 @@ public final class Registries {
         throw new AssertionError();
     }
     
+    @ApiStatus.Internal
     public interface RegistryProvider {
         <T> Registry<T> get(ResourceKey<net.minecraft.core.Registry<T>> key);
         

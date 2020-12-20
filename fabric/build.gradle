@@ -1,15 +1,25 @@
+import com.github.jengelman.gradle.plugins.shadow.transformers.Transformer
+import com.github.jengelman.gradle.plugins.shadow.transformers.TransformerContext
+import shadow.org.apache.tools.zip.ZipEntry
+import shadow.org.codehaus.plexus.util.IOUtil
+import shadow.org.apache.tools.zip.ZipOutputStream
+
 plugins {
-    id "fabric-loom"
     id "com.github.johnrengelman.shadow" version "5.0.0"
     id "com.matthewprenger.cursegradle"
 }
 
 loom {
     accessWidener(file("src/main/resources/architectury.accessWidener"))
+    silentMojangMappingsLicense()
 }
 
 configurations {
     shadow
+}
+
+architectury {
+    platformSetupLoomIde()
 }
 
 dependencies {
@@ -41,13 +51,16 @@ processResources {
 
 shadowJar {
     relocate "net.jodah.typetools", "me.shedaniel.architectury.shadowed.impl.net.jodah.typetools"
+    transform(MergeAccessWidenersTransformer.class) {
+        it.resource = "architectury.accessWidener"
+    }
     configurations = [project.configurations.shadow]
     classifier "shadow"
 }
 
 remapJar {
     dependsOn(shadowJar)
-    input.set(shadowJar.archivePath)
+    input.set(shadowJar.archiveFile)
     archiveClassifier = "fabric"
 }
 
@@ -92,3 +105,53 @@ curseforge {
 }
 
 rootProject.tasks.getByName("curseforgePublish").dependsOn tasks.getByName("curseforge")
+
+class MergeAccessWidenersTransformer implements Transformer {
+    String resource
+    ByteArrayOutputStream data
+
+    MergeAccessWidenersTransformer() {
+        data = new ByteArrayOutputStream()
+        data.write("accessWidener v1 named\n".bytes)
+    }
+
+    @Override
+    boolean canTransformResource(FileTreeElement element) {
+        def path = element.relativePath.pathString
+        if (resource != null && resource.equalsIgnoreCase(path)) {
+            return true
+        }
+
+        return false
+    }
+
+    @Override
+    void transform(TransformerContext context) {
+        def lines = context.is.readLines()
+        lines.removeIf { it == "accessWidener v1 named" }
+        IOUtil.copy(lines.join("\n"), data)
+        data.write('\n'.bytes)
+
+        context.is.close()
+    }
+
+    @Override
+    boolean hasTransformedResource() {
+        return data.size() > 0
+    }
+
+    void modifyOutputStream(org.apache.tools.zip.ZipOutputStream jos, boolean preserveFileTimestamps) {
+        throw new AbstractMethodError()
+    }
+
+    @Override
+    void modifyOutputStream(ZipOutputStream os, boolean preserveFileTimestamps) {
+        ZipEntry entry = new ZipEntry(resource)
+        entry.time = TransformerContext.getEntryTimestamp(preserveFileTimestamps, entry.time)
+        os.putNextEntry(entry)
+
+        IOUtil.copy(new ByteArrayInputStream(data.toByteArray()), os)
+        data.reset()
+        data.write('accessWidener v1 named\n'.bytes)
+    }
+}
