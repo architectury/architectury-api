@@ -5,7 +5,7 @@
   "minVersion": "0.8",
   "client": [
   ],
-  "mixins": ["BiomeGenerationSettingsBuilderAccessor", "BiomeSpecialEffectsAccessor", "MobSpawnSettingsBuilderAccessor"],
+  "mixins": ["BiomeGenerationSettingsBuilderAccessor", "MobSpawnSettingsBuilderAccessor"],
   "injectors": {
     "defaultRequire": 1
   }
