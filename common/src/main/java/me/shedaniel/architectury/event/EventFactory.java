@@ -22,6 +22,7 @@ package me.shedaniel.architectury.event;
 import com.google.common.reflect.AbstractInvocationHandler;
 import me.shedaniel.architectury.ExpectPlatform;
 import me.shedaniel.architectury.ForgeEvent;
+import me.shedaniel.architectury.ForgeEventCancellable;
 import net.jodah.typetools.TypeResolver;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -125,7 +126,7 @@ public final class EventFactory {
     
     @SuppressWarnings("UnstableApiUsage")
     public static <T> Event<Actor<T>> createActorLoop(Class<T> clazz) {
-        return of(listeners -> (Actor<T>) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{Actor.class}, new AbstractInvocationHandler() {
+        Event<Actor<T>> event = of(listeners -> (Actor<T>) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{Actor.class}, new AbstractInvocationHandler() {
             @Override
             protected Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {
                 for (Actor<T> listener : listeners) {
@@ -137,10 +138,37 @@ public final class EventFactory {
                 return InteractionResult.PASS;
             }
         }));
+        Class<?> superClass = clazz;
+        do {
+            
+            if (superClass.isAnnotationPresent(ForgeEventCancellable.class)) {
+                return attachToForgeActorCancellable(event);
+            }
+            superClass = superClass.getSuperclass();
+        } while (superClass != null);
+        superClass = clazz;
+        do {
+            
+            if (superClass.isAnnotationPresent(ForgeEvent.class)) {
+                return attachToForgeActor(event);
+            }
+            superClass = superClass.getSuperclass();
+        } while (superClass != null);
+        return event;
     }
     
     @ExpectPlatform
     public static <T> Event<Consumer<T>> attachToForge(Event<Consumer<T>> event) {
+        throw new AssertionError();
+    }
+    
+    @ExpectPlatform
+    public static <T> Event<Actor<T>> attachToForgeActor(Event<Actor<T>> event) {
+        throw new AssertionError();
+    }
+    
+    @ExpectPlatform
+    public static <T> Event<Actor<T>> attachToForgeActorCancellable(Event<Actor<T>> event) {
         throw new AssertionError();
     }
     

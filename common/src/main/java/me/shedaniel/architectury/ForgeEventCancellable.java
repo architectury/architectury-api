@@ -17,23 +17,14 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package me.shedaniel.architectury.event.fabric;
+package me.shedaniel.architectury;
 
-import me.shedaniel.architectury.event.Actor;
-import me.shedaniel.architectury.event.Event;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import java.util.function.Consumer;
-
-public class EventFactoryImpl {
-    public static <T> Event<Consumer<T>> attachToForge(Event<Consumer<T>> event) {
-        return event;
-    }
-    
-    public static <T> Event<Actor<T>> attachToForgeActor(Event<Actor<T>> event) {
-        return event;
-    }
-    
-    public static <T> Event<Actor<T>> attachToForgeActorCancellable(Event<Actor<T>> event) {
-        return event;
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface ForgeEventCancellable {
 }

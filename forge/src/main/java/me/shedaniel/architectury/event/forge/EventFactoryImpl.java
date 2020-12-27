@@ -19,7 +19,9 @@
 
 package me.shedaniel.architectury.event.forge;
 
+import me.shedaniel.architectury.event.Actor;
 import me.shedaniel.architectury.event.Event;
+import net.minecraft.world.InteractionResult;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.util.function.Consumer;
@@ -31,6 +33,33 @@ public class EventFactoryImpl {
                 throw new ClassCastException(eventObj.getClass() + " is not an instance of forge Event!");
             }
             MinecraftForge.EVENT_BUS.post((net.minecraftforge.eventbus.api.Event) eventObj);
+        });
+        return event;
+    }
+    
+    public static <T> Event<Actor<T>> attachToForgeActor(Event<Actor<T>> event) {
+        event.register(eventObj -> {
+            if (!(eventObj instanceof net.minecraftforge.eventbus.api.Event)) {
+                throw new ClassCastException(eventObj.getClass() + " is not an instance of forge Event!");
+            }
+            MinecraftForge.EVENT_BUS.post((net.minecraftforge.eventbus.api.Event) eventObj);
+            return InteractionResult.PASS;
+        });
+        return event;
+    }
+    
+    public static <T> Event<Actor<T>> attachToForgeActorCancellable(Event<Actor<T>> event) {
+        event.register(eventObj -> {
+            if (!(eventObj instanceof net.minecraftforge.eventbus.api.Event)) {
+                throw new ClassCastException(eventObj.getClass() + " is not an instance of forge Event!");
+            }
+            if (!((net.minecraftforge.eventbus.api.Event) eventObj).isCancelable()) {
+                throw new ClassCastException(eventObj.getClass() + " is not cancellable Event!");
+            }
+            if (MinecraftForge.EVENT_BUS.post((net.minecraftforge.eventbus.api.Event) eventObj)) {
+                return InteractionResult.FAIL;
+            }
+            return InteractionResult.PASS;
         });
         return event;
     }
