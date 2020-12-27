@@ -57,7 +57,10 @@ public final class Fraction extends Number implements Comparable<Fraction> {
     
     public static Fraction ofWhole(long whole) {
         if (whole >= -1024 && whole < 1024) {
-            return SIMPLE_CACHE[(int) whole + 1024];
+            Fraction cached = SIMPLE_CACHE[(int) whole + 1024];
+            if (cached != null) {
+                return cached;
+            }
         }
         return new Fraction(whole, 1);
     }
