@@ -1,5 +1,7 @@
 # Architectury
-A intermediary api aimed to ease developing multiplatform mods.
+Talk to us on [Discord](https://discord.gg/C2RdJDpRBP)!
+
+An intermediary api aimed to ease developing multiplatform mods.
 
 ### What is Architectury
 Architectury is an api to abstract calls to fabric api and forge api as both loader has different implementations of what can be perceived as the same thing.
