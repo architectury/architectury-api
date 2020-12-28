@@ -19,11 +19,13 @@
 
 package me.shedaniel.architectury.registry.forge;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import me.shedaniel.architectury.platform.forge.EventBuses;
 import me.shedaniel.architectury.registry.Registries;
 import me.shedaniel.architectury.registry.Registry;
+import me.shedaniel.architectury.registry.RegistrySupplier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.LazyLoadedValue;
@@ -34,6 +36,7 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.RegistryManager;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
@@ -106,15 +109,53 @@ public class RegistriesImpl {
         }
         
         @Override
-        public Supplier<T> delegate(ResourceLocation id) {
+        public @NotNull RegistrySupplier<T> delegateSupplied(ResourceLocation id) {
             LazyLoadedValue<T> value = new LazyLoadedValue<>(() -> get(id));
-            return value::get;
+            return new RegistrySupplier<T>() {
+                @Override
+                public @NotNull ResourceLocation getRegistryId() {
+                    return delegate.key().location();
+                }
+    
+                @Override
+                public @NotNull ResourceLocation getId() {
+                    return id;
+                }
+    
+                @Override
+                public boolean isPresent() {
+                    return contains(id);
+                }
+    
+                @Override
+                public T get() {
+                    return value.get();
+                }
+    
+                @Override
+                public int hashCode() {
+                    return Objects.hashCode(getRegistryId(), getId());
+                }
+    
+                @Override
+                public boolean equals(Object obj) {
+                    if (this == obj) return true;
+                    if (!(obj instanceof RegistrySupplier)) return false;
+                    RegistrySupplier<?> other = (RegistrySupplier<?>) obj;
+                    return other.getRegistryId().equals(getRegistryId()) && other.getId().equals(getId());
+                }
+    
+                @Override
+                public String toString() {
+                    return getRegistryId().toString() + "@" + id.toString();
+                }
+            };
         }
         
         @Override
-        public Supplier<T> register(ResourceLocation id, Supplier<T> supplier) {
+        public @NotNull RegistrySupplier<T> registerSupplied(ResourceLocation id, Supplier<T> supplier) {
             net.minecraft.core.Registry.register(delegate, id, supplier.get());
-            return delegate(id);
+            return delegateSupplied(id);
         }
         
         @Override
@@ -175,16 +216,92 @@ public class RegistriesImpl {
         }
         
         @Override
-        public Supplier<T> delegate(ResourceLocation id) {
+        public @NotNull RegistrySupplier<T> delegateSupplied(ResourceLocation id) {
             LazyLoadedValue<T> value = new LazyLoadedValue<>(() -> get(id));
-            return value::get;
+            return new RegistrySupplier<T>() {
+                @Override
+                public @NotNull ResourceLocation getRegistryId() {
+                    return delegate.getRegistryName();
+                }
+    
+                @Override
+                public @NotNull ResourceLocation getId() {
+                    return id;
+                }
+    
+                @Override
+                public boolean isPresent() {
+                    return contains(id);
+                }
+    
+                @Override
+                public T get() {
+                    return value.get();
+                }
+    
+                @Override
+                public int hashCode() {
+                    return Objects.hashCode(getRegistryId(), getId());
+                }
+    
+                @Override
+                public boolean equals(Object obj) {
+                    if (this == obj) return true;
+                    if (!(obj instanceof RegistrySupplier)) return false;
+                    RegistrySupplier<?> other = (RegistrySupplier<?>) obj;
+                    return other.getRegistryId().equals(getRegistryId()) && other.getId().equals(getId());
+                }
+    
+                @Override
+                public String toString() {
+                    return getRegistryId().toString() + "@" + id.toString();
+                }
+            };
         }
         
         @Override
-        public Supplier<T> register(ResourceLocation id, Supplier<T> supplier) {
+        public @NotNull RegistrySupplier<T> registerSupplied(ResourceLocation id, Supplier<T> supplier) {
             RegistryObject registryObject = RegistryObject.of(id, delegate);
             registry.put(delegate.getRegistrySuperType(), registryObject, () -> supplier.get().setRegistryName(id));
-            return registryObject;
+            return new RegistrySupplier<T>() {
+                @Override
+                public @NotNull ResourceLocation getRegistryId() {
+                    return delegate.getRegistryName();
+                }
+    
+                @Override
+                public @NotNull ResourceLocation getId() {
+                    return registryObject.getId();
+                }
+    
+                @Override
+                public boolean isPresent() {
+                    return registryObject.isPresent();
+                }
+    
+                @Override
+                public T get() {
+                    return (T) registryObject.get();
+                }
+    
+                @Override
+                public int hashCode() {
+                    return Objects.hashCode(getRegistryId(), getId());
+                }
+    
+                @Override
+                public boolean equals(Object obj) {
+                    if (this == obj) return true;
+                    if (!(obj instanceof RegistrySupplier)) return false;
+                    RegistrySupplier<?> other = (RegistrySupplier<?>) obj;
+                    return other.getRegistryId().equals(getRegistryId()) && other.getId().equals(getId());
+                }
+    
+                @Override
+                public String toString() {
+                    return getRegistryId().toString() + "@" + id.toString();
+                }
+            };
         }
         
         @Override
