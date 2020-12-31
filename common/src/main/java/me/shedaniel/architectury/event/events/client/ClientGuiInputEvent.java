@@ -29,146 +29,20 @@ import net.minecraft.world.InteractionResult;
 
 @Environment(EnvType.CLIENT)
 public interface ClientGuiInputEvent {
-    Event<MouseScrolled> MOUSE_SCROLLED_PRE = EventFactory.of(listeners -> {
-        return (client, screen, mouseX, mouseY, amount) -> {
-            for (MouseScrolled listener : listeners) {
-                InteractionResult result = listener.mouseScrolled(client, screen, mouseX, mouseY, amount);
-                if (result != InteractionResult.PASS)
-                    return result;
-            }
-            return InteractionResult.PASS;
-        };
-    });
-    Event<MouseScrolled> MOUSE_SCROLLED_POST = EventFactory.of(listeners -> {
-        return (client, screen, mouseX, mouseY, amount) -> {
-            for (MouseScrolled listener : listeners) {
-                InteractionResult result = listener.mouseScrolled(client, screen, mouseX, mouseY, amount);
-                if (result != InteractionResult.PASS)
-                    return result;
-            }
-            return InteractionResult.PASS;
-        };
-    });
-    Event<MouseClicked> MOUSE_CLICKED_PRE = EventFactory.of(listeners -> {
-        return (client, screen, mouseX, mouseY, button) -> {
-            for (MouseClicked listener : listeners) {
-                InteractionResult result = listener.mouseClicked(client, screen, mouseX, mouseY, button);
-                if (result != InteractionResult.PASS)
-                    return result;
-            }
-            return InteractionResult.PASS;
-        };
-    });
-    Event<MouseClicked> MOUSE_CLICKED_POST = EventFactory.of(listeners -> {
-        return (client, screen, mouseX, mouseY, button) -> {
-            for (MouseClicked listener : listeners) {
-                InteractionResult result = listener.mouseClicked(client, screen, mouseX, mouseY, button);
-                if (result != InteractionResult.PASS)
-                    return result;
-            }
-            return InteractionResult.PASS;
-        };
-    });
-    Event<MouseReleased> MOUSE_RELEASED_PRE = EventFactory.of(listeners -> {
-        return (client, screen, mouseX, mouseY, button) -> {
-            for (MouseReleased listener : listeners) {
-                InteractionResult result = listener.mouseReleased(client, screen, mouseX, mouseY, button);
-                if (result != InteractionResult.PASS)
-                    return result;
-            }
-            return InteractionResult.PASS;
-        };
-    });
-    Event<MouseReleased> MOUSE_RELEASED_POST = EventFactory.of(listeners -> {
-        return (client, screen, mouseX, mouseY, button) -> {
-            for (MouseReleased listener : listeners) {
-                InteractionResult result = listener.mouseReleased(client, screen, mouseX, mouseY, button);
-                if (result != InteractionResult.PASS)
-                    return result;
-            }
-            return InteractionResult.PASS;
-        };
-    });
-    Event<MouseDragged> MOUSE_DRAGGED_PRE = EventFactory.of(listeners -> {
-        return (client, screen, mouseX1, mouseY1, button, mouseX2, mouseY2) -> {
-            for (MouseDragged listener : listeners) {
-                InteractionResult result = listener.mouseDragged(client, screen, mouseX1, mouseY1, button, mouseX2, mouseY2);
-                if (result != InteractionResult.PASS)
-                    return result;
-            }
-            return InteractionResult.PASS;
-        };
-    });
-    Event<MouseDragged> MOUSE_DRAGGED_POST = EventFactory.of(listeners -> {
-        return (client, screen, mouseX1, mouseY1, button, mouseX2, mouseY2) -> {
-            for (MouseDragged listener : listeners) {
-                InteractionResult result = listener.mouseDragged(client, screen, mouseX1, mouseY1, button, mouseX2, mouseY2);
-                if (result != InteractionResult.PASS)
-                    return result;
-            }
-            return InteractionResult.PASS;
-        };
-    });
-    Event<KeyTyped> CHAR_TYPED_PRE = EventFactory.of(listeners -> {
-        return (client, screen, character, keyCode) -> {
-            for (KeyTyped listener : listeners) {
-                InteractionResult result = listener.charTyped(client, screen, character, keyCode);
-                if (result != InteractionResult.PASS)
-                    return result;
-            }
-            return InteractionResult.PASS;
-        };
-    });
-    Event<KeyTyped> CHAR_TYPED_POST = EventFactory.of(listeners -> {
-        return (client, screen, character, keyCode) -> {
-            for (KeyTyped listener : listeners) {
-                InteractionResult result = listener.charTyped(client, screen, character, keyCode);
-                if (result != InteractionResult.PASS)
-                    return result;
-            }
-            return InteractionResult.PASS;
-        };
-    });
-    Event<KeyPressed> KEY_PRESSED_PRE = EventFactory.of(listeners -> {
-        return (client, screen, keyCode, scanCode, modifiers) -> {
-            for (KeyPressed listener : listeners) {
-                InteractionResult result = listener.keyPressed(client, screen, keyCode, scanCode, modifiers);
-                if (result != InteractionResult.PASS)
-                    return result;
-            }
-            return InteractionResult.PASS;
-        };
-    });
-    Event<KeyPressed> KEY_PRESSED_POST = EventFactory.of(listeners -> {
-        return (client, screen, keyCode, scanCode, modifiers) -> {
-            for (KeyPressed listener : listeners) {
-                InteractionResult result = listener.keyPressed(client, screen, keyCode, scanCode, modifiers);
-                if (result != InteractionResult.PASS)
-                    return result;
-            }
-            return InteractionResult.PASS;
-        };
-    });
-    Event<KeyReleased> KEY_RELEASED_PRE = EventFactory.of(listeners -> {
-        return (client, screen, keyCode, scanCode, modifiers) -> {
-            for (KeyReleased listener : listeners) {
-                InteractionResult result = listener.keyReleased(client, screen, keyCode, scanCode, modifiers);
-                if (result != InteractionResult.PASS)
-                    return result;
-            }
-            return InteractionResult.PASS;
-        };
-    });
-    Event<KeyReleased> KEY_RELEASED_POST = EventFactory.of(listeners -> {
-        return (client, screen, keyCode, scanCode, modifiers) -> {
-            for (KeyReleased listener : listeners) {
-                InteractionResult result = listener.keyReleased(client, screen, keyCode, scanCode, modifiers);
-                if (result != InteractionResult.PASS)
-                    return result;
-            }
-            return InteractionResult.PASS;
-        };
-    });
+    Event<MouseScrolled> MOUSE_SCROLLED_PRE = EventFactory.createInteractionResult(MouseScrolled.class);
+    Event<MouseScrolled> MOUSE_SCROLLED_POST = EventFactory.createInteractionResult(MouseScrolled.class);
+    Event<MouseClicked> MOUSE_CLICKED_PRE = EventFactory.createInteractionResult(MouseClicked.class);
+    Event<MouseClicked> MOUSE_CLICKED_POST = EventFactory.createInteractionResult(MouseClicked.class);
+    Event<MouseReleased> MOUSE_RELEASED_PRE = EventFactory.createInteractionResult(MouseReleased.class);
+    Event<MouseReleased> MOUSE_RELEASED_POST = EventFactory.createInteractionResult(MouseReleased.class);
+    Event<MouseDragged> MOUSE_DRAGGED_PRE = EventFactory.createInteractionResult(MouseDragged.class);
+    Event<MouseDragged> MOUSE_DRAGGED_POST = EventFactory.createInteractionResult(MouseDragged.class);
+    Event<KeyTyped> CHAR_TYPED_PRE = EventFactory.createInteractionResult(KeyTyped.class);
+    Event<KeyTyped> CHAR_TYPED_POST = EventFactory.createInteractionResult(KeyTyped.class);
+    Event<KeyPressed> KEY_PRESSED_PRE = EventFactory.createInteractionResult(KeyPressed.class);
+    Event<KeyPressed> KEY_PRESSED_POST = EventFactory.createInteractionResult(KeyPressed.class);
+    Event<KeyReleased> KEY_RELEASED_PRE = EventFactory.createInteractionResult(KeyReleased.class);
+    Event<KeyReleased> KEY_RELEASED_POST = EventFactory.createInteractionResult(KeyReleased.class);
     
     interface KeyPressed {
         InteractionResult keyPressed(Minecraft client, Screen screen, int keyCode, int scanCode, int modifiers);
