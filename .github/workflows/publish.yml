@@ -1,7 +1,10 @@
 name: Java CI
 
 on:
-  [ push ]
+  push:
+    branches:
+      - "1.16"
+      - "1.17"
 
 jobs:
   build:
