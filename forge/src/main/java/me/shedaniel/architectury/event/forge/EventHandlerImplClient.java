@@ -93,8 +93,10 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent
     public static void event(RenderGameOverlayEvent.Text event) {
-        GuiEvent.DEBUG_TEXT_LEFT.invoker().gatherText(event.getLeft());
-        GuiEvent.DEBUG_TEXT_RIGHT.invoker().gatherText(event.getRight());
+        if (Minecraft.getInstance().options.renderDebug) {
+            GuiEvent.DEBUG_TEXT_LEFT.invoker().gatherText(event.getLeft());
+            GuiEvent.DEBUG_TEXT_RIGHT.invoker().gatherText(event.getRight());
+        }
     }
     
     @SubscribeEvent
