@@ -40,28 +40,28 @@ import net.minecraft.commands.Commands;
 public class EventHandlerImpl {
     @Environment(EnvType.CLIENT)
     public static void registerClient() {
-        ClientLifecycleEvents.CLIENT_STARTED.register(ClientLifecycleEvent.CLIENT_STARTED.invoker()::stateChanged);
-        ClientLifecycleEvents.CLIENT_STOPPING.register(ClientLifecycleEvent.CLIENT_STOPPING.invoker()::stateChanged);
+        ClientLifecycleEvents.CLIENT_STARTED.register(instance -> ClientLifecycleEvent.CLIENT_STARTED.invoker().stateChanged(instance));
+        ClientLifecycleEvents.CLIENT_STOPPING.register(instance -> ClientLifecycleEvent.CLIENT_STOPPING.invoker().stateChanged(instance));
         
-        ClientTickEvents.START_CLIENT_TICK.register(ClientTickEvent.CLIENT_PRE.invoker()::tick);
-        ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvent.CLIENT_POST.invoker()::tick);
-        ClientTickEvents.START_WORLD_TICK.register(ClientTickEvent.CLIENT_WORLD_PRE.invoker()::tick);
-        ClientTickEvents.END_WORLD_TICK.register(ClientTickEvent.CLIENT_WORLD_POST.invoker()::tick);
+        ClientTickEvents.START_CLIENT_TICK.register(instance -> ClientTickEvent.CLIENT_PRE.invoker().tick(instance));
+        ClientTickEvents.END_CLIENT_TICK.register(instance -> ClientTickEvent.CLIENT_POST.invoker().tick(instance));
+        ClientTickEvents.START_WORLD_TICK.register(instance -> ClientTickEvent.CLIENT_WORLD_PRE.invoker().tick(instance));
+        ClientTickEvents.END_WORLD_TICK.register(instance -> ClientTickEvent.CLIENT_WORLD_POST.invoker().tick(instance));
         
         ItemTooltipCallback.EVENT.register((itemStack, tooltipFlag, list) -> TooltipEvent.ITEM.invoker().append(itemStack, list, tooltipFlag));
-        HudRenderCallback.EVENT.register(GuiEvent.RENDER_HUD.invoker()::renderHud);
+        HudRenderCallback.EVENT.register((matrices, tickDelta) -> GuiEvent.RENDER_HUD.invoker().renderHud(matrices, tickDelta));
     }
     
     public static void registerCommon() {
-        ServerLifecycleEvents.SERVER_STARTING.register(LifecycleEvent.SERVER_BEFORE_START.invoker()::stateChanged);
-        ServerLifecycleEvents.SERVER_STARTED.register(LifecycleEvent.SERVER_STARTED.invoker()::stateChanged);
-        ServerLifecycleEvents.SERVER_STOPPING.register(LifecycleEvent.SERVER_STOPPING.invoker()::stateChanged);
-        ServerLifecycleEvents.SERVER_STOPPED.register(LifecycleEvent.SERVER_STOPPED.invoker()::stateChanged);
+        ServerLifecycleEvents.SERVER_STARTING.register(instance -> LifecycleEvent.SERVER_BEFORE_START.invoker().stateChanged(instance));
+        ServerLifecycleEvents.SERVER_STARTED.register(instance -> LifecycleEvent.SERVER_STARTED.invoker().stateChanged(instance));
+        ServerLifecycleEvents.SERVER_STOPPING.register(instance -> LifecycleEvent.SERVER_STOPPING.invoker().stateChanged(instance));
+        ServerLifecycleEvents.SERVER_STOPPED.register(instance -> LifecycleEvent.SERVER_STOPPED.invoker().stateChanged(instance));
         
-        ServerTickEvents.START_SERVER_TICK.register(TickEvent.SERVER_PRE.invoker()::tick);
-        ServerTickEvents.END_SERVER_TICK.register(TickEvent.SERVER_POST.invoker()::tick);
-        ServerTickEvents.START_WORLD_TICK.register(TickEvent.SERVER_WORLD_PRE.invoker()::tick);
-        ServerTickEvents.END_WORLD_TICK.register(TickEvent.SERVER_WORLD_POST.invoker()::tick);
+        ServerTickEvents.START_SERVER_TICK.register(instance -> TickEvent.SERVER_PRE.invoker().tick(instance));
+        ServerTickEvents.END_SERVER_TICK.register(instance -> TickEvent.SERVER_POST.invoker().tick(instance));
+        ServerTickEvents.START_WORLD_TICK.register(instance -> TickEvent.SERVER_WORLD_PRE.invoker().tick(instance));
+        ServerTickEvents.END_WORLD_TICK.register(instance -> TickEvent.SERVER_WORLD_POST.invoker().tick(instance));
         
         ServerWorldEvents.LOAD.register((server, world) -> LifecycleEvent.SERVER_WORLD_LOAD.invoker().act(world));
         ServerWorldEvents.UNLOAD.register((server, world) -> LifecycleEvent.SERVER_WORLD_UNLOAD.invoker().act(world));
