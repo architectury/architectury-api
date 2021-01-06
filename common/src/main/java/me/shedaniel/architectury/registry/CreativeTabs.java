@@ -27,7 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.function.Supplier;
 
 public final class CreativeTabs {
-    public CreativeTabs() {}
+    private CreativeTabs() {}
     
     // I am sorry, fabric wants a resource location instead of the translation key for whatever reason
     @ExpectPlatform
