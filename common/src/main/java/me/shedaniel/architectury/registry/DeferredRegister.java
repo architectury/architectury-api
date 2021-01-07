@@ -19,40 +19,63 @@
 
 package me.shedaniel.architectury.registry;
 
-import com.google.common.base.Objects;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.LazyLoadedValue;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public class DeferredRegister<T> {
+    @NotNull
     private final Supplier<Registries> registriesSupplier;
+    @NotNull
     private final ResourceKey<net.minecraft.core.Registry<T>> key;
     private final List<Entry<T>> entries = new ArrayList<>();
     private boolean registered = false;
+    @Nullable
+    private String modId;
     
-    private DeferredRegister(Supplier<Registries> registriesSupplier, ResourceKey<net.minecraft.core.Registry<T>> key) {
-        this.registriesSupplier = registriesSupplier;
-        this.key = key;
+    private DeferredRegister(@NotNull Supplier<Registries> registriesSupplier, @NotNull ResourceKey<net.minecraft.core.Registry<T>> key, @Nullable String modId) {
+        this.registriesSupplier = Objects.requireNonNull(registriesSupplier);
+        this.key = Objects.requireNonNull(key);
+        this.modId = modId;
     }
     
     @NotNull
-    public static <T> DeferredRegister<T> create(Registries registries, ResourceKey<net.minecraft.core.Registry<T>> key) {
-        return new DeferredRegister<>(() -> registries, key);
+    public static <T> DeferredRegister<T> create(@NotNull String modId, @NotNull ResourceKey<net.minecraft.core.Registry<T>> key) {
+        LazyLoadedValue<Registries> value = new LazyLoadedValue<>(() -> Registries.get(modId));
+        return new DeferredRegister<>(value::get, key, Objects.requireNonNull(modId));
     }
     
     @NotNull
-    public static <T> DeferredRegister<T> create(Supplier<Registries> registries, ResourceKey<net.minecraft.core.Registry<T>> key) {
-        return new DeferredRegister<>(registries, key);
+    @Deprecated
+    public static <T> DeferredRegister<T> create(@NotNull Registries registries, @NotNull ResourceKey<net.minecraft.core.Registry<T>> key) {
+        return new DeferredRegister<>(() -> registries, key, null);
     }
     
     @NotNull
-    public static <T> DeferredRegister<T> create(LazyLoadedValue<Registries> registries, ResourceKey<net.minecraft.core.Registry<T>> key) {
+    @Deprecated
+    public static <T> DeferredRegister<T> create(@NotNull Supplier<Registries> registries, @NotNull ResourceKey<net.minecraft.core.Registry<T>> key) {
+        return new DeferredRegister<>(registries, key, null);
+    }
+    
+    @NotNull
+    @Deprecated
+    public static <T> DeferredRegister<T> create(@NotNull LazyLoadedValue<Registries> registries, @NotNull ResourceKey<net.minecraft.core.Registry<T>> key) {
         return create(registries::get, key);
+    }
+    
+    public RegistrySupplier<T> register(String id, Supplier<T> supplier) {
+        if (modId == null) {
+            throw new NullPointerException("You must create the deferred register with a mod id to register entries without the namespace!");
+        }
+        
+        return register(new ResourceLocation(modId, id), supplier);
     }
     
     public RegistrySupplier<T> register(ResourceLocation id, Supplier<T> supplier) {
@@ -76,12 +99,12 @@ public class DeferredRegister<T> {
         }
     }
     
-    private class Entry<T> implements RegistrySupplier<T> {
+    private class Entry<R> implements RegistrySupplier<R> {
         private final ResourceLocation id;
-        private final Supplier<T> supplier;
-        private RegistrySupplier<T> value;
+        private final Supplier<R> supplier;
+        private RegistrySupplier<R> value;
     
-        public Entry(ResourceLocation id, Supplier<T> supplier) {
+        public Entry(ResourceLocation id, Supplier<R> supplier) {
             this.id = id;
             this.supplier = supplier;
         }
@@ -102,7 +125,7 @@ public class DeferredRegister<T> {
         }
     
         @Override
-        public T get() {
+        public R get() {
             if (isPresent()) {
                 return value.get();
             }
@@ -111,7 +134,7 @@ public class DeferredRegister<T> {
     
         @Override
         public int hashCode() {
-            return Objects.hashCode(getRegistryId(), getId());
+            return com.google.common.base.Objects.hashCode(getRegistryId(), getId());
         }
     
         @Override
