@@ -34,6 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class Registries {
     private static final Map<String, Registries> REGISTRIES = new ConcurrentHashMap<>();
     private final RegistryProvider provider;
+    private final String modId;
     
     public static Registries get(String modId) {
         return REGISTRIES.computeIfAbsent(modId, Registries::new);
@@ -41,6 +42,7 @@ public final class Registries {
     
     private Registries(String modId) {
         this.provider = _get(modId);
+        this.modId = modId;
     }
     
     public <T> Registry<T> get(ResourceKey<net.minecraft.core.Registry<T>> key) {
@@ -86,6 +88,10 @@ public final class Registries {
     @ExpectPlatform
     private static RegistryProvider _get(String modId) {
         throw new AssertionError();
+    }
+    
+    public String getModId() {
+        return modId;
     }
     
     @ApiStatus.Internal
