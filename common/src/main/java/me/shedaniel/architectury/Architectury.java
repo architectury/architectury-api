@@ -20,8 +20,11 @@
 package me.shedaniel.architectury;
 
 import com.google.common.collect.ImmutableMap;
+import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @ApiStatus.Internal
@@ -37,16 +40,18 @@ public class Architectury {
     }
     
     static {
-        String loader = null;
+        List<String> loader = new ArrayList<>();
         for (Map.Entry<String, String> entry : MOD_LOADERS.entrySet()) {
             try {
                 Class.forName(entry.getKey(), false, Architectury.class.getClassLoader());
-                loader = entry.getValue();
+                loader.add(entry.getValue());
                 break;
             } catch (ClassNotFoundException ignored) {}
         }
-        if (loader == null)
+        if (loader.isEmpty())
             throw new IllegalStateException("No detected mod loader!");
-        MOD_LOADER = loader;
+        if (loader.size() >= 2)
+            LogManager.getLogger().error("Detected multiple mod loaders! Something is wrong on the classpath! " + String.join(", ", loader));
+        MOD_LOADER = loader.get(0);
     }
 }
