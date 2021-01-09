@@ -25,6 +25,7 @@ import me.shedaniel.architectury.event.events.TooltipEvent;
 import me.shedaniel.architectury.event.events.client.ClientChatEvent;
 import me.shedaniel.architectury.impl.TooltipEventColorContextImpl;
 import me.shedaniel.architectury.impl.TooltipEventPositionContextImpl;
+import me.shedaniel.architectury.impl.fabric.ScreenInputDelegate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -42,13 +43,24 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.List;
 
 @Mixin(Screen.class)
-public abstract class MixinScreen {
+public abstract class MixinScreen implements ScreenInputDelegate {
     @Shadow @Final public List<AbstractWidget> buttons;
     @Unique private static ThreadLocal<TooltipEventPositionContextImpl> tooltipPositionContext = ThreadLocal.withInitial(TooltipEventPositionContextImpl::new);
     @Unique private static ThreadLocal<TooltipEventColorContextImpl> tooltipColorContext = ThreadLocal.withInitial(TooltipEventColorContextImpl::new);
     
     @Shadow
     public abstract List<? extends GuiEventListener> children();
+    
+    @Unique
+    private GuiEventListener inputDelegate;
+    
+    @Override
+    public GuiEventListener architectury_delegateInputs() {
+        if (inputDelegate == null) {
+            inputDelegate = new DelegateScreen((Screen) (Object) this);
+        }
+        return inputDelegate;
+    }
     
     @Inject(method = "init(Lnet/minecraft/client/Minecraft;II)V", at = @At(value = "INVOKE", target = "Ljava/util/List;clear()V", ordinal = 0),
             cancellable = true)

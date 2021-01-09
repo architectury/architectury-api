@@ -22,9 +22,7 @@ package me.shedaniel.architectury.event.forge;
 import me.shedaniel.architectury.event.events.TextureStitchEvent;
 import me.shedaniel.architectury.event.events.*;
 import me.shedaniel.architectury.event.events.client.ClientChatEvent;
-import me.shedaniel.architectury.event.events.client.ClientLifecycleEvent;
-import me.shedaniel.architectury.event.events.client.ClientPlayerEvent;
-import me.shedaniel.architectury.event.events.client.ClientTickEvent;
+import me.shedaniel.architectury.event.events.client.*;
 import me.shedaniel.architectury.impl.TooltipEventColorContextImpl;
 import me.shedaniel.architectury.impl.TooltipEventPositionContextImpl;
 import net.minecraft.client.Minecraft;
@@ -180,6 +178,90 @@ public class EventHandlerImplClient {
         event.setBackground(colorContext.getBackgroundColor());
         event.setBorderEnd(colorContext.getOutlineGradientBottomColor());
         event.setBorderStart(colorContext.getOutlineGradientTopColor());
+    }
+    
+    @SubscribeEvent
+    public static void event(GuiScreenEvent.MouseScrollEvent.Pre event) {
+        if (ClientScreenInputEvent.MOUSE_SCROLLED_PRE.invoker().mouseScrolled(Minecraft.getInstance(), event.getGui(), event.getMouseX(), event.getMouseY(), event.getScrollDelta()) == InteractionResult.FAIL) {
+            event.setCanceled(true);
+        }
+    }
+    
+    @SubscribeEvent
+    public static void event(GuiScreenEvent.MouseScrollEvent.Post event) {
+        ClientScreenInputEvent.MOUSE_SCROLLED_POST.invoker().mouseScrolled(Minecraft.getInstance(), event.getGui(), event.getMouseX(), event.getMouseY(), event.getScrollDelta());
+    }
+    
+    @SubscribeEvent
+    public static void event(GuiScreenEvent.MouseClickedEvent.Pre event) {
+        if (ClientScreenInputEvent.MOUSE_CLICKED_PRE.invoker().mouseClicked(Minecraft.getInstance(), event.getGui(), event.getMouseX(), event.getMouseY(), event.getButton()) == InteractionResult.FAIL) {
+            event.setCanceled(true);
+        }
+    }
+    
+    @SubscribeEvent
+    public static void event(GuiScreenEvent.MouseClickedEvent.Post event) {
+        ClientScreenInputEvent.MOUSE_CLICKED_POST.invoker().mouseClicked(Minecraft.getInstance(), event.getGui(), event.getMouseX(), event.getMouseY(), event.getButton());
+    }
+    
+    @SubscribeEvent
+    public static void event(GuiScreenEvent.MouseDragEvent.Pre event) {
+        if (ClientScreenInputEvent.MOUSE_DRAGGED_PRE.invoker().mouseDragged(Minecraft.getInstance(), event.getGui(), event.getMouseX(), event.getMouseY(), event.getMouseButton(), event.getDragX(), event.getDragY()) == InteractionResult.FAIL) {
+            event.setCanceled(true);
+        }
+    }
+    
+    @SubscribeEvent
+    public static void event(GuiScreenEvent.MouseDragEvent.Post event) {
+        ClientScreenInputEvent.MOUSE_DRAGGED_POST.invoker().mouseDragged(Minecraft.getInstance(), event.getGui(), event.getMouseX(), event.getMouseY(), event.getMouseButton(), event.getDragX(), event.getDragY());
+    }
+    
+    @SubscribeEvent
+    public static void event(GuiScreenEvent.MouseReleasedEvent.Pre event) {
+        if (ClientScreenInputEvent.MOUSE_RELEASED_PRE.invoker().mouseReleased(Minecraft.getInstance(), event.getGui(), event.getMouseX(), event.getMouseY(), event.getButton()) == InteractionResult.FAIL) {
+            event.setCanceled(true);
+        }
+    }
+    
+    @SubscribeEvent
+    public static void event(GuiScreenEvent.MouseReleasedEvent.Post event) {
+        ClientScreenInputEvent.MOUSE_RELEASED_PRE.invoker().mouseReleased(Minecraft.getInstance(), event.getGui(), event.getMouseX(), event.getMouseY(), event.getButton());
+    }
+    
+    @SubscribeEvent
+    public static void event(GuiScreenEvent.KeyboardCharTypedEvent.Pre event) {
+        if (ClientScreenInputEvent.CHAR_TYPED_PRE.invoker().charTyped(Minecraft.getInstance(), event.getGui(), event.getCodePoint(), event.getModifiers()) == InteractionResult.FAIL) {
+            event.setCanceled(true);
+        }
+    }
+    
+    @SubscribeEvent
+    public static void event(GuiScreenEvent.KeyboardCharTypedEvent.Post event) {
+        ClientScreenInputEvent.CHAR_TYPED_POST.invoker().charTyped(Minecraft.getInstance(), event.getGui(), event.getCodePoint(), event.getModifiers());
+    }
+    
+    @SubscribeEvent
+    public static void event(GuiScreenEvent.KeyboardKeyPressedEvent.Pre event) {
+        if (ClientScreenInputEvent.KEY_PRESSED_PRE.invoker().keyPressed(Minecraft.getInstance(), event.getGui(), event.getKeyCode(), event.getScanCode(), event.getModifiers()) == InteractionResult.FAIL) {
+            event.setCanceled(true);
+        }
+    }
+    
+    @SubscribeEvent
+    public static void event(GuiScreenEvent.KeyboardKeyPressedEvent.Post event) {
+        ClientScreenInputEvent.KEY_PRESSED_POST.invoker().keyPressed(Minecraft.getInstance(), event.getGui(), event.getKeyCode(), event.getScanCode(), event.getModifiers());
+    }
+    
+    @SubscribeEvent
+    public static void event(GuiScreenEvent.KeyboardKeyReleasedEvent.Pre event) {
+        if (ClientScreenInputEvent.KEY_RELEASED_PRE.invoker().keyReleased(Minecraft.getInstance(), event.getGui(), event.getKeyCode(), event.getScanCode(), event.getModifiers()) == InteractionResult.FAIL) {
+            event.setCanceled(true);
+        }
+    }
+    
+    @SubscribeEvent
+    public static void event(GuiScreenEvent.KeyboardKeyReleasedEvent.Post event) {
+        ClientScreenInputEvent.KEY_RELEASED_POST.invoker().keyReleased(Minecraft.getInstance(), event.getGui(), event.getKeyCode(), event.getScanCode(), event.getModifiers());
     }
     
     @OnlyIn(Dist.CLIENT)

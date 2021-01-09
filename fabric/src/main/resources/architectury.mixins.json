@@ -5,7 +5,8 @@
   "minVersion": "0.7.11",
   "client": [
     "client.MixinClientLevel", "client.MixinClientPacketListener", "client.MixinDebugScreenOverlay", "client.MixinGameRenderer", "client.MixinIntegratedServer",
-    "client.MixinMinecraft", "client.MixinMultiPlayerGameMode", "client.MixinScreen", "client.MixinTextureAtlas"
+    "client.MixinKeyboardHandler", "client.MixinMinecraft", "client.MixinMouseHandler", "client.MixinMultiPlayerGameMode", "client.MixinScreen",
+    "client.MixinTextureAtlas"
   ],
   "mixins": [
     "ExplosionPreInvoker", "LivingDeathInvoker", "MixinArchitecturyBlockEntity", "MixinBlockItem", "MixinCommands", "MixinDedicatedServer", "MixinExplosion",
