@@ -35,7 +35,7 @@ public interface MixinArchitecturyBlockEntity extends IForgeTileEntity {
     @NotNull
     CompoundTag saveClientData(@NotNull CompoundTag tag);
     
-    @Shadow
+    @Shadow(remap = false)
     void loadClientData(@NotNull BlockState pos, @NotNull CompoundTag tag);
     
     @Override

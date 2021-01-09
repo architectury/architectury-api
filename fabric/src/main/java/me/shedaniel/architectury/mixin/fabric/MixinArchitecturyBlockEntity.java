@@ -36,7 +36,8 @@ public interface MixinArchitecturyBlockEntity extends BlockEntityClientSerializa
     @NotNull
     CompoundTag saveClientData(@NotNull CompoundTag tag);
     
-    @Shadow void loadClientData(@NotNull BlockState pos, @NotNull CompoundTag tag);
+    @Shadow(remap = false)
+    void loadClientData(@NotNull BlockState pos, @NotNull CompoundTag tag);
     
     @Override
     default void fromClientTag(CompoundTag tag) {
