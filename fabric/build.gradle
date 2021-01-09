@@ -40,6 +40,8 @@ dependencies {
     shadow(project(path: ":common", configuration: "transformed")) {
         transitive = false
     }
+
+    testCompile project(":common").sourceSets.test.output
 }
 
 processResources {

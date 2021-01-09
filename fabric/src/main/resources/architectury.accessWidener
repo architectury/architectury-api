@@ -52,3 +52,4 @@ accessible field net/minecraft/server/packs/repository/PackRepository sources Lj
 mutable field net/minecraft/server/packs/repository/PackRepository sources Ljava/util/Set;
 accessible field net/minecraft/world/item/DyeColor textureDiffuseColor I
 accessible method net/minecraft/world/entity/player/Player closeContainer ()V
+accessible method net/minecraft/advancements/CriteriaTriggers register (Lnet/minecraft/advancements/CriterionTrigger;)Lnet/minecraft/advancements/CriterionTrigger;

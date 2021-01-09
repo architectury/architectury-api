@@ -48,7 +48,7 @@ public class MixinPlayer {
     
     @Inject(method = "drop(Lnet/minecraft/world/item/ItemStack;ZZ)Lnet/minecraft/world/entity/item/ItemEntity;", at = @At("RETURN"), cancellable = true)
     private void drop(ItemStack itemStack, boolean bl, boolean bl2, CallbackInfoReturnable<ItemEntity> cir) {
-        if (PlayerEvent.DROP_ITEM.invoker().drop((Player) (Object) this, cir.getReturnValue()) == InteractionResult.FAIL) {
+        if (cir.getReturnValue() != null && PlayerEvent.DROP_ITEM.invoker().drop((Player) (Object) this, cir.getReturnValue()) == InteractionResult.FAIL) {
             cir.setReturnValue(null);
         }
     }

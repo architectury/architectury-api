@@ -20,18 +20,20 @@
 package me.shedaniel.architectury.registry;
 
 import me.shedaniel.architectury.ExpectPlatform;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.advancements.CriterionTrigger;
 
-import java.util.function.Supplier;
-
-public final class CreativeTabs {
-    private CreativeTabs() {}
+public final class CriteriaTriggersRegistry {
+    private CriteriaTriggersRegistry() {}
     
-    // I am sorry, fabric wants a resource location instead of the translation key for whatever reason
+    /**
+     * Invokes {@link net.minecraft.advancements.CriteriaTriggers#register(CriterionTrigger)}.
+     *
+     * @param trigger The trigger to register
+     * @param <T>     The type of trigger
+     * @return The trigger registered
+     */
     @ExpectPlatform
-    public static CreativeModeTab create(ResourceLocation name, Supplier<ItemStack> icon) {
+    public static <T extends CriterionTrigger<?>> T register(T trigger) {
         throw new AssertionError();
     }
 }

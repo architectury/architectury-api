@@ -17,21 +17,13 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package me.shedaniel.architectury.registry;
+package me.shedaniel.architectury.registry.fabric;
 
-import me.shedaniel.architectury.ExpectPlatform;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.CriterionTrigger;
 
-import java.util.function.Supplier;
-
-public final class CreativeTabs {
-    private CreativeTabs() {}
-    
-    // I am sorry, fabric wants a resource location instead of the translation key for whatever reason
-    @ExpectPlatform
-    public static CreativeModeTab create(ResourceLocation name, Supplier<ItemStack> icon) {
-        throw new AssertionError();
+public class CriteriaTriggersRegistryImpl {
+    public static <T extends CriterionTrigger<?>> T register(T trigger) {
+        return CriteriaTriggers.register(trigger);
     }
 }
