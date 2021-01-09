@@ -26,6 +26,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -35,9 +36,13 @@ public abstract class MixinItemEntity {
     @Shadow
     public abstract ItemStack getItem();
     
+    @Unique
+    private ItemStack cache;
+    
     @Inject(method = "playerTouch",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getCount()I"), cancellable = true)
     private void prePickup(Player player, CallbackInfo ci) {
+        cache = getItem().copy();
         InteractionResult canPickUp = PlayerEvent.PICKUP_ITEM_PRE.invoker().canPickup(player, (ItemEntity) (Object) this, getItem());
         if (canPickUp == InteractionResult.FAIL) {
             ci.cancel();
@@ -47,6 +52,10 @@ public abstract class MixinItemEntity {
     @Inject(method = "playerTouch",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;take(Lnet/minecraft/world/entity/Entity;I)V"))
     private void pickup(Player player, CallbackInfo ci) {
-        PlayerEvent.PICKUP_ITEM_POST.invoker().pickup(player, (ItemEntity) (Object) this, getItem());
+        if (cache != null) {
+            PlayerEvent.PICKUP_ITEM_POST.invoker().pickup(player, (ItemEntity) (Object) this, cache);
+        }
+        
+        this.cache = null;
     }
 }

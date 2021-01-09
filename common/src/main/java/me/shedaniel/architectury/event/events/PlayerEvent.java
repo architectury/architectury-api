@@ -71,7 +71,7 @@ public interface PlayerEvent {
     }
     
     interface CraftItem {
-        void craft(Player player, ItemStack smelted, Container inventory);
+        void craft(Player player, ItemStack constructed, Container inventory);
     }
     
     interface SmeltItem {
