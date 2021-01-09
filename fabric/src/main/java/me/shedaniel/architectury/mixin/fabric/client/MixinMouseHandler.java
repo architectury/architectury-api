@@ -20,16 +20,17 @@
 package me.shedaniel.architectury.mixin.fabric.client;
 
 import me.shedaniel.architectury.event.events.client.ClientScreenInputEvent;
+import me.shedaniel.architectury.impl.fabric.ScreenInputDelegate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.InteractionResult;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
@@ -115,20 +116,11 @@ public class MixinMouseHandler {
     }
     
     @SuppressWarnings("UnresolvedMixinReference")
-    @Inject(method = {"method_1602", "lambda$onMove$11"}, at = @At("HEAD"), cancellable = true, remap = false)
-    public void onMouseDragged(GuiEventListener element, double d, double e, double f, double g, CallbackInfo info) {
-        if (!info.isCancelled()) {
-            InteractionResult result = ClientScreenInputEvent.MOUSE_DRAGGED_PRE.invoker().mouseDragged(minecraft, (Screen) element, d, e, activeButton, f, g);
-            if (result != InteractionResult.PASS)
-                info.cancel();
+    @ModifyVariable(method = {"method_1602", "lambda$onMove$11"}, at = @At("HEAD"), ordinal = 0, argsOnly = true)
+    private GuiEventListener wrapMouseDragged(GuiEventListener screen) {
+        if (screen instanceof ScreenInputDelegate) {
+            return ((ScreenInputDelegate) screen).architectury_delegateInputs();
         }
-    }
-    
-    @SuppressWarnings("UnresolvedMixinReference")
-    @Inject(method = {"method_1602", "lambda$onMove$11"}, at = @At("RETURN"), remap = false)
-    public void onMouseDraggedPost(GuiEventListener element, double d, double e, double f, double g, CallbackInfo info) {
-        if (!info.isCancelled()) {
-            ClientScreenInputEvent.MOUSE_DRAGGED_POST.invoker().mouseDragged(minecraft, (Screen) element, d, e, activeButton, f, g);
-        }
+        return screen;
     }
 }
