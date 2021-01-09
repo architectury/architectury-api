@@ -28,7 +28,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.InteractionResult;
 
 @Environment(EnvType.CLIENT)
-public interface ClientGuiInputEvent {
+public interface ClientScreenInputEvent {
     Event<MouseScrolled> MOUSE_SCROLLED_PRE = EventFactory.createInteractionResult(MouseScrolled.class);
     Event<MouseScrolled> MOUSE_SCROLLED_POST = EventFactory.createInteractionResult(MouseScrolled.class);
     Event<MouseClicked> MOUSE_CLICKED_PRE = EventFactory.createInteractionResult(MouseClicked.class);

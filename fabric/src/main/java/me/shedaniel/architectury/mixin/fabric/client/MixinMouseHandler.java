@@ -19,7 +19,7 @@
 
 package me.shedaniel.architectury.mixin.fabric.client;
 
-import me.shedaniel.architectury.event.events.client.ClientGuiInputEvent;
+import me.shedaniel.architectury.event.events.client.ClientScreenInputEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -53,7 +53,7 @@ public class MixinMouseHandler {
                      ordinal = 0), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
     public void onMouseScrolled(long long_1, double double_1, double double_2, CallbackInfo info, double amount, double x, double y) {
         if (!info.isCancelled()) {
-            InteractionResult result = ClientGuiInputEvent.MOUSE_SCROLLED_PRE.invoker().mouseScrolled(minecraft, minecraft.screen, x, y, amount);
+            InteractionResult result = ClientScreenInputEvent.MOUSE_SCROLLED_PRE.invoker().mouseScrolled(minecraft, minecraft.screen, x, y, amount);
             if (result != InteractionResult.PASS)
                 info.cancel();
         }
@@ -64,7 +64,7 @@ public class MixinMouseHandler {
                      ordinal = 0, shift = At.Shift.AFTER), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
     public void onMouseScrolledPost(long long_1, double double_1, double double_2, CallbackInfo info, double amount, double x, double y) {
         if (!info.isCancelled()) {
-            InteractionResult result = ClientGuiInputEvent.MOUSE_SCROLLED_POST.invoker().mouseScrolled(minecraft, minecraft.screen, x, y, amount);
+            InteractionResult result = ClientScreenInputEvent.MOUSE_SCROLLED_POST.invoker().mouseScrolled(minecraft, minecraft.screen, x, y, amount);
         }
     }
     
@@ -73,7 +73,7 @@ public class MixinMouseHandler {
                                          ordinal = 0), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
     public void onMouseClicked(long long_1, int button, int int_2, int int_3, CallbackInfo info, boolean bl, int i, boolean[] bls, double d, double e) {
         if (!info.isCancelled()) {
-            InteractionResult result = ClientGuiInputEvent.MOUSE_CLICKED_PRE.invoker().mouseClicked(minecraft, minecraft.screen, d, e, button);
+            InteractionResult result = ClientScreenInputEvent.MOUSE_CLICKED_PRE.invoker().mouseClicked(minecraft, minecraft.screen, d, e, button);
             if (result != InteractionResult.PASS)
                 info.cancel();
         }
@@ -84,49 +84,51 @@ public class MixinMouseHandler {
                                          ordinal = 0, shift = At.Shift.AFTER), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
     public void onMouseClickedPost(long long_1, int button, int int_2, int int_3, CallbackInfo info, boolean bl, int i, boolean[] bls, double d, double e) {
         if (!info.isCancelled()) {
-            InteractionResult result = ClientGuiInputEvent.MOUSE_CLICKED_POST.invoker().mouseClicked(minecraft, minecraft.screen, d, e, button);
-            if (result != InteractionResult.PASS)
-                info.cancel();
-        }
-    }
-    
-    @Inject(method = "onPress", at = @At(value = "INVOKE",
-                                         target = "Lnet/minecraft/client/gui/screens/Screen;wrapScreenError(Ljava/lang/Runnable;Ljava/lang/String;Ljava/lang/String;)V",
-                                         ordinal = 1), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-    public void onMouseReleased(long long_1, int button, int int_2, int int_3, CallbackInfo info, boolean bl, int i, boolean[] bls, double d, double e) {
-        if (!info.isCancelled()) {
-            InteractionResult result = ClientGuiInputEvent.MOUSE_RELEASED_PRE.invoker().mouseReleased(minecraft, minecraft.screen, d, e, button);
-            if (result != InteractionResult.PASS)
-                info.cancel();
-        }
-    }
-    
-    @Inject(method = "onPress", at = @At(value = "INVOKE",
-                                         target = "Lnet/minecraft/client/gui/screens/Screen;wrapScreenError(Ljava/lang/Runnable;Ljava/lang/String;Ljava/lang/String;)V",
-                                         ordinal = 1, shift = At.Shift.AFTER), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-    public void onMouseReleasedPost(long long_1, int button, int int_2, int int_3, CallbackInfo info, boolean bl, int i, boolean[] bls, double d, double e) {
-        if (!info.isCancelled()) {
-            InteractionResult result = ClientGuiInputEvent.MOUSE_RELEASED_POST.invoker().mouseReleased(minecraft, minecraft.screen, d, e, button);
+            InteractionResult result = ClientScreenInputEvent.MOUSE_CLICKED_POST.invoker().mouseClicked(minecraft, minecraft.screen, d, e, button);
             if (result != InteractionResult.PASS)
                 info.cancel();
         }
     }
     
     @SuppressWarnings("UnresolvedMixinReference")
-    @Inject(method = {"method_1602", "lambda$onMove$11"}, at = @At("HEAD"), cancellable = true)
+    @Inject(method = {"lambda$onPress$1", "method_1605"}, at = @At("HEAD"), cancellable = true, remap = false)
+    public void onGuiMouseReleased(boolean[] bls, double d, double e, int button, CallbackInfo info) {
+        if (!info.isCancelled()) {
+            InteractionResult result = ClientScreenInputEvent.MOUSE_RELEASED_PRE.invoker().mouseReleased(minecraft, minecraft.screen, d, e, button);
+            if (result != InteractionResult.PASS) {
+                bls[0] = true;
+                info.cancel();
+            }
+        }
+    }
+    
+    @SuppressWarnings("UnresolvedMixinReference")
+    @Inject(method = {"lambda$onPress$1", "method_1605"}, at = @At("RETURN"), cancellable = true, remap = false)
+    public void onGuiMouseReleasedPost(boolean[] bls, double d, double e, int button, CallbackInfo info) {
+        if (!info.isCancelled() && !bls[0]) {
+            InteractionResult result = ClientScreenInputEvent.MOUSE_RELEASED_POST.invoker().mouseReleased(minecraft, minecraft.screen, d, e, button);
+            if (result != InteractionResult.PASS) {
+                bls[0] = true;
+                info.cancel();
+            }
+        }
+    }
+    
+    @SuppressWarnings("UnresolvedMixinReference")
+    @Inject(method = {"method_1602", "lambda$onMove$11"}, at = @At("HEAD"), cancellable = true, remap = false)
     public void onMouseDragged(GuiEventListener element, double d, double e, double f, double g, CallbackInfo info) {
         if (!info.isCancelled()) {
-            InteractionResult result = ClientGuiInputEvent.MOUSE_DRAGGED_PRE.invoker().mouseDragged(minecraft, (Screen) element, d, e, activeButton, f, g);
+            InteractionResult result = ClientScreenInputEvent.MOUSE_DRAGGED_PRE.invoker().mouseDragged(minecraft, (Screen) element, d, e, activeButton, f, g);
             if (result != InteractionResult.PASS)
                 info.cancel();
         }
     }
     
     @SuppressWarnings("UnresolvedMixinReference")
-    @Inject(method = {"method_1602", "lambda$onMove$11"}, at = @At("RETURN"))
+    @Inject(method = {"method_1602", "lambda$onMove$11"}, at = @At("RETURN"), remap = false)
     public void onMouseDraggedPost(GuiEventListener element, double d, double e, double f, double g, CallbackInfo info) {
         if (!info.isCancelled()) {
-            ClientGuiInputEvent.MOUSE_DRAGGED_POST.invoker().mouseDragged(minecraft, (Screen) element, d, e, activeButton, f, g);
+            ClientScreenInputEvent.MOUSE_DRAGGED_POST.invoker().mouseDragged(minecraft, (Screen) element, d, e, activeButton, f, g);
         }
     }
 }

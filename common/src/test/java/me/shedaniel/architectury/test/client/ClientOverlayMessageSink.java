@@ -55,10 +55,12 @@ public class ClientOverlayMessageSink extends ConsoleMessageSink {
                 if (timeExisted >= 5000) {
                     messageIterator.remove();
                 } else {
-                    int textWidth = minecraft.font.width(message.text);
-                    int alpha = (int) Mth.clamp((5000 - timeExisted) / 5000f * 400f + 8, 0, 255);
-                    GuiComponent.fill(matrices, 0, y - 1, 2 + textWidth + 1, y + lineHeight - 1, 0x505050 + ((alpha * 144 / 255) << 24));
-                    minecraft.font.draw(matrices, message.text, 1, y, 0xE0E0E0 + (alpha << 24));
+                    if (y - 1 < minecraft.getWindow().getGuiScaledHeight()) {
+                        int textWidth = minecraft.font.width(message.text);
+                        int alpha = (int) Mth.clamp((5000 - timeExisted) / 5000f * 400f + 8, 0, 255);
+                        GuiComponent.fill(matrices, 0, y - 1, 2 + textWidth + 1, y + lineHeight - 1, 0x505050 + ((alpha * 144 / 255) << 24));
+                        minecraft.font.draw(matrices, message.text, 1, y, 0xE0E0E0 + (alpha << 24));
+                    }
                     y += lineHeight;
                 }
             }

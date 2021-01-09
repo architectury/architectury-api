@@ -19,7 +19,7 @@
 
 package me.shedaniel.architectury.mixin.fabric.client;
 
-import me.shedaniel.architectury.event.events.client.ClientGuiInputEvent;
+import me.shedaniel.architectury.event.events.client.ClientScreenInputEvent;
 import net.minecraft.client.KeyboardHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
@@ -46,7 +46,7 @@ public class MixinKeyboardHandler {
                                            ordinal = 0), cancellable = true)
     public void onCharFirst(long long_1, int int_1, int int_2, CallbackInfo info) {
         if (!info.isCancelled()) {
-            InteractionResult result = ClientGuiInputEvent.CHAR_TYPED_PRE.invoker().charTyped(minecraft, minecraft.screen, (char) int_1, int_2);
+            InteractionResult result = ClientScreenInputEvent.CHAR_TYPED_PRE.invoker().charTyped(minecraft, minecraft.screen, (char) int_1, int_2);
             if (result != InteractionResult.PASS)
                 info.cancel();
         }
@@ -57,7 +57,7 @@ public class MixinKeyboardHandler {
                                            ordinal = 1), cancellable = true)
     public void onCharSecond(long long_1, int int_1, int int_2, CallbackInfo info) {
         if (!info.isCancelled()) {
-            InteractionResult result = ClientGuiInputEvent.CHAR_TYPED_PRE.invoker().charTyped(minecraft, minecraft.screen, (char) int_1, int_2);
+            InteractionResult result = ClientScreenInputEvent.CHAR_TYPED_PRE.invoker().charTyped(minecraft, minecraft.screen, (char) int_1, int_2);
             if (result != InteractionResult.PASS)
                 info.cancel();
         }
@@ -68,7 +68,7 @@ public class MixinKeyboardHandler {
                                            ordinal = 0, shift = At.Shift.AFTER), cancellable = true)
     public void onCharFirstPost(long long_1, int int_1, int int_2, CallbackInfo info) {
         if (!info.isCancelled()) {
-            InteractionResult result = ClientGuiInputEvent.CHAR_TYPED_PRE.invoker().charTyped(minecraft, minecraft.screen, (char) int_1, int_2);
+            InteractionResult result = ClientScreenInputEvent.CHAR_TYPED_POST.invoker().charTyped(minecraft, minecraft.screen, (char) int_1, int_2);
             if (result != InteractionResult.PASS)
                 info.cancel();
         }
@@ -79,7 +79,7 @@ public class MixinKeyboardHandler {
                                            ordinal = 1, shift = At.Shift.AFTER), cancellable = true)
     public void onCharSecondPost(long long_1, int int_1, int int_2, CallbackInfo info) {
         if (!info.isCancelled()) {
-            InteractionResult result = ClientGuiInputEvent.CHAR_TYPED_PRE.invoker().charTyped(minecraft, minecraft.screen, (char) int_1, int_2);
+            InteractionResult result = ClientScreenInputEvent.CHAR_TYPED_POST.invoker().charTyped(minecraft, minecraft.screen, (char) int_1, int_2);
             if (result != InteractionResult.PASS)
                 info.cancel();
         }
@@ -92,12 +92,12 @@ public class MixinKeyboardHandler {
         if (!info.isCancelled()) {
             if (int_3 != 1 && (int_3 != 2 || !this.sendRepeatsToGui)) {
                 if (int_3 == 0) {
-                    InteractionResult result = ClientGuiInputEvent.KEY_RELEASED_PRE.invoker().keyReleased(minecraft, minecraft.screen, int_1, int_2, int_4);
+                    InteractionResult result = ClientScreenInputEvent.KEY_RELEASED_PRE.invoker().keyReleased(minecraft, minecraft.screen, int_1, int_2, int_4);
                     if (result != InteractionResult.PASS)
                         info.cancel();
                 }
             } else {
-                InteractionResult result = ClientGuiInputEvent.KEY_PRESSED_PRE.invoker().keyPressed(minecraft, minecraft.screen, int_1, int_2, int_4);
+                InteractionResult result = ClientScreenInputEvent.KEY_PRESSED_PRE.invoker().keyPressed(minecraft, minecraft.screen, int_1, int_2, int_4);
                 if (result != InteractionResult.PASS)
                     info.cancel();
             }
@@ -112,9 +112,9 @@ public class MixinKeyboardHandler {
         if (!info.isCancelled() && !bls[0]) {
             InteractionResult result;
             if (int_3 != 1 && (int_3 != 2 || !this.sendRepeatsToGui)) {
-                result = ClientGuiInputEvent.KEY_RELEASED_POST.invoker().keyReleased(minecraft, minecraft.screen, int_1, int_2, int_4);
+                result = ClientScreenInputEvent.KEY_RELEASED_POST.invoker().keyReleased(minecraft, minecraft.screen, int_1, int_2, int_4);
             } else {
-                result = ClientGuiInputEvent.KEY_PRESSED_POST.invoker().keyPressed(minecraft, minecraft.screen, int_1, int_2, int_4);
+                result = ClientScreenInputEvent.KEY_PRESSED_POST.invoker().keyPressed(minecraft, minecraft.screen, int_1, int_2, int_4);
             }
             if (result != InteractionResult.PASS)
                 info.cancel();

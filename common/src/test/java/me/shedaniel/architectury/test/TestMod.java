@@ -1,7 +1,9 @@
 package me.shedaniel.architectury.test;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import me.shedaniel.architectury.event.events.*;
 import me.shedaniel.architectury.event.events.client.ClientChatEvent;
+import me.shedaniel.architectury.event.events.client.ClientScreenInputEvent;
 import me.shedaniel.architectury.event.events.client.ClientLifecycleEvent;
 import me.shedaniel.architectury.event.events.client.ClientPlayerEvent;
 import me.shedaniel.architectury.hooks.ExplosionHooks;
@@ -202,6 +204,34 @@ public class TestMod {
         });
         TextureStitchEvent.POST.register(atlas -> {
             SINK.accept("Client texture stitched: " + atlas.location());
+        });
+        ClientScreenInputEvent.MOUSE_SCROLLED_PRE.register((client, screen, mouseX, mouseY, amount) -> {
+            SINK.accept("Screen Mouse amount: %.2f distance", amount);
+            return InteractionResult.PASS;
+        });
+        ClientScreenInputEvent.MOUSE_CLICKED_PRE.register((client, screen, mouseX, mouseY, button) -> {
+            SINK.accept("Screen Mouse clicked: " + button);
+            return InteractionResult.PASS;
+        });
+        ClientScreenInputEvent.MOUSE_RELEASED_PRE.register((client, screen, mouseX, mouseY, button) -> {
+            SINK.accept("Screen Mouse released: " + button);
+            return InteractionResult.PASS;
+        });
+        ClientScreenInputEvent.MOUSE_DRAGGED_PRE.register((client, screen, mouseX1, mouseY1, button, mouseX2, mouseY2) -> {
+            SINK.accept("Screen Mouse dragged: %d (%d,%d) by (%d,%d)", button, (int) mouseX1, (int) mouseY1, (int) mouseX2, (int) mouseY2);
+            return InteractionResult.PASS;
+        });
+        ClientScreenInputEvent.CHAR_TYPED_PRE.register((client, screen, character, keyCode) -> {
+            SINK.accept("Screen Char typed: " + character);
+            return InteractionResult.PASS;
+        });
+        ClientScreenInputEvent.KEY_PRESSED_PRE.register((client, screen, keyCode, scanCode, modifiers) -> {
+            SINK.accept("Screen Key pressed: " + InputConstants.getKey(keyCode, scanCode).getDisplayName().getString());
+            return InteractionResult.PASS;
+        });
+        ClientScreenInputEvent.KEY_RELEASED_PRE.register((client, screen, keyCode, scanCode, modifiers) -> {
+            SINK.accept("Screen Key released: " + InputConstants.getKey(keyCode, scanCode).getDisplayName().getString());
+            return InteractionResult.PASS;
         });
     }
     
