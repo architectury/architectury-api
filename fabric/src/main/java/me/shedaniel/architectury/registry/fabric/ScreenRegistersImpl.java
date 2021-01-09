@@ -38,16 +38,16 @@ import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 
 public class ScreenRegistersImpl {
-    public static <T extends AbstractContainerMenu> MenuType<T> registerMenuType(ResourceLocation identifier, BiFunction<Integer, Inventory, T> menuTypeSupplier) {
-        return ScreenHandlerRegistry.registerSimple(identifier, (integer, inventory) -> menuTypeSupplier.apply(integer, inventory));
+    public static <T extends AbstractContainerMenu> MenuType<T> registerMenuType(ResourceLocation resourceLocation, BiFunction<Integer, Inventory, T> menuTypeSupplier) {
+        return ScreenHandlerRegistry.registerSimple(resourceLocation, menuTypeSupplier::apply);
     }
 
-    public static <T extends AbstractContainerMenu> MenuType<T> registerExtendedMenuType(ResourceLocation identifier, ScreenRegisters.ExtendedMenuTypeFactory<T> menuTypeSupplier) {
-        return ScreenHandlerRegistry.registerExtended(identifier, (integer, inventory, friendlyByteBuf) -> menuTypeSupplier.create(integer, inventory, friendlyByteBuf));
+    public static <T extends AbstractContainerMenu> MenuType<T> registerExtendedMenuType(ResourceLocation resourceLocation, ScreenRegisters.ExtendedMenuTypeFactory<T> menuTypeSupplier) {
+        return ScreenHandlerRegistry.registerExtended(resourceLocation, menuTypeSupplier::create);
     }
 
     @Environment(EnvType.CLIENT)
     public static <H extends AbstractContainerMenu, S extends Screen & MenuAccess<H>> void registerScreenFactory(MenuType<? extends H> menuType, ScreenRegisters.ScreenFactory<H, S> screenSupplier) {
-        ScreenRegistry.register(menuType, (H h, Inventory i, Component t) -> screenSupplier.create(h, i, t));
+        ScreenRegistry.register(menuType, screenSupplier::create);
     }
 }

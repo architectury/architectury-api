@@ -35,31 +35,80 @@ import net.minecraft.world.inventory.MenuType;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
-public class ScreenRegisters {
+/**
+ * A utility class to register {@link MenuType}s and {@link Screen}s for containers
+ */
+public final class ScreenRegisters {
+    private ScreenRegisters() {}
+
+    /**
+     * Registers a simple {@link MenuType}
+     * @param resourceLocation The identifier for the {@link MenuType}
+     * @param menuTypeSupplier A functional interface to create the {@link MenuType} from an id (Integer) and inventory
+     * @param <T> The type of {@link AbstractContainerMenu} that handles the logic for the {@link MenuType}
+     * @return The {@link MenuType} for your {@link AbstractContainerMenu}
+     */
     @ExpectPlatform
-    public static <T extends AbstractContainerMenu> MenuType<T> registerSimpleMenuType(ResourceLocation identifier, BiFunction<Integer, Inventory, T> menuTypeSupplier) {
+    public static <T extends AbstractContainerMenu> MenuType<T> registerSimpleMenuType(ResourceLocation resourceLocation, BiFunction<Integer, Inventory, T> menuTypeSupplier) {
         throw new AssertionError();
     }
 
+    /**
+     * Registers a extended {@link MenuType}
+     * @param resourceLocation The identifier for the {@link MenuType}
+     * @param menuTypeSupplier A functional interface to create the {@link MenuType} from an id (Integer), {@link Inventory}, and {@link FriendlyByteBuf}
+     * @param <T> The type of {@link AbstractContainerMenu} that handles the logic for the {@link MenuType}
+     * @return The {@link MenuType} for your {@link AbstractContainerMenu}
+     */
     @ExpectPlatform
-    public static <T extends AbstractContainerMenu> MenuType<T> registerExtendedMenuType(ResourceLocation identifier, ExtendedMenuTypeFactory menuTypeSupplier) {
+    public static <T extends AbstractContainerMenu> MenuType<T> registerExtendedMenuType(ResourceLocation resourceLocation, ExtendedMenuTypeFactory<T> menuTypeSupplier) {
         throw new AssertionError();
     }
 
+    /**
+     * Registers a Screen Factory on the client to display
+     * @param menuType The {@link MenuType} the screen visualizes
+     * @param screenSupplier A functional interface that is used to create new {@link Screen}s
+     * @param <H> The type of {@link AbstractContainerMenu} for the screen
+     * @param <S> The type for the {@link Screen}
+     */
     @Environment(EnvType.CLIENT)
     @ExpectPlatform
     public static <H extends AbstractContainerMenu, S extends Screen & MenuAccess<H>> void registerScreenFactory(MenuType<? extends H> menuType, ScreenFactory<H, S> screenSupplier) {
         throw new AssertionError();
     }
 
+    /**
+     * Creates new screens
+     * @param <H> The type of {@link AbstractContainerMenu} for the screen
+     * @param <S> The type for the {@link Screen}
+     */
     @Environment(EnvType.CLIENT)
     @FunctionalInterface
     public interface ScreenFactory<H extends AbstractContainerMenu, S extends Screen & MenuAccess<H>> {
-        S create(H var1, Inventory var2, Component var3);
+        /**
+         * Creates a new {@link S} that extends {@link Screen}
+         * @param containerMenu The {@link AbstractContainerMenu} that controls the game logic for the screen
+         * @param inventory The {@link Inventory} for the screen
+         * @param component The {@link Component} for the screen
+         * @return A new {@link S} that extends {@link Screen}
+         */
+        S create(H containerMenu, Inventory inventory, Component component);
     }
 
+    /**
+     * Creates extended menus
+     * @param <T> The {@link AbstractContainerMenu} type
+     */
     @FunctionalInterface
     public interface ExtendedMenuTypeFactory<T extends AbstractContainerMenu> {
-        T create(int var1, Inventory var2, FriendlyByteBuf var3);
+        /**
+         * Creates a new {@link T} that extends {@link AbstractContainerMenu}
+         * @param id The id for the menu
+         * @param inventory The {@link Inventory} for the menu
+         * @param friendlyByteBuf The {@link FriendlyByteBuf} for the menu to provide extra data
+         * @return A new {@link T} that extends {@link AbstractContainerMenu}
+         */
+        T create(int id, Inventory inventory, FriendlyByteBuf friendlyByteBuf);
     }
 }

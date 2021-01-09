@@ -39,22 +39,22 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 
 public class ScreenRegistersImpl {
-    private static final DeferredRegister MENU_TYPE_REGISTRY = DeferredRegister.create(ArchitecturyForge.MOD_ID, Registry.MENU_REGISTRY);
+    private static final DeferredRegister<MenuType<?>> MENU_TYPE_REGISTRY = DeferredRegister.create(ArchitecturyForge.MOD_ID, Registry.MENU_REGISTRY);
 
-    public static <T extends AbstractContainerMenu> MenuType<T> registerMenuType(ResourceLocation identifier, BiFunction<Integer, Inventory, T> menuTypeSupplier) {
+    public static <T extends AbstractContainerMenu> MenuType<T> registerMenuType(ResourceLocation resourceLocation, BiFunction<Integer, Inventory, T> menuTypeSupplier) {
         MenuType<T> menuType = IForgeContainerType.create((windowId, inv, data) -> menuTypeSupplier.apply(windowId, inv));
-        MENU_TYPE_REGISTRY.register(identifier, () -> menuType);
+        MENU_TYPE_REGISTRY.register(resourceLocation, () -> menuType);
         return menuType;
     }
 
-    public static <T extends AbstractContainerMenu> MenuType<T> registerExtendedMenuType(ResourceLocation identifier, ScreenRegisters.ExtendedMenuTypeFactory<T> menuTypeSupplier) {
-        MenuType<T> menuType = IForgeContainerType.create((windowId, inv, data) -> menuTypeSupplier.create(windowId, inv, data));
-        MENU_TYPE_REGISTRY.register(identifier, () -> menuType);
+    public static <T extends AbstractContainerMenu> MenuType<T> registerExtendedMenuType(ResourceLocation resourceLocation, ScreenRegisters.ExtendedMenuTypeFactory<T> menuTypeSupplier) {
+        MenuType<T> menuType = IForgeContainerType.create(menuTypeSupplier::create);
+        MENU_TYPE_REGISTRY.register(resourceLocation, () -> menuType);
         return menuType;
     }
 
     @OnlyIn(Dist.CLIENT)
     public static <H extends AbstractContainerMenu, S extends Screen & MenuAccess<H>> void registerScreenFactory(MenuType<? extends H> menuType, ScreenRegisters.ScreenFactory<H, S> screenSupplier) {
-        MenuScreens.register(menuType, (H t, Inventory i, Component c) -> screenSupplier.create(t, i, c));
+        MenuScreens.register(menuType, screenSupplier::create);
     }
 }
