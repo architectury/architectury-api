@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "architectury-test",
+  "version": "${version}",
+  "name": "Architectury Test",
+  "description": "A intermediary api aimed to ease developing multiplatform mods.",
+  "authors": [
+    "shedaniel"
+  ],
+  "license": "LGPL-3",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "me.shedaniel.architectury.test.TestMod::initialize"
+    ]
+  }
+}
