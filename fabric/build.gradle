@@ -41,7 +41,7 @@ dependencies {
         transitive = false
     }
 
-    testCompile project(path: ":common").sourceSets.test.output
+    testCompile project(":common").sourceSets.test.output
 }
 
 processResources {
