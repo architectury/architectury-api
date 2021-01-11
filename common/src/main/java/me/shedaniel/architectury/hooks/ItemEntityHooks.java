@@ -19,7 +19,7 @@
 
 package me.shedaniel.architectury.hooks;
 
-import me.shedaniel.architectury.ExpectPlatform;
+import me.shedaniel.architectury.annotations.ExpectPlatform;
 import me.shedaniel.architectury.utils.IntValue;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

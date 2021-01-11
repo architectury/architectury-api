@@ -20,9 +20,9 @@
 package me.shedaniel.architectury.event;
 
 import com.google.common.reflect.AbstractInvocationHandler;
-import me.shedaniel.architectury.ExpectPlatform;
 import me.shedaniel.architectury.ForgeEvent;
 import me.shedaniel.architectury.ForgeEventCancellable;
+import me.shedaniel.architectury.annotations.ExpectPlatform;
 import net.jodah.typetools.TypeResolver;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;

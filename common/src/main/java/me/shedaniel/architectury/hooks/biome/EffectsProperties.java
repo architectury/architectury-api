@@ -64,7 +64,7 @@ public interface EffectsProperties {
     @NotNull
     Optional<Music> getBackgroundMusic();
     
-    interface Mutable  extends EffectsProperties{
+    interface Mutable extends EffectsProperties {
         @NotNull
         EffectsProperties.Mutable setFogColor(int color);
         

@@ -19,7 +19,7 @@
 
 package me.shedaniel.architectury.event;
 
-import me.shedaniel.architectury.ExpectPlatform;
+import me.shedaniel.architectury.annotations.ExpectPlatform;
 import me.shedaniel.architectury.platform.Platform;
 import me.shedaniel.architectury.utils.Env;
 import net.fabricmc.api.EnvType;

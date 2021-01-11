@@ -20,7 +20,7 @@
 package me.shedaniel.architectury.registry;
 
 import com.google.common.collect.Maps;
-import me.shedaniel.architectury.ExpectPlatform;
+import me.shedaniel.architectury.annotations.ExpectPlatform;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.item.Item;
 

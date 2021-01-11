@@ -20,7 +20,7 @@
 package me.shedaniel.architectury.platform;
 
 import me.shedaniel.architectury.Architectury;
-import me.shedaniel.architectury.ExpectPlatform;
+import me.shedaniel.architectury.annotations.ExpectPlatform;
 import me.shedaniel.architectury.utils.Env;
 import net.fabricmc.api.EnvType;
 import net.minecraft.SharedConstants;
