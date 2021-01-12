@@ -30,7 +30,9 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-public class ArchitecturyItemPropertiesPlatform {
+public final class ArchitecturyItemPropertiesPlatform {
+    private ArchitecturyItemPropertiesPlatform() {}
+
     // generic
 
     @ExpectPlatform
