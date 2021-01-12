@@ -31,6 +31,8 @@ import net.minecraft.world.item.ItemStack;
  * A wrapper for The {@link Item.Properties} class for both the fabric and forge environments. Deprecated methods in this class only work on one environment, so do not necessarily expect the same functionality.
  */
 public abstract class ArchitecturyItemProperties extends Item.Properties implements ItemPropertiesExtension {
+    private ArchitecturyItemProperties () {}
+
     @ExpectPlatform
     public static ItemPropertiesExtension create() {
         throw new AssertionError();
