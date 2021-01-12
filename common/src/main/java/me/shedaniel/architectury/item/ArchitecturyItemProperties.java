@@ -35,7 +35,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 
-public class ArchitecturyItemProperties extends Item.Properties {
+public class ArchitecturyItemProperties {
     private final Item.Properties properties;
 
     public ArchitecturyItemProperties() {
@@ -48,49 +48,41 @@ public class ArchitecturyItemProperties extends Item.Properties {
 
     // vanilla item properties
 
-    @Override
     public ArchitecturyItemProperties food(FoodProperties foodProperties) {
         properties.food(foodProperties);
         return this;
     }
 
-    @Override
     public ArchitecturyItemProperties stacksTo(int i) {
         properties.stacksTo(i);
         return this;
     }
 
-    @Override
     public ArchitecturyItemProperties defaultDurability(int i) {
         properties.defaultDurability(i);
         return this;
     }
 
-    @Override
     public ArchitecturyItemProperties durability(int i) {
         properties.durability(i);
         return this;
     }
 
-    @Override
     public ArchitecturyItemProperties craftRemainder(Item item) {
         properties.craftRemainder(item);
         return this;
     }
 
-    @Override
     public ArchitecturyItemProperties tab(CreativeModeTab creativeModeTab) {
         properties.tab(creativeModeTab);
         return this;
     }
 
-    @Override
     public ArchitecturyItemProperties rarity(Rarity rarity) {
         properties.rarity(rarity);
         return this;
     }
 
-    @Override
     public ArchitecturyItemProperties fireResistant() {
         properties.fireResistant();
         return this;
