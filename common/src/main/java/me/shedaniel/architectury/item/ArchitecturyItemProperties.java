@@ -35,6 +35,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 
+/**
+ * A wrapper for The {@link Item.Properties} class for both the fabric and forge environments. Deprecated methods in this class only work on one side, so do not necessarily expect the same functionality.
+ */
 public class ArchitecturyItemProperties {
     private final Item.Properties properties;
 
@@ -90,11 +93,26 @@ public class ArchitecturyItemProperties {
 
     // fabric item properties
 
+    /**
+     * Only works in fabric environment
+     *
+     * @param function A function to convert an item stack to a Equipment Slot
+     * @return Thiss
+     */
+    @Deprecated
     public ArchitecturyItemProperties equipmentSlot(Function<ItemStack, EquipmentSlot> function) {
         ArchitecturyItemPropertiesPlatform.equipmentSlot(properties, function);
         return this;
     }
 
+
+    /**
+     * Only works in fabric environment
+     *
+     * @param handler The {@link CustomDamageHandler}
+     * @return this
+     */
+    @Deprecated
     public ArchitecturyItemProperties customDamage(CustomDamageHandler handler) {
         ArchitecturyItemPropertiesPlatform.customDamage(properties, handler);
         return this;
@@ -105,7 +123,8 @@ public class ArchitecturyItemProperties {
         /**
          * Called to apply damage to the given stack.
          * This can be used to e.g. drain from a battery before actually damaging the item.
-         * @param amount The amount of damage originally requested
+         *
+         * @param amount        The amount of damage originally requested
          * @param breakCallback Callback when the stack reaches zero damage. See {@link ItemStack#hurtAndBreak(int, LivingEntity, Consumer)} (int, LivingEntity, Consumer)} and its callsites for more information.
          * @return The amount of damage to pass to vanilla's logic
          */
@@ -114,17 +133,37 @@ public class ArchitecturyItemProperties {
 
     // forge item properties
 
+
+    /**
+     * Only works in forge environment
+     */
+    @Deprecated
     public ArchitecturyItemProperties setNoRepair() {
         ArchitecturyItemPropertiesPlatform.setNoRepair(properties);
         return this;
     }
 
+
+    /**
+     * Only works in forge environment. For fabric add it to the {@code fabric:<tool_type>} tag
+     *
+     * @param type  The tool type
+     * @param level The mining level
+     * @return this
+     */
+    @Deprecated
     public ArchitecturyItemProperties addToolType(ToolType type, int level) {
         ArchitecturyItemPropertiesPlatform.addToolType(properties, type.forgeName, level);
         return this;
     }
 
-    public ArchitecturyItemProperties setISTER(Supplier<Callable<BlockEntityWithoutLevelRenderer>> ister){
+    /**
+     * Creates a custom item renderer. In fabric, it is the same as calling {@code BuiltinItemRendererRegistry.INSTANCE.register(ITEM, new CustomItemRenderer());}
+     *
+     * @param ister The Item renderer, wrapped in a suppiler and then a callable to prevent loading client code on a server
+     * @return this
+     */
+    public ArchitecturyItemProperties setISTER(Supplier<Callable<BlockEntityWithoutLevelRenderer>> ister) {
         ArchitecturyItemPropertiesPlatform.setISTER(properties, ister);
         return this;
     }

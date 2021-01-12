@@ -36,7 +36,7 @@ public class ArchitecturyItemPropertiesPlatformImpl {
     // generic
 
     static Item.Properties getPlatformProperties() {
-        return new FabricItemSettings();
+        return new ArchitecturyItemPropertiesFabric();
     }
 
     // fabric
@@ -58,5 +58,6 @@ public class ArchitecturyItemPropertiesPlatformImpl {
     }
 
     static void setISTER(Item.Properties properties, Supplier<Callable<BlockEntityWithoutLevelRenderer>> ister) {
+        ((ArchitecturyItemPropertiesFabric) properties).setISTER(ister);
     }
 }
