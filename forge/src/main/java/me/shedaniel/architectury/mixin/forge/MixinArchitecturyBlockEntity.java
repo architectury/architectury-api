@@ -21,8 +21,6 @@ package me.shedaniel.architectury.mixin.forge;
 
 import me.shedaniel.architectury.extensions.ArchitecturyBlockEntity;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.extensions.IForgeTileEntity;
 import org.jetbrains.annotations.NotNull;
@@ -32,23 +30,10 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(ArchitecturyBlockEntity.class)
 public interface MixinArchitecturyBlockEntity extends IForgeTileEntity {
     @Shadow(remap = false)
-    @NotNull
-    CompoundTag saveClientData(@NotNull CompoundTag tag);
-    
-    @Shadow(remap = false)
     void loadClientData(@NotNull BlockState pos, @NotNull CompoundTag tag);
     
     @Override
     default void handleUpdateTag(BlockState state, CompoundTag tag) {
         loadClientData(state, tag);
-    }
-    
-    default ClientboundBlockEntityDataPacket getUpdatePacket() {
-        BlockEntity entity = (BlockEntity) this;
-        return new ClientboundBlockEntityDataPacket(entity.getBlockPos(), 10, getUpdateTag());
-    }
-    
-    default CompoundTag getUpdateTag() {
-        return saveClientData(new CompoundTag());
     }
 }
