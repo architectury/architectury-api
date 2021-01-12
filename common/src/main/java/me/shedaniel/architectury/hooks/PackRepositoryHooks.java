@@ -19,7 +19,7 @@
 
 package me.shedaniel.architectury.hooks;
 
-import me.shedaniel.architectury.ExpectPlatform;
+import me.shedaniel.architectury.annotations.ExpectPlatform;
 import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.server.packs.repository.RepositorySource;
 

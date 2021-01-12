@@ -19,7 +19,7 @@
 
 package me.shedaniel.architectury.registry;
 
-import me.shedaniel.architectury.ExpectPlatform;
+import me.shedaniel.architectury.annotations.ExpectPlatform;
 import net.minecraft.advancements.CriterionTrigger;
 
 public final class CriteriaTriggersRegistry {
