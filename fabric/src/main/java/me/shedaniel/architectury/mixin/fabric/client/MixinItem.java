@@ -19,7 +19,7 @@
 
 package me.shedaniel.architectury.mixin.fabric.client;
 
-import me.shedaniel.architectury.item.fabric.ArchitecturyItemPropertiesFabric;
+import me.shedaniel.architectury.item.fabric.ArchitecturyItemPropertiesImpl;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -33,9 +33,9 @@ import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 public class MixinItem {
     @Inject(method = "<init>", at = @At("RETURN"))
     private void addForgeItemProperties(Item.Properties properties, CallbackInfo info) {
-        if (properties instanceof ArchitecturyItemPropertiesFabric) {
+        if (properties instanceof ArchitecturyItemPropertiesImpl.Impl) {
             try {
-                BuiltinItemRendererRegistry.INSTANCE.register((Item) (Object) this, ((ArchitecturyItemPropertiesFabric) properties).ister.get().call()::renderByItem);
+                BuiltinItemRendererRegistry.INSTANCE.register((Item) (Object) this, ((ArchitecturyItemPropertiesImpl.Impl) properties).ister.get().call()::renderByItem);
             } catch (Exception e) {
                 e.printStackTrace();
             }

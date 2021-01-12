@@ -24,40 +24,46 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import me.shedaniel.architectury.item.ArchitecturyItemProperties;
+import me.shedaniel.architectury.item.ItemPropertiesExtension;
 
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 
-public class ArchitecturyItemPropertiesPlatformImpl {
-    // generic
-
-    static Item.Properties getPlatformProperties() {
-        return new ArchitecturyItemPropertiesFabric();
+public class ArchitecturyItemPropertiesImpl {
+    public static ItemPropertiesExtension create() {
+        return new Impl();
     }
 
-    // fabric
+    public static final class Impl extends FabricItemSettings implements ItemPropertiesExtension {
+        public Supplier<Callable<BlockEntityWithoutLevelRenderer>> ister;
 
-    static void equipmentSlot(Item.Properties properties, Function<ItemStack, EquipmentSlot> function) {
-        ((FabricItemSettings) properties).equipmentSlot(function::apply);
-    }
+        @Override
+        public ItemPropertiesExtension withEquipmentSlot(Function<ItemStack, EquipmentSlot> function) {
+            return (ItemPropertiesExtension) this.equipmentSlot(function::apply);
+        }
 
-    static void customDamage(Item.Properties properties, ArchitecturyItemProperties.CustomDamageHandler handler) {
-        ((FabricItemSettings) properties).customDamage(handler::damage);
-    }
+        @Override
+        public ItemPropertiesExtension withCustomDamageHandler(ArchitecturyItemProperties.CustomDamageHandler handler) {
+            return (ItemPropertiesExtension) this.customDamage(handler::damage);
+        }
 
-    // forge
+        @Override
+        public ItemPropertiesExtension cannotRepair() {
+            return this;
+        }
 
-    static void setNoRepair(Item.Properties properties) {
-    }
+        @Override
+        public ItemPropertiesExtension asToolType(me.shedaniel.architectury.registry.ToolType type, int level) {
+            return this;
+        }
 
-    static void addToolType(Item.Properties properties, String forgeName, int level) {
-    }
-
-    static void setISTER(Item.Properties properties, Supplier<Callable<BlockEntityWithoutLevelRenderer>> ister) {
-        ((ArchitecturyItemPropertiesFabric) properties).setISTER(ister);
+        @Override
+        public ItemPropertiesExtension withCustomRenderer(Supplier<Callable<BlockEntityWithoutLevelRenderer>> ister) {
+            this.ister = ister;
+            return this;
+        }
     }
 }

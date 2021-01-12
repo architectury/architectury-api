@@ -24,39 +24,42 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import me.shedaniel.architectury.item.ArchitecturyItemProperties;
+import me.shedaniel.architectury.item.ItemPropertiesExtension;
 import net.minecraftforge.common.ToolType;
 
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-public class ArchitecturyItemPropertiesPlatformImpl {
-    // generic
-    
-    static Item.Properties getPlatformProperties() {
-        return new Item.Properties();
+public class ArchitecturyItemPropertiesImpl {
+    public static ItemPropertiesExtension create() {
+        return new Impl();
     }
 
-    // fabric
+    private static final class Impl extends ArchitecturyItemProperties {
+        @Override
+        public ItemPropertiesExtension withEquipmentSlot(Function<ItemStack, EquipmentSlot> function) {
+            return this;
+        }
 
-    static void equipmentSlot(Item.Properties properties, Function<ItemStack, EquipmentSlot> function) {
-    }
+        @Override
+        public ItemPropertiesExtension withCustomDamageHandler(CustomDamageHandler handler) {
+            return this;
+        }
 
-    static void customDamage(Item.Properties properties, ArchitecturyItemProperties.CustomDamageHandler handler) {
-    }
+        @Override
+        public ItemPropertiesExtension cannotRepair() {
+            return (ArchitecturyItemProperties) this.setNoRepair();
+        }
 
-    // forge
+        @Override
+        public ItemPropertiesExtension asToolType(me.shedaniel.architectury.registry.ToolType type, int level) {
+            return (ArchitecturyItemProperties) this.addToolType(ToolType.get(type.forgeName), level);
+        }
 
-    static void setNoRepair(Item.Properties properties) {
-        properties.setNoRepair();
-    }
-
-    static void addToolType(Item.Properties properties, String forgeName, int level) {
-        properties.addToolType(ToolType.get(forgeName), level);
-    }
-
-    static void setISTER(Item.Properties properties, Supplier<Callable<BlockEntityWithoutLevelRenderer>> ister) {
-        properties.setISTER(ister);
+        @Override
+        public ItemPropertiesExtension withCustomRenderer(Supplier<Callable<BlockEntityWithoutLevelRenderer>> ister) {
+            return (ArchitecturyItemProperties) this.setISTER(ister);
+        }
     }
 }

@@ -19,103 +19,21 @@
 
 package me.shedaniel.architectury.item;
 
-import java.util.concurrent.Callable;
 import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
-import me.shedaniel.architectury.registry.ToolType;
+import me.shedaniel.architectury.annotations.ExpectPlatform;
 
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
 
 /**
- * A wrapper for The {@link Item.Properties} class for both the fabric and forge environments. Deprecated methods in this class only work on one side, so do not necessarily expect the same functionality.
+ * A wrapper for The {@link Item.Properties} class for both the fabric and forge environments. Deprecated methods in this class only work on one environment, so do not necessarily expect the same functionality.
  */
-public class ArchitecturyItemProperties {
-    private final Item.Properties properties;
-
-    public ArchitecturyItemProperties() {
-        properties = ArchitecturyItemPropertiesPlatform.getPlatformProperties();
-    }
-
-    public Item.Properties build() {
-        return this.properties;
-    }
-
-    // vanilla item properties
-
-    public ArchitecturyItemProperties food(FoodProperties foodProperties) {
-        properties.food(foodProperties);
-        return this;
-    }
-
-    public ArchitecturyItemProperties stacksTo(int i) {
-        properties.stacksTo(i);
-        return this;
-    }
-
-    public ArchitecturyItemProperties defaultDurability(int i) {
-        properties.defaultDurability(i);
-        return this;
-    }
-
-    public ArchitecturyItemProperties durability(int i) {
-        properties.durability(i);
-        return this;
-    }
-
-    public ArchitecturyItemProperties craftRemainder(Item item) {
-        properties.craftRemainder(item);
-        return this;
-    }
-
-    public ArchitecturyItemProperties tab(CreativeModeTab creativeModeTab) {
-        properties.tab(creativeModeTab);
-        return this;
-    }
-
-    public ArchitecturyItemProperties rarity(Rarity rarity) {
-        properties.rarity(rarity);
-        return this;
-    }
-
-    public ArchitecturyItemProperties fireResistant() {
-        properties.fireResistant();
-        return this;
-    }
-
-    // fabric item properties
-
-    /**
-     * Only works in fabric environment
-     *
-     * @param function A function to convert an item stack to a Equipment Slot
-     * @return Thiss
-     */
-    @Deprecated
-    public ArchitecturyItemProperties equipmentSlot(Function<ItemStack, EquipmentSlot> function) {
-        ArchitecturyItemPropertiesPlatform.equipmentSlot(properties, function);
-        return this;
-    }
-
-
-    /**
-     * Only works in fabric environment
-     *
-     * @param handler The {@link CustomDamageHandler}
-     * @return this
-     */
-    @Deprecated
-    public ArchitecturyItemProperties customDamage(CustomDamageHandler handler) {
-        ArchitecturyItemPropertiesPlatform.customDamage(properties, handler);
-        return this;
+public abstract class ArchitecturyItemProperties extends Item.Properties implements ItemPropertiesExtension {
+    @ExpectPlatform
+    public static ItemPropertiesExtension create() {
+        throw new AssertionError();
     }
 
     /*
@@ -144,41 +62,5 @@ public class ArchitecturyItemProperties {
          * @return The amount of damage to pass to vanilla's logic
          */
         int damage(ItemStack stack, int amount, LivingEntity entity, Consumer<LivingEntity> breakCallback);
-    }
-
-    // forge item properties
-
-    /**
-     * Only works in forge environment
-     */
-    @Deprecated
-    public ArchitecturyItemProperties setNoRepair() {
-        ArchitecturyItemPropertiesPlatform.setNoRepair(properties);
-        return this;
-    }
-
-
-    /**
-     * Only works in forge environment. For fabric add it to the {@code fabric:<tool_type>} tag
-     *
-     * @param type  The tool type
-     * @param level The mining level
-     * @return this
-     */
-    @Deprecated
-    public ArchitecturyItemProperties addToolType(ToolType type, int level) {
-        ArchitecturyItemPropertiesPlatform.addToolType(properties, type.forgeName, level);
-        return this;
-    }
-
-    /**
-     * Creates a custom item renderer. In fabric, it is the same as calling {@code BuiltinItemRendererRegistry.INSTANCE.register(ITEM, new CustomItemRenderer());}
-     *
-     * @param ister The Item renderer, wrapped in a suppiler and then a callable to prevent loading client code on a server
-     * @return this
-     */
-    public ArchitecturyItemProperties setISTER(Supplier<Callable<BlockEntityWithoutLevelRenderer>> ister) {
-        ArchitecturyItemPropertiesPlatform.setISTER(properties, ister);
-        return this;
     }
 }
