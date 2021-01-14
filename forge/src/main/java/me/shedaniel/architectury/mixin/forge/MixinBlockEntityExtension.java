@@ -19,7 +19,7 @@
 
 package me.shedaniel.architectury.mixin.forge;
 
-import me.shedaniel.architectury.extensions.ArchitecturyBlockEntity;
+import me.shedaniel.architectury.extensions.BlockEntityExtension;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.extensions.IForgeTileEntity;
@@ -27,8 +27,8 @@ import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-@Mixin(ArchitecturyBlockEntity.class)
-public interface MixinArchitecturyBlockEntity extends IForgeTileEntity {
+@Mixin(BlockEntityExtension.class)
+public interface MixinBlockEntityExtension extends IForgeTileEntity {
     @Shadow(remap = false)
     void loadClientData(@NotNull BlockState pos, @NotNull CompoundTag tag);
     

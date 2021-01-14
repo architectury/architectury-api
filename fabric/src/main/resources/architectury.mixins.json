@@ -9,7 +9,7 @@
     "client.MixinTextureAtlas"
   ],
   "mixins": [
-    "ExplosionPreInvoker", "LivingDeathInvoker", "MixinArchitecturyBlockEntity", "MixinBlockItem", "MixinCommands", "MixinDedicatedServer", "MixinExplosion",
+    "ExplosionPreInvoker", "LivingDeathInvoker", "MixinBlockEntityExtension", "MixinBlockItem", "MixinCommands", "MixinDedicatedServer", "MixinExplosion",
     "MixinFurnaceResultSlot", "MixinItemEntity", "MixinLivingEntity", "MixinPlayer", "MixinPlayerAdvancements", "MixinPlayerList", "MixinResultSlot",
     "MixinServerGamePacketListenerImpl", "MixinServerLevel", "MixinServerPlayer", "MixinServerPlayerGameMode", "PlayerAttackInvoker"
   ],

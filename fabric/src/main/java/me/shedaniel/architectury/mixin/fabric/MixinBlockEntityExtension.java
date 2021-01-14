@@ -17,38 +17,38 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package me.shedaniel.architectury.extensions;
+package me.shedaniel.architectury.mixin.fabric;
 
-import me.shedaniel.architectury.hooks.BlockEntityHooks;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import me.shedaniel.architectury.extensions.BlockEntityExtension;
+import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 
-/**
- * Extensions to {@link net.minecraft.world.level.block.entity.BlockEntity}, implement this on to your class.
- */
-public interface ArchitecturyBlockEntity {
-    /**
-     * Handles data sent by {@link ArchitecturyBlockEntity#saveClientData(CompoundTag)} on the server.
-     */
-    @Environment(EnvType.CLIENT)
-    void loadClientData(@NotNull BlockState pos, @NotNull CompoundTag tag);
-    
-    /**
-     * Writes data to sync to the client.
-     */
+@Mixin(BlockEntityExtension.class)
+public interface MixinBlockEntityExtension extends BlockEntityClientSerializable {
+    @Shadow(remap = false)
     @NotNull
     CompoundTag saveClientData(@NotNull CompoundTag tag);
     
-    /**
-     * Sync data to the clients by {@link ArchitecturyBlockEntity#saveClientData(CompoundTag)} and {@link ArchitecturyBlockEntity#loadClientData(BlockState, CompoundTag)}.
-     */
-    @ApiStatus.NonExtendable
-    default void syncData() {
-        BlockEntityHooks.syncData((BlockEntity) this);
+    @Shadow(remap = false)
+    void loadClientData(@NotNull BlockState pos, @NotNull CompoundTag tag);
+    
+    @Override
+    default void fromClientTag(CompoundTag tag) {
+        BlockEntity entity = (BlockEntity) this;
+        if (entity.hasLevel()) {
+            entity.setLevelAndPosition(entity.getLevel(), new BlockPos(tag.getInt("x"), tag.getInt("y"), tag.getInt("z")));
+            loadClientData(entity.getBlockState(), tag);
+        }
+    }
+    
+    @Override
+    default CompoundTag toClientTag(CompoundTag tag) {
+        return saveClientData(tag);
     }
 }

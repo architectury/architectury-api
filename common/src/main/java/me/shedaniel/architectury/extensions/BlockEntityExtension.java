@@ -17,39 +17,38 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package me.shedaniel.architectury.mixin.fabric;
+package me.shedaniel.architectury.extensions;
 
-import me.shedaniel.architectury.extensions.ArchitecturyBlockEntity;
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
-import net.minecraft.core.BlockPos;
+import me.shedaniel.architectury.hooks.BlockEntityHooks;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 
-@Mixin(ArchitecturyBlockEntity.class)
-public interface MixinArchitecturyBlockEntity extends BlockEntityClientSerializable {
-    @Shadow(remap = false)
+/**
+ * Extensions to {@link net.minecraft.world.level.block.entity.BlockEntity}, implement this on to your class.
+ */
+public interface BlockEntityExtension {
+    /**
+     * Handles data sent by {@link BlockEntityExtension#saveClientData(CompoundTag)} on the server.
+     */
+    @Environment(EnvType.CLIENT)
+    void loadClientData(@NotNull BlockState pos, @NotNull CompoundTag tag);
+    
+    /**
+     * Writes data to sync to the client.
+     */
     @NotNull
     CompoundTag saveClientData(@NotNull CompoundTag tag);
     
-    @Shadow(remap = false)
-    void loadClientData(@NotNull BlockState pos, @NotNull CompoundTag tag);
-    
-    @Override
-    default void fromClientTag(CompoundTag tag) {
-        BlockEntity entity = (BlockEntity) this;
-        if (entity.hasLevel()) {
-            entity.setLevelAndPosition(entity.getLevel(), new BlockPos(tag.getInt("x"), tag.getInt("y"), tag.getInt("z")));
-            loadClientData(entity.getBlockState(), tag);
-        }
-    }
-    
-    @Override
-    default CompoundTag toClientTag(CompoundTag tag) {
-        return saveClientData(tag);
+    /**
+     * Sync data to the clients by {@link BlockEntityExtension#saveClientData(CompoundTag)} and {@link BlockEntityExtension#loadClientData(BlockState, CompoundTag)}.
+     */
+    @ApiStatus.NonExtendable
+    default void syncData() {
+        BlockEntityHooks.syncData((BlockEntity) this);
     }
 }

@@ -19,7 +19,7 @@
 
 package me.shedaniel.architectury.mixin.forge;
 
-import me.shedaniel.architectury.extensions.ArchitecturyBlockEntity;
+import me.shedaniel.architectury.extensions.BlockEntityExtension;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -32,8 +32,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MixinBlockEntity {
     @Inject(method = "getUpdatePacket", at = @At("HEAD"), cancellable = true)
     public void getUpdatePacket(CallbackInfoReturnable<ClientboundBlockEntityDataPacket> cir) {
-        if (this instanceof ArchitecturyBlockEntity) {
-            ArchitecturyBlockEntity entity = (ArchitecturyBlockEntity) this;
+        if (this instanceof BlockEntityExtension) {
+            BlockEntityExtension entity = (BlockEntityExtension) this;
             BlockEntity be = (BlockEntity) entity;
             cir.setReturnValue(new ClientboundBlockEntityDataPacket(be.getBlockPos(), 10, be.getUpdateTag()));
             cir.cancel();
@@ -42,8 +42,8 @@ public abstract class MixinBlockEntity {
     
     @Inject(method = "getUpdateTag", at = @At("HEAD"), cancellable = true)
     public void getUpdateTag(CallbackInfoReturnable<CompoundTag> cir) {
-        if (this instanceof ArchitecturyBlockEntity) {
-            ArchitecturyBlockEntity entity = (ArchitecturyBlockEntity) this;
+        if (this instanceof BlockEntityExtension) {
+            BlockEntityExtension entity = (BlockEntityExtension) this;
             BlockEntity be = (BlockEntity) entity;
             cir.setReturnValue(entity.saveClientData(new CompoundTag()));
             cir.cancel();
