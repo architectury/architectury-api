@@ -17,21 +17,14 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package me.shedaniel.architectury.test.debug;
+package me.shedaniel.architectury.test.events;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import me.shedaniel.architectury.event.events.*;
-import me.shedaniel.architectury.event.events.client.ClientChatEvent;
-import me.shedaniel.architectury.event.events.client.ClientScreenInputEvent;
-import me.shedaniel.architectury.event.events.client.ClientLifecycleEvent;
-import me.shedaniel.architectury.event.events.client.ClientPlayerEvent;
+import me.shedaniel.architectury.event.events.client.*;
 import me.shedaniel.architectury.hooks.ExplosionHooks;
 import me.shedaniel.architectury.platform.Platform;
-import me.shedaniel.architectury.test.debug.client.ClientOverlayMessageSink;
-import me.shedaniel.architectury.test.debug.ConsoleMessageSink;
-import me.shedaniel.architectury.test.debug.MessageSink;
 import me.shedaniel.architectury.utils.Env;
-import me.shedaniel.architectury.utils.EnvExecutor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.Position;
@@ -229,7 +222,7 @@ public class DebugEvents {
             SINK.accept("Client texture stitched: " + atlas.location());
         });
         ClientScreenInputEvent.MOUSE_SCROLLED_PRE.register((client, screen, mouseX, mouseY, amount) -> {
-            SINK.accept("Screen Mouse amount: %.2f distance", amount);
+            SINK.accept("Screen Mouse scrolled: %.2f distance", amount);
             return InteractionResult.PASS;
         });
         ClientScreenInputEvent.MOUSE_CLICKED_PRE.register((client, screen, mouseX, mouseY, button) -> {
@@ -254,6 +247,18 @@ public class DebugEvents {
         });
         ClientScreenInputEvent.KEY_RELEASED_PRE.register((client, screen, keyCode, scanCode, modifiers) -> {
             SINK.accept("Screen Key released: " + InputConstants.getKey(keyCode, scanCode).getDisplayName().getString());
+            return InteractionResult.PASS;
+        });
+        ClientRawInputEvent.MOUSE_SCROLLED.register((client, amount) -> {
+            SINK.accept("Raw Mouse scrolled: %.2f distance", amount);
+            return InteractionResult.PASS;
+        });
+        ClientRawInputEvent.MOUSE_CLICKED_PRE.register((client, button, action, mods) -> {
+            SINK.accept("Raw Mouse clicked: " + button);
+            return InteractionResult.PASS;
+        });
+        ClientRawInputEvent.KEY_PRESSED.register((client, keyCode, scanCode, action, modifiers) -> {
+            SINK.accept("Raw Key pressed: " + InputConstants.getKey(keyCode, scanCode).getDisplayName().getString());
             return InteractionResult.PASS;
         });
     }
