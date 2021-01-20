@@ -17,12 +17,16 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package me.shedaniel.architectury.test;
+package me.shedaniel.architectury.test.tab;
 
-public interface MessageSink {
-    void accept(String message);
-    
-    default void accept(String message, Object... args) {
-        accept(String.format(message, args));
-    }
+import me.shedaniel.architectury.registry.CreativeTabs;
+import me.shedaniel.architectury.test.TestMod;
+import me.shedaniel.architectury.test.registry.TestRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+
+public class TestCreativeTabs {
+    public static final CreativeModeTab TEST_TAB = CreativeTabs.create(new ResourceLocation(TestMod.MOD_ID, "test_tab"),
+            () -> new ItemStack(TestRegistries.TEST_ITEM.get()));
 }

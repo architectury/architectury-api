@@ -1,10 +1,9 @@
 loom {
     accessWidener = file("src/main/resources/architectury.accessWidener")
-    silentMojangMappingsLicense()
 }
 
 dependencies {
-    minecraft "com.mojang:minecraft:${rootProject.architect.minecraft}"
+    minecraft "com.mojang:minecraft:${rootProject.architectury.minecraft}"
     mappings minecraft.officialMojangMappings()
     // We depend on fabric loader here to use the fabric @Environment annotations
     // Do NOT use other classes from fabric loader

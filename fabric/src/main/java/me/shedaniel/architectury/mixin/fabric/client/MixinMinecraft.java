@@ -44,9 +44,7 @@ public class MixinMinecraft {
     @Inject(method = "clearLevel(Lnet/minecraft/client/gui/screens/Screen;)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/chat/NarratorChatListener;clear()V"))
     private void handleLogin(Screen screen, CallbackInfo ci) {
-        if (player != null) {
-            ClientPlayerEvent.CLIENT_PLAYER_QUIT.invoker().quit(player);
-        }
+        ClientPlayerEvent.CLIENT_PLAYER_QUIT.invoker().quit(player);
     }
     
     @Inject(method = "startUseItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;isEmpty()Z", ordinal = 1),

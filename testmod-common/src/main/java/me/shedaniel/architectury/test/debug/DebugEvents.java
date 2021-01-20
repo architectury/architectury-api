@@ -17,7 +17,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package me.shedaniel.architectury.test;
+package me.shedaniel.architectury.test.debug;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import me.shedaniel.architectury.event.events.*;
@@ -27,7 +27,9 @@ import me.shedaniel.architectury.event.events.client.ClientLifecycleEvent;
 import me.shedaniel.architectury.event.events.client.ClientPlayerEvent;
 import me.shedaniel.architectury.hooks.ExplosionHooks;
 import me.shedaniel.architectury.platform.Platform;
-import me.shedaniel.architectury.test.client.ClientOverlayMessageSink;
+import me.shedaniel.architectury.test.debug.client.ClientOverlayMessageSink;
+import me.shedaniel.architectury.test.debug.ConsoleMessageSink;
+import me.shedaniel.architectury.test.debug.MessageSink;
 import me.shedaniel.architectury.utils.Env;
 import me.shedaniel.architectury.utils.EnvExecutor;
 import net.fabricmc.api.EnvType;
@@ -44,9 +46,9 @@ import net.minecraft.world.level.Level;
 
 import java.util.Optional;
 
-public class TestMod {
-    public static final MessageSink SINK = EnvExecutor.getEnvSpecific(() -> ClientOverlayMessageSink::new, () -> ConsoleMessageSink::new);
-    
+import static me.shedaniel.architectury.test.TestMod.SINK;
+
+public class DebugEvents {
     public static void initialize() {
         debugEvents();
         if (Platform.getEnvironment() == Env.CLIENT)
@@ -203,7 +205,9 @@ public class TestMod {
             SINK.accept(player.getScoreboardName() + " joined (client)");
         });
         ClientPlayerEvent.CLIENT_PLAYER_QUIT.register(player -> {
-            SINK.accept(player.getScoreboardName() + " quit (client)");
+            if (player != null) {
+                SINK.accept(player.getScoreboardName() + " quit (client)");
+            }
         });
         ClientPlayerEvent.CLIENT_PLAYER_RESPAWN.register((oldPlayer, newPlayer) -> {
             SINK.accept(newPlayer.getScoreboardName() + " respawned (client)");

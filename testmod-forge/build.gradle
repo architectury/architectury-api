@@ -1,0 +1,36 @@
+plugins {
+    id "com.github.johnrengelman.shadow" version "5.0.0"
+    id "com.matthewprenger.cursegradle"
+}
+
+loom {
+    mixinConfig = "architectury.mixins.json"
+    
+    localMods {
+        it.add(project(":forge").sourceSets.main)
+    }
+}
+
+architectury {
+    platformSetupLoomIde()
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${gradle.rootProject.architectury.minecraft}"
+    mappings loom.officialMojangMappings()
+    forge "net.minecraftforge:forge:${gradle.rootProject.architectury.minecraft}-${rootProject.forge_version}"
+
+    implementation project(path: ":forge", configuration: "dev")
+    compileOnly(project(path: ":common")) {
+        transitive = false
+    }
+    runtimeOnly(project(path: ":common", configuration: "transformDevelopmentForge")) {
+        transitive = false
+    }
+    compileOnly(project(path: ":testmod-common")) {
+        transitive = false
+    }
+    runtimeOnly(project(path: ":testmod-common", configuration: "transformDevelopmentForge")) {
+        transitive = false
+    }
+}

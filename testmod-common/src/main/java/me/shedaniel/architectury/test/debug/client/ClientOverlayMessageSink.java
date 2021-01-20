@@ -17,13 +17,13 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package me.shedaniel.architectury.test.client;
+package me.shedaniel.architectury.test.debug.client;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import me.shedaniel.architectury.event.events.GuiEvent;
-import me.shedaniel.architectury.test.ConsoleMessageSink;
+import me.shedaniel.architectury.test.debug.ConsoleMessageSink;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.Util;
@@ -57,6 +57,8 @@ public class ClientOverlayMessageSink extends ConsoleMessageSink {
     }
     
     public void render(PoseStack matrices, float delta) {
+        matrices.pushPose();
+        matrices.scale(0.5f, 0.5f, 1f);
         Minecraft minecraft = Minecraft.getInstance();
         long currentMills = Util.getMillis();
         int lineHeight = minecraft.font.lineHeight;
@@ -64,13 +66,13 @@ public class ClientOverlayMessageSink extends ConsoleMessageSink {
         synchronized (messages) {
             Iterator<Message> messageIterator = messages.iterator();
             int y = 1;
-    
+            
             RenderSystem.enableBlend();
-    
+            
             while (messageIterator.hasNext()) {
                 Message message = messageIterator.next();
                 int timeExisted = (int) (currentMills - message.created);
-        
+                
                 if (timeExisted >= 5000) {
                     messageIterator.remove();
                 } else {
@@ -87,6 +89,7 @@ public class ClientOverlayMessageSink extends ConsoleMessageSink {
         
         RenderSystem.disableAlphaTest();
         RenderSystem.disableBlend();
+        matrices.popPose();
     }
     
     private static class Message {

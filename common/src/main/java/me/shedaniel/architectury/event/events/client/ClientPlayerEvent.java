@@ -24,6 +24,7 @@ import me.shedaniel.architectury.event.EventFactory;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
+import org.jetbrains.annotations.Nullable;
 
 @Environment(EnvType.CLIENT)
 public interface ClientPlayerEvent {
@@ -38,7 +39,7 @@ public interface ClientPlayerEvent {
     
     @Environment(EnvType.CLIENT)
     interface ClientPlayerQuit {
-        void quit(LocalPlayer player);
+        void quit(@Nullable LocalPlayer player);
     }
     
     @Environment(EnvType.CLIENT)

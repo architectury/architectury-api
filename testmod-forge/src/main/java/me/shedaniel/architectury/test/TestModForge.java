@@ -17,11 +17,16 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package me.shedaniel.architectury.mixin.forge;
+package me.shedaniel.architectury.test;
 
-import me.shedaniel.architectury.core.AbstractRecipeSerializer;
-import org.spongepowered.asm.mixin.Mixin;
+import me.shedaniel.architectury.platform.forge.EventBuses;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-@Mixin(AbstractRecipeSerializer.class)
-public class MixinAbstractRecipeSerializer {
+@Mod(TestMod.MOD_ID)
+public class TestModForge {
+    public TestModForge() {
+        EventBuses.registerModEventBus(TestMod.MOD_ID, FMLJavaModLoadingContext.get().getModEventBus());
+        TestMod.initialize();
+    }
 }

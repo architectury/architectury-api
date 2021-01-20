@@ -10,12 +10,16 @@ plugins {
 }
 
 loom {
-    accessWidener(file("src/main/resources/architectury.accessWidener"))
-    silentMojangMappingsLicense()
+    accessWidener = file("src/main/resources/architectury.accessWidener")
 }
 
 configurations {
     shadow
+    dev
+}
+
+artifacts {
+    dev(jar)
 }
 
 architectury {
@@ -23,25 +27,23 @@ architectury {
 }
 
 dependencies {
-    minecraft("com.mojang:minecraft:${rootProject.architect.minecraft}")
-    mappings(minecraft.officialMojangMappings())
-    modCompile("net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}")
-    modCompile("net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}")
-    modCompileOnly("io.github.prospector:modmenu:${rootProject.mod_menu_version}")
+    minecraft "com.mojang:minecraft:${rootProject.architectury.minecraft}"
+    mappings minecraft.officialMojangMappings()
+    modCompile "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+    modCompile "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
+    modCompileOnly "io.github.prospector:modmenu:${rootProject.mod_menu_version}"
     implementation "net.jodah:typetools:0.6.2"
     shadow "net.jodah:typetools:0.6.2"
 
     compileOnly(project(path: ":common")) {
         transitive = false
     }
-    runtimeOnly(project(path: ":common", configuration: "transformed")) {
+    runtimeOnly(project(path: ":common", configuration: "transformDevelopmentFabric")) {
         transitive = false
     }
-    shadow(project(path: ":common", configuration: "transformed")) {
+    shadow(project(path: ":common", configuration: "transformProductionFabric")) {
         transitive = false
     }
-
-    testCompile project(":common").sourceSets.test.output
 }
 
 processResources {
