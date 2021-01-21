@@ -86,6 +86,7 @@ curseforge {
             changelog = releaseChangelog()
             addGameVersion "1.16-Snapshot"
             addGameVersion "1.16.4"
+            addGameVersion "1.16.5"
             addGameVersion "Java 8"
             addGameVersion "Fabric"
             relations {
