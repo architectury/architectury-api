@@ -38,6 +38,7 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import java.util.List;
 
@@ -274,6 +275,11 @@ public class EventHandlerImplClient {
         @SubscribeEvent
         public static void event(net.minecraftforge.client.event.TextureStitchEvent.Post event) {
             TextureStitchEvent.POST.invoker().stitch(event.getMap());
+        }
+    
+        @SubscribeEvent
+        public static void event(FMLClientSetupEvent event) {
+            ClientLifecycleEvent.CLIENT_SETUP.invoker().stateChanged(event.getMinecraftSupplier().get());
         }
     }
 }

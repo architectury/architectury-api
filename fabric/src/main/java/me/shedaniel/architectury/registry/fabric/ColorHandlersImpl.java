@@ -25,12 +25,21 @@ import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 
+import java.util.Arrays;
+import java.util.function.Supplier;
+
 public class ColorHandlersImpl {
-    public static void registerItemColors(ItemColor color, ItemLike... items) {
-        ColorProviderRegistry.ITEM.register(color, items);
+    @SafeVarargs
+    public static void registerItemColors(ItemColor itemColor, Supplier<ItemLike>... items) {
+        ColorProviderRegistry.ITEM.register(itemColor, Arrays.stream(items)
+                .map(Supplier::get)
+                .toArray(ItemLike[]::new));
     }
     
-    public static void registerBlockColors(BlockColor color, Block... blocks) {
-        ColorProviderRegistry.BLOCK.register(color, blocks);
+    @SafeVarargs
+    public static void registerBlockColors(BlockColor blockColor, Supplier<Block>... blocks) {
+        ColorProviderRegistry.BLOCK.register(blockColor, Arrays.stream(blocks)
+                .map(Supplier::get)
+                .toArray(Block[]::new));
     }
 }

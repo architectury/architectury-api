@@ -41,6 +41,7 @@ public interface ClientLifecycleEvent {
      * Invoked after a world is loaded only on client, equivalent to forge's {@code WorldEvent.Load}.
      */
     Event<ClientWorldState> CLIENT_WORLD_LOAD = EventFactory.createLoop(ClientWorldState.class);
+    Event<ClientState> CLIENT_SETUP = EventFactory.createLoop();
     
     @Deprecated
     @Environment(EnvType.CLIENT)

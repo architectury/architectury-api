@@ -58,6 +58,12 @@ public final class EventFactory {
         return new EventImpl<>(function);
     }
     
+    @SafeVarargs
+    public static <T> Event<T> createLoop(T... typeGetter) {
+        if (typeGetter.length != 0) throw new IllegalStateException("array must be empty!");
+        return createLoop((Class<T>) typeGetter.getClass().getComponentType());
+    }
+    
     @SuppressWarnings("UnstableApiUsage")
     public static <T> Event<T> createLoop(Class<T> clazz) {
         return of(listeners -> (T) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{clazz}, new AbstractInvocationHandler() {
@@ -69,6 +75,12 @@ public final class EventFactory {
                 return null;
             }
         }));
+    }
+    
+    @SafeVarargs
+    public static <T> Event<T> createInteractionResult(T... typeGetter) {
+        if (typeGetter.length != 0) throw new IllegalStateException("array must be empty!");
+        return createInteractionResult((Class<T>) typeGetter.getClass().getComponentType());
     }
     
     @SuppressWarnings("UnstableApiUsage")
@@ -87,6 +99,12 @@ public final class EventFactory {
         }));
     }
     
+    @SafeVarargs
+    public static <T> Event<T> createInteractionResultHolder(T... typeGetter) {
+        if (typeGetter.length != 0) throw new IllegalStateException("array must be empty!");
+        return createInteractionResultHolder((Class<T>) typeGetter.getClass().getComponentType());
+    }
+    
     @SuppressWarnings("UnstableApiUsage")
     public static <T> Event<T> createInteractionResultHolder(Class<T> clazz) {
         return of(listeners -> (T) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{clazz}, new AbstractInvocationHandler() {
@@ -101,6 +119,12 @@ public final class EventFactory {
                 return InteractionResultHolder.pass(null);
             }
         }));
+    }
+    
+    @SafeVarargs
+    public static <T> Event<Consumer<T>> createConsumerLoop(T... typeGetter) {
+        if (typeGetter.length != 0) throw new IllegalStateException("array must be empty!");
+        return createConsumerLoop((Class<T>) typeGetter.getClass().getComponentType());
     }
     
     @SuppressWarnings("UnstableApiUsage")
@@ -122,6 +146,12 @@ public final class EventFactory {
             superClass = superClass.getSuperclass();
         } while (superClass != null);
         return event;
+    }
+    
+    @SafeVarargs
+    public static <T> Event<Actor<T>> createActorLoop(T... typeGetter) {
+        if (typeGetter.length != 0) throw new IllegalStateException("array must be empty!");
+        return createActorLoop((Class<T>) typeGetter.getClass().getComponentType());
     }
     
     @SuppressWarnings("UnstableApiUsage")

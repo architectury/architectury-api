@@ -29,38 +29,50 @@ import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class ColorHandlersImpl {
-    private static final List<Pair<ItemColor, ItemLike[]>> ITEM_COLORS = Lists.newArrayList();
-    private static final List<Pair<BlockColor, Block[]>> BLOCK_COLORS = Lists.newArrayList();
+    private static final List<Pair<ItemColor, Supplier<ItemLike>[]>> ITEM_COLORS = Lists.newArrayList();
+    private static final List<Pair<BlockColor, Supplier<Block>[]>> BLOCK_COLORS = Lists.newArrayList();
     
     static {
         MinecraftForge.EVENT_BUS.<ColorHandlerEvent.Item>addListener(event -> {
-            for (Pair<ItemColor, ItemLike[]> pair : ITEM_COLORS) {
-                event.getItemColors().register(pair.getLeft(), pair.getRight());
+            for (Pair<ItemColor, Supplier<ItemLike>[]> pair : ITEM_COLORS) {
+                event.getItemColors().register(pair.getLeft(), Arrays.stream(pair.getRight())
+                        .map(Supplier::get)
+                        .toArray(ItemLike[]::new));
             }
         });
         MinecraftForge.EVENT_BUS.<ColorHandlerEvent.Block>addListener(event -> {
-            for (Pair<BlockColor, Block[]> pair : BLOCK_COLORS) {
-                event.getBlockColors().register(pair.getLeft(), pair.getRight());
+            for (Pair<BlockColor, Supplier<Block>[]> pair : BLOCK_COLORS) {
+                event.getBlockColors().register(pair.getLeft(), Arrays.stream(pair.getRight())
+                        .map(Supplier::get)
+                        .toArray(Block[]::new));
             }
         });
     }
     
-    public static void registerItemColors(ItemColor itemColor, ItemLike... items) {
+    @SafeVarargs
+    public static void registerItemColors(ItemColor itemColor, Supplier<ItemLike>... items) {
         if (Minecraft.getInstance().getItemColors() == null) {
             ITEM_COLORS.add(Pair.of(itemColor, items));
         } else {
-            Minecraft.getInstance().getItemColors().register(itemColor, items);
+            Minecraft.getInstance().getItemColors().register(itemColor, Arrays.stream(items)
+                    .map(Supplier::get)
+                    .toArray(ItemLike[]::new));
         }
     }
     
-    public static void registerBlockColors(BlockColor blockColor, Block... blocks) {
+    @SafeVarargs
+    public static void registerBlockColors(BlockColor blockColor, Supplier<Block>... blocks) {
         if (Minecraft.getInstance().getBlockColors() == null) {
             BLOCK_COLORS.add(Pair.of(blockColor, blocks));
         } else {
-            Minecraft.getInstance().getBlockColors().register(blockColor, blocks);
+            Minecraft.getInstance().getBlockColors().register(blockColor, Arrays.stream(blocks)
+                    .map(Supplier::get)
+                    .toArray(Block[]::new));
         }
     }
 }
