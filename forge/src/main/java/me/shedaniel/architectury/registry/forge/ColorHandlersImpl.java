@@ -29,7 +29,6 @@ import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -40,16 +39,12 @@ public class ColorHandlersImpl {
     static {
         MinecraftForge.EVENT_BUS.<ColorHandlerEvent.Item>addListener(event -> {
             for (Pair<ItemColor, Supplier<ItemLike>[]> pair : ITEM_COLORS) {
-                event.getItemColors().register(pair.getLeft(), Arrays.stream(pair.getRight())
-                        .map(Supplier::get)
-                        .toArray(ItemLike[]::new));
+                event.getItemColors().register(pair.getLeft(), unpackItems(pair.getRight()));
             }
         });
         MinecraftForge.EVENT_BUS.<ColorHandlerEvent.Block>addListener(event -> {
             for (Pair<BlockColor, Supplier<Block>[]> pair : BLOCK_COLORS) {
-                event.getBlockColors().register(pair.getLeft(), Arrays.stream(pair.getRight())
-                        .map(Supplier::get)
-                        .toArray(Block[]::new));
+                event.getBlockColors().register(pair.getLeft(), unpackBlocks(pair.getRight()));
             }
         });
     }
@@ -59,9 +54,7 @@ public class ColorHandlersImpl {
         if (Minecraft.getInstance().getItemColors() == null) {
             ITEM_COLORS.add(Pair.of(itemColor, items));
         } else {
-            Minecraft.getInstance().getItemColors().register(itemColor, Arrays.stream(items)
-                    .map(Supplier::get)
-                    .toArray(ItemLike[]::new));
+            Minecraft.getInstance().getItemColors().register(itemColor, unpackItems(items));
         }
     }
     
@@ -70,9 +63,23 @@ public class ColorHandlersImpl {
         if (Minecraft.getInstance().getBlockColors() == null) {
             BLOCK_COLORS.add(Pair.of(blockColor, blocks));
         } else {
-            Minecraft.getInstance().getBlockColors().register(blockColor, Arrays.stream(blocks)
-                    .map(Supplier::get)
-                    .toArray(Block[]::new));
+            Minecraft.getInstance().getBlockColors().register(blockColor, unpackBlocks(blocks));
         }
+    }
+    
+    private static ItemLike[] unpackItems(Supplier<ItemLike>[] items) {
+        ItemLike[] array = new ItemLike[items.length];
+        for (int i = 0; i < items.length; i++) {
+            array[i] = items[i].get();
+        }
+        return array;
+    }
+    
+    private static Block[] unpackBlocks(Supplier<Block>[] blocks) {
+        Block[] array = new Block[blocks.length];
+        for (int i = 0; i < blocks.length; i++) {
+            array[i] = blocks[i].get();
+        }
+        return array;
     }
 }

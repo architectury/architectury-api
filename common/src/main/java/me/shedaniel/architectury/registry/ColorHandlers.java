@@ -35,15 +35,21 @@ public final class ColorHandlers {
     private ColorHandlers() {}
     
     public static void registerItemColors(ItemColor color, ItemLike... items) {
-        registerItemColors(color, Arrays.stream(items)
-                .map(item -> (Supplier<ItemLike>) () -> item)
-                .toArray(Supplier[]::new));
+        Supplier<ItemLike>[] array = new Supplier[items.length];
+        for (int i = 0; i < items.length; i++) {
+            ItemLike item = items[i];
+            array[i] = () -> item;
+        }
+        registerItemColors(color, array);
     }
     
     public static void registerBlockColors(BlockColor color, Block... blocks) {
-        registerBlockColors(color, Arrays.stream(blocks)
-                .map(block -> (Supplier<Block>) () -> block)
-                .toArray(Supplier[]::new));
+        Supplier<Block>[] array = new Supplier[blocks.length];
+        for (int i = 0; i < blocks.length; i++) {
+            Block block = blocks[i];
+            array[i] = () -> block;
+        }
+        registerBlockColors(color, array);
     }
     
     @SafeVarargs
