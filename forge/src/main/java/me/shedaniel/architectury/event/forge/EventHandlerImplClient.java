@@ -265,6 +265,30 @@ public class EventHandlerImplClient {
         ClientScreenInputEvent.KEY_RELEASED_POST.invoker().keyReleased(Minecraft.getInstance(), event.getGui(), event.getKeyCode(), event.getScanCode(), event.getModifiers());
     }
     
+    @SubscribeEvent
+    public static void event(InputEvent.MouseScrollEvent event) {
+        if (ClientRawInputEvent.MOUSE_SCROLLED.invoker().mouseScrolled(Minecraft.getInstance(), event.getScrollDelta()) == InteractionResult.FAIL) {
+            event.setCanceled(true);
+        }
+    }
+    
+    @SubscribeEvent
+    public static void event(InputEvent.RawMouseEvent event) {
+        if (ClientRawInputEvent.MOUSE_CLICKED_PRE.invoker().mouseClicked(Minecraft.getInstance(), event.getButton(), event.getAction(), event.getMods()) == InteractionResult.FAIL) {
+            event.setCanceled(true);
+        }
+    }
+    
+    @SubscribeEvent
+    public static void event(InputEvent.MouseInputEvent event) {
+        ClientRawInputEvent.MOUSE_CLICKED_POST.invoker().mouseClicked(Minecraft.getInstance(), event.getButton(), event.getAction(), event.getMods());
+    }
+    
+    @SubscribeEvent
+    public static void event(InputEvent.KeyInputEvent event) {
+        ClientRawInputEvent.KEY_PRESSED.invoker().keyPressed(Minecraft.getInstance(), event.getKey(), event.getScanCode(), event.getAction(), event.getModifiers());
+    }
+    
     @OnlyIn(Dist.CLIENT)
     public static class ModBasedEventHandler {
         @SubscribeEvent

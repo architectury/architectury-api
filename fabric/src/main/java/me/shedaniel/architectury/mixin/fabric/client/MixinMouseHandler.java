@@ -19,6 +19,7 @@
 
 package me.shedaniel.architectury.mixin.fabric.client;
 
+import me.shedaniel.architectury.event.events.client.ClientRawInputEvent;
 import me.shedaniel.architectury.event.events.client.ClientScreenInputEvent;
 import me.shedaniel.architectury.impl.fabric.ScreenInputDelegate;
 import net.minecraft.client.Minecraft;
@@ -52,7 +53,7 @@ public class MixinMouseHandler {
     @Inject(method = "onScroll",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;mouseScrolled(DDD)Z",
                      ordinal = 0), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-    public void onMouseScrolled(long long_1, double double_1, double double_2, CallbackInfo info, double amount, double x, double y) {
+    public void onMouseScrolled(long handle, double xOffset, double yOffset, CallbackInfo info, double amount, double x, double y) {
         if (!info.isCancelled()) {
             InteractionResult result = ClientScreenInputEvent.MOUSE_SCROLLED_PRE.invoker().mouseScrolled(minecraft, minecraft.screen, x, y, amount);
             if (result != InteractionResult.PASS)
@@ -63,29 +64,62 @@ public class MixinMouseHandler {
     @Inject(method = "onScroll",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;mouseScrolled(DDD)Z",
                      ordinal = 0, shift = At.Shift.AFTER), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-    public void onMouseScrolledPost(long long_1, double double_1, double double_2, CallbackInfo info, double amount, double x, double y) {
+    public void onMouseScrolledPost(long handle, double xOffset, double yOffset, CallbackInfo info, double amount, double x, double y) {
         if (!info.isCancelled()) {
             InteractionResult result = ClientScreenInputEvent.MOUSE_SCROLLED_POST.invoker().mouseScrolled(minecraft, minecraft.screen, x, y, amount);
         }
     }
     
-    @Inject(method = "onPress", at = @At(value = "INVOKE",
-                                         target = "Lnet/minecraft/client/gui/screens/Screen;wrapScreenError(Ljava/lang/Runnable;Ljava/lang/String;Ljava/lang/String;)V",
-                                         ordinal = 0), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-    public void onMouseClicked(long long_1, int button, int int_2, int int_3, CallbackInfo info, boolean bl, int i, boolean[] bls, double d, double e) {
+    @Inject(method = "onScroll",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isSpectator()Z",
+                     ordinal = 0), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
+    public void onRawMouseScrolled(long handle, double xOffset, double yOffset, CallbackInfo info, double amount) {
         if (!info.isCancelled()) {
-            InteractionResult result = ClientScreenInputEvent.MOUSE_CLICKED_PRE.invoker().mouseClicked(minecraft, minecraft.screen, d, e, button);
+            InteractionResult result = ClientRawInputEvent.MOUSE_SCROLLED.invoker().mouseScrolled(minecraft, amount);
             if (result != InteractionResult.PASS)
                 info.cancel();
         }
     }
     
-    @Inject(method = "onPress", at = @At(value = "INVOKE",
-                                         target = "Lnet/minecraft/client/gui/screens/Screen;wrapScreenError(Ljava/lang/Runnable;Ljava/lang/String;Ljava/lang/String;)V",
-                                         ordinal = 0, shift = At.Shift.AFTER), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-    public void onMouseClickedPost(long long_1, int button, int int_2, int int_3, CallbackInfo info, boolean bl, int i, boolean[] bls, double d, double e) {
+    @SuppressWarnings("UnresolvedMixinReference")
+    @Inject(method = {"lambda$onPress$0", "method_1611"}, at = @At("HEAD"), cancellable = true, remap = false)
+    public void onGuiMouseClicked(boolean[] bls, double d, double e, int button, CallbackInfo info) {
         if (!info.isCancelled()) {
+            InteractionResult result = ClientScreenInputEvent.MOUSE_CLICKED_PRE.invoker().mouseClicked(minecraft, minecraft.screen, d, e, button);
+            if (result != InteractionResult.PASS) {
+                bls[0] = true;
+                info.cancel();
+            }
+        }
+    }
+    
+    @SuppressWarnings("UnresolvedMixinReference")
+    @Inject(method = {"lambda$onPress$0", "method_1611"}, at = @At("RETURN"), cancellable = true, remap = false)
+    public void onGuiMouseClickedPost(boolean[] bls, double d, double e, int button, CallbackInfo info) {
+        if (!info.isCancelled() && !bls[0]) {
             InteractionResult result = ClientScreenInputEvent.MOUSE_CLICKED_POST.invoker().mouseClicked(minecraft, minecraft.screen, d, e, button);
+            if (result != InteractionResult.PASS) {
+                bls[0] = true;
+                info.cancel();
+            }
+        }
+    }
+    
+    @Inject(method = "onPress", at = @At(value = "FIELD",
+                                         target = "Lnet/minecraft/client/Minecraft;overlay:Lnet/minecraft/client/gui/screens/Overlay;",
+                                         ordinal = 0), cancellable = true)
+    public void onRawMouseClicked(long handle, int button, int action, int mods, CallbackInfo info) {
+        if (!info.isCancelled()) {
+            InteractionResult result = ClientRawInputEvent.MOUSE_CLICKED_PRE.invoker().mouseClicked(minecraft, button, action, mods);
+            if (result != InteractionResult.PASS)
+                info.cancel();
+        }
+    }
+    
+    @Inject(method = "onPress", at = @At("RETURN"), cancellable = true)
+    public void onRawMouseClickedPost(long handle, int button, int action, int mods, CallbackInfo info) {
+        if (handle == this.minecraft.getWindow().getWindow()) {
+            InteractionResult result = ClientRawInputEvent.MOUSE_CLICKED_POST.invoker().mouseClicked(minecraft, button, action, mods);
             if (result != InteractionResult.PASS)
                 info.cancel();
         }
