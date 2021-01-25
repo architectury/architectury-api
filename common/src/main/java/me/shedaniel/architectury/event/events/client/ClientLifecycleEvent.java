@@ -43,7 +43,6 @@ public interface ClientLifecycleEvent {
     Event<ClientWorldState> CLIENT_WORLD_LOAD = EventFactory.createLoop();
     Event<ClientState> CLIENT_SETUP = EventFactory.createLoop();
     
-    @Deprecated
     @Environment(EnvType.CLIENT)
     interface ClientState extends LifecycleEvent.InstanceState<Minecraft> {}
     

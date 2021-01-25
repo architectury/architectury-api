@@ -49,10 +49,15 @@ public interface Registry<T> extends Iterable<T> {
     @Nullable
     ResourceLocation getId(T obj);
     
+    int getRawId(T obj);
+    
     Optional<ResourceKey<T>> getKey(T obj);
     
     @Nullable
     T get(ResourceLocation id);
+    
+    @Nullable
+    T byRawId(int rawId);
     
     boolean contains(ResourceLocation id);
     

@@ -166,6 +166,11 @@ public class RegistriesImpl {
         }
         
         @Override
+        public int getRawId(T obj) {
+            return delegate.getId(obj);
+        }
+        
+        @Override
         public Optional<ResourceKey<T>> getKey(T obj) {
             return delegate.getResourceKey(obj);
         }
@@ -173,6 +178,11 @@ public class RegistriesImpl {
         @Override
         public @Nullable T get(ResourceLocation id) {
             return delegate.get(id);
+        }
+        
+        @Override
+        public T byRawId(int rawId) {
+            return delegate.byId(rawId);
         }
         
         @Override

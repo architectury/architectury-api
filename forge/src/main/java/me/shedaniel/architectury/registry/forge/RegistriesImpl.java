@@ -37,6 +37,7 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.RegistryManager;
@@ -82,7 +83,7 @@ public class RegistriesImpl {
         public <T> Registry<T> get(ResourceKey<net.minecraft.core.Registry<T>> registryKey) {
             return get(RegistryManager.ACTIVE.getRegistry(registryKey.location()));
         }
-    
+        
         public <T> Registry<T> get(IForgeRegistry registry) {
             return new ForgeBackedRegistryImpl<>(this.registry, registry);
         }
@@ -162,7 +163,7 @@ public class RegistriesImpl {
                 public @NotNull ResourceLocation getRegistryId() {
                     return delegate.key().location();
                 }
-    
+                
                 @Override
                 public @NotNull ResourceLocation getId() {
                     return id;
@@ -211,6 +212,11 @@ public class RegistriesImpl {
         }
         
         @Override
+        public int getRawId(T obj) {
+            return delegate.getId(obj);
+        }
+        
+        @Override
         public Optional<ResourceKey<T>> getKey(T t) {
             return delegate.getResourceKey(t);
         }
@@ -219,6 +225,11 @@ public class RegistriesImpl {
         @Nullable
         public T get(ResourceLocation id) {
             return delegate.get(id);
+        }
+        
+        @Override
+        public T byRawId(int rawId) {
+            return delegate.byId(rawId);
         }
         
         @Override
@@ -357,6 +368,11 @@ public class RegistriesImpl {
         }
         
         @Override
+        public int getRawId(T obj) {
+            return ((ForgeRegistry<T>) delegate).getID(obj);
+        }
+        
+        @Override
         public Optional<ResourceKey<T>> getKey(T t) {
             return Optional.ofNullable(getId(t)).map(id -> ResourceKey.create(key(), id));
         }
@@ -365,6 +381,11 @@ public class RegistriesImpl {
         @Nullable
         public T get(ResourceLocation id) {
             return delegate.getValue(id);
+        }
+        
+        @Override
+        public T byRawId(int rawId) {
+            return ((ForgeRegistry<T>) delegate).getValue(rawId);
         }
         
         @Override
