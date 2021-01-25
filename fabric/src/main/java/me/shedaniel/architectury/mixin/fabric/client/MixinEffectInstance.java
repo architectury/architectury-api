@@ -29,7 +29,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Unique
-@Mixin(value = EffectInstance.class, priority = 1050)
+@Mixin(value = EffectInstance.class, priority = 950)
 public class MixinEffectInstance {
     @Redirect(
             method = "<init>",
@@ -40,7 +40,7 @@ public class MixinEffectInstance {
     private ResourceLocation mojangPls(String _0, ResourceManager rm, String str) {
         return mojangPls(new ResourceLocation(str), ".json");
     }
-
+    
     @Redirect(
             method = "getOrCreate",
             at = @At(value = "NEW",
@@ -50,7 +50,7 @@ public class MixinEffectInstance {
     private static ResourceLocation mojangPls(String _0, ResourceManager rm, Program.Type type, String str) {
         return mojangPls(new ResourceLocation(str), type.getExtension());
     }
-
+    
     private static ResourceLocation mojangPls(ResourceLocation rl, String ext) {
         return new ResourceLocation(rl.getNamespace(), "shaders/program/" + rl.getPath() + ext);
     }
