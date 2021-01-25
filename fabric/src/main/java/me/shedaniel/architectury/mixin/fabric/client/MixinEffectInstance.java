@@ -29,13 +29,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Unique
-@Mixin(value = EffectInstance.class, priority = 1050)
+@Mixin(value = EffectInstance.class, priority = 950)
 public class MixinEffectInstance {
     @Redirect(
             method = "<init>",
             at = @At(value = "NEW",
                     target = "(Ljava/lang/String;)Lnet/minecraft/resources/ResourceLocation;",
-                    ordinal = 0)
+                    ordinal = 0),
+            require = 0
     )
     private ResourceLocation mojangPls(String _0, ResourceManager rm, String str) {
         return mojangPls(new ResourceLocation(str), ".json");
@@ -45,7 +46,8 @@ public class MixinEffectInstance {
             method = "getOrCreate",
             at = @At(value = "NEW",
                     target = "(Ljava/lang/String;)Lnet/minecraft/resources/ResourceLocation;",
-                    ordinal = 0)
+                    ordinal = 0),
+            require = 0
     )
     private static ResourceLocation mojangPls(String _0, ResourceManager rm, Program.Type type, String str) {
         return mojangPls(new ResourceLocation(str), type.getExtension());
