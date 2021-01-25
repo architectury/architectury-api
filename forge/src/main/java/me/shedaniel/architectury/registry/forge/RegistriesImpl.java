@@ -116,27 +116,27 @@ public class RegistriesImpl {
                 public @NotNull ResourceLocation getRegistryId() {
                     return delegate.key().location();
                 }
-    
+                
                 @Override
                 public @NotNull ResourceLocation getId() {
                     return id;
                 }
-    
+                
                 @Override
                 public boolean isPresent() {
                     return contains(id);
                 }
-    
+                
                 @Override
                 public T get() {
                     return value.get();
                 }
-    
+                
                 @Override
                 public int hashCode() {
                     return Objects.hashCode(getRegistryId(), getId());
                 }
-    
+                
                 @Override
                 public boolean equals(Object obj) {
                     if (this == obj) return true;
@@ -144,7 +144,7 @@ public class RegistriesImpl {
                     RegistrySupplier<?> other = (RegistrySupplier<?>) obj;
                     return other.getRegistryId().equals(getRegistryId()) && other.getId().equals(getId());
                 }
-    
+                
                 @Override
                 public String toString() {
                     return getRegistryId().toString() + "@" + id.toString();
@@ -177,7 +177,7 @@ public class RegistriesImpl {
         
         @Override
         public boolean contains(ResourceLocation resourceLocation) {
-            return delegate.containsKey(resourceLocation);
+            return delegate.keySet().contains(resourceLocation);
         }
         
         @Override
@@ -223,27 +223,27 @@ public class RegistriesImpl {
                 public @NotNull ResourceLocation getRegistryId() {
                     return delegate.getRegistryName();
                 }
-    
+                
                 @Override
                 public @NotNull ResourceLocation getId() {
                     return id;
                 }
-    
+                
                 @Override
                 public boolean isPresent() {
                     return contains(id);
                 }
-    
+                
                 @Override
                 public T get() {
                     return value.get();
                 }
-    
+                
                 @Override
                 public int hashCode() {
                     return Objects.hashCode(getRegistryId(), getId());
                 }
-    
+                
                 @Override
                 public boolean equals(Object obj) {
                     if (this == obj) return true;
@@ -251,7 +251,7 @@ public class RegistriesImpl {
                     RegistrySupplier<?> other = (RegistrySupplier<?>) obj;
                     return other.getRegistryId().equals(getRegistryId()) && other.getId().equals(getId());
                 }
-    
+                
                 @Override
                 public String toString() {
                     return getRegistryId().toString() + "@" + id.toString();
@@ -268,27 +268,27 @@ public class RegistriesImpl {
                 public @NotNull ResourceLocation getRegistryId() {
                     return delegate.getRegistryName();
                 }
-    
+                
                 @Override
                 public @NotNull ResourceLocation getId() {
                     return registryObject.getId();
                 }
-    
+                
                 @Override
                 public boolean isPresent() {
                     return registryObject.isPresent();
                 }
-    
+                
                 @Override
                 public T get() {
                     return (T) registryObject.get();
                 }
-    
+                
                 @Override
                 public int hashCode() {
                     return Objects.hashCode(getRegistryId(), getId());
                 }
-    
+                
                 @Override
                 public boolean equals(Object obj) {
                     if (this == obj) return true;
@@ -296,7 +296,7 @@ public class RegistriesImpl {
                     RegistrySupplier<?> other = (RegistrySupplier<?>) obj;
                     return other.getRegistryId().equals(getRegistryId()) && other.getId().equals(getId());
                 }
-    
+                
                 @Override
                 public String toString() {
                     return getRegistryId().toString() + "@" + id.toString();
