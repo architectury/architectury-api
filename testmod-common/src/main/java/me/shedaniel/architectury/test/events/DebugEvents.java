@@ -165,6 +165,9 @@ public class DebugEvents {
         PlayerEvent.CLOSE_MENU.register((player, menu) -> {
             SINK.accept(player.getScoreboardName() + " closes " + toSimpleName(menu) + logSide(player.level));
         });
+        PlayerEvent.CHANGE_DIMENSION.register((player, oldLevel, newLevel) -> {
+            SINK.accept(player.getScoreboardName() + " switched from " + oldLevel.location() + " to " + newLevel.location() + logSide(player.level));
+        });
     }
     
     public static String toShortString(Vec3i pos) {

@@ -24,6 +24,7 @@ import me.shedaniel.architectury.event.EventFactory;
 import me.shedaniel.architectury.utils.IntValue;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionResult;
@@ -45,6 +46,7 @@ public interface PlayerEvent {
     Event<SmeltItem> SMELT_ITEM = EventFactory.createLoop();
     Event<PickupItemPredicate> PICKUP_ITEM_PRE = EventFactory.createInteractionResult();
     Event<PickupItem> PICKUP_ITEM_POST = EventFactory.createLoop();
+    Event<ChangeDimension> CHANGE_DIMENSION = EventFactory.createLoop();
     Event<DropItem> DROP_ITEM = EventFactory.createLoop();
     Event<OpenMenu> OPEN_MENU = EventFactory.createLoop();
     Event<CloseMenu> CLOSE_MENU = EventFactory.createLoop();
@@ -84,6 +86,10 @@ public interface PlayerEvent {
     
     interface PickupItem {
         void pickup(Player player, ItemEntity entity, ItemStack stack);
+    }
+    
+    interface ChangeDimension {
+        void change(ServerPlayer player, ResourceKey<Level> oldLevel, ResourceKey<Level> newLevel);
     }
     
     interface DropItem {

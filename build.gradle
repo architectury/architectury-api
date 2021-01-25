@@ -1,5 +1,5 @@
 plugins {
-    id "architectury-plugin" version "2.0.59"
+    id "architectury-plugin" version "2.0.61"
     id "forgified-fabric-loom" version "0.6.53" apply false
     id "org.cadixdev.licenser" version "0.5.0"
     id "com.jfrog.bintray" version "1.8.4"
@@ -30,7 +30,7 @@ allprojects {
         isSnapshot = System.getenv("PR_NUM") != null
     }
     
-    def runNumber = (System.getenv("GITHUB_RUN_NUMBER") == null ? (((short) new Random().nextInt()).abs() + 1000).toString() : System.getenv("GITHUB_RUN_NUMBER"))
+    def runNumber = (System.getenv("GITHUB_RUN_NUMBER") == null ? "9999" : System.getenv("GITHUB_RUN_NUMBER"))
 
     if (!ext.isSnapshot) {
         version = rootProject.base_version + "." + runNumber
