@@ -57,13 +57,13 @@ public abstract class MixinMinecraft {
     private @Unique String hostname;
     private @Unique int port;
     // @formatter:on
-
+    
     @Inject(method = "clearLevel(Lnet/minecraft/client/gui/screens/Screen;)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/chat/NarratorChatListener;clear()V"))
     private void handleLogin(Screen screen, CallbackInfo ci) {
         ClientPlayerEvent.CLIENT_PLAYER_QUIT.invoker().quit(player);
     }
-
+    
     @Inject(method = "startUseItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;isEmpty()Z", ordinal = 1),
             locals = LocalCapture.CAPTURE_FAILHARD)
     private void rightClickAir(CallbackInfo ci, InteractionHand var1[], int var2, int var3, InteractionHand interactionHand, ItemStack itemStack) {
@@ -71,12 +71,12 @@ public abstract class MixinMinecraft {
             InteractionEvent.CLIENT_RIGHT_CLICK_AIR.invoker().click(player, interactionHand);
         }
     }
-
+    
     @Inject(method = "startAttack", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;resetAttackStrengthTicker()V", ordinal = 0))
     private void leftClickAir(CallbackInfo ci) {
         InteractionEvent.CLIENT_LEFT_CLICK_AIR.invoker().click(player, InteractionHand.MAIN_HAND);
     }
-
+    
     @ModifyVariable(
             method = "setScreen",
             at = @At(value = "INVOKE",
@@ -88,18 +88,21 @@ public abstract class MixinMinecraft {
     public Screen modifyScreen(Screen screen) {
         Screen old = screen;
         InteractionResultHolder<Screen> event = GuiEvent.SET_SCREEN.invoker().modifyScreen(screen);
-        if (event.getResult() == InteractionResult.FAIL) {
-            setScreenCancelled = true;
-            return old;
+        switch (event.getResult()) {
+            case FAIL:
+                setScreenCancelled = true;
+                return old;
+            case SUCCESS:
+                screen = event.getObject();
+                if (old != null && screen != old) {
+                    old.removed();
+                }
+            default:
+                setScreenCancelled = false;
+                return screen;
         }
-        setScreenCancelled = false;
-        screen = event.getObject();
-        if (old != null && screen != old) {
-            old.removed();
-        }
-        return screen;
     }
-
+    
     @Inject(
             method = "setScreen",
             at = @At(value = "INVOKE",
@@ -113,7 +116,7 @@ public abstract class MixinMinecraft {
             ci.cancel();
         }
     }
-
+    
     @Redirect(
             method = "<init>",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;setScreen(Lnet/minecraft/client/gui/screens/Screen;)V"),
@@ -124,7 +127,7 @@ public abstract class MixinMinecraft {
     )
     public void minecraftWhy(Minecraft mc, Screen screen) {
     }
-
+    
     @Inject(
             method = "<init>",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;resizeDisplay()V"),
@@ -134,8 +137,8 @@ public abstract class MixinMinecraft {
         hostname = string2;
         port = j;
     }
-
-    @SuppressWarnings("UnresolvedMixinReference")
+    
+    @SuppressWarnings({"UnresolvedMixinReference", "ConstantConditions"})
     @Inject(
             method = {"method_29338", "lambda$null$1"}, // <init>.lambda$null$1
             at = @At("RETURN")
