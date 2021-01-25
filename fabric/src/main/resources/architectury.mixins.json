@@ -4,14 +4,39 @@
   "compatibilityLevel": "JAVA_8",
   "minVersion": "0.7.11",
   "client": [
-    "client.MixinClientLevel", "client.MixinClientPacketListener", "client.MixinDebugScreenOverlay", "client.MixinGameRenderer", "client.MixinIntegratedServer",
-    "client.MixinKeyboardHandler", "client.MixinMinecraft", "client.MixinMouseHandler", "client.MixinMultiPlayerGameMode", "client.MixinScreen",
-    "client.MixinTextureAtlas"
+    "client.MixinClientLevel",
+    "client.MixinClientPacketListener",
+    "client.MixinDebugScreenOverlay",
+    "client.MixinGameRenderer",
+    "client.MixinIntegratedServer",
+    "client.MixinKeyboardHandler",
+    "client.MixinMinecraft",
+    "client.MixinMouseHandler",
+    "client.MixinMultiPlayerGameMode",
+    "client.MixinScreen",
+    "client.MixinTextureAtlas",
+    "client.MixinEffectInstance"
   ],
   "mixins": [
-    "ExplosionPreInvoker", "LivingDeathInvoker", "MixinBlockEntityExtension", "MixinBlockItem", "MixinCommands", "MixinDedicatedServer", "MixinExplosion",
-    "MixinFurnaceResultSlot", "MixinItemEntity", "MixinLivingEntity", "MixinPlayer", "MixinPlayerAdvancements", "MixinPlayerList", "MixinResultSlot",
-    "MixinServerGamePacketListenerImpl", "MixinServerLevel", "MixinServerPlayer", "MixinServerPlayerGameMode", "PlayerAttackInvoker"
+    "ExplosionPreInvoker",
+    "LivingDeathInvoker",
+    "MixinBlockEntityExtension",
+    "MixinBlockItem",
+    "MixinCommands",
+    "MixinDedicatedServer",
+    "MixinExplosion",
+    "MixinFurnaceResultSlot",
+    "MixinItemEntity",
+    "MixinLivingEntity",
+    "MixinPlayer",
+    "MixinPlayerAdvancements",
+    "MixinPlayerList",
+    "MixinResultSlot",
+    "MixinServerGamePacketListenerImpl",
+    "MixinServerLevel",
+    "MixinServerPlayer",
+    "MixinServerPlayerGameMode",
+    "PlayerAttackInvoker"
   ],
   "injectors": {
     "defaultRequire": 1
