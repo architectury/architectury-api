@@ -1,0 +1,22 @@
+name: Snapshot Compile & Release
+
+on:
+  [pull_request]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Upload to Bintray
+        run: ./gradlew bintrayUpload --stacktrace
+        env:
+          BINTRAY_USER: shedaniel
+          BINTRAY_KEY: ${{ secrets.BINTRAY_KEY }}
+          PR_NUM: ${{github.event.number}}
