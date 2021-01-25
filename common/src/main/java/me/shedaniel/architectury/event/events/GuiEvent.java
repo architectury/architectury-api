@@ -28,6 +28,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 
 import java.util.List;
 
@@ -49,32 +50,42 @@ public interface GuiEvent {
     Event<ScreenInitPost> INIT_POST = EventFactory.createLoop(ScreenInitPost.class);
     Event<ScreenRenderPre> RENDER_PRE = EventFactory.createInteractionResult(ScreenRenderPre.class);
     Event<ScreenRenderPost> RENDER_POST = EventFactory.createInteractionResult(ScreenRenderPost.class);
-    
+
+    /**
+     * Invoked during Minecraft#setScreen, equivalent to forge's {@code GuiOpenEvent}.
+     */
+    Event<SetScreenEvent> SET_SCREEN = EventFactory.createInteractionResultHolder();
+
+    @Environment(EnvType.CLIENT)
+    interface SetScreenEvent {
+        InteractionResultHolder<Screen> modifyScreen(Screen screen);
+    }
+
     @Environment(EnvType.CLIENT)
     interface RenderHud {
         void renderHud(PoseStack matrices, float tickDelta);
     }
-    
+
     @Environment(EnvType.CLIENT)
     interface DebugText {
         void gatherText(List<String> strings);
     }
-    
+
     @Environment(EnvType.CLIENT)
     interface ScreenInitPre {
         InteractionResult init(Screen screen, List<AbstractWidget> widgets, List<GuiEventListener> children);
     }
-    
+
     @Environment(EnvType.CLIENT)
     interface ScreenInitPost {
         void init(Screen screen, List<AbstractWidget> widgets, List<GuiEventListener> children);
     }
-    
+
     @Environment(EnvType.CLIENT)
     interface ScreenRenderPre {
         InteractionResult render(Screen screen, PoseStack matrices, int mouseX, int mouseY, float delta);
     }
-    
+
     @Environment(EnvType.CLIENT)
     interface ScreenRenderPost {
         void render(Screen screen, PoseStack matrices, int mouseX, int mouseY, float delta);
