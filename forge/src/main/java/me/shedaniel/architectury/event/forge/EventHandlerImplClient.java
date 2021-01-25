@@ -27,6 +27,7 @@ import me.shedaniel.architectury.impl.TooltipEventColorContextImpl;
 import me.shedaniel.architectury.impl.TooltipEventPositionContextImpl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
@@ -121,6 +122,18 @@ public class EventHandlerImplClient {
         if (event.getWorld() instanceof ClientLevel) {
             ClientLevel world = (ClientLevel) event.getWorld();
             ClientLifecycleEvent.CLIENT_WORLD_LOAD.invoker().act(world);
+        }
+    }
+    
+    @SubscribeEvent
+    public static void event(GuiOpenEvent event) {
+        InteractionResultHolder<Screen> result = GuiEvent.SET_SCREEN.invoker().modifyScreen(event.getGui());
+        switch (result.getResult()) {
+            case FAIL:
+                event.setCanceled(true);
+                return;
+            case SUCCESS:
+                event.setGui(result.getObject());
         }
     }
     
@@ -300,7 +313,7 @@ public class EventHandlerImplClient {
         public static void event(net.minecraftforge.client.event.TextureStitchEvent.Post event) {
             TextureStitchEvent.POST.invoker().stitch(event.getMap());
         }
-    
+        
         @SubscribeEvent
         public static void event(FMLClientSetupEvent event) {
             ClientLifecycleEvent.CLIENT_SETUP.invoker().stateChanged(event.getMinecraftSupplier().get());

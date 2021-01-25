@@ -28,6 +28,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 
 import java.util.List;
 
@@ -49,6 +50,11 @@ public interface GuiEvent {
     Event<ScreenInitPost> INIT_POST = EventFactory.createLoop();
     Event<ScreenRenderPre> RENDER_PRE = EventFactory.createInteractionResult();
     Event<ScreenRenderPost> RENDER_POST = EventFactory.createInteractionResult();
+    
+    /**
+     * Invoked during Minecraft#setScreen, equivalent to forge's {@code GuiOpenEvent}.
+     */
+    Event<SetScreen> SET_SCREEN = EventFactory.createInteractionResultHolder();
     
     @Environment(EnvType.CLIENT)
     interface RenderHud {
@@ -78,5 +84,10 @@ public interface GuiEvent {
     @Environment(EnvType.CLIENT)
     interface ScreenRenderPost {
         void render(Screen screen, PoseStack matrices, int mouseX, int mouseY, float delta);
+    }
+    
+    @Environment(EnvType.CLIENT)
+    interface SetScreen {
+        InteractionResultHolder<Screen> modifyScreen(Screen screen);
     }
 }
