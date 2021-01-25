@@ -1,6 +1,6 @@
 package me.shedaniel.architectury.plugin.fabric;
 
-import me.shedaniel.architectury.platform.Platform;
+import net.fabricmc.loader.api.FabricLoader;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -24,7 +24,7 @@ public class ArchitecturyMixinPlugin implements IMixinConfigPlugin {
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         switch (mixinClassName) {
             case "me.shedaniel.architectury.mixin.fabric.client.MixinEffectInstance":
-                return !Platform.isModLoaded("satin");
+                return !FabricLoader.getInstance().isModLoaded("satin");
             default:
                 return true;
         }
