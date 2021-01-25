@@ -7,7 +7,7 @@
   "client": [
   ],
   "mixins": [
-    "BiomeGenerationSettingsBuilderAccessor", "MixinAbstractRecipeSerializer", "MixinBlockEntity", "MixinBlockEntityExtension",
+    "BiomeGenerationSettingsBuilderAccessor", "MixinRegistryEntry", "MixinBlockEntity", "MixinBlockEntityExtension",
     "MobSpawnSettingsBuilderAccessor"
   ],
   "injectors": {

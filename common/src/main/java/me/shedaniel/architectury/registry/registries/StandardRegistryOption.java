@@ -17,11 +17,15 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package me.shedaniel.architectury.mixin.forge;
+package me.shedaniel.architectury.registry.registries;
 
-import me.shedaniel.architectury.core.AbstractRecipeSerializer;
-import org.spongepowered.asm.mixin.Mixin;
-
-@Mixin(AbstractRecipeSerializer.class)
-public class MixinAbstractRecipeSerializer {
+public enum StandardRegistryOption implements RegistryOption {
+    /**
+     * Denote that the registry should save to disc and persist. Defaulted false.
+     */
+    SAVE_TO_DISC,
+    /**
+     * Denote that the registry should sync its contents to clients. Defaulted false.
+     */
+    SYNC_TO_CLIENTS,
 }
