@@ -140,7 +140,7 @@ public class RegistriesImpl {
         
         @Override
         public boolean contains(ResourceLocation id) {
-            return delegate.containsKey(id);
+            return delegate.keySet().contains(id);
         }
         
         @Override
