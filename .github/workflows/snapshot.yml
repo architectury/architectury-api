@@ -1,18 +1,18 @@
-name: Java CI
+name: Snapshot Compile & Release
 
 on:
-  push:
+  pull_request:
     paths:
       - '**.gradle'
       - '**.properties'
       - '**/src/**'
-    branches:
-      - "1.16"
-      - "1.17"
+    types: [ opened, synchronize, reopened ]
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v1
       - name: Set up JDK 1.8
@@ -20,10 +20,10 @@ jobs:
         with:
           java-version: 1.8
       - name: Upload to Bintray
-        run: ./gradlew bintrayUpload curseforgePublish --stacktrace
+        run: ./gradlew bintrayUpload --stacktrace
         if: |
           !contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.pull_request.title, '[ci skip]')
         env:
           BINTRAY_USER: shedaniel
           BINTRAY_KEY: ${{ secrets.BINTRAY_KEY }}
-          curse_api_key: ${{ secrets.CURSE_API_KEY }}
+          PR_NUM: ${{github.event.number}}
