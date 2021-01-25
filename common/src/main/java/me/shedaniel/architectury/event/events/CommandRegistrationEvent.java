@@ -29,7 +29,7 @@ public interface CommandRegistrationEvent {
     /**
      * Invoked after server registers its commands, equivalent to forge's {@code RegisterCommandsEvent} and fabric's {@code CommandRegistrationCallback}.
      */
-    Event<CommandRegistrationEvent> EVENT = EventFactory.createLoop(CommandRegistrationEvent.class);
+    Event<CommandRegistrationEvent> EVENT = EventFactory.createLoop();
     
     void register(CommandDispatcher<CommandSourceStack> dispatcher, Commands.CommandSelection selection);
 }

@@ -28,10 +28,10 @@ import net.minecraft.client.multiplayer.ClientLevel;
 
 @Environment(EnvType.CLIENT)
 public interface ClientTickEvent<T> {
-    Event<Client> CLIENT_PRE = EventFactory.createLoop(Client.class);
-    Event<Client> CLIENT_POST = EventFactory.createLoop(Client.class);
-    Event<ClientWorld> CLIENT_WORLD_PRE = EventFactory.createLoop(ClientWorld.class);
-    Event<ClientWorld> CLIENT_WORLD_POST = EventFactory.createLoop(ClientWorld.class);
+    Event<Client> CLIENT_PRE = EventFactory.createLoop();
+    Event<Client> CLIENT_POST = EventFactory.createLoop();
+    Event<ClientWorld> CLIENT_WORLD_PRE = EventFactory.createLoop();
+    Event<ClientWorld> CLIENT_WORLD_POST = EventFactory.createLoop();
     
     void tick(T instance);
     

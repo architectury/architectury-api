@@ -28,9 +28,9 @@ import org.jetbrains.annotations.Nullable;
 
 @Environment(EnvType.CLIENT)
 public interface ClientPlayerEvent {
-    Event<ClientPlayerJoin> CLIENT_PLAYER_JOIN = EventFactory.createLoop(ClientPlayerJoin.class);
-    Event<ClientPlayerQuit> CLIENT_PLAYER_QUIT = EventFactory.createLoop(ClientPlayerQuit.class);
-    Event<ClientPlayerRespawn> CLIENT_PLAYER_RESPAWN = EventFactory.createLoop(ClientPlayerRespawn.class);
+    Event<ClientPlayerJoin> CLIENT_PLAYER_JOIN = EventFactory.createLoop();
+    Event<ClientPlayerQuit> CLIENT_PLAYER_QUIT = EventFactory.createLoop();
+    Event<ClientPlayerRespawn> CLIENT_PLAYER_RESPAWN = EventFactory.createLoop();
     
     @Environment(EnvType.CLIENT)
     interface ClientPlayerJoin {
