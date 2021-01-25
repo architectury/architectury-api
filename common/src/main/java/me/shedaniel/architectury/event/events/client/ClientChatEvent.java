@@ -36,11 +36,11 @@ public interface ClientChatEvent {
     /**
      * Invoked when client tries to send a message, equivalent to forge's {@code ClientChatEvent}.
      */
-    Event<Client> CLIENT = EventFactory.createInteractionResultHolder(Client.class);
+    Event<Client> CLIENT = EventFactory.createInteractionResultHolder();
     /**
      * Invoked when client receives a message, equivalent to forge's {@code ClientChatReceivedEvent}.
      */
-    Event<ClientReceived> CLIENT_RECEIVED = EventFactory.createInteractionResultHolder(ClientReceived.class);
+    Event<ClientReceived> CLIENT_RECEIVED = EventFactory.createInteractionResultHolder();
     
     @Environment(EnvType.CLIENT)
     interface Client {

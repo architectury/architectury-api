@@ -26,12 +26,12 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 
 public interface TickEvent<T> {
-    Event<Server> SERVER_PRE = EventFactory.createLoop(Server.class);
-    Event<Server> SERVER_POST = EventFactory.createLoop(Server.class);
-    Event<ServerWorld> SERVER_WORLD_PRE = EventFactory.createLoop(ServerWorld.class);
-    Event<ServerWorld> SERVER_WORLD_POST = EventFactory.createLoop(ServerWorld.class);
-    Event<Player> PLAYER_PRE = EventFactory.createLoop(Player.class);
-    Event<Player> PLAYER_POST = EventFactory.createLoop(Player.class);
+    Event<Server> SERVER_PRE = EventFactory.createLoop();
+    Event<Server> SERVER_POST = EventFactory.createLoop();
+    Event<ServerWorld> SERVER_WORLD_PRE = EventFactory.createLoop();
+    Event<ServerWorld> SERVER_WORLD_POST = EventFactory.createLoop();
+    Event<Player> PLAYER_PRE = EventFactory.createLoop();
+    Event<Player> PLAYER_POST = EventFactory.createLoop();
     
     void tick(T instance);
     

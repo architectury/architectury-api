@@ -14,7 +14,8 @@
     "client.MixinMouseHandler",
     "client.MixinMultiPlayerGameMode",
     "client.MixinScreen",
-    "client.MixinTextureAtlas"
+    "client.MixinTextureAtlas",
+    "client.MixinEffectInstance"
   ],
   "mixins": [
     "ExplosionPreInvoker",

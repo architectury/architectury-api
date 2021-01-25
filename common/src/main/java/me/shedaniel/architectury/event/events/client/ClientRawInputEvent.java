@@ -31,19 +31,19 @@ public interface ClientRawInputEvent {
     /**
      * Invoked after the mouse has scrolled, but doesn't have a screen opened, and in a world, equivalent to forge's {@code InputEvent.MouseScrollEvent}.
      */
-    Event<MouseScrolled> MOUSE_SCROLLED = EventFactory.createInteractionResult(MouseScrolled.class);
+    Event<MouseScrolled> MOUSE_SCROLLED = EventFactory.createInteractionResult();
     /**
      * Invoked after the mouse has clicked, before the screen intercepts, equivalent to forge's {@code InputEvent.RawMouseEvent}.
      */
-    Event<MouseClicked> MOUSE_CLICKED_PRE = EventFactory.createInteractionResult(MouseClicked.class);
+    Event<MouseClicked> MOUSE_CLICKED_PRE = EventFactory.createInteractionResult();
     /**
      * Invoked after the mouse has clicked, after the screen intercepts, equivalent to forge's {@code InputEvent.MouseInputEvent}.
      */
-    Event<MouseClicked> MOUSE_CLICKED_POST = EventFactory.createInteractionResult(MouseClicked.class);
+    Event<MouseClicked> MOUSE_CLICKED_POST = EventFactory.createInteractionResult();
     /**
      * Invoked after a key was pressed, after the screen intercepts, equivalent to forge's {@code InputEvent.KeyInputEvent}.
      */
-    Event<KeyPressed> KEY_PRESSED = EventFactory.createInteractionResult(KeyPressed.class);
+    Event<KeyPressed> KEY_PRESSED = EventFactory.createInteractionResult();
     
     interface KeyPressed {
         InteractionResult keyPressed(Minecraft client, int keyCode, int scanCode, int action, int modifiers);
