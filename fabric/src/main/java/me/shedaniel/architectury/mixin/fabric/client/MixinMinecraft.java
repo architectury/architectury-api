@@ -43,6 +43,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.io.File;
 
+@Unique
 @Mixin(Minecraft.class)
 public abstract class MixinMinecraft {
     // @formatter:off
@@ -52,10 +53,10 @@ public abstract class MixinMinecraft {
 
     @Shadow public abstract void setScreen(@Nullable Screen screen);
 
-    private @Unique boolean setScreenCancelled;
+    private boolean setScreenCancelled;
 
-    private @Unique String hostname;
-    private @Unique int port;
+    private String hostname;
+    private int port;
     // @formatter:on
     
     @Inject(method = "clearLevel(Lnet/minecraft/client/gui/screens/Screen;)V",
