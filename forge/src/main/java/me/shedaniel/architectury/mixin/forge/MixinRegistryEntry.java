@@ -17,13 +17,11 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package me.shedaniel.architectury.core;
+package me.shedaniel.architectury.mixin.forge;
 
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
+import me.shedaniel.architectury.core.RegistryEntry;
+import org.spongepowered.asm.mixin.Mixin;
 
-/**
- * The equivalent of {@link RecipeSerializer} to use in common that has forge registry entries extended.
- */
-public abstract class AbstractRecipeSerializer<T extends Recipe<?>> extends RegistryEntry<T> implements RecipeSerializer<T> {
+@Mixin(RegistryEntry.class)
+public class MixinRegistryEntry<T> {
 }

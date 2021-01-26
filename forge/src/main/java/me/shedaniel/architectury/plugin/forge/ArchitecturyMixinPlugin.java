@@ -61,7 +61,7 @@ public class ArchitecturyMixinPlugin implements IMixinConfigPlugin {
     public void preApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
         // Inject our own sugar
         switch (mixinClassName) {
-            case "me.shedaniel.architectury.mixin.forge.MixinAbstractRecipeSerializer":
+            case "me.shedaniel.architectury.mixin.forge.MixinRegistryEntry":
                 targetClass.superName = "net/minecraftforge/registries/ForgeRegistryEntry";
                 for (MethodNode method : targetClass.methods) {
                     if (Objects.equals(method.name, "<init>")) {
@@ -77,9 +77,7 @@ public class ArchitecturyMixinPlugin implements IMixinConfigPlugin {
                     }
                 }
                 String recipeSerializer = targetClass.interfaces.get(0);
-                if (targetClass.signature != null) {
-                    targetClass.signature = targetClass.signature.replace("Ljava/lang/Object;", "Lnet/minecraftforge/registries/ForgeRegistryEntry<L" + recipeSerializer + "<*>;>");
-                }
+                targetClass.signature = "<T::Lnet/minecraftforge/registries/IForgeRegistryEntry<TT;>;>Lnet/minecraftforge/registries/ForgeRegistryEntry<TT;>;";
                 break;
         }
     }

@@ -17,13 +17,26 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package me.shedaniel.architectury.core;
+package me.shedaniel.architectury.registry.registries;
 
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
+import me.shedaniel.architectury.core.RegistryEntry;
+import me.shedaniel.architectury.registry.Registry;
+import org.jetbrains.annotations.NotNull;
 
-/**
- * The equivalent of {@link RecipeSerializer} to use in common that has forge registry entries extended.
- */
-public abstract class AbstractRecipeSerializer<T extends Recipe<?>> extends RegistryEntry<T> implements RecipeSerializer<T> {
+public interface RegistryBuilder<T extends RegistryEntry<T>> {
+    @NotNull
+    Registry<T> build();
+    
+    @NotNull
+    RegistryBuilder<T> option(@NotNull RegistryOption option);
+    
+    @NotNull
+    default RegistryBuilder<T> saveToDisc() {
+        return option(StandardRegistryOption.SAVE_TO_DISC);
+    }
+    
+    @NotNull
+    default RegistryBuilder<T> syncToClients() {
+        return option(StandardRegistryOption.SYNC_TO_CLIENTS);
+    }
 }

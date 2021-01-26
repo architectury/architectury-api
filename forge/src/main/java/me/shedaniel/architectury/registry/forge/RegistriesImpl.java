@@ -22,10 +22,14 @@ package me.shedaniel.architectury.registry.forge;
 import com.google.common.base.Objects;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import me.shedaniel.architectury.core.RegistryEntry;
 import me.shedaniel.architectury.platform.forge.EventBuses;
 import me.shedaniel.architectury.registry.Registries;
 import me.shedaniel.architectury.registry.Registry;
 import me.shedaniel.architectury.registry.RegistrySupplier;
+import me.shedaniel.architectury.registry.registries.RegistryBuilder;
+import me.shedaniel.architectury.registry.registries.RegistryOption;
+import me.shedaniel.architectury.registry.registries.StandardRegistryOption;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.LazyLoadedValue;
@@ -33,6 +37,7 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.RegistryManager;
@@ -76,12 +81,23 @@ public class RegistriesImpl {
         
         @Override
         public <T> Registry<T> get(ResourceKey<net.minecraft.core.Registry<T>> registryKey) {
-            return new ForgeBackedRegistryImpl<>(registry, (IForgeRegistry) RegistryManager.ACTIVE.getRegistry(registryKey.location()));
+            return get(RegistryManager.ACTIVE.getRegistry(registryKey.location()));
+        }
+        
+        public <T> Registry<T> get(IForgeRegistry registry) {
+            return new ForgeBackedRegistryImpl<>(this.registry, registry);
         }
         
         @Override
         public <T> Registry<T> get(net.minecraft.core.Registry<T> registry) {
             return new VanillaBackedRegistryImpl<>(registry);
+        }
+        
+        @Override
+        public <T extends RegistryEntry<T>> RegistryBuilder<T> builder(Class<T> type, ResourceLocation registryId) {
+            return new RegistryBuilderWrapper<>(this, new net.minecraftforge.registries.RegistryBuilder<>()
+                    .setName(registryId)
+                    .setType((Class) type));
         }
         
         public class EventListener {
@@ -98,6 +114,37 @@ public class RegistriesImpl {
                     }
                 }
             }
+        }
+    }
+    
+    public static class RegistryBuilderWrapper<T extends RegistryEntry<T>> implements RegistryBuilder<T> {
+        @NotNull
+        private final RegistryProviderImpl provider;
+        @NotNull
+        private final net.minecraftforge.registries.RegistryBuilder<?> builder;
+        private boolean saveToDisk = false;
+        private boolean syncToClients = false;
+        
+        public RegistryBuilderWrapper(@NotNull RegistryProviderImpl provider, @NotNull net.minecraftforge.registries.RegistryBuilder<?> builder) {
+            this.provider = provider;
+            this.builder = builder;
+        }
+        
+        @Override
+        public @NotNull Registry<T> build() {
+            if (!syncToClients) builder.disableSync();
+            if (!saveToDisk) builder.disableSaving();
+            return provider.get(builder.create());
+        }
+        
+        @Override
+        public @NotNull RegistryBuilder<T> option(@NotNull RegistryOption option) {
+            if (option == StandardRegistryOption.SAVE_TO_DISC) {
+                this.saveToDisk = true;
+            } else if (option == StandardRegistryOption.SYNC_TO_CLIENTS) {
+                this.syncToClients = true;
+            }
+            return this;
         }
     }
     
@@ -165,6 +212,11 @@ public class RegistriesImpl {
         }
         
         @Override
+        public int getRawId(T obj) {
+            return delegate.getId(obj);
+        }
+        
+        @Override
         public Optional<ResourceKey<T>> getKey(T t) {
             return delegate.getResourceKey(t);
         }
@@ -173,6 +225,11 @@ public class RegistriesImpl {
         @Nullable
         public T get(ResourceLocation id) {
             return delegate.get(id);
+        }
+        
+        @Override
+        public T byRawId(int rawId) {
+            return delegate.byId(rawId);
         }
         
         @Override
@@ -311,6 +368,11 @@ public class RegistriesImpl {
         }
         
         @Override
+        public int getRawId(T obj) {
+            return ((ForgeRegistry<T>) delegate).getID(obj);
+        }
+        
+        @Override
         public Optional<ResourceKey<T>> getKey(T t) {
             return Optional.ofNullable(getId(t)).map(id -> ResourceKey.create(key(), id));
         }
@@ -319,6 +381,11 @@ public class RegistriesImpl {
         @Nullable
         public T get(ResourceLocation id) {
             return delegate.getValue(id);
+        }
+        
+        @Override
+        public T byRawId(int rawId) {
+            return ((ForgeRegistry<T>) delegate).getValue(rawId);
         }
         
         @Override
