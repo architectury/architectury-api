@@ -31,21 +31,47 @@ import java.util.function.BiConsumer;
 public final class GameRuleFactory {
     private GameRuleFactory() {}
 
+    /**
+     * Creates a boolean rule type.
+     *
+     * @param defaultValue the rule's default value
+     * @return the created type
+     */
     @ExpectPlatform
     public static GameRules.Type<GameRules.BooleanValue> createBooleanRule(boolean defaultValue) {
         throw new AssertionError();
     }
 
+    /**
+     * Creates a boolean rule type.
+     *
+     * @param defaultValue    the rule's default value
+     * @param changedCallback a callback that is called when the rule's value is changed
+     * @return the created type
+     */
     @ExpectPlatform
     public static GameRules.Type<GameRules.BooleanValue> createBooleanRule(boolean defaultValue, BiConsumer<MinecraftServer, GameRules.BooleanValue> changedCallback) {
         throw new AssertionError();
     }
 
+    /**
+     * Creates an integer rule type.
+     *
+     * @param defaultValue the rule's default value
+     * @return the created type
+     */
     @ExpectPlatform
     public static GameRules.Type<GameRules.IntegerValue> createIntRule(int defaultValue) {
         throw new AssertionError();
     }
 
+    /**
+     * Creates an integer rule type.
+     *
+     * @param defaultValue    the rule's default value
+     * @param changedCallback a callback that is called when the rule's value is changed
+     * @return the created type
+     */
     @ExpectPlatform
     public static GameRules.Type<GameRules.IntegerValue> createIntRule(int defaultValue, BiConsumer<MinecraftServer, GameRules.IntegerValue> changedCallback) {
         throw new AssertionError();
