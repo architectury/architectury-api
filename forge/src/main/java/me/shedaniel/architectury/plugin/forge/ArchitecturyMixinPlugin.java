@@ -76,7 +76,6 @@ public class ArchitecturyMixinPlugin implements IMixinConfigPlugin {
                         }
                     }
                 }
-                String recipeSerializer = targetClass.interfaces.get(0);
                 targetClass.signature = "<T::Lnet/minecraftforge/registries/IForgeRegistryEntry<TT;>;>Lnet/minecraftforge/registries/ForgeRegistryEntry<TT;>;";
                 break;
         }
