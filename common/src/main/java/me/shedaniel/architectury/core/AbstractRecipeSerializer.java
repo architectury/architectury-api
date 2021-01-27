@@ -25,5 +25,5 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 /**
  * The equivalent of {@link RecipeSerializer} to use in common that has forge registry entries extended.
  */
-public abstract class AbstractRecipeSerializer<T extends Recipe<?>> extends RegistryEntry<T> implements RecipeSerializer<T> {
+public abstract class AbstractRecipeSerializer<T extends Recipe<?>> extends RegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<T> {
 }
