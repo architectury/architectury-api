@@ -271,6 +271,6 @@ public class DebugEvents {
     }
     
     private static String toSimpleName(Object o) {
-        return o.getClass().getSimpleName() + "@" + Integer.toHexString(o.hashCode());
+        return o == null ? "null" : o.getClass().getSimpleName() + "@" + Integer.toHexString(o.hashCode());
     }
 }
