@@ -20,13 +20,14 @@
 package me.shedaniel.architectury.registry.forge;
 
 import com.google.common.collect.Lists;
+import me.shedaniel.architectury.forge.ArchitecturyForge;
+import me.shedaniel.architectury.platform.forge.EventBuses;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.event.ColorHandlerEvent;
-import net.minecraftforge.common.MinecraftForge;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
@@ -37,15 +38,17 @@ public class ColorHandlersImpl {
     private static final List<Pair<BlockColor, Supplier<Block>[]>> BLOCK_COLORS = Lists.newArrayList();
     
     static {
-        MinecraftForge.EVENT_BUS.<ColorHandlerEvent.Item>addListener(event -> {
-            for (Pair<ItemColor, Supplier<ItemLike>[]> pair : ITEM_COLORS) {
-                event.getItemColors().register(pair.getLeft(), unpackItems(pair.getRight()));
-            }
-        });
-        MinecraftForge.EVENT_BUS.<ColorHandlerEvent.Block>addListener(event -> {
-            for (Pair<BlockColor, Supplier<Block>[]> pair : BLOCK_COLORS) {
-                event.getBlockColors().register(pair.getLeft(), unpackBlocks(pair.getRight()));
-            }
+        EventBuses.onRegistered(ArchitecturyForge.MOD_ID, bus -> {
+            bus.<ColorHandlerEvent.Item>addListener(event -> {
+                for (Pair<ItemColor, Supplier<ItemLike>[]> pair : ITEM_COLORS) {
+                    event.getItemColors().register(pair.getLeft(), unpackItems(pair.getRight()));
+                }
+            });
+            bus.<ColorHandlerEvent.Block>addListener(event -> {
+                for (Pair<BlockColor, Supplier<Block>[]> pair : BLOCK_COLORS) {
+                    event.getBlockColors().register(pair.getLeft(), unpackBlocks(pair.getRight()));
+                }
+            });
         });
     }
     
