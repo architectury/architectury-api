@@ -21,11 +21,8 @@ package me.shedaniel.architectury.hooks;
 
 import me.shedaniel.architectury.annotations.ExpectPlatform;
 import me.shedaniel.architectury.utils.IntValue;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.item.ItemEntity;
 
-@Environment(EnvType.CLIENT)
 public final class ItemEntityHooks {
     private ItemEntityHooks() {}
     

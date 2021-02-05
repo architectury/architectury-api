@@ -20,11 +20,8 @@
 package me.shedaniel.architectury.hooks;
 
 import me.shedaniel.architectury.annotations.ExpectPlatform;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.player.Player;
 
-@Environment(EnvType.CLIENT)
 public final class PlayerHooks {
     private PlayerHooks() {}
     

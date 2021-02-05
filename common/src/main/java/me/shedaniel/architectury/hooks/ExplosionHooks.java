@@ -20,14 +20,11 @@
 package me.shedaniel.architectury.hooks;
 
 import me.shedaniel.architectury.annotations.ExpectPlatform;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-@Environment(EnvType.CLIENT)
 public final class ExplosionHooks {
     private ExplosionHooks() {}
     
