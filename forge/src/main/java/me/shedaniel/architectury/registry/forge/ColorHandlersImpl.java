@@ -31,6 +31,7 @@ import net.minecraftforge.client.event.ColorHandlerEvent;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public class ColorHandlersImpl {
@@ -54,6 +55,7 @@ public class ColorHandlersImpl {
     
     @SafeVarargs
     public static void registerItemColors(ItemColor itemColor, Supplier<ItemLike>... items) {
+        Objects.requireNonNull(itemColor, "color is null!");
         if (Minecraft.getInstance().getItemColors() == null) {
             ITEM_COLORS.add(Pair.of(itemColor, items));
         } else {
@@ -63,6 +65,7 @@ public class ColorHandlersImpl {
     
     @SafeVarargs
     public static void registerBlockColors(BlockColor blockColor, Supplier<Block>... blocks) {
+        Objects.requireNonNull(blockColor, "color is null!");
         if (Minecraft.getInstance().getBlockColors() == null) {
             BLOCK_COLORS.add(Pair.of(blockColor, blocks));
         } else {
@@ -73,7 +76,7 @@ public class ColorHandlersImpl {
     private static ItemLike[] unpackItems(Supplier<ItemLike>[] items) {
         ItemLike[] array = new ItemLike[items.length];
         for (int i = 0; i < items.length; i++) {
-            array[i] = items[i].get();
+            array[i] = Objects.requireNonNull(items[i].get());
         }
         return array;
     }
@@ -81,7 +84,7 @@ public class ColorHandlersImpl {
     private static Block[] unpackBlocks(Supplier<Block>[] blocks) {
         Block[] array = new Block[blocks.length];
         for (int i = 0; i < blocks.length; i++) {
-            array[i] = blocks[i].get();
+            array[i] = Objects.requireNonNull(blocks[i].get());
         }
         return array;
     }
