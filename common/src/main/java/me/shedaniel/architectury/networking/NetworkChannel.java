@@ -58,10 +58,12 @@ public final class NetworkChannel {
         return new NetworkChannel(id);
     }
     
+    @Deprecated
     public <T> void register(NetworkManager.Side side, Class<T> type, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<PacketContext>> messageConsumer) {
-        register(Optional.ofNullable(side), type, encoder, decoder, messageConsumer);
+        register(Optional.empty(), type, encoder, decoder, messageConsumer);
     }
     
+    @Deprecated
     public <T> void register(Optional<NetworkManager.Side> side, Class<T> type, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<PacketContext>> messageConsumer) {
         for (int i = 0; true; i++) {
             if (!takenIds.contains(i)) {
@@ -71,27 +73,40 @@ public final class NetworkChannel {
         }
     }
     
+    public <T> void register(Class<T> type, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<PacketContext>> messageConsumer) {
+        for (int i = 0; true; i++) {
+            if (!takenIds.contains(i)) {
+                register(i, type, encoder, decoder, messageConsumer);
+                break;
+            }
+        }
+    }
+    
+    public <T> void register(int id, Class<T> type, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<PacketContext>> messageConsumer) {
+        register(Optional.empty(), id, type, encoder, decoder, messageConsumer);
+    }
+    
+    @Deprecated
     public <T> void register(NetworkManager.Side side, int id, Class<T> type, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<PacketContext>> messageConsumer) {
         register(Optional.ofNullable(side), id, type, encoder, decoder, messageConsumer);
     }
     
+    @Deprecated
     public <T> void register(Optional<NetworkManager.Side> side, int id, Class<T> type, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<PacketContext>> messageConsumer) {
         takenIds.add(id);
         ResourceLocation messageId = new ResourceLocation(this.id.getNamespace(), this.id.getPath() + "_" + id);
-        if (!side.isPresent() || side.get() == NetworkManager.s2c()) {
-            if (Platform.getEnvironment() == Env.CLIENT) {
-                NetworkManager.registerReceiver(NetworkManager.s2c(), messageId, (buf, context) -> {
-                    messageConsumer.accept(decoder.apply(buf), () -> context);
-                });
-            }
-            encoders.put(NetworkManager.s2c(), type, Pair.of(messageId, encoder));
-        }
-        if (!side.isPresent() || side.get() == NetworkManager.c2s()) {
-            NetworkManager.registerReceiver(NetworkManager.c2s(), messageId, (buf, context) -> {
+        
+        if (Platform.getEnvironment() == Env.CLIENT) {
+            NetworkManager.registerReceiver(NetworkManager.s2c(), messageId, (buf, context) -> {
                 messageConsumer.accept(decoder.apply(buf), () -> context);
             });
-            encoders.put(NetworkManager.c2s(), type, Pair.of(messageId, encoder));
         }
+        encoders.put(NetworkManager.s2c(), type, Pair.of(messageId, encoder));
+        
+        NetworkManager.registerReceiver(NetworkManager.c2s(), messageId, (buf, context) -> {
+            messageConsumer.accept(decoder.apply(buf), () -> context);
+        });
+        encoders.put(NetworkManager.c2s(), type, Pair.of(messageId, encoder));
     }
     
     private <T> Pair<ResourceLocation, FriendlyByteBuf> encode(NetworkManager.Side side, T message) {

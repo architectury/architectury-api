@@ -19,11 +19,10 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-      - name: Upload to Bintray
-        run: ./gradlew bintrayUpload --stacktrace
+      - name: Upload to Maven
+        run: ./gradlew publish --stacktrace
         if: |
           !contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.pull_request.title, '[ci skip]')
         env:
-          BINTRAY_USER: shedaniel
-          BINTRAY_KEY: ${{ secrets.BINTRAY_KEY }}
+          MAVEN_PASS: ${{ secrets.MAVEN_PASS }}
           PR_NUM: ${{github.event.number}}
