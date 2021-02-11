@@ -35,7 +35,7 @@ public final class ItemStackHooks {
     }
     
     public static void giveItem(ServerPlayer player, ItemStack stack) {
-        boolean bl = player.inventory.add(stack);
+        boolean bl = player.getInventory().add(stack);
         if (bl && stack.isEmpty()) {
             stack.setCount(1);
             ItemEntity entity = player.drop(stack, false);

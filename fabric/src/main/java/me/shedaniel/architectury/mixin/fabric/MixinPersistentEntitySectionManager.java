@@ -26,7 +26,7 @@ public class MixinPersistentEntitySectionManager<T extends EntityAccess> impleme
     }
     
     @Inject(method = "addEntity", at = @At(value = "INVOKE",
-                                           target = "Lnet/minecraft/world/level/entity/EntitySectionStorage;entityPosToSectionKey(Lnet/minecraft/core/BlockPos;)J"),
+                                           target = "Lnet/minecraft/core/SectionPos;asLong(Lnet/minecraft/core/BlockPos;)J"),
             cancellable = true)
     private void addEntity(T entityAccess, boolean bl, CallbackInfoReturnable<Boolean> cir) {
         // TODO: Check if other classes implements EntityAccess as well
