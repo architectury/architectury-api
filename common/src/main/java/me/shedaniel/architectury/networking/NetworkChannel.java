@@ -34,9 +34,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -69,16 +71,16 @@ public final class NetworkChannel {
     }
     
     public <T> void register(Class<T> type, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<PacketContext>> messageConsumer) {
-        String s = StringUtils.leftPad(String.valueOf(hashCodeString(type.toString())), 10, '0');
-        if (s.length() > 10) s = s.substring(0, 10);
-        MessageInfo<T> info = new MessageInfo<>(new ResourceLocation(id + "_" + s), encoder, decoder, messageConsumer);
+        // TODO: this is pretty wasteful; add a way to specify custom or numeric ids
+        String s = UUID.nameUUIDFromBytes(type.getName().getBytes(StandardCharsets.UTF_8)).toString().replace("-", "");
+        MessageInfo<T> info = new MessageInfo<>(new ResourceLocation(id + "/" + s), encoder, decoder, messageConsumer);
         encoders.put(type, info);
         NetworkManager.NetworkReceiver receiver = (buf, context) -> {
             info.messageConsumer.accept(info.decoder.apply(buf), () -> context);
         };
-        NetworkManager.registerReceiver(NetworkManager.clientToServer(), info.packetId, receiver);
+        NetworkManager.registerReceiver(NetworkManager.c2s(), info.packetId, receiver);
         if (Platform.getEnvironment() == Env.CLIENT) {
-            NetworkManager.registerReceiver(NetworkManager.serverToClient(), info.packetId, receiver);
+            NetworkManager.registerReceiver(NetworkManager.s2c(), info.packetId, receiver);
         }
     }
     
