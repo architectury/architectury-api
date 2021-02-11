@@ -32,7 +32,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Map;
 import java.util.Objects;
@@ -57,11 +57,13 @@ public final class NetworkChannel {
     }
     
     @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "1.6")
     public <T> void register(NetworkManager.Side side, Class<T> type, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<PacketContext>> messageConsumer) {
         register(type, encoder, decoder, messageConsumer);
     }
     
     @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "1.6")
     public <T> void register(Optional<NetworkManager.Side> side, Class<T> type, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<PacketContext>> messageConsumer) {
         register(type, encoder, decoder, messageConsumer);
     }
@@ -90,16 +92,19 @@ public final class NetworkChannel {
     }
     
     @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "1.6")
     public <T> void register(int id, Class<T> type, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<PacketContext>> messageConsumer) {
         register(type, encoder, decoder, messageConsumer);
     }
     
     @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "1.6")
     public <T> void register(NetworkManager.Side side, int id, Class<T> type, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<PacketContext>> messageConsumer) {
         register(type, encoder, decoder, messageConsumer);
     }
     
     @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "1.6")
     public <T> void register(Optional<NetworkManager.Side> side, int id, Class<T> type, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<PacketContext>> messageConsumer) {
         register(type, encoder, decoder, messageConsumer);
     }
