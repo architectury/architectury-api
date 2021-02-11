@@ -1,14 +1,13 @@
 loom {
     accessWidener = file("src/main/resources/architectury.accessWidener")
-    silentMojangMappingsLicense()
 }
 
 dependencies {
-    minecraft "com.mojang:minecraft:${rootProject.architect.minecraft}"
+    minecraft "com.mojang:minecraft:${rootProject.architectury.minecraft}"
     mappings minecraft.officialMojangMappings()
     // We depend on fabric loader here to use the fabric @Environment annotations
     // Do NOT use other classes from fabric loader
-    modCompile "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     implementation "net.jodah:typetools:0.6.2"
 }
 
@@ -41,6 +40,18 @@ publishing {
                 builtBy remapSourcesJar
             }
             artifact javadocsJar
+        }
+    }
+
+    repositories {
+        if (System.getenv("MAVEN_PASS") != null) {
+            maven {
+                url = "https://deploy.shedaniel.me/"
+                credentials {
+                    username = "shedaniel"
+                    password = System.getenv("MAVEN_PASS")
+                }
+            }
         }
     }
 }

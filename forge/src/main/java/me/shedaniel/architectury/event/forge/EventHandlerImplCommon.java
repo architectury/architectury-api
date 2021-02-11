@@ -322,6 +322,13 @@ public class EventHandlerImplCommon {
         LifecycleEvent.SERVER_BEFORE_START.invoker().stateChanged(event.getServer());
     }
     
+    @SubscribeEvent
+    public static void event(PlayerChangedDimensionEvent event) {
+        if (event.getPlayer() instanceof ServerPlayer) {
+            PlayerEvent.CHANGE_DIMENSION.invoker().change((ServerPlayer) event.getPlayer(), event.getFrom(), event.getTo());
+        }
+    }
+    
     public static class ModBasedEventHandler {
         
     }

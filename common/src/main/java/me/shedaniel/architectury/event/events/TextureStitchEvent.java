@@ -30,8 +30,8 @@ import java.util.function.Consumer;
 
 @Environment(EnvType.CLIENT)
 public interface TextureStitchEvent {
-    Event<Pre> PRE = EventFactory.createLoop(Pre.class);
-    Event<Post> POST = EventFactory.createLoop(Post.class);
+    Event<Pre> PRE = EventFactory.createLoop();
+    Event<Post> POST = EventFactory.createLoop();
     
     @Environment(EnvType.CLIENT)
     interface Pre {

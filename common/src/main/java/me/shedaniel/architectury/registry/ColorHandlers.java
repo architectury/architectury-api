@@ -27,17 +27,40 @@ import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 
+import java.util.Objects;
+import java.util.function.Supplier;
+
 @Environment(EnvType.CLIENT)
 public final class ColorHandlers {
     private ColorHandlers() {}
     
-    @ExpectPlatform
     public static void registerItemColors(ItemColor color, ItemLike... items) {
+        Supplier<ItemLike>[] array = new Supplier[items.length];
+        for (int i = 0; i < items.length; i++) {
+            ItemLike item = Objects.requireNonNull(items[i], "items[i] is null!");
+            array[i] = () -> item;
+        }
+        registerItemColors(color, array);
+    }
+    
+    public static void registerBlockColors(BlockColor color, Block... blocks) {
+        Supplier<Block>[] array = new Supplier[blocks.length];
+        for (int i = 0; i < blocks.length; i++) {
+            Block block = Objects.requireNonNull(blocks[i], "blocks[i] is null!");
+            array[i] = () -> block;
+        }
+        registerBlockColors(color, array);
+    }
+    
+    @SafeVarargs
+    @ExpectPlatform
+    public static void registerItemColors(ItemColor color, Supplier<ItemLike>... items) {
         throw new AssertionError();
     }
     
+    @SafeVarargs
     @ExpectPlatform
-    public static void registerBlockColors(BlockColor color, Block... blocks) {
+    public static void registerBlockColors(BlockColor color, Supplier<Block>... blocks) {
         throw new AssertionError();
     }
 }

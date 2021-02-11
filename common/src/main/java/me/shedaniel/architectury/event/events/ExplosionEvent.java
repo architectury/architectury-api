@@ -29,8 +29,8 @@ import net.minecraft.world.level.Level;
 import java.util.List;
 
 public interface ExplosionEvent {
-    Event<Pre> PRE = EventFactory.createInteractionResult(Pre.class);
-    Event<Detonate> DETONATE = EventFactory.createInteractionResult(Detonate.class);
+    Event<Pre> PRE = EventFactory.createInteractionResult();
+    Event<Detonate> DETONATE = EventFactory.createInteractionResult();
     
     interface Pre {
         InteractionResult explode(Level world, Explosion explosion);

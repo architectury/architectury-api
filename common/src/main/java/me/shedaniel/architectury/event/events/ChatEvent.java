@@ -30,7 +30,7 @@ public interface ChatEvent {
     /**
      * Invoked when server receives a message, equivalent to forge's {@code ServerChatEvent}.
      */
-    Event<Server> SERVER = EventFactory.createInteractionResultHolder(Server.class);
+    Event<Server> SERVER = EventFactory.createInteractionResultHolder();
     
     interface Server {
         @NotNull

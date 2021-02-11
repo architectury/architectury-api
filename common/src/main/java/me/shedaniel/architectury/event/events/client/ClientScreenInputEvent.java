@@ -29,20 +29,20 @@ import net.minecraft.world.InteractionResult;
 
 @Environment(EnvType.CLIENT)
 public interface ClientScreenInputEvent {
-    Event<MouseScrolled> MOUSE_SCROLLED_PRE = EventFactory.createInteractionResult(MouseScrolled.class);
-    Event<MouseScrolled> MOUSE_SCROLLED_POST = EventFactory.createInteractionResult(MouseScrolled.class);
-    Event<MouseClicked> MOUSE_CLICKED_PRE = EventFactory.createInteractionResult(MouseClicked.class);
-    Event<MouseClicked> MOUSE_CLICKED_POST = EventFactory.createInteractionResult(MouseClicked.class);
-    Event<MouseReleased> MOUSE_RELEASED_PRE = EventFactory.createInteractionResult(MouseReleased.class);
-    Event<MouseReleased> MOUSE_RELEASED_POST = EventFactory.createInteractionResult(MouseReleased.class);
-    Event<MouseDragged> MOUSE_DRAGGED_PRE = EventFactory.createInteractionResult(MouseDragged.class);
-    Event<MouseDragged> MOUSE_DRAGGED_POST = EventFactory.createInteractionResult(MouseDragged.class);
-    Event<KeyTyped> CHAR_TYPED_PRE = EventFactory.createInteractionResult(KeyTyped.class);
-    Event<KeyTyped> CHAR_TYPED_POST = EventFactory.createInteractionResult(KeyTyped.class);
-    Event<KeyPressed> KEY_PRESSED_PRE = EventFactory.createInteractionResult(KeyPressed.class);
-    Event<KeyPressed> KEY_PRESSED_POST = EventFactory.createInteractionResult(KeyPressed.class);
-    Event<KeyReleased> KEY_RELEASED_PRE = EventFactory.createInteractionResult(KeyReleased.class);
-    Event<KeyReleased> KEY_RELEASED_POST = EventFactory.createInteractionResult(KeyReleased.class);
+    Event<MouseScrolled> MOUSE_SCROLLED_PRE = EventFactory.createInteractionResult();
+    Event<MouseScrolled> MOUSE_SCROLLED_POST = EventFactory.createInteractionResult();
+    Event<MouseClicked> MOUSE_CLICKED_PRE = EventFactory.createInteractionResult();
+    Event<MouseClicked> MOUSE_CLICKED_POST = EventFactory.createInteractionResult();
+    Event<MouseReleased> MOUSE_RELEASED_PRE = EventFactory.createInteractionResult();
+    Event<MouseReleased> MOUSE_RELEASED_POST = EventFactory.createInteractionResult();
+    Event<MouseDragged> MOUSE_DRAGGED_PRE = EventFactory.createInteractionResult();
+    Event<MouseDragged> MOUSE_DRAGGED_POST = EventFactory.createInteractionResult();
+    Event<KeyTyped> CHAR_TYPED_PRE = EventFactory.createInteractionResult();
+    Event<KeyTyped> CHAR_TYPED_POST = EventFactory.createInteractionResult();
+    Event<KeyPressed> KEY_PRESSED_PRE = EventFactory.createInteractionResult();
+    Event<KeyPressed> KEY_PRESSED_POST = EventFactory.createInteractionResult();
+    Event<KeyReleased> KEY_RELEASED_PRE = EventFactory.createInteractionResult();
+    Event<KeyReleased> KEY_RELEASED_POST = EventFactory.createInteractionResult();
     
     interface KeyPressed {
         InteractionResult keyPressed(Minecraft client, Screen screen, int keyCode, int scanCode, int modifiers);

@@ -1,8 +1,8 @@
 import com.github.jengelman.gradle.plugins.shadow.transformers.Transformer
 import com.github.jengelman.gradle.plugins.shadow.transformers.TransformerContext
 import shadow.org.apache.tools.zip.ZipEntry
-import shadow.org.codehaus.plexus.util.IOUtil
 import shadow.org.apache.tools.zip.ZipOutputStream
+import shadow.org.codehaus.plexus.util.IOUtil
 
 plugins {
     id "com.github.johnrengelman.shadow" version "5.0.0"
@@ -10,12 +10,16 @@ plugins {
 }
 
 loom {
-    accessWidener(file("src/main/resources/architectury.accessWidener"))
-    silentMojangMappingsLicense()
+    accessWidener = file("src/main/resources/architectury.accessWidener")
 }
 
 configurations {
     shadow
+    dev
+}
+
+artifacts {
+    dev(jar)
 }
 
 architectury {
@@ -23,25 +27,23 @@ architectury {
 }
 
 dependencies {
-    minecraft("com.mojang:minecraft:${rootProject.architect.minecraft}")
-    mappings(minecraft.officialMojangMappings())
-    modCompile("net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}")
-    modCompile("net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}")
-    modCompileOnly("io.github.prospector:modmenu:${rootProject.mod_menu_version}")
+    minecraft "com.mojang:minecraft:${rootProject.architectury.minecraft}"
+    mappings minecraft.officialMojangMappings()
+    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
+    modCompileOnly "io.github.prospector:modmenu:${rootProject.mod_menu_version}"
     implementation "net.jodah:typetools:0.6.2"
     shadow "net.jodah:typetools:0.6.2"
 
     compileOnly(project(path: ":common")) {
         transitive = false
     }
-    runtimeOnly(project(path: ":common", configuration: "transformed")) {
+    runtimeOnly(project(path: ":common", configuration: "transformDevelopmentFabric")) {
         transitive = false
     }
-    shadow(project(path: ":common", configuration: "transformed")) {
+    shadow(project(path: ":common", configuration: "transformProductionFabric")) {
         transitive = false
     }
-
-    testCompile project(":common").sourceSets.test.output
 }
 
 processResources {
@@ -53,9 +55,6 @@ processResources {
 
 shadowJar {
     relocate "net.jodah.typetools", "me.shedaniel.architectury.shadowed.impl.net.jodah.typetools"
-    transform(MergeAccessWidenersTransformer.class) {
-        it.resource = "architectury.accessWidener"
-    }
     configurations = [project.configurations.shadow]
     classifier "shadow"
 }
@@ -75,6 +74,18 @@ publishing {
             }
         }
     }
+
+    repositories {
+        if (System.getenv("MAVEN_PASS") != null) {
+            maven {
+                url = "https://deploy.shedaniel.me/"
+                credentials {
+                    username = "shedaniel"
+                    password = System.getenv("MAVEN_PASS")
+                }
+            }
+        }
+    }
 }
 
 curseforge {
@@ -87,6 +98,7 @@ curseforge {
             changelog = releaseChangelog()
             addGameVersion "1.16-Snapshot"
             addGameVersion "1.16.4"
+            addGameVersion "1.16.5"
             addGameVersion "Java 8"
             addGameVersion "Fabric"
             relations {
@@ -107,53 +119,3 @@ curseforge {
 }
 
 rootProject.tasks.getByName("curseforgePublish").dependsOn tasks.getByName("curseforge")
-
-class MergeAccessWidenersTransformer implements Transformer {
-    String resource
-    ByteArrayOutputStream data
-
-    MergeAccessWidenersTransformer() {
-        data = new ByteArrayOutputStream()
-        data.write("accessWidener v1 named\n".bytes)
-    }
-
-    @Override
-    boolean canTransformResource(FileTreeElement element) {
-        def path = element.relativePath.pathString
-        if (resource != null && resource.equalsIgnoreCase(path)) {
-            return true
-        }
-
-        return false
-    }
-
-    @Override
-    void transform(TransformerContext context) {
-        def lines = context.is.readLines()
-        lines.removeIf { it == "accessWidener v1 named" }
-        IOUtil.copy(lines.join("\n"), data)
-        data.write('\n'.bytes)
-
-        context.is.close()
-    }
-
-    @Override
-    boolean hasTransformedResource() {
-        return data.size() > 0
-    }
-
-    void modifyOutputStream(org.apache.tools.zip.ZipOutputStream jos, boolean preserveFileTimestamps) {
-        throw new AbstractMethodError()
-    }
-
-    @Override
-    void modifyOutputStream(ZipOutputStream os, boolean preserveFileTimestamps) {
-        ZipEntry entry = new ZipEntry(resource)
-        entry.time = TransformerContext.getEntryTimestamp(preserveFileTimestamps, entry.time)
-        os.putNextEntry(entry)
-
-        IOUtil.copy(new ByteArrayInputStream(data.toByteArray()), os)
-        data.reset()
-        data.write('accessWidener v1 named\n'.bytes)
-    }
-}

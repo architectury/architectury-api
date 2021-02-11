@@ -34,16 +34,16 @@ public interface EntityEvent {
     /**
      * Invoked before LivingEntity#die, equivalent to forge's {@code LivingDeathEvent}.
      */
-    Event<LivingDeath> LIVING_DEATH = EventFactory.createInteractionResult(LivingDeath.class);
+    Event<LivingDeath> LIVING_DEATH = EventFactory.createInteractionResult();
     /**
      * Invoked before LivingEntity#hurt, equivalent to forge's {@code LivingAttackEvent}.
      */
-    Event<LivingAttack> LIVING_ATTACK = EventFactory.createInteractionResult(LivingAttack.class);
+    Event<LivingAttack> LIVING_ATTACK = EventFactory.createInteractionResult();
     /**
      * Invoked before entity is added to a world, equivalent to forge's {@code EntityJoinWorldEvent}.
      */
-    Event<Add> ADD = EventFactory.createInteractionResult(Add.class);
-    Event<PlaceBlock> PLACE_BLOCK = EventFactory.createInteractionResult(PlaceBlock.class);
+    Event<Add> ADD = EventFactory.createInteractionResult();
+    Event<PlaceBlock> PLACE_BLOCK = EventFactory.createInteractionResult();
     
     interface LivingDeath {
         InteractionResult die(LivingEntity entity, DamageSource source);

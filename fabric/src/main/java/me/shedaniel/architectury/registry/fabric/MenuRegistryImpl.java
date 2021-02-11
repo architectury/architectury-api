@@ -40,7 +40,7 @@ import net.minecraft.world.inventory.MenuType;
 import org.jetbrains.annotations.Nullable;
 
 public class MenuRegistryImpl {
-    public static void openMenu(ServerPlayer player, ExtendedMenuProvider provider) {
+    public static void openExtendedMenu(ServerPlayer player, ExtendedMenuProvider provider) {
         player.openMenu(new ExtendedScreenHandlerFactory() {
             @Override
             public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {

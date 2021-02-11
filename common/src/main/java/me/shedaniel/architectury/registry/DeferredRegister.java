@@ -70,7 +70,7 @@ public class DeferredRegister<T> {
         return create(registries::get, key);
     }
     
-    public RegistrySupplier<T> register(String id, Supplier<T> supplier) {
+    public <R extends T> RegistrySupplier<R> register(String id, Supplier<? extends R> supplier) {
         if (modId == null) {
             throw new NullPointerException("You must create the deferred register with a mod id to register entries without the namespace!");
         }
@@ -78,14 +78,14 @@ public class DeferredRegister<T> {
         return register(new ResourceLocation(modId, id), supplier);
     }
     
-    public RegistrySupplier<T> register(ResourceLocation id, Supplier<T> supplier) {
-        Entry<T> entry = new Entry<>(id, supplier);
+    public <R extends T> RegistrySupplier<R> register(ResourceLocation id, Supplier<? extends R> supplier) {
+        Entry<T> entry = new Entry<>(id, (Supplier<T>) supplier);
         this.entries.add(entry);
         if (registered) {
             Registry<T> registry = registriesSupplier.get().get(key);
             entry.value = registry.registerSupplied(entry.id, entry.supplier);
         }
-        return entry;
+        return (RegistrySupplier<R>) entry;
     }
     
     public void register() {

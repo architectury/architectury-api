@@ -20,9 +20,16 @@
 package me.shedaniel.architectury.registry.fabric;
 
 import com.google.common.base.Objects;
+import me.shedaniel.architectury.core.RegistryEntry;
 import me.shedaniel.architectury.registry.Registries;
 import me.shedaniel.architectury.registry.Registry;
 import me.shedaniel.architectury.registry.RegistrySupplier;
+import me.shedaniel.architectury.registry.registries.RegistryBuilder;
+import me.shedaniel.architectury.registry.registries.RegistryOption;
+import me.shedaniel.architectury.registry.registries.StandardRegistryOption;
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
+import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
+import net.minecraft.core.MappedRegistry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.LazyLoadedValue;
@@ -63,6 +70,36 @@ public class RegistriesImpl {
         @Override
         public <T> Registry<T> get(net.minecraft.core.Registry<T> registry) {
             return new RegistryImpl<>(registry);
+        }
+        
+        @Override
+        @NotNull
+        public <T extends RegistryEntry<T>> RegistryBuilder<T> builder(Class<T> type, ResourceLocation registryId) {
+            return new RegistryBuilderWrapper<>(FabricRegistryBuilder.createSimple(type, registryId));
+        }
+    }
+    
+    public static class RegistryBuilderWrapper<T extends RegistryEntry<T>> implements RegistryBuilder<T> {
+        @NotNull
+        private FabricRegistryBuilder<T, MappedRegistry<T>> builder;
+        
+        public RegistryBuilderWrapper(@NotNull FabricRegistryBuilder<T, MappedRegistry<T>> builder) {
+            this.builder = builder;
+        }
+        
+        @Override
+        public @NotNull Registry<T> build() {
+            return RegistryProviderImpl.INSTANCE.get(builder.buildAndRegister());
+        }
+        
+        @Override
+        public @NotNull RegistryBuilder<T> option(@NotNull RegistryOption option) {
+            if (option == StandardRegistryOption.SAVE_TO_DISC) {
+                this.builder.attribute(RegistryAttribute.PERSISTED);
+            } else if (option == StandardRegistryOption.SYNC_TO_CLIENTS) {
+                this.builder.attribute(RegistryAttribute.SYNCED);
+            }
+            return this;
         }
     }
     
@@ -129,6 +166,11 @@ public class RegistriesImpl {
         }
         
         @Override
+        public int getRawId(T obj) {
+            return delegate.getId(obj);
+        }
+        
+        @Override
         public Optional<ResourceKey<T>> getKey(T obj) {
             return delegate.getResourceKey(obj);
         }
@@ -139,8 +181,13 @@ public class RegistriesImpl {
         }
         
         @Override
+        public T byRawId(int rawId) {
+            return delegate.byId(rawId);
+        }
+        
+        @Override
         public boolean contains(ResourceLocation id) {
-            return delegate.containsKey(id);
+            return delegate.keySet().contains(id);
         }
         
         @Override

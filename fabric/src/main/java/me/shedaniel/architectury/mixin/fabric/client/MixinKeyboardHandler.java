@@ -19,6 +19,7 @@
 
 package me.shedaniel.architectury.mixin.fabric.client;
 
+import me.shedaniel.architectury.event.events.client.ClientRawInputEvent;
 import me.shedaniel.architectury.event.events.client.ClientScreenInputEvent;
 import me.shedaniel.architectury.impl.fabric.ScreenInputDelegate;
 import net.minecraft.client.KeyboardHandler;
@@ -107,6 +108,15 @@ public class MixinKeyboardHandler {
             } else {
                 result = ClientScreenInputEvent.KEY_PRESSED_POST.invoker().keyPressed(minecraft, minecraft.screen, int_1, int_2, int_4);
             }
+            if (result != InteractionResult.PASS)
+                info.cancel();
+        }
+    }
+    
+    @Inject(method = "keyPress", at = @At("RETURN"), cancellable = true)
+    public void onRawKey(long handle, int key, int scanCode, int action, int modifiers, CallbackInfo info) {
+        if (handle == this.minecraft.getWindow().getWindow()) {
+            InteractionResult result = ClientRawInputEvent.KEY_PRESSED.invoker().keyPressed(minecraft, key, scanCode, action, modifiers);
             if (result != InteractionResult.PASS)
                 info.cancel();
         }

@@ -35,17 +35,17 @@ import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public interface TooltipEvent {
-    Event<Item> ITEM = EventFactory.createLoop(Item.class);
+    Event<Item> ITEM = EventFactory.createLoop();
     /**
      * Render vanilla events are not invoked on the forge side.
      */
-    Event<RenderVanilla> RENDER_VANILLA_PRE = EventFactory.createInteractionResult(RenderVanilla.class);
+    Event<RenderVanilla> RENDER_VANILLA_PRE = EventFactory.createInteractionResult();
     /**
      * Render forge events are only invoked on the forge side.
      */
-    Event<RenderForge> RENDER_FORGE_PRE = EventFactory.createInteractionResult(RenderForge.class);
-    Event<RenderModifyPosition> RENDER_MODIFY_POSITION = EventFactory.createInteractionResult(RenderModifyPosition.class);
-    Event<RenderModifyColor> RENDER_MODIFY_COLOR = EventFactory.createInteractionResult(RenderModifyColor.class);
+    Event<RenderForge> RENDER_FORGE_PRE = EventFactory.createInteractionResult();
+    Event<RenderModifyPosition> RENDER_MODIFY_POSITION = EventFactory.createInteractionResult();
+    Event<RenderModifyColor> RENDER_MODIFY_COLOR = EventFactory.createInteractionResult();
     
     @Environment(EnvType.CLIENT)
     interface Item {

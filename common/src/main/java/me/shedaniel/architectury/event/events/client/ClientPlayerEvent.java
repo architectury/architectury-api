@@ -24,12 +24,13 @@ import me.shedaniel.architectury.event.EventFactory;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
+import org.jetbrains.annotations.Nullable;
 
 @Environment(EnvType.CLIENT)
 public interface ClientPlayerEvent {
-    Event<ClientPlayerJoin> CLIENT_PLAYER_JOIN = EventFactory.createLoop(ClientPlayerJoin.class);
-    Event<ClientPlayerQuit> CLIENT_PLAYER_QUIT = EventFactory.createLoop(ClientPlayerQuit.class);
-    Event<ClientPlayerRespawn> CLIENT_PLAYER_RESPAWN = EventFactory.createLoop(ClientPlayerRespawn.class);
+    Event<ClientPlayerJoin> CLIENT_PLAYER_JOIN = EventFactory.createLoop();
+    Event<ClientPlayerQuit> CLIENT_PLAYER_QUIT = EventFactory.createLoop();
+    Event<ClientPlayerRespawn> CLIENT_PLAYER_RESPAWN = EventFactory.createLoop();
     
     @Environment(EnvType.CLIENT)
     interface ClientPlayerJoin {
@@ -38,7 +39,7 @@ public interface ClientPlayerEvent {
     
     @Environment(EnvType.CLIENT)
     interface ClientPlayerQuit {
-        void quit(LocalPlayer player);
+        void quit(@Nullable LocalPlayer player);
     }
     
     @Environment(EnvType.CLIENT)

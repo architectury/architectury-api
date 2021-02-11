@@ -20,6 +20,7 @@
 package me.shedaniel.architectury.mixin.fabric;
 
 import me.shedaniel.architectury.event.events.PlayerEvent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.MenuProvider;
@@ -56,5 +57,10 @@ public class MixinServerPlayer {
                      shift = At.Shift.AFTER))
     private void doCloseContainer(CallbackInfo ci) {
         PlayerEvent.CLOSE_MENU.invoker().close((ServerPlayer) (Object) this, ((ServerPlayer) (Object) this).containerMenu);
+    }
+    
+    @Inject(method = "triggerDimensionChangeTriggers", at = @At("HEAD"))
+    private void changeDimension(ServerLevel serverLevel, CallbackInfo ci) {
+        PlayerEvent.CHANGE_DIMENSION.invoker().change((ServerPlayer) (Object) this, serverLevel.dimension(), ((ServerPlayer) (Object) this).level.dimension());
     }
 }

@@ -32,12 +32,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
 public interface InteractionEvent {
-    Event<LeftClickBlock> LEFT_CLICK_BLOCK = EventFactory.createInteractionResult(LeftClickBlock.class);
-    Event<RightClickBlock> RIGHT_CLICK_BLOCK = EventFactory.createInteractionResult(RightClickBlock.class);
-    Event<RightClickItem> RIGHT_CLICK_ITEM = EventFactory.createInteractionResultHolder(RightClickItem.class);
-    Event<ClientLeftClickAir> CLIENT_LEFT_CLICK_AIR = EventFactory.createLoop(ClientLeftClickAir.class);
-    Event<ClientRightClickAir> CLIENT_RIGHT_CLICK_AIR = EventFactory.createLoop(ClientRightClickAir.class);
-    Event<InteractEntity> INTERACT_ENTITY = EventFactory.createInteractionResult(InteractEntity.class);
+    Event<LeftClickBlock> LEFT_CLICK_BLOCK = EventFactory.createInteractionResult();
+    Event<RightClickBlock> RIGHT_CLICK_BLOCK = EventFactory.createInteractionResult();
+    Event<RightClickItem> RIGHT_CLICK_ITEM = EventFactory.createInteractionResultHolder();
+    Event<ClientLeftClickAir> CLIENT_LEFT_CLICK_AIR = EventFactory.createLoop();
+    Event<ClientRightClickAir> CLIENT_RIGHT_CLICK_AIR = EventFactory.createLoop();
+    Event<InteractEntity> INTERACT_ENTITY = EventFactory.createInteractionResult();
     
     interface RightClickBlock {
         InteractionResult click(Player player, InteractionHand hand, BlockPos pos, Direction face);

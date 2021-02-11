@@ -27,6 +27,7 @@ import me.shedaniel.architectury.impl.TooltipEventColorContextImpl;
 import me.shedaniel.architectury.impl.TooltipEventPositionContextImpl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
@@ -38,6 +39,7 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import java.util.List;
 
@@ -120,6 +122,18 @@ public class EventHandlerImplClient {
         if (event.getWorld() instanceof ClientLevel) {
             ClientLevel world = (ClientLevel) event.getWorld();
             ClientLifecycleEvent.CLIENT_WORLD_LOAD.invoker().act(world);
+        }
+    }
+    
+    @SubscribeEvent
+    public static void event(GuiOpenEvent event) {
+        InteractionResultHolder<Screen> result = GuiEvent.SET_SCREEN.invoker().modifyScreen(event.getGui());
+        switch (result.getResult()) {
+            case FAIL:
+                event.setCanceled(true);
+                return;
+            case SUCCESS:
+                event.setGui(result.getObject());
         }
     }
     
@@ -264,6 +278,30 @@ public class EventHandlerImplClient {
         ClientScreenInputEvent.KEY_RELEASED_POST.invoker().keyReleased(Minecraft.getInstance(), event.getGui(), event.getKeyCode(), event.getScanCode(), event.getModifiers());
     }
     
+    @SubscribeEvent
+    public static void event(InputEvent.MouseScrollEvent event) {
+        if (ClientRawInputEvent.MOUSE_SCROLLED.invoker().mouseScrolled(Minecraft.getInstance(), event.getScrollDelta()) == InteractionResult.FAIL) {
+            event.setCanceled(true);
+        }
+    }
+    
+    @SubscribeEvent
+    public static void event(InputEvent.RawMouseEvent event) {
+        if (ClientRawInputEvent.MOUSE_CLICKED_PRE.invoker().mouseClicked(Minecraft.getInstance(), event.getButton(), event.getAction(), event.getMods()) == InteractionResult.FAIL) {
+            event.setCanceled(true);
+        }
+    }
+    
+    @SubscribeEvent
+    public static void event(InputEvent.MouseInputEvent event) {
+        ClientRawInputEvent.MOUSE_CLICKED_POST.invoker().mouseClicked(Minecraft.getInstance(), event.getButton(), event.getAction(), event.getMods());
+    }
+    
+    @SubscribeEvent
+    public static void event(InputEvent.KeyInputEvent event) {
+        ClientRawInputEvent.KEY_PRESSED.invoker().keyPressed(Minecraft.getInstance(), event.getKey(), event.getScanCode(), event.getAction(), event.getModifiers());
+    }
+    
     @OnlyIn(Dist.CLIENT)
     public static class ModBasedEventHandler {
         @SubscribeEvent
@@ -274,6 +312,11 @@ public class EventHandlerImplClient {
         @SubscribeEvent
         public static void event(net.minecraftforge.client.event.TextureStitchEvent.Post event) {
             TextureStitchEvent.POST.invoker().stitch(event.getMap());
+        }
+        
+        @SubscribeEvent
+        public static void event(FMLClientSetupEvent event) {
+            ClientLifecycleEvent.CLIENT_SETUP.invoker().stateChanged(event.getMinecraftSupplier().get());
         }
     }
 }

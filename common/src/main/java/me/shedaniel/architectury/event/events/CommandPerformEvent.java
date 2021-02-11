@@ -31,7 +31,7 @@ public class CommandPerformEvent {
     /**
      * Invoked after server parses a command but before server executes it, equivalent to forge's {@code CommandEvent}.
      */
-    public static final Event<Actor<CommandPerformEvent>> EVENT = EventFactory.createActorLoop(CommandPerformEvent.class);
+    public static final Event<Actor<CommandPerformEvent>> EVENT = EventFactory.createActorLoop();
     
     @NotNull
     private ParseResults<CommandSourceStack> results;
