@@ -16,6 +16,9 @@
     "main": [
       "me.shedaniel.architectury.utils.fabric.GameInstanceImpl::init"
     ],
+    "client": [
+      "me.shedaniel.architectury.init.fabric.ArchitecturyClient::init"
+    ],
     "modmenu": [
       "me.shedaniel.architectury.compat.fabric.ModMenuCompatibility"
     ]

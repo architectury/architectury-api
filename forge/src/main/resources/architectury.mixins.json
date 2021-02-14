@@ -1,11 +1,15 @@
 {
   "required": true,
   "package": "me.shedaniel.architectury.mixin.forge",
+  "plugin": "me.shedaniel.architectury.plugin.forge.ArchitecturyMixinPlugin",
   "compatibilityLevel": "JAVA_8",
   "minVersion": "0.8",
   "client": [
   ],
-  "mixins": ["BiomeGenerationSettingsBuilderAccessor", "MobSpawnSettingsBuilderAccessor"],
+  "mixins": [
+    "BiomeGenerationSettingsBuilderAccessor", "MixinRegistryEntry", "MixinBlockEntity", "MixinBlockEntityExtension",
+    "MobSpawnSettingsBuilderAccessor"
+  ],
   "injectors": {
     "defaultRequire": 1
   }

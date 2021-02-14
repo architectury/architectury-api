@@ -2,7 +2,7 @@ pluginManagement {
     repositories {
         jcenter()
         maven { url "https://maven.fabricmc.net/" }
-        maven { url "https://dl.bintray.com/shedaniel/cloth" }
+        maven { url "https://maven.shedaniel.me" }
         maven { url "https://files.minecraftforge.net/maven/" }
         gradlePluginPortal()
     }
@@ -11,5 +11,8 @@ pluginManagement {
 include("common")
 include("fabric")
 include("forge")
+include("testmod-common")
+include("testmod-fabric")
+include("testmod-forge")
 
 rootProject.name = "architectury"

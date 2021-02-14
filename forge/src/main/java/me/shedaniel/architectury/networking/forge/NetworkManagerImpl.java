@@ -41,6 +41,8 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.event.EventNetworkChannel;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 import java.util.Map;
@@ -63,6 +65,7 @@ public class NetworkManagerImpl {
         return (side == NetworkManager.Side.C2S ? NetworkDirection.PLAY_TO_SERVER : NetworkDirection.PLAY_TO_CLIENT).buildPacket(Pair.of(packetBuffer, 0), CHANNEL_ID).getThis();
     }
     
+    private static final Logger LOGGER = LogManager.getLogger();
     private static final ResourceLocation CHANNEL_ID = new ResourceLocation("architectury:network");
     static final ResourceLocation SYNC_IDS = new ResourceLocation("architectury:sync_ids");
     static final EventNetworkChannel CHANNEL = NetworkRegistry.newEventChannel(CHANNEL_ID, () -> "1", version -> true, version -> true);
@@ -94,7 +97,8 @@ public class NetworkManagerImpl {
             if (event.getClass() != clazz) return;
             NetworkEvent.Context context = event.getSource().get();
             if (context.getPacketHandled()) return;
-            FriendlyByteBuf buffer = new FriendlyByteBuf(event.getPayload().copy());
+            FriendlyByteBuf buffer = event.getPayload();
+            if (buffer == null) return;
             ResourceLocation type = buffer.readResourceLocation();
             NetworkReceiver receiver = map.get(type);
             
@@ -119,7 +123,10 @@ public class NetworkManagerImpl {
                         return DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> ClientNetworkingManager::getClientPlayer);
                     }
                 });
+            } else {
+                LOGGER.error("Unknown message ID: " + type);
             }
+            
             context.setPacketHandled(true);
         };
     }

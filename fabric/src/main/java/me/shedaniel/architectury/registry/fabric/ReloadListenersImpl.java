@@ -39,7 +39,7 @@ public class ReloadListenersImpl {
     public static void registerReloadListener(PackType type, PreparableReloadListener listener) {
         byte[] bytes = new byte[8];
         RANDOM.nextBytes(bytes);
-        ResourceLocation id = new ResourceLocation("architectury:reload_" + StringUtils.leftPad(Math.abs(Longs.fromByteArray(bytes)) + "", 19));
+        ResourceLocation id = new ResourceLocation("architectury:reload_" + StringUtils.leftPad(Math.abs(Longs.fromByteArray(bytes)) + "", 19, '0'));
         ResourceManagerHelper.get(type).registerReloadListener(new IdentifiableResourceReloadListener() {
             @Override
             public ResourceLocation getFabricId() {

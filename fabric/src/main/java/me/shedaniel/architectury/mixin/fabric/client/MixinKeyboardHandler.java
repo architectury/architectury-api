@@ -19,6 +19,7 @@
 
 package me.shedaniel.architectury.mixin.fabric.client;
 
+import me.shedaniel.architectury.event.events.client.ClientRawInputEvent;
 import me.shedaniel.architectury.event.events.client.ClientScreenInputEvent;
 import me.shedaniel.architectury.impl.fabric.ScreenInputDelegate;
 import net.minecraft.client.KeyboardHandler;
@@ -44,8 +45,7 @@ public class MixinKeyboardHandler {
     @Shadow
     private boolean sendRepeatsToGui;
     
-    @SuppressWarnings("UnresolvedMixinReference")
-    @ModifyVariable(method = {"method_1458", "lambda$charTyped$5"}, at = @At("HEAD"), ordinal = 0, argsOnly = true)
+    @ModifyVariable(method = {"method_1458", "lambda$charTyped$5"}, at = @At("HEAD"), require = 0, ordinal = 0, argsOnly = true)
     private static GuiEventListener wrapCharTypedFirst(GuiEventListener screen) {
         if (screen instanceof ScreenInputDelegate) {
             return ((ScreenInputDelegate) screen).architectury_delegateInputs();
@@ -53,9 +53,24 @@ public class MixinKeyboardHandler {
         return screen;
     }
     
-    @SuppressWarnings("UnresolvedMixinReference")
-    @ModifyVariable(method = {"method_1473", "lambda$charTyped$6"}, at = @At("HEAD"), ordinal = 0, argsOnly = true)
+    @ModifyVariable(method = {"method_1473", "lambda$charTyped$6"}, at = @At("HEAD"), require = 0, ordinal = 0, argsOnly = true)
     private static GuiEventListener wrapCharTypedSecond(GuiEventListener screen) {
+        if (screen instanceof ScreenInputDelegate) {
+            return ((ScreenInputDelegate) screen).architectury_delegateInputs();
+        }
+        return screen;
+    }
+    
+    @ModifyVariable(method = "lambda$onCharEvent$5", at = @At("HEAD"), require = 0, ordinal = 0, argsOnly = true)
+    private GuiEventListener wrapCharTypedFirstOptiFabric(GuiEventListener screen) {
+        if (screen instanceof ScreenInputDelegate) {
+            return ((ScreenInputDelegate) screen).architectury_delegateInputs();
+        }
+        return screen;
+    }
+    
+    @ModifyVariable(method = "lambda$onCharEvent$6", at = @At("HEAD"), require = 0, ordinal = 0, argsOnly = true)
+    private GuiEventListener wrapCharTypedSecondOptiFabric(GuiEventListener screen) {
         if (screen instanceof ScreenInputDelegate) {
             return ((ScreenInputDelegate) screen).architectury_delegateInputs();
         }
@@ -93,6 +108,15 @@ public class MixinKeyboardHandler {
             } else {
                 result = ClientScreenInputEvent.KEY_PRESSED_POST.invoker().keyPressed(minecraft, minecraft.screen, int_1, int_2, int_4);
             }
+            if (result != InteractionResult.PASS)
+                info.cancel();
+        }
+    }
+    
+    @Inject(method = "keyPress", at = @At("RETURN"), cancellable = true)
+    public void onRawKey(long handle, int key, int scanCode, int action, int modifiers, CallbackInfo info) {
+        if (handle == this.minecraft.getWindow().getWindow()) {
+            InteractionResult result = ClientRawInputEvent.KEY_PRESSED.invoker().keyPressed(minecraft, key, scanCode, action, modifiers);
             if (result != InteractionResult.PASS)
                 info.cancel();
         }

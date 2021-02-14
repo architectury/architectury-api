@@ -19,6 +19,7 @@
 
 package me.shedaniel.architectury;
 
+import me.shedaniel.architectury.targets.ArchitecturyTarget;
 import me.shedaniel.architectury.utils.PlatformExpectedError;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -30,7 +31,7 @@ public class PlatformMethods {
         Class<?> lookupClass = lookup.lookupClass();
         String lookupType = lookupClass.getName().replace("$", "") + "Impl";
         
-        String platformExpectedClass = lookupType.substring(0, lookupType.lastIndexOf('.')) + "." + Architectury.getModLoader() + "." +
+        String platformExpectedClass = lookupType.substring(0, lookupType.lastIndexOf('.')) + "." + ArchitecturyTarget.getCurrentTarget() + "." +
                                        lookupType.substring(lookupType.lastIndexOf('.') + 1);
         Class<?> newClass;
         try {

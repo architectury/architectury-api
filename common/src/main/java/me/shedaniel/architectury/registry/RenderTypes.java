@@ -39,6 +39,5 @@ public final class RenderTypes {
     public static void register(RenderType type, Fluid... fluids) {
         throw new AssertionError();
     }
-    
 }
 

@@ -29,35 +29,35 @@ public interface LifecycleEvent {
     /**
      * Invoked when server is starting, equivalent to forge's {@code FMLServerAboutToStartEvent} and fabric's {@code ServerLifecycleEvents#SERVER_STARTING}.
      */
-    Event<ServerState> SERVER_BEFORE_START = EventFactory.createLoop(ServerState.class);
+    Event<ServerState> SERVER_BEFORE_START = EventFactory.createLoop();
     /**
      * Invoked when server is starting, equivalent to forge's {@code FMLServerStartingEvent}.
      */
-    Event<ServerState> SERVER_STARTING = EventFactory.createLoop(ServerState.class);
+    Event<ServerState> SERVER_STARTING = EventFactory.createLoop();
     /**
      * Invoked when server has started, equivalent to forge's {@code FMLServerStartedEvent} and fabric's {@code ServerLifecycleEvents#SERVER_STARTED}.
      */
-    Event<ServerState> SERVER_STARTED = EventFactory.createLoop(ServerState.class);
+    Event<ServerState> SERVER_STARTED = EventFactory.createLoop();
     /**
      * Invoked when server is stopping, equivalent to forge's {@code FMLServerStoppingEvent} and fabric's {@code ServerLifecycleEvents#SERVER_STOPPING}.
      */
-    Event<ServerState> SERVER_STOPPING = EventFactory.createLoop(ServerState.class);
+    Event<ServerState> SERVER_STOPPING = EventFactory.createLoop();
     /**
      * Invoked when server has stopped, equivalent to forge's {@code FMLServerStoppedEvent} and fabric's {@code ServerLifecycleEvents#SERVER_STOPPED}.
      */
-    Event<ServerState> SERVER_STOPPED = EventFactory.createLoop(ServerState.class);
+    Event<ServerState> SERVER_STOPPED = EventFactory.createLoop();
     /**
      * Invoked after a world is loaded only on server, equivalent to forge's {@code WorldEvent.Load} and fabric's {@code ServerWorldEvents#LOAD}.
      */
-    Event<ServerWorldState> SERVER_WORLD_LOAD = EventFactory.createLoop(ServerWorldState.class);
+    Event<ServerWorldState> SERVER_WORLD_LOAD = EventFactory.createLoop();
     /**
      * Invoked after a world is unloaded, equivalent to forge's {@code WorldEvent.Unload} and fabric's {@code ServerWorldEvents#UNLOAD}.
      */
-    Event<ServerWorldState> SERVER_WORLD_UNLOAD = EventFactory.createLoop(ServerWorldState.class);
+    Event<ServerWorldState> SERVER_WORLD_UNLOAD = EventFactory.createLoop();
     /**
      * Invoked during a world is saved, equivalent to forge's {@code WorldEvent.Save}.
      */
-    Event<ServerWorldState> SERVER_WORLD_SAVE = EventFactory.createLoop(ServerWorldState.class);
+    Event<ServerWorldState> SERVER_WORLD_SAVE = EventFactory.createLoop();
     
     interface InstanceState<T> {
         void stateChanged(T instance);

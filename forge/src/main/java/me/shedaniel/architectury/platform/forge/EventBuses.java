@@ -21,21 +21,34 @@ package me.shedaniel.architectury.platform.forge;
 
 import net.minecraftforge.eventbus.api.IEventBus;
 
-import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Consumer;
 
 public final class EventBuses {
     private EventBuses() {}
     
     private static final Map<String, IEventBus> EVENT_BUS_MAP = new HashMap<>();
+    private static final Map<String, List<Consumer<IEventBus>>> ON_REGISTERED = new HashMap<>();
     
     public static void registerModEventBus(String modId, IEventBus bus) {
         IEventBus previous = EVENT_BUS_MAP.put(modId, bus);
         if (previous != null) {
             EVENT_BUS_MAP.put(modId, previous);
             throw new IllegalStateException("Can't register event bus for mod '" + modId + "' because it was previously registered!");
+        }
+        
+        for (Consumer<IEventBus> runnable : ON_REGISTERED.getOrDefault(modId, Collections.emptyList())) {
+            runnable.accept(bus);
+        }
+    }
+    
+    public static void onRegistered(String modId, Consumer<IEventBus> busConsumer) {
+        if (EVENT_BUS_MAP.containsKey(modId)) {
+            busConsumer.accept(EVENT_BUS_MAP.get(modId));
+        } else {
+            synchronized (ON_REGISTERED) {
+                ON_REGISTERED.computeIfAbsent(modId, s -> new ArrayList<>()).add(busConsumer);
+            }
         }
     }
     

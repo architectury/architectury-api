@@ -1,10 +1,8 @@
 plugins {
-    id "architectury-plugin" version "1.3.45"
-    id "forgified-fabric-loom" version "0.5.26" apply false
+    id "architectury-plugin" version "2.0.65"
+    id "forgified-fabric-loom" version "0.6.54" apply false
     id "org.cadixdev.licenser" version "0.5.0"
-    id "com.jfrog.bintray" version "1.8.4"
     id "com.matthewprenger.cursegradle" version "1.4.0" apply false
-    id "maven"
     id "maven-publish"
 }
 
@@ -15,8 +13,9 @@ architectury {
 subprojects {
     apply plugin: "forgified-fabric-loom"
 
-    dependencies {
-        testCompile sourceSets.main.output
+    loom {
+        silentMojangMappingsLicense()
+        useFabricMixin = true
     }
 }
 
@@ -24,13 +23,33 @@ allprojects {
     apply plugin: "java"
     apply plugin: "architectury-plugin"
     apply plugin: "org.cadixdev.licenser"
+    
+    ext {
+        isSnapshot = System.getenv("PR_NUM") != null
+    }
+    
+    def runNumber = (System.getenv("GITHUB_RUN_NUMBER") == null ? "9999" : System.getenv("GITHUB_RUN_NUMBER"))
 
-    archivesBaseName = rootProject.archives_base_name
-    version = rootProject.mod_version + "." + (System.getenv("GITHUB_RUN_NUMBER") == null ? "9999" : System.getenv("GITHUB_RUN_NUMBER"))
+    if (!ext.isSnapshot) {
+        version = rootProject.base_version + "." + runNumber
+        archivesBaseName = rootProject.archives_base_name
+    } else {
+        version = rootProject.base_version + "-PR." + System.getenv("PR_NUM") + "." + runNumber
+        archivesBaseName = rootProject.archives_base_name_snapshot
+    }
+    
     group = rootProject.maven_group
 
     tasks.withType(JavaCompile) {
         options.encoding = "UTF-8"
+
+        // The Minecraft launcher currently installs Java 8 for users, so your mod probably wants to target Java 8 too
+        // JDK 9 introduced a new way of specifying this that will make sure no newer classes or methods are used.
+        // We'll use that if it's available, but otherwise we'll use the older option.
+        def targetVersion = 8
+        if (JavaVersion.current().isJava9Compatible()) {
+            options.release = targetVersion
+        }
     }
 
     license {
@@ -46,7 +65,7 @@ allprojects {
 
         ignoreFailures = true
     }
-    
+
     ext {
         releaseChangelog = {
             def dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm")
@@ -79,21 +98,5 @@ allprojects {
 
 task licenseFormatAll
 subprojects { p -> licenseFormatAll.dependsOn("${p.path}:licenseFormat") }
-
-bintray {
-    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
-    key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_KEY')
-    publications = ["mavenCommon", "mavenFabric", "mavenForge"]
-    publish = true
-    pkg {
-        repo = "cloth"
-        name = "architectury"
-        userOrg = "shedaniel"
-        licenses = ["Apache-2.0"]
-        version {
-            vcsUrl = "https://github.com/shedaniel/architectury.git"
-        }
-    }
-}
 
 task curseforgePublish

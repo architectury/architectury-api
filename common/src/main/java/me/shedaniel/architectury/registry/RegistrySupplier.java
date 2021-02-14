@@ -29,12 +29,21 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public interface RegistrySupplier<T> extends Supplier<T> {
+    /**
+     * @return the identifier of the registry
+     */
     @NotNull
     ResourceLocation getRegistryId();
     
+    /**
+     * @return the identifier of the entry
+     */
     @NotNull
     ResourceLocation getId();
     
+    /**
+     * @return whether the entry has been registered
+     */
     boolean isPresent();
     
     @Nullable

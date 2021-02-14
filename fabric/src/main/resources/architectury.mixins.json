@@ -1,19 +1,47 @@
 {
   "required": true,
   "package": "me.shedaniel.architectury.mixin.fabric",
+  "plugin": "me.shedaniel.architectury.plugin.fabric.ArchitecturyMixinPlugin",
   "compatibilityLevel": "JAVA_8",
   "minVersion": "0.7.11",
   "client": [
-    "client.MixinClientLevel", "client.MixinClientPacketListener", "client.MixinDebugScreenOverlay", "client.MixinGameRenderer", "client.MixinIntegratedServer",
-    "client.MixinItem", "client.MixinKeyboardHandler", "client.MixinMinecraft", "client.MixinMouseHandler", "client.MixinMultiPlayerGameMode", "client.MixinScreen",
+    "client.MixinClientLevel",
+    "client.MixinClientPacketListener",
+    "client.MixinDebugScreenOverlay",
+    "client.MixinEffectInstance",
+    "client.MixinGameRenderer",
+    "client.MixinIntegratedServer",
+    "client.MixinItem",
+    "client.MixinKeyboardHandler",
+    "client.MixinMinecraft",
+    "client.MixinMouseHandler",
+    "client.MixinMultiPlayerGameMode",
+    "client.MixinScreen",
     "client.MixinTextureAtlas"
   ],
   "mixins": [
-    "ExplosionPreInvoker", "LivingDeathInvoker", "MixinBlockItem", "MixinCommands", "MixinDedicatedServer", "MixinExplosion", "MixinFurnaceResultSlot",
-    "MixinItemEntity", "MixinLivingEntity", "MixinPlayer", "MixinPlayerAdvancements", "MixinPlayerList", "MixinResultSlot",
-    "MixinServerGamePacketListenerImpl", "MixinServerLevel", "MixinServerPlayer", "MixinServerPlayerGameMode", "PlayerAttackInvoker"
+    "ExplosionPreInvoker",
+    "LivingDeathInvoker",
+    "MixinBlockEntityExtension",
+    "MixinBlockItem",
+    "MixinCommands",
+    "MixinDedicatedServer",
+    "MixinExplosion",
+    "MixinFurnaceResultSlot",
+    "MixinItemEntity",
+    "MixinLivingEntity",
+    "MixinPlayer",
+    "MixinPlayerAdvancements",
+    "MixinPlayerList",
+    "MixinResultSlot",
+    "MixinServerGamePacketListenerImpl",
+    "MixinServerLevel",
+    "MixinServerPlayer",
+    "MixinServerPlayerGameMode",
+    "PlayerAttackInvoker"
   ],
   "injectors": {
+    "maxShiftBy": 5,
     "defaultRequire": 1
   }
 }

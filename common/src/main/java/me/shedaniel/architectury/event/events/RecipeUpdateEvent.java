@@ -27,7 +27,7 @@ import net.minecraft.world.item.crafting.RecipeManager;
 
 @Environment(EnvType.CLIENT)
 public interface RecipeUpdateEvent {
-    Event<RecipeUpdateEvent> EVENT = EventFactory.createLoop(RecipeUpdateEvent.class);
+    Event<RecipeUpdateEvent> EVENT = EventFactory.createLoop();
     
     void update(RecipeManager recipeManager);
 }

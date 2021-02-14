@@ -35,15 +35,15 @@ import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 public class MenuRegistryImpl {
-    public static void openMenu(ServerPlayer player, ExtendedMenuProvider provider) {
+    public static void openExtendedMenu(ServerPlayer player, ExtendedMenuProvider provider) {
         NetworkHooks.openGui(player, provider, provider::saveExtraData);
     }
     
-    public static <T extends AbstractContainerMenu> MenuType<T> registerMenuType(SimpleMenuTypeFactory<T> factory) {
+    public static <T extends AbstractContainerMenu> MenuType<T> of(SimpleMenuTypeFactory<T> factory) {
         return new MenuType<>(factory::create);
     }
     
-    public static <T extends AbstractContainerMenu> MenuType<T> registerExtendedMenuType(ExtendedMenuTypeFactory<T> factory) {
+    public static <T extends AbstractContainerMenu> MenuType<T> ofExtended(ExtendedMenuTypeFactory<T> factory) {
         return IForgeContainerType.create(factory::create);
     }
     

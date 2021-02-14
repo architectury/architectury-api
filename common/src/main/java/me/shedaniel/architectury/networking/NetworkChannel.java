@@ -19,11 +19,9 @@
 
 package me.shedaniel.architectury.networking;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
+import com.google.common.collect.Maps;
+import com.mojang.datafixers.util.Pair;
 import io.netty.buffer.Unpooled;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import it.unimi.dsi.fastutil.ints.IntSet;
 import me.shedaniel.architectury.networking.NetworkManager.PacketContext;
 import me.shedaniel.architectury.platform.Platform;
 import me.shedaniel.architectury.utils.Env;
@@ -34,10 +32,13 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.ApiStatus;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -47,8 +48,7 @@ import java.util.function.Supplier;
  */
 public final class NetworkChannel {
     private final ResourceLocation id;
-    private final IntSet takenIds = new IntOpenHashSet();
-    private final Table<NetworkManager.Side, Class<?>, Pair<ResourceLocation, BiConsumer<?, FriendlyByteBuf>>> encoders = HashBasedTable.create();
+    private final Map<Class<?>, MessageInfo<?>> encoders = Maps.newHashMap();
     
     private NetworkChannel(ResourceLocation id) {
         this.id = id;
@@ -58,57 +58,73 @@ public final class NetworkChannel {
         return new NetworkChannel(id);
     }
     
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "1.6")
     public <T> void register(NetworkManager.Side side, Class<T> type, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<PacketContext>> messageConsumer) {
-        register(Optional.ofNullable(side), type, encoder, decoder, messageConsumer);
+        register(type, encoder, decoder, messageConsumer);
     }
     
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "1.6")
     public <T> void register(Optional<NetworkManager.Side> side, Class<T> type, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<PacketContext>> messageConsumer) {
-        for (int i = 0; true; i++) {
-            if (!takenIds.contains(i)) {
-                register(side, i, type, encoder, decoder, messageConsumer);
-                break;
-            }
+        register(type, encoder, decoder, messageConsumer);
+    }
+    
+    public <T> void register(Class<T> type, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<PacketContext>> messageConsumer) {
+        // TODO: this is pretty wasteful; add a way to specify custom or numeric ids
+        String s = UUID.nameUUIDFromBytes(type.getName().getBytes(StandardCharsets.UTF_8)).toString().replace("-", "");
+        MessageInfo<T> info = new MessageInfo<>(new ResourceLocation(id + "/" + s), encoder, decoder, messageConsumer);
+        encoders.put(type, info);
+        NetworkManager.NetworkReceiver receiver = (buf, context) -> {
+            info.messageConsumer.accept(info.decoder.apply(buf), () -> context);
+        };
+        NetworkManager.registerReceiver(NetworkManager.c2s(), info.packetId, receiver);
+        if (Platform.getEnvironment() == Env.CLIENT) {
+            NetworkManager.registerReceiver(NetworkManager.s2c(), info.packetId, receiver);
         }
     }
     
+    public static long hashCodeString(String str) {
+        long h = 0;
+        int length = str.length();
+        for (int i = 0; i < length; i++) {
+            h = 31 * h + str.charAt(i);
+        }
+        return h;
+    }
+    
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "1.6")
+    public <T> void register(int id, Class<T> type, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<PacketContext>> messageConsumer) {
+        register(type, encoder, decoder, messageConsumer);
+    }
+    
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "1.6")
     public <T> void register(NetworkManager.Side side, int id, Class<T> type, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<PacketContext>> messageConsumer) {
-        register(Optional.ofNullable(side), id, type, encoder, decoder, messageConsumer);
+        register(type, encoder, decoder, messageConsumer);
     }
     
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "1.6")
     public <T> void register(Optional<NetworkManager.Side> side, int id, Class<T> type, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<PacketContext>> messageConsumer) {
-        takenIds.add(id);
-        ResourceLocation messageId = new ResourceLocation(this.id.getNamespace(), this.id.getPath() + "_" + id);
-        if (!side.isPresent() || side.get() == NetworkManager.s2c()) {
-            if (Platform.getEnvironment() == Env.CLIENT) {
-                NetworkManager.registerReceiver(NetworkManager.s2c(), messageId, (buf, context) -> {
-                    messageConsumer.accept(decoder.apply(buf), () -> context);
-                });
-            }
-            encoders.put(NetworkManager.s2c(), type, Pair.of(messageId, encoder));
-        }
-        if (!side.isPresent() || side.get() == NetworkManager.c2s()) {
-            NetworkManager.registerReceiver(NetworkManager.c2s(), messageId, (buf, context) -> {
-                messageConsumer.accept(decoder.apply(buf), () -> context);
-            });
-            encoders.put(NetworkManager.c2s(), type, Pair.of(messageId, encoder));
-        }
+        register(type, encoder, decoder, messageConsumer);
     }
     
-    private <T> Pair<ResourceLocation, FriendlyByteBuf> encode(NetworkManager.Side side, T message) {
-        Pair<ResourceLocation, BiConsumer<?, FriendlyByteBuf>> pair = Objects.requireNonNull(encoders.get(side, message.getClass()));
+    private <T> Pair<MessageInfo<T>, FriendlyByteBuf> encode(T message) {
+        MessageInfo<T> messageInfo = (MessageInfo<T>) Objects.requireNonNull(encoders.get(message.getClass()));
         FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-        ((BiConsumer<T, FriendlyByteBuf>) pair.getRight()).accept(message, buf);
-        return Pair.of(pair.getLeft(), buf);
+        messageInfo.encoder.accept(message, buf);
+        return new Pair<>(messageInfo, buf);
     }
     
     public <T> Packet<?> toPacket(NetworkManager.Side side, T message) {
-        Pair<ResourceLocation, FriendlyByteBuf> encoded = encode(side, message);
-        return NetworkManager.toPacket(side, encoded.getLeft(), encoded.getRight());
+        Pair<MessageInfo<T>, FriendlyByteBuf> encoded = encode(message);
+        return NetworkManager.toPacket(side, encoded.getFirst().packetId, encoded.getSecond());
     }
     
     public <T> void sendToPlayer(ServerPlayer player, T message) {
-        Pair<ResourceLocation, FriendlyByteBuf> encoded = encode(NetworkManager.s2c(), message);
-        NetworkManager.sendToPlayer(player, encoded.getLeft(), encoded.getRight());
+        player.connection.send(toPacket(NetworkManager.s2c(), message));
     }
     
     public <T> void sendToPlayers(Iterable<ServerPlayer> players, T message) {
@@ -125,10 +141,24 @@ public final class NetworkChannel {
     
     @Environment(EnvType.CLIENT)
     public <T> boolean canServerReceive(Class<T> type) {
-        return NetworkManager.canServerReceive(encoders.get(NetworkManager.c2s(), type).getLeft());
+        return NetworkManager.canServerReceive(encoders.get(type).packetId);
     }
     
     public <T> boolean canPlayerReceive(ServerPlayer player, Class<T> type) {
-        return NetworkManager.canPlayerReceive(player, encoders.get(NetworkManager.s2c(), type).getLeft());
+        return NetworkManager.canPlayerReceive(player, encoders.get(type).packetId);
+    }
+    
+    private static final class MessageInfo<T> {
+        private final ResourceLocation packetId;
+        private final BiConsumer<T, FriendlyByteBuf> encoder;
+        private final Function<FriendlyByteBuf, T> decoder;
+        private final BiConsumer<T, Supplier<PacketContext>> messageConsumer;
+        
+        public MessageInfo(ResourceLocation packetId, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<PacketContext>> messageConsumer) {
+            this.packetId = packetId;
+            this.encoder = encoder;
+            this.decoder = decoder;
+            this.messageConsumer = messageConsumer;
+        }
     }
 }
