@@ -49,6 +49,14 @@ public class DebugEvents {
     }
     
     public static void debugEvents() {
+        BlockEvent.BREAK.register((world, pos, state, player, xp) -> {
+            SINK.accept(player.getScoreboardName() + " breaks " + toShortString(pos) + logSide(player.level));
+            return InteractionResult.PASS;
+        });
+        BlockEvent.PLACE.register((world, pos, state, placer) -> {
+            SINK.accept(Optional.ofNullable(placer).map(Entity::getScoreboardName).orElse("null") + " places block at " + toShortString(pos) + logSide(world));
+            return InteractionResult.PASS;
+        });
         ChatEvent.SERVER.register((player, message, component) -> {
             SINK.accept("Server chat received: " + message);
             return InteractionResultHolder.pass(component);
@@ -76,10 +84,6 @@ public class DebugEvents {
             if (entity instanceof Player) {
                 SINK.accept(entity.getScoreboardName() + " was added to " + level.dimension().location().toString() + logSide(level));
             }
-            return InteractionResult.PASS;
-        });
-        EntityEvent.PLACE_BLOCK.register((world, pos, state, placer) -> {
-            SINK.accept(Optional.ofNullable(placer).map(Entity::getScoreboardName).orElse("null") + " places block at " + toShortString(pos) + logSide(world));
             return InteractionResult.PASS;
         });
         ExplosionEvent.DETONATE.register((world, explosion, affectedEntities) -> {
@@ -153,10 +157,6 @@ public class DebugEvents {
         });
         PlayerEvent.DROP_ITEM.register((player, entity) -> {
             SINK.accept(player.getScoreboardName() + " drops " + new TranslatableComponent(entity.getItem().getDescriptionId()).getString() + logSide(player.level));
-            return InteractionResult.PASS;
-        });
-        PlayerEvent.BREAK_BLOCK.register((world, pos, state, player, xp) -> {
-            SINK.accept(player.getScoreboardName() + " breaks " + toShortString(pos) + logSide(player.level));
             return InteractionResult.PASS;
         });
         PlayerEvent.OPEN_MENU.register((player, menu) -> {

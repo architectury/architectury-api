@@ -28,6 +28,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 public interface EntityEvent {
@@ -43,6 +44,12 @@ public interface EntityEvent {
      * Invoked before entity is added to a world, equivalent to forge's {@code EntityJoinWorldEvent}.
      */
     Event<Add> ADD = EventFactory.createInteractionResult();
+    
+    /**
+     * @deprecated use {@link BlockEvent#PLACE}
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     Event<PlaceBlock> PLACE_BLOCK = EventFactory.createInteractionResult();
     
     interface LivingDeath {

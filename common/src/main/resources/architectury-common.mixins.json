@@ -1,0 +1,16 @@
+{
+    "required": true,
+    "package": "me.shedaniel.architectury.mixin",
+    "compatibilityLevel": "JAVA_8",
+    "minVersion": "0.7.11",
+    "client": [
+    ],
+    "mixins": [
+        "MixinFallingBlock",
+        "MixinLightningBolt"
+    ],
+    "injectors": {
+        "maxShiftBy": 5,
+        "defaultRequire": 1
+    }
+}

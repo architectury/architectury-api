@@ -44,7 +44,8 @@ import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.*;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.event.world.BlockEvent.BreakEvent;
+import net.minecraftforge.event.world.BlockEvent.EntityPlaceEvent;
 import net.minecraftforge.event.world.ExplosionEvent.Detonate;
 import net.minecraftforge.event.world.ExplosionEvent.Start;
 import net.minecraftforge.event.world.WorldEvent;
@@ -288,9 +289,9 @@ public class EventHandlerImplCommon {
     }
     
     @SubscribeEvent
-    public static void event(BlockEvent.BreakEvent event) {
+    public static void event(BreakEvent event) {
         if (event.getPlayer() instanceof ServerPlayer && event.getWorld() instanceof Level) {
-            InteractionResult result = PlayerEvent.BREAK_BLOCK.invoker().breakBlock((Level) event.getWorld(), event.getPos(), event.getState(), (ServerPlayer) event.getPlayer(), new IntValue() {
+            InteractionResult result = BlockEvent.BREAK.invoker().breakBlock((Level) event.getWorld(), event.getPos(), event.getState(), (ServerPlayer) event.getPlayer(), new IntValue() {
                 @Override
                 public int getAsInt() {
                     return event.getExpToDrop();
@@ -308,9 +309,9 @@ public class EventHandlerImplCommon {
     }
     
     @SubscribeEvent
-    public static void event(BlockEvent.EntityPlaceEvent event) {
+    public static void event(EntityPlaceEvent event) {
         if (event.getWorld() instanceof Level) {
-            InteractionResult result = EntityEvent.PLACE_BLOCK.invoker().placeBlock((Level) event.getWorld(), event.getPos(), event.getState(), event.getEntity());
+            InteractionResult result = BlockEvent.PLACE.invoker().placeBlock((Level) event.getWorld(), event.getPos(), event.getState(), event.getEntity());
             if (result != InteractionResult.PASS) {
                 event.setCanceled(true);
             }

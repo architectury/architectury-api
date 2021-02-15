@@ -34,6 +34,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 public interface PlayerEvent {
@@ -50,6 +51,12 @@ public interface PlayerEvent {
     Event<DropItem> DROP_ITEM = EventFactory.createLoop();
     Event<OpenMenu> OPEN_MENU = EventFactory.createLoop();
     Event<CloseMenu> CLOSE_MENU = EventFactory.createLoop();
+    
+    /**
+     * @deprecated use {@link BlockEvent#BREAK}
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     Event<BreakBlock> BREAK_BLOCK = EventFactory.createInteractionResult();
     
     interface PlayerJoin {
