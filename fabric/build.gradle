@@ -68,9 +68,10 @@ remapJar {
 publishing {
     publications {
         mavenFabric(MavenPublication) {
+            artifactId = rootProject.archives_base_name + "-fabric"
             artifact(remapJar.archivePath) {
                 builtBy build
-                classifier "fabric"
+                classifier null
             }
         }
     }
