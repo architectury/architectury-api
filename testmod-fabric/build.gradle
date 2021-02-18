@@ -5,6 +5,7 @@ plugins {
 
 architectury {
     platformSetupLoomIde()
+    fabric()
 }
 
 dependencies {
@@ -15,16 +16,16 @@ dependencies {
     modCompileOnly "io.github.prospector:modmenu:${rootProject.mod_menu_version}"
 
     implementation project(path: ":fabric", configuration: "dev")
-    compileOnly(project(path: ":common")) {
+    implementation(project(path: ":common")) {
         transitive = false
     }
-    runtimeOnly(project(path: ":common", configuration: "transformDevelopmentFabric")) {
+    developmentFabric(project(path: ":common")) {
         transitive = false
     }
-    compileOnly(project(path: ":testmod-common")) {
+    implementation(project(path: ":testmod-common")) {
         transitive = false
     }
-    runtimeOnly(project(path: ":testmod-common", configuration: "transformDevelopmentFabric")) {
+    developmentFabric(project(path: ":testmod-common")) {
         transitive = false
     }
 }

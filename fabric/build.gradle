@@ -24,6 +24,7 @@ artifacts {
 
 architectury {
     platformSetupLoomIde()
+    fabric()
 }
 
 dependencies {
@@ -35,10 +36,10 @@ dependencies {
     implementation "net.jodah:typetools:0.6.2"
     shadow "net.jodah:typetools:0.6.2"
 
-    compileOnly(project(path: ":common")) {
+    implementation(project(path: ":common")) {
         transitive = false
     }
-    runtimeOnly(project(path: ":common", configuration: "transformDevelopmentFabric")) {
+    developmentFabric(project(path: ":common")) {
         transitive = false
     }
     shadow(project(path: ":common", configuration: "transformProductionFabric")) {
