@@ -25,6 +25,7 @@ import net.minecraft.tags.TagCollection;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public class TagHooksImpl {
@@ -37,12 +38,12 @@ public class TagHooksImpl {
             public ResourceLocation getName() {
                 return id;
             }
-    
+            
             @Override
             public boolean contains(T object) {
                 return getBackend().contains(object);
             }
-    
+            
             @Override
             public List<T> getValues() {
                 return getBackend().getValues();
@@ -50,13 +51,28 @@ public class TagHooksImpl {
             
             private Tag<T> getBackend() {
                 TagCollection<T> currentCollection = collection.get();
-    
+                
                 if (backend == null || backendCollection == null || backendCollection.get() != currentCollection) { // If not initialized or was tag changed.
                     backendCollection = new WeakReference<>(currentCollection);
                     return backend = currentCollection.getTagOrEmpty(id);
                 } else {
                     return backend;
                 }
+            }
+            
+            @Override
+            public String toString() {
+                return "OptionalNamedTag[" + getName().toString() + ']';
+            }
+            
+            @Override
+            public boolean equals(Object o) {
+                return o == this || o instanceof Named && Objects.equals(getName(), ((Named) o).getName());
+            }
+            
+            @Override
+            public int hashCode() {
+                return getName().hashCode();
             }
         };
     }
