@@ -19,6 +19,7 @@
 
 package me.shedaniel.architectury.registry.forge;
 
+import me.shedaniel.architectury.mixin.forge.GameRulesAccessor;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.GameRules;
 
@@ -26,20 +27,20 @@ import java.util.function.BiConsumer;
 
 public class GameRuleFactoryImpl {
     private GameRuleFactoryImpl() {}
-
+    
     public static GameRules.Type<GameRules.BooleanValue> createBooleanRule(boolean defaultValue) {
-        return GameRules.BooleanValue.create(defaultValue);
+        return GameRulesAccessor.BooleanValueSimple.invokeCreateArchitectury(defaultValue);
     }
-
+    
     public static GameRules.Type<GameRules.BooleanValue> createBooleanRule(boolean defaultValue, BiConsumer<MinecraftServer, GameRules.BooleanValue> changedCallback) {
-        return GameRules.BooleanValue.create(defaultValue, changedCallback);
+        return GameRulesAccessor.BooleanValue.invokeCreateArchitectury(defaultValue, changedCallback);
     }
-
+    
     public static GameRules.Type<GameRules.IntegerValue> createIntRule(int defaultValue) {
-        return GameRules.IntegerValue.create(defaultValue);
+        return GameRulesAccessor.IntegerValueSimple.invokeCreateArchitectury(defaultValue);
     }
-
+    
     public static GameRules.Type<GameRules.IntegerValue> createIntRule(int defaultValue, BiConsumer<MinecraftServer, GameRules.IntegerValue> changedCallback) {
-        return GameRules.IntegerValue.create(defaultValue, changedCallback);
+        return GameRulesAccessor.IntegerValue.invokeCreateArchitectury(defaultValue, changedCallback);
     }
 }
