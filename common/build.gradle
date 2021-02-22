@@ -20,16 +20,6 @@ task sourcesJar(type: Jar, dependsOn: classes) {
     from sourceSets.main.allSource
 }
 
-task javadocs(type: Javadoc) {
-    source = sourceSets.main.allJava
-}
-
-task javadocsJar(type: Jar, dependsOn: javadocs) {
-    archiveClassifier.set("javadocs")
-    javadocs.failOnError false
-    from javadocs.destinationDir
-}
-
 publishing {
     publications {
         mavenCommon(MavenPublication) {
@@ -39,7 +29,6 @@ publishing {
             artifact(sourcesJar) {
                 builtBy remapSourcesJar
             }
-            artifact javadocsJar
         }
     }
 

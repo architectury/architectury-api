@@ -1,16 +1,13 @@
 {
-    "required": true,
-    "package": "me.shedaniel.architectury.mixin",
-    "compatibilityLevel": "JAVA_8",
-    "minVersion": "0.7.11",
-    "client": [
-    ],
-    "mixins": [
-        "BlockLandingInvoker",
-        "MixinLightningBolt"
-    ],
-    "injectors": {
-        "maxShiftBy": 5,
-        "defaultRequire": 1
-    }
+  "required": true,
+  "package": "me.shedaniel.architectury.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "minVersion": "0.7.11",
+  "client": [
+  ],
+  "mixins": ["BlockLandingInvoker", "FluidTagsAccessor", "MixinLightningBolt"],
+  "injectors": {
+    "maxShiftBy": 5,
+    "defaultRequire": 1
+  }
 }
