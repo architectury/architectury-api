@@ -1,9 +1,3 @@
-import com.github.jengelman.gradle.plugins.shadow.transformers.Transformer
-import com.github.jengelman.gradle.plugins.shadow.transformers.TransformerContext
-import shadow.org.apache.tools.zip.ZipEntry
-import shadow.org.apache.tools.zip.ZipOutputStream
-import shadow.org.codehaus.plexus.util.IOUtil
-
 plugins {
     id "com.github.johnrengelman.shadow" version "5.0.0"
     id "com.matthewprenger.cursegradle"
