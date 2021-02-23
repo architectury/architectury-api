@@ -42,7 +42,9 @@ public interface MixinBlockEntityExtension extends BlockEntityClientSerializable
     default void fromClientTag(CompoundTag tag) {
         BlockEntity entity = (BlockEntity) this;
         if (entity.hasLevel()) {
-            entity.setLevelAndPosition(entity.getLevel(), new BlockPos(tag.getInt("x"), tag.getInt("y"), tag.getInt("z")));
+            if (tag.contains("x") && tag.contains("y") && tag.contains("z")) {
+                entity.setLevelAndPosition(entity.getLevel(), new BlockPos(tag.getInt("x"), tag.getInt("y"), tag.getInt("z")));
+            }
             loadClientData(entity.getBlockState(), tag);
         }
     }
