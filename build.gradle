@@ -28,14 +28,6 @@ allprojects {
         isSnapshot = System.getenv("PR_NUM") != null
     }
     
-    architectury {
-        transformerVersion = "2.0.9999"
-    }
-    
-    repositories {
-        mavenLocal()
-    }
-    
     def runNumber = (System.getenv("GITHUB_RUN_NUMBER") == null ? "9999" : System.getenv("GITHUB_RUN_NUMBER"))
 
     if (!ext.isSnapshot) {
