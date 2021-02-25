@@ -20,7 +20,6 @@
 package me.shedaniel.architectury.networking;
 
 import com.google.common.collect.Maps;
-import com.mojang.datafixers.util.Pair;
 import io.netty.buffer.Unpooled;
 import me.shedaniel.architectury.networking.NetworkManager.PacketContext;
 import me.shedaniel.architectury.platform.Platform;
@@ -111,32 +110,31 @@ public final class NetworkChannel {
         register(type, encoder, decoder, messageConsumer);
     }
     
-    private <T> Pair<MessageInfo<T>, FriendlyByteBuf> encode(T message) {
-        MessageInfo<T> messageInfo = (MessageInfo<T>) Objects.requireNonNull(encoders.get(message.getClass()));
+    public <T> Packet<?> toPacket(NetworkManager.Side side, T message) {
+        MessageInfo<T> messageInfo = (MessageInfo<T>) Objects.requireNonNull(encoders.get(message.getClass()), "Unknown message type! " + message);
         FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
         messageInfo.encoder.accept(message, buf);
-        return new Pair<>(messageInfo, buf);
-    }
-    
-    public <T> Packet<?> toPacket(NetworkManager.Side side, T message) {
-        Pair<MessageInfo<T>, FriendlyByteBuf> encoded = encode(message);
-        return NetworkManager.toPacket(side, encoded.getFirst().packetId, encoded.getSecond());
+        return NetworkManager.toPacket(side, messageInfo.packetId, buf);
     }
     
     public <T> void sendToPlayer(ServerPlayer player, T message) {
-        player.connection.send(toPacket(NetworkManager.s2c(), message));
+        Objects.requireNonNull(player, "Unable to send packet to a 'null' player!").connection.send(toPacket(NetworkManager.s2c(), message));
     }
     
     public <T> void sendToPlayers(Iterable<ServerPlayer> players, T message) {
         Packet<?> packet = toPacket(NetworkManager.s2c(), message);
         for (ServerPlayer player : players) {
-            player.connection.send(packet);
+            Objects.requireNonNull(player, "Unable to send packet to a 'null' player!").connection.send(packet);
         }
     }
     
     @Environment(EnvType.CLIENT)
     public <T> void sendToServer(T message) {
-        Minecraft.getInstance().getConnection().send(toPacket(NetworkManager.c2s(), message));
+        if (Minecraft.getInstance().getConnection() != null) {
+            Minecraft.getInstance().getConnection().send(toPacket(NetworkManager.c2s(), message));
+        } else {
+            throw new IllegalStateException("Unable to send packet to the server while not in game!");
+        }
     }
     
     @Environment(EnvType.CLIENT)
