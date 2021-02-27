@@ -24,20 +24,10 @@ import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(BlockEntityExtension.class)
 public interface MixinBlockEntityExtension extends BlockEntityClientSerializable {
-    @Shadow(remap = false)
-    @NotNull
-    CompoundTag saveClientData(@NotNull CompoundTag tag);
-    
-    @Shadow(remap = false)
-    void loadClientData(@NotNull BlockState pos, @NotNull CompoundTag tag);
-    
     @Override
     default void fromClientTag(CompoundTag tag) {
         BlockEntity entity = (BlockEntity) this;
@@ -45,12 +35,12 @@ public interface MixinBlockEntityExtension extends BlockEntityClientSerializable
             if (tag.contains("x") && tag.contains("y") && tag.contains("z")) {
                 entity.setLevelAndPosition(entity.getLevel(), new BlockPos(tag.getInt("x"), tag.getInt("y"), tag.getInt("z")));
             }
-            loadClientData(entity.getBlockState(), tag);
+            ((BlockEntityExtension) this).loadClientData(entity.getBlockState(), tag);
         }
     }
     
     @Override
     default CompoundTag toClientTag(CompoundTag tag) {
-        return saveClientData(tag);
+        return ((BlockEntityExtension) this).saveClientData(tag);
     }
 }

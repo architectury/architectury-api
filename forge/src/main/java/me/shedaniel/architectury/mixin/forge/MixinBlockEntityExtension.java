@@ -26,22 +26,17 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.extensions.IForgeTileEntity;
-import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(BlockEntityExtension.class)
 public interface MixinBlockEntityExtension extends IForgeTileEntity {
-    @Shadow(remap = false)
-    void loadClientData(@NotNull BlockState pos, @NotNull CompoundTag tag);
-    
     @Override
     default void handleUpdateTag(BlockState state, CompoundTag tag) {
-        loadClientData(state, tag);
+        ((BlockEntityExtension) this).loadClientData(state, tag);
     }
     
     @Override
     default void onDataPacket(Connection connection, ClientboundBlockEntityDataPacket packet) {
-        loadClientData(((BlockEntity) this).getBlockState(), packet.getTag());
+        ((BlockEntityExtension) this).loadClientData(((BlockEntity) this).getBlockState(), packet.getTag());
     }
 }
