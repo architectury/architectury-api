@@ -8,7 +8,7 @@ loom {
 }
 
 configurations {
-    shadow
+    shadowCommon
     dev
 }
 
@@ -28,7 +28,7 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
     modCompileOnly "io.github.prospector:modmenu:${rootProject.mod_menu_version}"
     implementation "net.jodah:typetools:0.6.2"
-    shadow "net.jodah:typetools:0.6.2"
+    shadowCommon "net.jodah:typetools:0.6.2"
 
     implementation(project(path: ":common")) {
         transitive = false
@@ -36,7 +36,7 @@ dependencies {
     developmentFabric(project(path: ":common")) {
         transitive = false
     }
-    shadow(project(path: ":common", configuration: "transformProductionFabric")) {
+    shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) {
         transitive = false
     }
 }
@@ -50,7 +50,7 @@ processResources {
 
 shadowJar {
     relocate "net.jodah.typetools", "me.shedaniel.architectury.shadowed.impl.net.jodah.typetools"
-    configurations = [project.configurations.shadow]
+    configurations = [project.configurations.shadowCommon]
     classifier "shadow"
 }
 

@@ -8,7 +8,7 @@ loom {
 }
 
 configurations {
-    shadow
+    shadowCommon
     dev
 }
 
@@ -26,7 +26,7 @@ dependencies {
     mappings loom.officialMojangMappings()
     forge "net.minecraftforge:forge:${rootProject.architectury.minecraft}-${rootProject.forge_version}"
     implementation "net.jodah:typetools:0.6.2"
-    shadow "net.jodah:typetools:0.6.2"
+    shadowCommon "net.jodah:typetools:0.6.2"
 
     implementation(project(path: ":common")) {
         transitive = false
@@ -34,7 +34,7 @@ dependencies {
     developmentForge(project(path: ":common")) {
         transitive = false
     }
-    shadow(project(path: ":common", configuration: "transformProductionForge")) {
+    shadowCommon(project(path: ":common", configuration: "transformProductionForge")) {
         transitive = false
     }
 }
@@ -51,7 +51,7 @@ shadowJar {
     exclude "fabric.mod.json"
     exclude "architectury-common.accessWidener"
 
-    configurations = [project.configurations.shadow]
+    configurations = [project.configurations.shadowCommon]
     classifier "shadow"
 }
 
