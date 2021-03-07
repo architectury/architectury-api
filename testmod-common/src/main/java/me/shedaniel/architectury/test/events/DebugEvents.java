@@ -168,6 +168,9 @@ public class DebugEvents {
         PlayerEvent.CHANGE_DIMENSION.register((player, oldLevel, newLevel) -> {
             SINK.accept(player.getScoreboardName() + " switched from " + oldLevel.location() + " to " + newLevel.location() + logSide(player.level));
         });
+        LightningEvent.STRIKE.register((bolt, level, pos, toStrike) -> {
+            SINK.accept(bolt.getScoreboardName() + " struck at " + toShortString(pos) + logSide(level));
+        });
     }
     
     public static String toShortString(Vec3i pos) {
