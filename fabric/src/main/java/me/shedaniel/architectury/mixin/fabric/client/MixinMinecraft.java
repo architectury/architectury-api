@@ -74,10 +74,11 @@ public abstract class MixinMinecraft {
     
     @ModifyVariable(
             method = "setScreen",
-            at = @At(value = "INVOKE",
-                     target = "Lnet/minecraft/client/player/LocalPlayer;respawn()V",
+            at = @At(value = "FIELD",
+                     opcode = Opcodes.PUTFIELD,
+                     target = "Lnet/minecraft/client/Minecraft;screen:Lnet/minecraft/client/gui/screens/Screen;",
                      shift = At.Shift.BY,
-                     by = 2),
+                     by = -1),
             argsOnly = true
     )
     public Screen modifyScreen(Screen screen) {
