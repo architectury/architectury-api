@@ -23,40 +23,35 @@ import me.shedaniel.architectury.event.events.GuiEvent;
 import me.shedaniel.architectury.event.events.InteractionEvent;
 import me.shedaniel.architectury.event.events.client.ClientPlayerEvent;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.ConnectScreen;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.TitleScreen;
-import net.minecraft.client.main.GameConfig;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.Nullable;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-
-import java.io.File;
 
 @Unique
 @Mixin(Minecraft.class)
 public abstract class MixinMinecraft {
-    // @formatter:off
     @Shadow @Nullable public LocalPlayer player;
-
+    
     @Shadow @Nullable public HitResult hitResult;
-
-    @Shadow public abstract void setScreen(@Nullable Screen screen);
-
-    private boolean setScreenCancelled;
-
-    private String hostname;
-    private int port;
-    // @formatter:on
+    
+    @Shadow
+    public abstract void setScreen(@Nullable Screen screen);
+    
+    @Unique
+    private ThreadLocal<Boolean> setScreenCancelled = new ThreadLocal<>();
     
     @Inject(method = "clearLevel(Lnet/minecraft/client/gui/screens/Screen;)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/chat/NarratorChatListener;clear()V"))
@@ -80,9 +75,9 @@ public abstract class MixinMinecraft {
     @ModifyVariable(
             method = "setScreen",
             at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/client/player/LocalPlayer;respawn()V",
-                    shift = At.Shift.BY,
-                    by = 2),
+                     target = "Lnet/minecraft/client/player/LocalPlayer;respawn()V",
+                     shift = At.Shift.BY,
+                     by = 2),
             argsOnly = true
     )
     public Screen modifyScreen(Screen screen) {
@@ -90,7 +85,7 @@ public abstract class MixinMinecraft {
         InteractionResultHolder<Screen> event = GuiEvent.SET_SCREEN.invoker().modifyScreen(screen);
         switch (event.getResult()) {
             case FAIL:
-                setScreenCancelled = true;
+                setScreenCancelled.set(true);
                 return old;
             case SUCCESS:
                 screen = event.getObject();
@@ -98,56 +93,24 @@ public abstract class MixinMinecraft {
                     old.removed();
                 }
             default:
-                setScreenCancelled = false;
+                setScreenCancelled.set(false);
                 return screen;
         }
     }
     
     @Inject(
             method = "setScreen",
-            at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/client/player/LocalPlayer;respawn()V",
-                    shift = At.Shift.BY,
-                    by = 3),
+            at = @At(value = "FIELD",
+                     opcode = Opcodes.PUTFIELD,
+                     target = "Lnet/minecraft/client/Minecraft;screen:Lnet/minecraft/client/gui/screens/Screen;",
+                     shift = At.Shift.BY,
+                     by = -1),
             cancellable = true
     )
     public void cancelSetScreen(@Nullable Screen screen, CallbackInfo ci) {
-        if (setScreenCancelled) {
+        if (setScreenCancelled.get()) {
             ci.cancel();
-        }
-    }
-    
-    @Redirect(
-            method = "<init>",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;setScreen(Lnet/minecraft/client/gui/screens/Screen;)V"),
-            slice = @Slice(
-                    from = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;resizeDisplay()V"),
-                    to = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/LoadingOverlay;registerTextures(Lnet/minecraft/client/Minecraft;)V")
-            )
-    )
-    public void minecraftWhy(Minecraft mc, Screen screen) {
-    }
-    
-    @Inject(
-            method = "<init>",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;resizeDisplay()V"),
-            locals = LocalCapture.CAPTURE_FAILHARD
-    )
-    public void saveLocals(GameConfig gc, CallbackInfo ci, File f, String string2, int j) {
-        hostname = string2;
-        port = j;
-    }
-    
-    @SuppressWarnings({"UnresolvedMixinReference", "ConstantConditions"})
-    @Inject(
-            method = {"method_29338", "lambda$null$1"}, // <init>.lambda$null$1
-            at = @At("RETURN")
-    )
-    public void registerMainScreens(CallbackInfo ci) {
-        if (hostname != null) {
-            setScreen(new ConnectScreen(new TitleScreen(), (Minecraft) ((Object) this), hostname, port));
-        } else {
-            setScreen(new TitleScreen(true));
+            setScreenCancelled.set(false);
         }
     }
 }

@@ -27,6 +27,7 @@ import me.shedaniel.architectury.platform.Platform;
 import me.shedaniel.architectury.utils.Env;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.core.Position;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -211,10 +212,6 @@ public class DebugEvents {
         ClientPlayerEvent.CLIENT_PLAYER_RESPAWN.register((oldPlayer, newPlayer) -> {
             SINK.accept(newPlayer.getScoreboardName() + " respawned (client)");
         });
-        GuiEvent.SET_SCREEN.register((screen -> {
-            SINK.accept("Screen has been changed to " + toSimpleName(screen));
-            return InteractionResultHolder.pass(screen);
-        }));
         GuiEvent.INIT_PRE.register((screen, widgets, children) -> {
             SINK.accept(toSimpleName(screen) + " initializes");
             return InteractionResult.PASS;
@@ -270,6 +267,14 @@ public class DebugEvents {
         ClientRawInputEvent.KEY_PRESSED.register((client, keyCode, scanCode, action, modifiers) -> {
             SINK.accept("Raw Key pressed: " + InputConstants.getKey(keyCode, scanCode).getDisplayName().getString());
             return InteractionResult.PASS;
+        });
+        GuiEvent.SET_SCREEN.register(screen -> {
+            if (screen instanceof ChatScreen) {
+                return InteractionResultHolder.fail(screen);
+            }
+            
+            SINK.accept("Screen has been changed to " + toSimpleName(screen));
+            return InteractionResultHolder.pass(screen);
         });
     }
     
