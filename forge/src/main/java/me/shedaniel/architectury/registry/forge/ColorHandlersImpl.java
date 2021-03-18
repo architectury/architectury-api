@@ -40,17 +40,20 @@ public class ColorHandlersImpl {
     
     static {
         EventBuses.onRegistered(ArchitecturyForge.MOD_ID, bus -> {
-            bus.<ColorHandlerEvent.Item>addListener(event -> {
-                for (Pair<ItemColor, Supplier<ItemLike>[]> pair : ITEM_COLORS) {
-                    event.getItemColors().register(pair.getLeft(), unpackItems(pair.getRight()));
-                }
-            });
-            bus.<ColorHandlerEvent.Block>addListener(event -> {
-                for (Pair<BlockColor, Supplier<Block>[]> pair : BLOCK_COLORS) {
-                    event.getBlockColors().register(pair.getLeft(), unpackBlocks(pair.getRight()));
-                }
-            });
+            bus.register(ColorHandlersImpl.class);
         });
+    }
+    
+    public static void onItemColorEvent(ColorHandlerEvent.Item event) {
+        for (Pair<ItemColor, Supplier<ItemLike>[]> pair : ITEM_COLORS) {
+            event.getItemColors().register(pair.getLeft(), unpackItems(pair.getRight()));
+        }
+    }
+    
+    public static void onBlockColorEvent(ColorHandlerEvent.Block event) {
+        for (Pair<BlockColor, Supplier<Block>[]> pair : BLOCK_COLORS) {
+            event.getBlockColors().register(pair.getLeft(), unpackBlocks(pair.getRight()));
+        }
     }
     
     @SafeVarargs
