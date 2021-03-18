@@ -22,6 +22,7 @@ package me.shedaniel.architectury.networking.forge;
 
 import com.google.common.collect.*;
 import io.netty.buffer.Unpooled;
+import me.shedaniel.architectury.forge.ArchitecturyForge;
 import me.shedaniel.architectury.networking.NetworkManager;
 import me.shedaniel.architectury.networking.NetworkManager.NetworkReceiver;
 import me.shedaniel.architectury.utils.Env;
@@ -34,8 +35,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
@@ -49,6 +52,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
+@Mod.EventBusSubscriber(modid = ArchitecturyForge.MOD_ID)
 public class NetworkManagerImpl {
     public static void registerReceiver(NetworkManager.Side side, ResourceLocation id, NetworkReceiver receiver) {
         if (side == NetworkManager.Side.C2S) {
@@ -78,9 +82,6 @@ public class NetworkManagerImpl {
         CHANNEL.addListener(createPacketHandler(NetworkEvent.ClientCustomPayloadEvent.class, C2S));
         
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> ClientNetworkingManager::initClient);
-        
-        MinecraftForge.EVENT_BUS.<PlayerEvent.PlayerLoggedInEvent>addListener(event -> NetworkManager.sendToPlayer((ServerPlayer) event.getPlayer(), SYNC_IDS, sendSyncPacket(C2S)));
-        MinecraftForge.EVENT_BUS.<PlayerEvent.PlayerLoggedOutEvent>addListener(event -> clientReceivables.removeAll(event.getPlayer()));
         
         registerC2SReceiver(SYNC_IDS, (buffer, context) -> {
             Set<ResourceLocation> receivables = (Set<ResourceLocation>) clientReceivables.get(context.getPlayer());
@@ -156,5 +157,15 @@ public class NetworkManagerImpl {
             packetBuffer.writeResourceLocation(availableId);
         }
         return packetBuffer;
+    }
+    
+    @SubscribeEvent
+    public static void loggedIn(PlayerEvent.PlayerLoggedInEvent event) {
+        NetworkManager.sendToPlayer((ServerPlayer) event.getPlayer(), SYNC_IDS, sendSyncPacket(C2S));
+    }
+    
+    @SubscribeEvent
+    public static void loggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
+        clientReceivables.removeAll(event.getPlayer());
     }
 }
