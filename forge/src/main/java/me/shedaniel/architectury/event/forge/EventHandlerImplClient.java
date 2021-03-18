@@ -118,8 +118,8 @@ public class EventHandlerImplClient {
     }
     
     @SubscribeEvent
-    public static void event(WorldEvent.Save event) {
-        if (event.getWorld() instanceof ClientLevel) {
+    public static void event(WorldEvent.Load event) {
+        if (event.getWorld().isClientSide()) {
             ClientLevel world = (ClientLevel) event.getWorld();
             ClientLifecycleEvent.CLIENT_WORLD_LOAD.invoker().act(world);
         }
