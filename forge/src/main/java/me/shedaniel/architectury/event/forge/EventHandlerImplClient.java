@@ -81,7 +81,7 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent
     public static void event(GuiScreenEvent.InitGuiEvent.Pre event) {
-        if (GuiEvent.INIT_PRE.invoker().init(event.getGui(), event.getWidgetList(), (List<GuiEventListener>) event.getGui().children()) == InteractionResult.FAIL) {
+        if (GuiEvent.INIT_PRE.invoker().init(event.getGui(), event.getWidgetList(), (List<GuiEventListener>) event.getGui().children()) != InteractionResult.PASS) {
             event.setCanceled(true);
         }
     }
@@ -139,7 +139,7 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent
     public static void event(GuiScreenEvent.DrawScreenEvent.Pre event) {
-        if (GuiEvent.RENDER_PRE.invoker().render(event.getGui(), event.getMatrixStack(), event.getMouseX(), event.getMouseY(), event.getRenderPartialTicks()) == InteractionResult.FAIL) {
+        if (GuiEvent.RENDER_PRE.invoker().render(event.getGui(), event.getMatrixStack(), event.getMouseX(), event.getMouseY(), event.getRenderPartialTicks()) != InteractionResult.PASS) {
             event.setCanceled(true);
         }
     }
@@ -196,7 +196,7 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent
     public static void event(GuiScreenEvent.MouseScrollEvent.Pre event) {
-        if (ClientScreenInputEvent.MOUSE_SCROLLED_PRE.invoker().mouseScrolled(Minecraft.getInstance(), event.getGui(), event.getMouseX(), event.getMouseY(), event.getScrollDelta()) == InteractionResult.FAIL) {
+        if (ClientScreenInputEvent.MOUSE_SCROLLED_PRE.invoker().mouseScrolled(Minecraft.getInstance(), event.getGui(), event.getMouseX(), event.getMouseY(), event.getScrollDelta()) != InteractionResult.PASS) {
             event.setCanceled(true);
         }
     }
@@ -208,7 +208,7 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent
     public static void event(GuiScreenEvent.MouseClickedEvent.Pre event) {
-        if (ClientScreenInputEvent.MOUSE_CLICKED_PRE.invoker().mouseClicked(Minecraft.getInstance(), event.getGui(), event.getMouseX(), event.getMouseY(), event.getButton()) == InteractionResult.FAIL) {
+        if (ClientScreenInputEvent.MOUSE_CLICKED_PRE.invoker().mouseClicked(Minecraft.getInstance(), event.getGui(), event.getMouseX(), event.getMouseY(), event.getButton()) != InteractionResult.PASS) {
             event.setCanceled(true);
         }
     }
@@ -220,7 +220,7 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent
     public static void event(GuiScreenEvent.MouseDragEvent.Pre event) {
-        if (ClientScreenInputEvent.MOUSE_DRAGGED_PRE.invoker().mouseDragged(Minecraft.getInstance(), event.getGui(), event.getMouseX(), event.getMouseY(), event.getMouseButton(), event.getDragX(), event.getDragY()) == InteractionResult.FAIL) {
+        if (ClientScreenInputEvent.MOUSE_DRAGGED_PRE.invoker().mouseDragged(Minecraft.getInstance(), event.getGui(), event.getMouseX(), event.getMouseY(), event.getMouseButton(), event.getDragX(), event.getDragY()) != InteractionResult.PASS) {
             event.setCanceled(true);
         }
     }
@@ -232,7 +232,7 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent
     public static void event(GuiScreenEvent.MouseReleasedEvent.Pre event) {
-        if (ClientScreenInputEvent.MOUSE_RELEASED_PRE.invoker().mouseReleased(Minecraft.getInstance(), event.getGui(), event.getMouseX(), event.getMouseY(), event.getButton()) == InteractionResult.FAIL) {
+        if (ClientScreenInputEvent.MOUSE_RELEASED_PRE.invoker().mouseReleased(Minecraft.getInstance(), event.getGui(), event.getMouseX(), event.getMouseY(), event.getButton()) != InteractionResult.PASS) {
             event.setCanceled(true);
         }
     }
@@ -244,7 +244,7 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent
     public static void event(GuiScreenEvent.KeyboardCharTypedEvent.Pre event) {
-        if (ClientScreenInputEvent.CHAR_TYPED_PRE.invoker().charTyped(Minecraft.getInstance(), event.getGui(), event.getCodePoint(), event.getModifiers()) == InteractionResult.FAIL) {
+        if (ClientScreenInputEvent.CHAR_TYPED_PRE.invoker().charTyped(Minecraft.getInstance(), event.getGui(), event.getCodePoint(), event.getModifiers()) != InteractionResult.PASS) {
             event.setCanceled(true);
         }
     }
@@ -256,7 +256,7 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent
     public static void event(GuiScreenEvent.KeyboardKeyPressedEvent.Pre event) {
-        if (ClientScreenInputEvent.KEY_PRESSED_PRE.invoker().keyPressed(Minecraft.getInstance(), event.getGui(), event.getKeyCode(), event.getScanCode(), event.getModifiers()) == InteractionResult.FAIL) {
+        if (ClientScreenInputEvent.KEY_PRESSED_PRE.invoker().keyPressed(Minecraft.getInstance(), event.getGui(), event.getKeyCode(), event.getScanCode(), event.getModifiers()) != InteractionResult.PASS) {
             event.setCanceled(true);
         }
     }
@@ -268,7 +268,7 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent
     public static void event(GuiScreenEvent.KeyboardKeyReleasedEvent.Pre event) {
-        if (ClientScreenInputEvent.KEY_RELEASED_PRE.invoker().keyReleased(Minecraft.getInstance(), event.getGui(), event.getKeyCode(), event.getScanCode(), event.getModifiers()) == InteractionResult.FAIL) {
+        if (ClientScreenInputEvent.KEY_RELEASED_PRE.invoker().keyReleased(Minecraft.getInstance(), event.getGui(), event.getKeyCode(), event.getScanCode(), event.getModifiers()) != InteractionResult.PASS) {
             event.setCanceled(true);
         }
     }
@@ -280,14 +280,14 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent
     public static void event(InputEvent.MouseScrollEvent event) {
-        if (ClientRawInputEvent.MOUSE_SCROLLED.invoker().mouseScrolled(Minecraft.getInstance(), event.getScrollDelta()) == InteractionResult.FAIL) {
+        if (ClientRawInputEvent.MOUSE_SCROLLED.invoker().mouseScrolled(Minecraft.getInstance(), event.getScrollDelta()) != InteractionResult.PASS) {
             event.setCanceled(true);
         }
     }
     
     @SubscribeEvent
     public static void event(InputEvent.RawMouseEvent event) {
-        if (ClientRawInputEvent.MOUSE_CLICKED_PRE.invoker().mouseClicked(Minecraft.getInstance(), event.getButton(), event.getAction(), event.getMods()) == InteractionResult.FAIL) {
+        if (ClientRawInputEvent.MOUSE_CLICKED_PRE.invoker().mouseClicked(Minecraft.getInstance(), event.getButton(), event.getAction(), event.getMods()) != InteractionResult.PASS) {
             event.setCanceled(true);
         }
     }
