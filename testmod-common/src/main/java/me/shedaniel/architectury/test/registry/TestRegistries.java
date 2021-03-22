@@ -19,16 +19,24 @@
 
 package me.shedaniel.architectury.test.registry;
 
+import me.shedaniel.architectury.hooks.EntityHooks;
 import me.shedaniel.architectury.registry.BlockProperties;
 import me.shedaniel.architectury.registry.DeferredRegister;
 import me.shedaniel.architectury.registry.RegistrySupplier;
 import me.shedaniel.architectury.test.TestMod;
 import me.shedaniel.architectury.test.tab.TestCreativeTabs;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+
+import static me.shedaniel.architectury.test.TestMod.SINK;
 
 public class TestRegistries {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(TestMod.MOD_ID, Registry.ITEM_REGISTRY);
@@ -39,8 +47,19 @@ public class TestRegistries {
     
     public static final RegistrySupplier<Block> TEST_BLOCK = BLOCKS.register("test_block", () ->
             new Block(BlockProperties.copy(Blocks.STONE)));
+    public static final RegistrySupplier<Block> COLLISION_BLOCK = BLOCKS.register("collision_block", () ->
+            new Block(BlockProperties.copy(Blocks.STONE)) {
+                @Override
+                public VoxelShape getCollisionShape(BlockState state, BlockGetter bg, BlockPos pos, CollisionContext ctx) {
+                    SINK.accept(EntityHooks.fromCollision(ctx) + " is colliding with " + state);
+                    return super.getCollisionShape(state, bg, pos, ctx);
+                }
+            });
+    
     public static final RegistrySupplier<Item> TEST_BLOCK_ITEM = ITEMS.register("test_block", () ->
             new BlockItem(TEST_BLOCK.get(), new Item.Properties().tab(TestCreativeTabs.TEST_TAB)));
+    public static final RegistrySupplier<Item> COLLISION_BLOCK_ITEM = ITEMS.register("collision_block", () ->
+            new BlockItem(COLLISION_BLOCK.get(), new Item.Properties().tab(TestCreativeTabs.TEST_TAB)));
     
     public static void initialize() {
         BLOCKS.register();

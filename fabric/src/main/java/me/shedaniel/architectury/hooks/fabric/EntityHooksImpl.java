@@ -20,9 +20,23 @@
 package me.shedaniel.architectury.hooks.fabric;
 
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import org.jetbrains.annotations.Nullable;
 
 public class EntityHooksImpl {
     public static String getEncodeId(Entity entity) {
         return entity.getEncodeId();
+    }
+    
+    @Nullable
+    public static Entity fromCollision(CollisionContext ctx) {
+        return ((CollisionContextExtension) ctx).getEntity();
+    }
+    
+    public interface CollisionContextExtension {
+        @Nullable
+        default Entity getEntity() {
+            return null;
+        }
     }
 }
