@@ -49,7 +49,7 @@ public interface GuiEvent {
      */
     Event<ScreenInitPost> INIT_POST = EventFactory.createLoop();
     Event<ScreenRenderPre> RENDER_PRE = EventFactory.createInteractionResult();
-    Event<ScreenRenderPost> RENDER_POST = EventFactory.createInteractionResult();
+    Event<ScreenRenderPost> RENDER_POST = EventFactory.createLoop();
     
     /**
      * Invoked during Minecraft#setScreen, equivalent to forge's {@code GuiOpenEvent}.

@@ -89,7 +89,7 @@ public final class EventFactory {
             @Override
             protected Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {
                 for (T listener : listeners) {
-                    InteractionResult result = (InteractionResult) method.invoke(listener, args);
+                    InteractionResult result = (InteractionResult) Objects.requireNonNull(method.invoke(listener, args));
                     if (result != InteractionResult.PASS) {
                         return result;
                     }

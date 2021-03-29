@@ -30,7 +30,7 @@ import java.util.List;
 
 public interface ExplosionEvent {
     Event<Pre> PRE = EventFactory.createInteractionResult();
-    Event<Detonate> DETONATE = EventFactory.createInteractionResult();
+    Event<Detonate> DETONATE = EventFactory.createLoop();
     
     interface Pre {
         InteractionResult explode(Level world, Explosion explosion);
