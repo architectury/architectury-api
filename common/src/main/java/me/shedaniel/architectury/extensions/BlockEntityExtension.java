@@ -20,6 +20,7 @@
 package me.shedaniel.architectury.extensions;
 
 import me.shedaniel.architectury.hooks.BlockEntityHooks;
+import me.shedaniel.architectury.mixin.BlockEntityAccessor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.nbt.CompoundTag;
@@ -43,6 +44,15 @@ public interface BlockEntityExtension {
      */
     @NotNull
     CompoundTag saveClientData(@NotNull CompoundTag tag);
+    
+    /**
+     * Use this to add the update tag of your superclass to your own update tag.
+     *
+     * @return update tag of block entity's superclass, you *should* override this
+     */
+    default CompoundTag getSuperUpdateTag() {
+        return ((BlockEntityAccessor) this).saveMetadata(new CompoundTag());
+    }
     
     /**
      * Sync data to the clients by {@link BlockEntityExtension#saveClientData(CompoundTag)} and {@link BlockEntityExtension#loadClientData(BlockState, CompoundTag)}.

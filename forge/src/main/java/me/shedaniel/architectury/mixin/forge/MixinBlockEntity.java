@@ -45,7 +45,7 @@ public abstract class MixinBlockEntity {
         if (this instanceof BlockEntityExtension) {
             BlockEntityExtension entity = (BlockEntityExtension) this;
             BlockEntity be = (BlockEntity) entity;
-            cir.setReturnValue(entity.saveClientData(new CompoundTag()));
+            cir.setReturnValue(entity.saveClientData(entity.getSuperUpdateTag()));
             cir.cancel();
         }
     }
