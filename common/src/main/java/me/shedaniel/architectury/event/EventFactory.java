@@ -23,13 +23,10 @@ import com.google.common.reflect.AbstractInvocationHandler;
 import me.shedaniel.architectury.ForgeEvent;
 import me.shedaniel.architectury.ForgeEventCancellable;
 import me.shedaniel.architectury.annotations.ExpectPlatform;
-import net.jodah.typetools.TypeResolver;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
@@ -40,19 +37,6 @@ import java.util.function.Function;
 
 public final class EventFactory {
     private EventFactory() {}
-    
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval
-    public static <T> Event<T> create(Function<T[], T> function) {
-        Class<?>[] arguments = TypeResolver.resolveRawArguments(Function.class, function.getClass());
-        T[] array;
-        try {
-            array = (T[]) Array.newInstance(arguments[1], 0);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return of(list -> function.apply(list.toArray(array)));
-    }
     
     public static <T> Event<T> of(Function<List<T>, T> function) {
         return new EventImpl<>(function);

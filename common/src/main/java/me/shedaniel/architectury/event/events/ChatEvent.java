@@ -23,6 +23,8 @@ import me.shedaniel.architectury.event.Event;
 import me.shedaniel.architectury.event.EventFactory;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.TextFilter;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,6 +36,16 @@ public interface ChatEvent {
     
     interface Server {
         @NotNull
-        InteractionResultHolder<Component> process(ServerPlayer player, String message, Component component);
+        InteractionResult process(ServerPlayer player, TextFilter.FilteredText message, ChatComponent component);
+    }
+    
+    interface ChatComponent {
+        Component getRaw();
+        
+        Component getFiltered();
+    
+        void setRaw(Component raw);
+    
+        void setFiltered(Component filtered);
     }
 }

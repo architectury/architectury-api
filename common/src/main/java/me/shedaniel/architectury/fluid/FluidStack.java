@@ -20,7 +20,6 @@
 package me.shedaniel.architectury.fluid;
 
 import me.shedaniel.architectury.hooks.FluidStackHooks;
-import me.shedaniel.architectury.utils.Fraction;
 import me.shedaniel.architectury.utils.NbtType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -33,15 +32,15 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 public final class FluidStack {
-    private static final FluidStack EMPTY = create(Fluids.EMPTY, Fraction.zero());
-    private Fraction amount;
+    private static final FluidStack EMPTY = create(Fluids.EMPTY, 0);
+    private long amount;
     @Nullable
     private CompoundTag tag;
     private Supplier<Fluid> fluid;
     
-    private FluidStack(Supplier<Fluid> fluid, Fraction amount, CompoundTag tag) {
+    private FluidStack(Supplier<Fluid> fluid, long amount, CompoundTag tag) {
         this.fluid = Objects.requireNonNull(fluid);
-        this.amount = Objects.requireNonNull(amount);
+        this.amount = amount;
         this.tag = tag == null ? null : tag.copy();
     }
     
@@ -49,27 +48,27 @@ public final class FluidStack {
         return EMPTY;
     }
     
-    public static FluidStack create(Fluid fluid, Fraction amount, @Nullable CompoundTag tag) {
+    public static FluidStack create(Fluid fluid, long amount, @Nullable CompoundTag tag) {
         return create(() -> fluid, amount, tag);
     }
     
-    public static FluidStack create(Fluid fluid, Fraction amount) {
+    public static FluidStack create(Fluid fluid, long amount) {
         return create(fluid, amount, null);
     }
     
-    public static FluidStack create(Supplier<Fluid> fluid, Fraction amount, @Nullable CompoundTag tag) {
+    public static FluidStack create(Supplier<Fluid> fluid, long amount, @Nullable CompoundTag tag) {
         return new FluidStack(fluid, amount, tag);
     }
     
-    public static FluidStack create(Supplier<Fluid> fluid, Fraction amount) {
+    public static FluidStack create(Supplier<Fluid> fluid, long amount) {
         return create(fluid, amount, null);
     }
     
-    public static FluidStack create(FluidStack stack, Fraction amount) {
+    public static FluidStack create(FluidStack stack, long amount) {
         return create(stack.getRawFluidSupplier(), amount, stack.getTag());
     }
     
-    public static Fraction bucketAmount() {
+    public static long bucketAmount() {
         return FluidStackHooks.bucketAmount();
     }
     
@@ -87,23 +86,23 @@ public final class FluidStack {
     }
     
     public boolean isEmpty() {
-        return getRawFluid() == Fluids.EMPTY || !amount.isGreaterThan(Fraction.zero());
+        return getRawFluid() == Fluids.EMPTY || amount <= 0;
     }
     
-    public Fraction getAmount() {
-        return isEmpty() ? Fraction.zero() : amount;
+    public long getAmount() {
+        return isEmpty() ? 0 : amount;
     }
     
-    public void setAmount(Fraction amount) {
-        this.amount = Objects.requireNonNull(amount);
+    public void setAmount(long amount) {
+        this.amount = amount;
     }
     
-    public void grow(Fraction amount) {
-        setAmount(this.amount.add(amount));
+    public void grow(long amount) {
+        setAmount(this.amount + amount);
     }
     
-    public void shrink(Fraction amount) {
-        setAmount(this.amount.minus(amount));
+    public void shrink(long amount) {
+        setAmount(this.amount - amount);
     }
     
     public boolean hasTag() {
@@ -162,7 +161,7 @@ public final class FluidStack {
     public final int hashCode() {
         int code = 1;
         code = 31 * code + getFluid().hashCode();
-        code = 31 * code + amount.hashCode();
+        code = 31 * code + Long.hashCode(amount);
         if (tag != null)
             code = 31 * code + tag.hashCode();
         return code;
@@ -177,7 +176,7 @@ public final class FluidStack {
     }
     
     public boolean isFluidStackEqual(FluidStack other) {
-        return getFluid() == other.getFluid() && getAmount().equals(other.getAmount()) && isTagEqual(other);
+        return getFluid() == other.getFluid() && getAmount() == other.getAmount() && isTagEqual(other);
     }
     
     private boolean isTagEqual(FluidStack other) {

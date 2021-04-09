@@ -20,6 +20,7 @@
 package me.shedaniel.architectury.mixin.fabric;
 
 import me.shedaniel.architectury.event.events.ChatEvent;
+import me.shedaniel.architectury.impl.fabric.ChatComponentImpl;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -27,6 +28,7 @@ import net.minecraft.network.protocol.game.ServerboundChatPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.server.network.TextFilter;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import org.apache.commons.lang3.StringUtils;
@@ -36,6 +38,9 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+
+import java.util.Objects;
 
 @Mixin(ServerGamePacketListenerImpl.class)
 public abstract class MixinServerGamePacketListenerImpl {
@@ -48,17 +53,19 @@ public abstract class MixinServerGamePacketListenerImpl {
     @Shadow
     public abstract void disconnect(Component component);
     
-    @Inject(method = "handleChat(Ljava/lang/String;)V",
+    @Inject(method = "handleChat(Lnet/minecraft/server/network/TextFilter$FilteredText;)V",
             at = @At(value = "INVOKE",
-                     target = "Lnet/minecraft/server/players/PlayerList;broadcastMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/ChatType;Ljava/util/UUID;)V"),
-            cancellable = true)
-    private void handleChat(String message, CallbackInfo ci) {
-        Component component = new TranslatableComponent("chat.type.text", this.player.getDisplayName(), message);
-        InteractionResultHolder<Component> process = ChatEvent.SERVER.invoker().process(this.player, message, component);
-        if (process.getResult() == InteractionResult.FAIL)
+                     target = "Lnet/minecraft/server/players/PlayerList;broadcastMessage(Lnet/minecraft/network/chat/Component;Ljava/util/function/Function;Lnet/minecraft/network/chat/ChatType;Ljava/util/UUID;)V"),
+            cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
+    private void handleChat(TextFilter.FilteredText message, CallbackInfo ci, String string, Component component, Component component2) {
+        ChatComponentImpl chatComponent = new ChatComponentImpl(component2, component);
+        InteractionResult process = ChatEvent.SERVER.invoker().process(this.player, message, chatComponent);
+        if (process == InteractionResult.FAIL)
             ci.cancel();
-        else if (process.getObject() != null && !process.getObject().equals(component)) {
-            this.server.getPlayerList().broadcastMessage(component, ChatType.CHAT, this.player.getUUID());
+        else if (!Objects.equals(chatComponent.getRaw(), component2) || !Objects.equals(chatComponent.getFiltered(), component)) {
+            this.server.getPlayerList().broadcastMessage(chatComponent.getRaw(), (serverPlayer) -> {
+                return this.player.shouldFilterMessageTo(serverPlayer) ? chatComponent.getFiltered() : chatComponent.getRaw();
+            }, ChatType.CHAT, this.player.getUUID());
             
             this.chatSpamTickCount += 20;
             if (this.chatSpamTickCount > 200 && !this.server.getPlayerList().isOp(this.player.getGameProfile())) {

@@ -59,8 +59,8 @@ public class DebugEvents {
             return InteractionResult.PASS;
         });
         ChatEvent.SERVER.register((player, message, component) -> {
-            SINK.accept("Server chat received: " + message);
-            return InteractionResultHolder.pass(component);
+            SINK.accept("Server chat received: " + message.getRaw());
+            return InteractionResult.PASS;
         });
         CommandPerformEvent.EVENT.register(event -> {
             SINK.accept("Server command performed: " + event.getResults().getReader().getString());

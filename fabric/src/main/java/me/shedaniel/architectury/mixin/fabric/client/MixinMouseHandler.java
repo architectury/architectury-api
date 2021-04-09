@@ -105,8 +105,8 @@ public class MixinMouseHandler {
         }
     }
     
-    @Inject(method = "onPress", at = @At(value = "FIELD",
-                                         target = "Lnet/minecraft/client/Minecraft;overlay:Lnet/minecraft/client/gui/screens/Overlay;",
+    @Inject(method = "onPress", at = @At(value = "INVOKE",
+                                         target = "Lnet/minecraft/client/Minecraft;getOverlay()Lnet/minecraft/client/gui/screens/Overlay;",
                                          ordinal = 0), cancellable = true)
     public void onRawMouseClicked(long handle, int button, int action, int mods, CallbackInfo info) {
         if (!info.isCancelled()) {

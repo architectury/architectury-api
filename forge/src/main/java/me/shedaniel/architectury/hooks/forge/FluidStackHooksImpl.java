@@ -63,8 +63,8 @@ public class FluidStackHooksImpl {
         return FluidStackHooksForge.toForge(stack).writeToNBT(tag);
     }
     
-    public static Fraction bucketAmount() {
-        return Fraction.ofWhole(1000);
+    public static long bucketAmount() {
+        return 1000;
     }
     
     @OnlyIn(Dist.CLIENT)

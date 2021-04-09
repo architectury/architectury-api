@@ -21,22 +21,35 @@ package me.shedaniel.architectury.mixin;
 
 import me.shedaniel.architectury.event.events.BlockEvent;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AnvilBlock;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.ConcretePowderBlock;
 import net.minecraft.world.level.block.FallingBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-@Mixin({FallingBlock.class, AnvilBlock.class, ConcretePowderBlock.class})
-public abstract class BlockLandingInvoker {
-    @Inject(method = "onLand", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
-    public void handleLand(Level level, BlockPos pos, BlockState fallState, BlockState landOn, FallingBlockEntity entity, CallbackInfo ci) {
-        BlockEvent.FALLING_LAND.invoker().onLand(level, pos, fallState, landOn, entity);
+@Mixin(FallingBlockEntity.class)
+public abstract class MixinFallingBlockEntity extends Entity {
+    public MixinFallingBlockEntity(EntityType<?> entityType, Level level) {
+        super(entityType, level);
+    }
+    
+    @Shadow
+    private BlockState blockState;
+    
+    @Inject(method = "tick", at = @At(value = "INVOKE",
+                                      target = "Lnet/minecraft/world/level/block/Fallable;onLand(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/entity/item/FallingBlockEntity;)V"),
+            locals = LocalCapture.CAPTURE_FAILHARD)
+    public void handleLand(CallbackInfo ci, Block block, BlockPos blockPos2, boolean bl, boolean bl2, BlockState blockState) {
+        BlockEvent.FALLING_LAND.invoker().onLand(this.level, blockPos2, this.blockState, blockState, (FallingBlockEntity) (Object) this);
     }
 }

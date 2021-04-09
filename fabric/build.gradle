@@ -30,9 +30,7 @@ dependencies {
     mappings minecraft.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
-    modCompileOnly "com.terraformersmc:modmenu:${rootProject.mod_menu_version}"
-    implementation "net.jodah:typetools:0.6.2"
-    shadowCommon "net.jodah:typetools:0.6.2"
+    modCompileOnly("com.terraformersmc:modmenu:${rootProject.mod_menu_version}") { transitive false }
 
     implementation(project(path: ":common")) {
         transitive = false
@@ -53,7 +51,6 @@ processResources {
 }
 
 shadowJar {
-    relocate "net.jodah.typetools", "me.shedaniel.architectury.shadowed.impl.net.jodah.typetools"
     configurations = [project.configurations.shadowCommon]
     classifier "shadow"
 }

@@ -25,8 +25,6 @@ dependencies {
     minecraft "com.mojang:minecraft:${rootProject.architectury.minecraft}"
     mappings loom.officialMojangMappings()
     forge "net.minecraftforge:forge:${rootProject.architectury.minecraft}-${rootProject.forge_version}"
-    implementation "net.jodah:typetools:0.6.2"
-    shadowCommon "net.jodah:typetools:0.6.2"
 
     implementation(project(path: ":common")) {
         transitive = false
@@ -47,7 +45,6 @@ processResources {
 }
 
 shadowJar {
-    relocate "net.jodah.typetools", "me.shedaniel.architectury.shadowed.impl.net.jodah.typetools"
     exclude "fabric.mod.json"
     exclude "architectury-common.accessWidener"
 

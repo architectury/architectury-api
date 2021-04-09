@@ -21,6 +21,7 @@ package me.shedaniel.architectury.hooks.fabric;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import org.jetbrains.annotations.Nullable;
 
 public class EntityHooksImpl {
@@ -30,13 +31,6 @@ public class EntityHooksImpl {
     
     @Nullable
     public static Entity fromCollision(CollisionContext ctx) {
-        return ((CollisionContextExtension) ctx).getEntity();
-    }
-    
-    public interface CollisionContextExtension {
-        @Nullable
-        default Entity getEntity() {
-            return null;
-        }
+        return ctx instanceof EntityCollisionContext ? ((EntityCollisionContext) ctx).getEntity().orElse(null) : null;
     }
 }

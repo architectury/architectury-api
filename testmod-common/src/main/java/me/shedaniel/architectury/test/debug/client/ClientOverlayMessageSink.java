@@ -87,7 +87,6 @@ public class ClientOverlayMessageSink extends ConsoleMessageSink {
             }
         }
         
-        RenderSystem.disableAlphaTest();
         RenderSystem.disableBlend();
         matrices.popPose();
     }

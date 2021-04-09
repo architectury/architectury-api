@@ -22,7 +22,6 @@ package me.shedaniel.architectury.hooks.fabric;
 import me.shedaniel.architectury.fluid.FluidStack;
 import me.shedaniel.architectury.platform.Platform;
 import me.shedaniel.architectury.utils.Env;
-import me.shedaniel.architectury.utils.Fraction;
 import me.shedaniel.architectury.utils.NbtType;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -66,7 +65,7 @@ public class FluidStackHooksImpl {
     
     public static FluidStack read(FriendlyByteBuf buf) {
         Fluid fluid = Objects.requireNonNull(Registry.FLUID.get(buf.readResourceLocation()));
-        Fraction amount = Fraction.of(buf.readVarLong(), buf.readVarLong());
+        long amount = buf.readVarLong();
         CompoundTag tag = buf.readNbt();
         if (fluid == Fluids.EMPTY) return FluidStack.empty();
         return FluidStack.create(fluid, amount, tag);
@@ -74,8 +73,7 @@ public class FluidStackHooksImpl {
     
     public static void write(FluidStack stack, FriendlyByteBuf buf) {
         buf.writeResourceLocation(Registry.FLUID.getKey(stack.getFluid()));
-        buf.writeVarLong(stack.getAmount().getNumerator());
-        buf.writeVarLong(stack.getAmount().getDenominator());
+        buf.writeVarLong(stack.getAmount());
         buf.writeNbt(stack.getTag());
     }
     
@@ -88,9 +86,8 @@ public class FluidStackHooksImpl {
         if (fluid == null || fluid == Fluids.EMPTY) {
             return FluidStack.empty();
         }
-        long numerator = tag.getLong("numerator");
-        long denominator = tag.getLong("denominator");
-        FluidStack stack = FluidStack.create(fluid, Fraction.of(numerator, denominator));
+        long amount = tag.getLong("amount");
+        FluidStack stack = FluidStack.create(fluid, amount);
         
         if (tag.contains("tag", NbtType.COMPOUND)) {
             stack.setTag(tag.getCompound("tag"));
@@ -100,16 +97,15 @@ public class FluidStackHooksImpl {
     
     public static CompoundTag write(FluidStack stack, CompoundTag tag) {
         tag.putString("id", Registry.FLUID.getKey(stack.getFluid()).toString());
-        tag.putLong("numerator", stack.getAmount().getNumerator());
-        tag.putLong("denominator", stack.getAmount().getDenominator());
+        tag.putLong("amount", stack.getAmount());
         if (stack.hasTag()) {
             tag.put("tag", stack.getTag());
         }
         return tag;
     }
     
-    public static Fraction bucketAmount() {
-        return Fraction.ofWhole(1);
+    public static long bucketAmount() {
+        return 81000;
     }
     
     @Environment(EnvType.CLIENT)

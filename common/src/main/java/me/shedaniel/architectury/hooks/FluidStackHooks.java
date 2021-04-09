@@ -21,7 +21,6 @@ package me.shedaniel.architectury.hooks;
 
 import me.shedaniel.architectury.annotations.ExpectPlatform;
 import me.shedaniel.architectury.fluid.FluidStack;
-import me.shedaniel.architectury.utils.Fraction;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -83,10 +82,10 @@ public class FluidStackHooks {
     /**
      * Platform-specific bucket amount.
      * Forge: 1000
-     * Fabric: 1
+     * Fabric: 81000
      */
     @ExpectPlatform
-    public static Fraction bucketAmount() {
+    public static long bucketAmount() {
         throw new AssertionError();
     }
     

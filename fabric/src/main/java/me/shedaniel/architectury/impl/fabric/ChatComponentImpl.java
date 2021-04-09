@@ -17,19 +17,37 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package me.shedaniel.architectury.registry.entity.fabric;
+package me.shedaniel.architectury.impl.fabric;
 
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
+import me.shedaniel.architectury.event.events.ChatEvent;
+import net.minecraft.network.chat.Component;
 
-import java.util.function.Function;
-
-public class EntityRenderersImpl {
-    public static <T extends Entity> void register(EntityType<T> type, EntityRendererProvider<T> provider) {
-        EntityRendererRegistry.INSTANCE.register(type, provider);
+public class ChatComponentImpl implements ChatEvent.ChatComponent {
+    private Component raw;
+    private Component filtered;
+    
+    public ChatComponentImpl(Component raw, Component filtered) {
+        this.raw = raw;
+        this.filtered = filtered;
+    }
+    
+    @Override
+    public Component getRaw() {
+        return raw;
+    }
+    
+    @Override
+    public Component getFiltered() {
+        return filtered;
+    }
+    
+    @Override
+    public void setRaw(Component raw) {
+        this.raw = raw;
+    }
+    
+    @Override
+    public void setFiltered(Component filtered) {
+        this.filtered = filtered;
     }
 }

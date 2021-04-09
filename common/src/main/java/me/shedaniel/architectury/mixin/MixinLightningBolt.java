@@ -48,7 +48,7 @@ public abstract class MixinLightningBolt extends Entity {
             by = 1
     ), locals = LocalCapture.CAPTURE_FAILHARD)
     public void handleLightning(CallbackInfo ci, double d0, List<Entity> list) {
-        if (this.removed || this.level.isClientSide) {
+        if (this.isRemoved() || this.level.isClientSide) {
             return;
         }
         
