@@ -20,6 +20,9 @@
 package me.shedaniel.architectury.event;
 
 import me.shedaniel.architectury.annotations.ExpectPlatform;
+import me.shedaniel.architectury.event.events.BlockEvent;
+import me.shedaniel.architectury.event.events.EntityEvent;
+import me.shedaniel.architectury.event.events.PlayerEvent;
 import me.shedaniel.architectury.platform.Platform;
 import me.shedaniel.architectury.utils.Env;
 import net.fabricmc.api.EnvType;
@@ -38,6 +41,8 @@ public final class EventHandler {
         registerCommon();
         if (Platform.getEnvironment() == Env.SERVER)
             registerServer();
+        
+        registerDelegates();
     }
     
     @ExpectPlatform
@@ -55,5 +60,11 @@ public final class EventHandler {
     @Environment(EnvType.SERVER)
     private static void registerServer() {
         throw new AssertionError();
+    }
+    
+    @SuppressWarnings("deprecation")
+    private static void registerDelegates() {
+        BlockEvent.PLACE.register((EntityEvent.PLACE_BLOCK.invoker()::placeBlock));
+        BlockEvent.BREAK.register((PlayerEvent.BREAK_BLOCK.invoker()::breakBlock));
     }
 }

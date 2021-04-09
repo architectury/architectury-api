@@ -38,6 +38,7 @@ import net.minecraftforge.client.event.*;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
@@ -45,12 +46,12 @@ import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
 public class EventHandlerImplClient {
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(ItemTooltipEvent event) {
         TooltipEvent.ITEM.invoker().append(event.getItemStack(), event.getToolTip(), event.getFlags());
     }
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(net.minecraftforge.event.TickEvent.ClientTickEvent event) {
         if (event.phase == net.minecraftforge.event.TickEvent.Phase.START)
             ClientTickEvent.CLIENT_PRE.invoker().tick(Minecraft.getInstance());
@@ -58,40 +59,40 @@ public class EventHandlerImplClient {
             ClientTickEvent.CLIENT_POST.invoker().tick(Minecraft.getInstance());
     }
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(RenderGameOverlayEvent.Post event) {
         if (event.getType() == RenderGameOverlayEvent.ElementType.ALL)
             GuiEvent.RENDER_HUD.invoker().renderHud(event.getMatrixStack(), event.getPartialTicks());
     }
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(ClientPlayerNetworkEvent.LoggedInEvent event) {
         ClientPlayerEvent.CLIENT_PLAYER_JOIN.invoker().join(event.getPlayer());
     }
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(ClientPlayerNetworkEvent.LoggedOutEvent event) {
         ClientPlayerEvent.CLIENT_PLAYER_QUIT.invoker().quit(event.getPlayer());
     }
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(ClientPlayerNetworkEvent.RespawnEvent event) {
         ClientPlayerEvent.CLIENT_PLAYER_RESPAWN.invoker().respawn(event.getOldPlayer(), event.getNewPlayer());
     }
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(GuiScreenEvent.InitGuiEvent.Pre event) {
-        if (GuiEvent.INIT_PRE.invoker().init(event.getGui(), event.getWidgetList(), (List<GuiEventListener>) event.getGui().children()) == InteractionResult.FAIL) {
+        if (GuiEvent.INIT_PRE.invoker().init(event.getGui(), event.getWidgetList(), (List<GuiEventListener>) event.getGui().children()) != InteractionResult.PASS) {
             event.setCanceled(true);
         }
     }
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(GuiScreenEvent.InitGuiEvent.Post event) {
         GuiEvent.INIT_POST.invoker().init(event.getGui(), event.getWidgetList(), (List<GuiEventListener>) event.getGui().children());
     }
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(RenderGameOverlayEvent.Text event) {
         if (Minecraft.getInstance().options.renderDebug) {
             GuiEvent.DEBUG_TEXT_LEFT.invoker().gatherText(event.getLeft());
@@ -99,7 +100,7 @@ public class EventHandlerImplClient {
         }
     }
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(net.minecraftforge.client.event.ClientChatEvent event) {
         InteractionResultHolder<String> process = ClientChatEvent.CLIENT.invoker().process(event.getMessage());
         if (process.getObject() != null)
@@ -108,7 +109,7 @@ public class EventHandlerImplClient {
             event.setCanceled(true);
     }
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(ClientChatReceivedEvent event) {
         InteractionResultHolder<Component> process = ClientChatEvent.CLIENT_RECEIVED.invoker().process(event.getType(), event.getMessage(), event.getSenderUUID());
         if (process.getObject() != null)
@@ -117,15 +118,15 @@ public class EventHandlerImplClient {
             event.setCanceled(true);
     }
     
-    @SubscribeEvent
-    public static void event(WorldEvent.Save event) {
-        if (event.getWorld() instanceof ClientLevel) {
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(WorldEvent.Load event) {
+        if (event.getWorld().isClientSide()) {
             ClientLevel world = (ClientLevel) event.getWorld();
             ClientLifecycleEvent.CLIENT_WORLD_LOAD.invoker().act(world);
         }
     }
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(GuiOpenEvent event) {
         InteractionResultHolder<Screen> result = GuiEvent.SET_SCREEN.invoker().modifyScreen(event.getGui());
         switch (result.getResult()) {
@@ -137,29 +138,29 @@ public class EventHandlerImplClient {
         }
     }
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(GuiScreenEvent.DrawScreenEvent.Pre event) {
-        if (GuiEvent.RENDER_PRE.invoker().render(event.getGui(), event.getMatrixStack(), event.getMouseX(), event.getMouseY(), event.getRenderPartialTicks()) == InteractionResult.FAIL) {
+        if (GuiEvent.RENDER_PRE.invoker().render(event.getGui(), event.getMatrixStack(), event.getMouseX(), event.getMouseY(), event.getRenderPartialTicks()) != InteractionResult.PASS) {
             event.setCanceled(true);
         }
     }
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(GuiScreenEvent.DrawScreenEvent.Post event) {
         GuiEvent.RENDER_POST.invoker().render(event.getGui(), event.getMatrixStack(), event.getMouseX(), event.getMouseY(), event.getRenderPartialTicks());
     }
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(PlayerInteractEvent.RightClickEmpty event) {
         InteractionEvent.CLIENT_RIGHT_CLICK_AIR.invoker().click(event.getPlayer(), event.getHand());
     }
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(PlayerInteractEvent.LeftClickEmpty event) {
         InteractionEvent.CLIENT_LEFT_CLICK_AIR.invoker().click(event.getPlayer(), event.getHand());
     }
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(RecipesUpdatedEvent event) {
         RecipeUpdateEvent.EVENT.invoker().update(event.getRecipeManager());
     }
@@ -167,7 +168,7 @@ public class EventHandlerImplClient {
     private static final ThreadLocal<TooltipEventColorContextImpl> tooltipColorContext = ThreadLocal.withInitial(TooltipEventColorContextImpl::new);
     private static final ThreadLocal<TooltipEventPositionContextImpl> tooltipPositionContext = ThreadLocal.withInitial(TooltipEventPositionContextImpl::new);
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(RenderTooltipEvent.Pre event) {
         if (TooltipEvent.RENDER_FORGE_PRE.invoker().renderTooltip(event.getMatrixStack(), event.getLines(), event.getX(), event.getY()) == InteractionResult.FAIL) {
             event.setCanceled(true);
@@ -181,7 +182,7 @@ public class EventHandlerImplClient {
         event.setY(positionContext.getTooltipY());
     }
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(RenderTooltipEvent.Color event) {
         TooltipEventColorContextImpl colorContext = tooltipColorContext.get();
         colorContext.reset();
@@ -194,127 +195,127 @@ public class EventHandlerImplClient {
         event.setBorderStart(colorContext.getOutlineGradientTopColor());
     }
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(GuiScreenEvent.MouseScrollEvent.Pre event) {
-        if (ClientScreenInputEvent.MOUSE_SCROLLED_PRE.invoker().mouseScrolled(Minecraft.getInstance(), event.getGui(), event.getMouseX(), event.getMouseY(), event.getScrollDelta()) == InteractionResult.FAIL) {
+        if (ClientScreenInputEvent.MOUSE_SCROLLED_PRE.invoker().mouseScrolled(Minecraft.getInstance(), event.getGui(), event.getMouseX(), event.getMouseY(), event.getScrollDelta()) != InteractionResult.PASS) {
             event.setCanceled(true);
         }
     }
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(GuiScreenEvent.MouseScrollEvent.Post event) {
         ClientScreenInputEvent.MOUSE_SCROLLED_POST.invoker().mouseScrolled(Minecraft.getInstance(), event.getGui(), event.getMouseX(), event.getMouseY(), event.getScrollDelta());
     }
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(GuiScreenEvent.MouseClickedEvent.Pre event) {
-        if (ClientScreenInputEvent.MOUSE_CLICKED_PRE.invoker().mouseClicked(Minecraft.getInstance(), event.getGui(), event.getMouseX(), event.getMouseY(), event.getButton()) == InteractionResult.FAIL) {
+        if (ClientScreenInputEvent.MOUSE_CLICKED_PRE.invoker().mouseClicked(Minecraft.getInstance(), event.getGui(), event.getMouseX(), event.getMouseY(), event.getButton()) != InteractionResult.PASS) {
             event.setCanceled(true);
         }
     }
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(GuiScreenEvent.MouseClickedEvent.Post event) {
         ClientScreenInputEvent.MOUSE_CLICKED_POST.invoker().mouseClicked(Minecraft.getInstance(), event.getGui(), event.getMouseX(), event.getMouseY(), event.getButton());
     }
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(GuiScreenEvent.MouseDragEvent.Pre event) {
-        if (ClientScreenInputEvent.MOUSE_DRAGGED_PRE.invoker().mouseDragged(Minecraft.getInstance(), event.getGui(), event.getMouseX(), event.getMouseY(), event.getMouseButton(), event.getDragX(), event.getDragY()) == InteractionResult.FAIL) {
+        if (ClientScreenInputEvent.MOUSE_DRAGGED_PRE.invoker().mouseDragged(Minecraft.getInstance(), event.getGui(), event.getMouseX(), event.getMouseY(), event.getMouseButton(), event.getDragX(), event.getDragY()) != InteractionResult.PASS) {
             event.setCanceled(true);
         }
     }
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(GuiScreenEvent.MouseDragEvent.Post event) {
         ClientScreenInputEvent.MOUSE_DRAGGED_POST.invoker().mouseDragged(Minecraft.getInstance(), event.getGui(), event.getMouseX(), event.getMouseY(), event.getMouseButton(), event.getDragX(), event.getDragY());
     }
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(GuiScreenEvent.MouseReleasedEvent.Pre event) {
-        if (ClientScreenInputEvent.MOUSE_RELEASED_PRE.invoker().mouseReleased(Minecraft.getInstance(), event.getGui(), event.getMouseX(), event.getMouseY(), event.getButton()) == InteractionResult.FAIL) {
+        if (ClientScreenInputEvent.MOUSE_RELEASED_PRE.invoker().mouseReleased(Minecraft.getInstance(), event.getGui(), event.getMouseX(), event.getMouseY(), event.getButton()) != InteractionResult.PASS) {
             event.setCanceled(true);
         }
     }
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(GuiScreenEvent.MouseReleasedEvent.Post event) {
         ClientScreenInputEvent.MOUSE_RELEASED_PRE.invoker().mouseReleased(Minecraft.getInstance(), event.getGui(), event.getMouseX(), event.getMouseY(), event.getButton());
     }
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(GuiScreenEvent.KeyboardCharTypedEvent.Pre event) {
-        if (ClientScreenInputEvent.CHAR_TYPED_PRE.invoker().charTyped(Minecraft.getInstance(), event.getGui(), event.getCodePoint(), event.getModifiers()) == InteractionResult.FAIL) {
+        if (ClientScreenInputEvent.CHAR_TYPED_PRE.invoker().charTyped(Minecraft.getInstance(), event.getGui(), event.getCodePoint(), event.getModifiers()) != InteractionResult.PASS) {
             event.setCanceled(true);
         }
     }
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(GuiScreenEvent.KeyboardCharTypedEvent.Post event) {
         ClientScreenInputEvent.CHAR_TYPED_POST.invoker().charTyped(Minecraft.getInstance(), event.getGui(), event.getCodePoint(), event.getModifiers());
     }
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(GuiScreenEvent.KeyboardKeyPressedEvent.Pre event) {
-        if (ClientScreenInputEvent.KEY_PRESSED_PRE.invoker().keyPressed(Minecraft.getInstance(), event.getGui(), event.getKeyCode(), event.getScanCode(), event.getModifiers()) == InteractionResult.FAIL) {
+        if (ClientScreenInputEvent.KEY_PRESSED_PRE.invoker().keyPressed(Minecraft.getInstance(), event.getGui(), event.getKeyCode(), event.getScanCode(), event.getModifiers()) != InteractionResult.PASS) {
             event.setCanceled(true);
         }
     }
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(GuiScreenEvent.KeyboardKeyPressedEvent.Post event) {
         ClientScreenInputEvent.KEY_PRESSED_POST.invoker().keyPressed(Minecraft.getInstance(), event.getGui(), event.getKeyCode(), event.getScanCode(), event.getModifiers());
     }
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(GuiScreenEvent.KeyboardKeyReleasedEvent.Pre event) {
-        if (ClientScreenInputEvent.KEY_RELEASED_PRE.invoker().keyReleased(Minecraft.getInstance(), event.getGui(), event.getKeyCode(), event.getScanCode(), event.getModifiers()) == InteractionResult.FAIL) {
+        if (ClientScreenInputEvent.KEY_RELEASED_PRE.invoker().keyReleased(Minecraft.getInstance(), event.getGui(), event.getKeyCode(), event.getScanCode(), event.getModifiers()) != InteractionResult.PASS) {
             event.setCanceled(true);
         }
     }
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(GuiScreenEvent.KeyboardKeyReleasedEvent.Post event) {
         ClientScreenInputEvent.KEY_RELEASED_POST.invoker().keyReleased(Minecraft.getInstance(), event.getGui(), event.getKeyCode(), event.getScanCode(), event.getModifiers());
     }
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(InputEvent.MouseScrollEvent event) {
-        if (ClientRawInputEvent.MOUSE_SCROLLED.invoker().mouseScrolled(Minecraft.getInstance(), event.getScrollDelta()) == InteractionResult.FAIL) {
+        if (ClientRawInputEvent.MOUSE_SCROLLED.invoker().mouseScrolled(Minecraft.getInstance(), event.getScrollDelta()) != InteractionResult.PASS) {
             event.setCanceled(true);
         }
     }
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(InputEvent.RawMouseEvent event) {
-        if (ClientRawInputEvent.MOUSE_CLICKED_PRE.invoker().mouseClicked(Minecraft.getInstance(), event.getButton(), event.getAction(), event.getMods()) == InteractionResult.FAIL) {
+        if (ClientRawInputEvent.MOUSE_CLICKED_PRE.invoker().mouseClicked(Minecraft.getInstance(), event.getButton(), event.getAction(), event.getMods()) != InteractionResult.PASS) {
             event.setCanceled(true);
         }
     }
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(InputEvent.MouseInputEvent event) {
         ClientRawInputEvent.MOUSE_CLICKED_POST.invoker().mouseClicked(Minecraft.getInstance(), event.getButton(), event.getAction(), event.getMods());
     }
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(InputEvent.KeyInputEvent event) {
         ClientRawInputEvent.KEY_PRESSED.invoker().keyPressed(Minecraft.getInstance(), event.getKey(), event.getScanCode(), event.getAction(), event.getModifiers());
     }
     
     @OnlyIn(Dist.CLIENT)
     public static class ModBasedEventHandler {
-        @SubscribeEvent
+        @SubscribeEvent(priority = EventPriority.HIGH)
         public static void event(net.minecraftforge.client.event.TextureStitchEvent.Pre event) {
             TextureStitchEvent.PRE.invoker().stitch(event.getMap(), event::addSprite);
         }
         
-        @SubscribeEvent
+        @SubscribeEvent(priority = EventPriority.HIGH)
         public static void event(net.minecraftforge.client.event.TextureStitchEvent.Post event) {
             TextureStitchEvent.POST.invoker().stitch(event.getMap());
         }
         
-        @SubscribeEvent
+        @SubscribeEvent(priority = EventPriority.HIGH)
         public static void event(FMLClientSetupEvent event) {
             ClientLifecycleEvent.CLIENT_SETUP.invoker().stateChanged(event.getMinecraftSupplier().get());
         }

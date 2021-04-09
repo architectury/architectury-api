@@ -44,8 +44,8 @@ public interface TooltipEvent {
      * Render forge events are only invoked on the forge side.
      */
     Event<RenderForge> RENDER_FORGE_PRE = EventFactory.createInteractionResult();
-    Event<RenderModifyPosition> RENDER_MODIFY_POSITION = EventFactory.createInteractionResult();
-    Event<RenderModifyColor> RENDER_MODIFY_COLOR = EventFactory.createInteractionResult();
+    Event<RenderModifyPosition> RENDER_MODIFY_POSITION = EventFactory.createLoop();
+    Event<RenderModifyColor> RENDER_MODIFY_COLOR = EventFactory.createLoop();
     
     @Environment(EnvType.CLIENT)
     interface Item {

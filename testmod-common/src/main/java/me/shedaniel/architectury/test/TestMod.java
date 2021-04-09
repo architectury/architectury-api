@@ -21,12 +21,13 @@ package me.shedaniel.architectury.test;
 
 import me.shedaniel.architectury.platform.Platform;
 import me.shedaniel.architectury.test.debug.ConsoleMessageSink;
-import me.shedaniel.architectury.test.events.DebugEvents;
 import me.shedaniel.architectury.test.debug.MessageSink;
 import me.shedaniel.architectury.test.debug.client.ClientOverlayMessageSink;
+import me.shedaniel.architectury.test.events.DebugEvents;
 import me.shedaniel.architectury.test.gamerule.TestGameRules;
 import me.shedaniel.architectury.test.registry.TestRegistries;
 import me.shedaniel.architectury.test.registry.client.TestKeybinds;
+import me.shedaniel.architectury.test.tags.TestTags;
 import me.shedaniel.architectury.utils.Env;
 import me.shedaniel.architectury.utils.EnvExecutor;
 
@@ -38,6 +39,7 @@ public class TestMod {
         DebugEvents.initialize();
         TestRegistries.initialize();
         TestGameRules.init();
+        TestTags.initialize();
         if (Platform.getEnvironment() == Env.CLIENT)
             TestKeybinds.initialize();
     }

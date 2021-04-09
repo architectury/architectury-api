@@ -20,7 +20,6 @@
 package me.shedaniel.architectury.networking;
 
 import com.google.common.collect.Maps;
-import com.mojang.datafixers.util.Pair;
 import io.netty.buffer.Unpooled;
 import me.shedaniel.architectury.networking.NetworkManager.PacketContext;
 import me.shedaniel.architectury.platform.Platform;
@@ -32,11 +31,13 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.ApiStatus;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -57,26 +58,28 @@ public final class NetworkChannel {
     }
     
     @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     public <T> void register(NetworkManager.Side side, Class<T> type, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<PacketContext>> messageConsumer) {
         register(type, encoder, decoder, messageConsumer);
     }
     
     @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     public <T> void register(Optional<NetworkManager.Side> side, Class<T> type, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<PacketContext>> messageConsumer) {
         register(type, encoder, decoder, messageConsumer);
     }
     
     public <T> void register(Class<T> type, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<PacketContext>> messageConsumer) {
-        String s = StringUtils.leftPad(String.valueOf(hashCodeString(type.toString())), 10, '0');
-        if (s.length() > 10) s = s.substring(0, 10);
-        MessageInfo<T> info = new MessageInfo<>(new ResourceLocation(id + "_" + s), encoder, decoder, messageConsumer);
+        // TODO: this is pretty wasteful; add a way to specify custom or numeric ids
+        String s = UUID.nameUUIDFromBytes(type.getName().getBytes(StandardCharsets.UTF_8)).toString().replace("-", "");
+        MessageInfo<T> info = new MessageInfo<>(new ResourceLocation(id + "/" + s), encoder, decoder, messageConsumer);
         encoders.put(type, info);
         NetworkManager.NetworkReceiver receiver = (buf, context) -> {
             info.messageConsumer.accept(info.decoder.apply(buf), () -> context);
         };
-        NetworkManager.registerReceiver(NetworkManager.clientToServer(), info.packetId, receiver);
+        NetworkManager.registerReceiver(NetworkManager.c2s(), info.packetId, receiver);
         if (Platform.getEnvironment() == Env.CLIENT) {
-            NetworkManager.registerReceiver(NetworkManager.serverToClient(), info.packetId, receiver);
+            NetworkManager.registerReceiver(NetworkManager.s2c(), info.packetId, receiver);
         }
     }
     
@@ -90,46 +93,48 @@ public final class NetworkChannel {
     }
     
     @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     public <T> void register(int id, Class<T> type, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<PacketContext>> messageConsumer) {
         register(type, encoder, decoder, messageConsumer);
     }
     
     @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     public <T> void register(NetworkManager.Side side, int id, Class<T> type, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<PacketContext>> messageConsumer) {
         register(type, encoder, decoder, messageConsumer);
     }
     
     @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     public <T> void register(Optional<NetworkManager.Side> side, int id, Class<T> type, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<PacketContext>> messageConsumer) {
         register(type, encoder, decoder, messageConsumer);
     }
     
-    private <T> Pair<MessageInfo<T>, FriendlyByteBuf> encode(T message) {
-        MessageInfo<T> messageInfo = (MessageInfo<T>) Objects.requireNonNull(encoders.get(message.getClass()));
+    public <T> Packet<?> toPacket(NetworkManager.Side side, T message) {
+        MessageInfo<T> messageInfo = (MessageInfo<T>) Objects.requireNonNull(encoders.get(message.getClass()), "Unknown message type! " + message);
         FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
         messageInfo.encoder.accept(message, buf);
-        return new Pair<>(messageInfo, buf);
-    }
-    
-    public <T> Packet<?> toPacket(NetworkManager.Side side, T message) {
-        Pair<MessageInfo<T>, FriendlyByteBuf> encoded = encode(message);
-        return NetworkManager.toPacket(side, encoded.getFirst().packetId, encoded.getSecond());
+        return NetworkManager.toPacket(side, messageInfo.packetId, buf);
     }
     
     public <T> void sendToPlayer(ServerPlayer player, T message) {
-        player.connection.send(toPacket(NetworkManager.s2c(), message));
+        Objects.requireNonNull(player, "Unable to send packet to a 'null' player!").connection.send(toPacket(NetworkManager.s2c(), message));
     }
     
     public <T> void sendToPlayers(Iterable<ServerPlayer> players, T message) {
         Packet<?> packet = toPacket(NetworkManager.s2c(), message);
         for (ServerPlayer player : players) {
-            player.connection.send(packet);
+            Objects.requireNonNull(player, "Unable to send packet to a 'null' player!").connection.send(packet);
         }
     }
     
     @Environment(EnvType.CLIENT)
     public <T> void sendToServer(T message) {
-        Minecraft.getInstance().getConnection().send(toPacket(NetworkManager.c2s(), message));
+        if (Minecraft.getInstance().getConnection() != null) {
+            Minecraft.getInstance().getConnection().send(toPacket(NetworkManager.c2s(), message));
+        } else {
+            throw new IllegalStateException("Unable to send packet to the server while not in game!");
+        }
     }
     
     @Environment(EnvType.CLIENT)

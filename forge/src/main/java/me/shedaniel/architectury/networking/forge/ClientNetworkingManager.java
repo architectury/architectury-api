@@ -27,6 +27,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.Set;
@@ -38,7 +39,7 @@ import static me.shedaniel.architectury.networking.forge.NetworkManagerImpl.SYNC
 public class ClientNetworkingManager {
     public static void initClient() {
         NetworkManagerImpl.CHANNEL.addListener(NetworkManagerImpl.createPacketHandler(NetworkEvent.ServerCustomPayloadEvent.class, NetworkManagerImpl.S2C));
-        MinecraftForge.EVENT_BUS.<ClientPlayerNetworkEvent.LoggedOutEvent>addListener(event -> NetworkManagerImpl.serverReceivables.clear());
+        MinecraftForge.EVENT_BUS.register(ClientNetworkingManager.class);
         
         NetworkManagerImpl.registerS2CReceiver(SYNC_IDS, (buffer, context) -> {
             Set<ResourceLocation> receivables = NetworkManagerImpl.serverReceivables;
@@ -53,5 +54,10 @@ public class ClientNetworkingManager {
     
     public static Player getClientPlayer() {
         return Minecraft.getInstance().player;
+    }
+    
+    @SubscribeEvent
+    public static void loggedOut(ClientPlayerNetworkEvent.LoggedOutEvent event) {
+        NetworkManagerImpl.serverReceivables.clear();
     }
 }

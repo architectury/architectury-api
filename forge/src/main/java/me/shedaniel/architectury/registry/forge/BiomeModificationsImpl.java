@@ -20,6 +20,7 @@
 package me.shedaniel.architectury.registry.forge;
 
 import com.google.common.collect.Lists;
+import me.shedaniel.architectury.forge.ArchitecturyForge;
 import me.shedaniel.architectury.hooks.biome.*;
 import me.shedaniel.architectury.mixin.forge.BiomeGenerationSettingsBuilderAccessor;
 import me.shedaniel.architectury.mixin.forge.MobSpawnSettingsBuilderAccessor;
@@ -34,10 +35,11 @@ import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.level.levelgen.surfacebuilders.ConfiguredSurfaceBuilder;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.world.BiomeGenerationSettingsBuilder;
 import net.minecraftforge.common.world.MobSpawnInfoBuilder;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
@@ -49,6 +51,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+@Mod.EventBusSubscriber(modid = ArchitecturyForge.MOD_ID)
 public class BiomeModificationsImpl {
     private static final List<Pair<Predicate<BiomeContext>, BiConsumer<BiomeContext, BiomeProperties.Mutable>>> MODIFICATIONS = Lists.newArrayList();
     
@@ -66,25 +69,6 @@ public class BiomeModificationsImpl {
     
     public static void replaceProperties(Predicate<BiomeContext> predicate, BiConsumer<BiomeContext, BiomeProperties.Mutable> modifier) {
         MODIFICATIONS.add(Pair.of(predicate, modifier));
-    }
-    
-    static {
-        MinecraftForge.EVENT_BUS.<BiomeLoadingEvent>addListener(event -> {
-            BiomeContext biomeContext = wrapSelectionContext(event);
-            BiomeProperties.Mutable mutableBiome = new MutableBiomeWrapped(event);
-            for (Pair<Predicate<BiomeContext>, BiConsumer<BiomeContext, BiomeProperties.Mutable>> pair : MODIFICATIONS) {
-                if (pair.getLeft().test(biomeContext)) {
-                    pair.getRight().accept(biomeContext, mutableBiome);
-                }
-            }
-            MutableClimatePropertiesWrapped climateProperties = (MutableClimatePropertiesWrapped) mutableBiome.getClimateProperties();
-            if (climateProperties.dirty) {
-                event.setClimate(new Biome.ClimateSettings(climateProperties.precipitation,
-                        climateProperties.temperature,
-                        climateProperties.temperatureModifier,
-                        climateProperties.downfall));
-            }
-        });
     }
     
     private static BiomeContext wrapSelectionContext(BiomeLoadingEvent event) {
@@ -444,6 +428,24 @@ public class BiomeModificationsImpl {
         public @NotNull Mutable setPlayerSpawnFriendly(boolean friendly) {
             ((MobSpawnSettingsBuilderAccessor) builder).setPlayerCanSpawn(friendly);
             return this;
+        }
+    }
+    
+    @SubscribeEvent
+    public static void onBiomeLoading(BiomeLoadingEvent event) {
+        BiomeContext biomeContext = wrapSelectionContext(event);
+        BiomeProperties.Mutable mutableBiome = new MutableBiomeWrapped(event);
+        for (Pair<Predicate<BiomeContext>, BiConsumer<BiomeContext, BiomeProperties.Mutable>> pair : MODIFICATIONS) {
+            if (pair.getLeft().test(biomeContext)) {
+                pair.getRight().accept(biomeContext, mutableBiome);
+            }
+        }
+        MutableClimatePropertiesWrapped climateProperties = (MutableClimatePropertiesWrapped) mutableBiome.getClimateProperties();
+        if (climateProperties.dirty) {
+            event.setClimate(new Biome.ClimateSettings(climateProperties.precipitation,
+                    climateProperties.temperature,
+                    climateProperties.temperatureModifier,
+                    climateProperties.downfall));
         }
     }
 }

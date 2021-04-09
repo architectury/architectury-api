@@ -30,6 +30,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
+import java.util.Objects;
+
 public final class NetworkManager {
     @ExpectPlatform
     public static void registerReceiver(Side side, ResourceLocation id, NetworkReceiver receiver) {
@@ -42,19 +44,23 @@ public final class NetworkManager {
     }
     
     public static void sendToPlayer(ServerPlayer player, ResourceLocation id, FriendlyByteBuf buf) {
-        player.connection.send(toPacket(serverToClient(), id, buf));
+        Objects.requireNonNull(player, "Unable to send packet to a 'null' player!").connection.send(toPacket(serverToClient(), id, buf));
     }
     
     public static void sendToPlayers(Iterable<ServerPlayer> players, ResourceLocation id, FriendlyByteBuf buf) {
         Packet<?> packet = toPacket(serverToClient(), id, buf);
         for (ServerPlayer player : players) {
-            player.connection.send(packet);
+            Objects.requireNonNull(player, "Unable to send packet to a 'null' player!").connection.send(packet);
         }
     }
     
     @Environment(EnvType.CLIENT)
     public static void sendToServer(ResourceLocation id, FriendlyByteBuf buf) {
-        Minecraft.getInstance().getConnection().send(toPacket(clientToServer(), id, buf));
+        if (Minecraft.getInstance().getConnection() != null) {
+            Minecraft.getInstance().getConnection().send(toPacket(clientToServer(), id, buf));
+        } else {
+            throw new IllegalStateException("Unable to send packet to the server while not in game!");
+        }
     }
     
     @Environment(EnvType.CLIENT)
@@ -77,7 +83,7 @@ public final class NetworkManager {
         Player getPlayer();
         
         void queue(Runnable runnable);
-    
+        
         Env getEnvironment();
         
         default EnvType getEnv() {

@@ -19,7 +19,7 @@
 
 package me.shedaniel.architectury.mixin.fabric;
 
-import me.shedaniel.architectury.event.events.EntityEvent;
+import me.shedaniel.architectury.event.events.BlockEvent;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -35,7 +35,7 @@ public abstract class MixinBlockItem {
                      target = "Lnet/minecraft/world/item/context/BlockPlaceContext;getClickedPos()Lnet/minecraft/core/BlockPos;"),
             cancellable = true)
     private void place(BlockPlaceContext context, CallbackInfoReturnable<InteractionResult> cir) {
-        InteractionResult result = EntityEvent.PLACE_BLOCK.invoker().placeBlock(context.getLevel(), context.getClickedPos(), context.getLevel().getBlockState(context.getClickedPos()), context.getPlayer());
+        InteractionResult result = BlockEvent.PLACE.invoker().placeBlock(context.getLevel(), context.getClickedPos(), context.getLevel().getBlockState(context.getClickedPos()), context.getPlayer());
         if (result != InteractionResult.PASS) {
             cir.setReturnValue(result);
         }

@@ -27,6 +27,7 @@ import me.shedaniel.architectury.platform.Platform;
 import me.shedaniel.architectury.utils.Env;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.core.Position;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -49,6 +50,14 @@ public class DebugEvents {
     }
     
     public static void debugEvents() {
+        BlockEvent.BREAK.register((world, pos, state, player, xp) -> {
+            SINK.accept(player.getScoreboardName() + " breaks " + toShortString(pos) + logSide(player.level));
+            return InteractionResult.PASS;
+        });
+        BlockEvent.PLACE.register((world, pos, state, placer) -> {
+            SINK.accept(Optional.ofNullable(placer).map(Entity::getScoreboardName).orElse("null") + " places block at " + toShortString(pos) + logSide(world));
+            return InteractionResult.PASS;
+        });
         ChatEvent.SERVER.register((player, message, component) -> {
             SINK.accept("Server chat received: " + message);
             return InteractionResultHolder.pass(component);
@@ -76,10 +85,6 @@ public class DebugEvents {
             if (entity instanceof Player) {
                 SINK.accept(entity.getScoreboardName() + " was added to " + level.dimension().location().toString() + logSide(level));
             }
-            return InteractionResult.PASS;
-        });
-        EntityEvent.PLACE_BLOCK.register((world, pos, state, placer) -> {
-            SINK.accept(Optional.ofNullable(placer).map(Entity::getScoreboardName).orElse("null") + " places block at " + toShortString(pos) + logSide(world));
             return InteractionResult.PASS;
         });
         ExplosionEvent.DETONATE.register((world, explosion, affectedEntities) -> {
@@ -155,10 +160,6 @@ public class DebugEvents {
             SINK.accept(player.getScoreboardName() + " drops " + new TranslatableComponent(entity.getItem().getDescriptionId()).getString() + logSide(player.level));
             return InteractionResult.PASS;
         });
-        PlayerEvent.BREAK_BLOCK.register((world, pos, state, player, xp) -> {
-            SINK.accept(player.getScoreboardName() + " breaks " + toShortString(pos) + logSide(player.level));
-            return InteractionResult.PASS;
-        });
         PlayerEvent.OPEN_MENU.register((player, menu) -> {
             SINK.accept(player.getScoreboardName() + " opens " + toSimpleName(menu) + logSide(player.level));
         });
@@ -167,6 +168,9 @@ public class DebugEvents {
         });
         PlayerEvent.CHANGE_DIMENSION.register((player, oldLevel, newLevel) -> {
             SINK.accept(player.getScoreboardName() + " switched from " + oldLevel.location() + " to " + newLevel.location() + logSide(player.level));
+        });
+        LightningEvent.STRIKE.register((bolt, level, pos, toStrike) -> {
+            SINK.accept(bolt.getScoreboardName() + " struck at " + toShortString(pos) + logSide(level));
         });
     }
     
@@ -208,10 +212,6 @@ public class DebugEvents {
         ClientPlayerEvent.CLIENT_PLAYER_RESPAWN.register((oldPlayer, newPlayer) -> {
             SINK.accept(newPlayer.getScoreboardName() + " respawned (client)");
         });
-        GuiEvent.SET_SCREEN.register((screen -> {
-            SINK.accept("Screen has been changed to " + toSimpleName(screen));
-            return InteractionResultHolder.pass(screen);
-        }));
         GuiEvent.INIT_PRE.register((screen, widgets, children) -> {
             SINK.accept(toSimpleName(screen) + " initializes");
             return InteractionResult.PASS;
@@ -267,6 +267,14 @@ public class DebugEvents {
         ClientRawInputEvent.KEY_PRESSED.register((client, keyCode, scanCode, action, modifiers) -> {
             SINK.accept("Raw Key pressed: " + InputConstants.getKey(keyCode, scanCode).getDisplayName().getString());
             return InteractionResult.PASS;
+        });
+        GuiEvent.SET_SCREEN.register(screen -> {
+            if (screen instanceof ChatScreen) {
+                return InteractionResultHolder.fail(screen);
+            }
+            
+            SINK.accept("Screen has been changed to " + toSimpleName(screen));
+            return InteractionResultHolder.pass(screen);
         });
     }
     

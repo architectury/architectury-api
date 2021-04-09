@@ -1,9 +1,3 @@
-import com.github.jengelman.gradle.plugins.shadow.transformers.Transformer
-import com.github.jengelman.gradle.plugins.shadow.transformers.TransformerContext
-import shadow.org.apache.tools.zip.ZipEntry
-import shadow.org.apache.tools.zip.ZipOutputStream
-import shadow.org.codehaus.plexus.util.IOUtil
-
 plugins {
     id "com.github.johnrengelman.shadow" version "5.0.0"
     id "com.matthewprenger.cursegradle"
@@ -14,7 +8,7 @@ loom {
 }
 
 configurations {
-    shadow
+    shadowCommon
     dev
 }
 
@@ -24,6 +18,7 @@ artifacts {
 
 architectury {
     platformSetupLoomIde()
+    fabric()
 }
 
 repositories {
@@ -37,15 +32,15 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
     modCompileOnly "com.terraformersmc:modmenu:${rootProject.mod_menu_version}"
     implementation "net.jodah:typetools:0.6.2"
-    shadow "net.jodah:typetools:0.6.2"
+    shadowCommon "net.jodah:typetools:0.6.2"
 
-    compileOnly(project(path: ":common")) {
+    implementation(project(path: ":common")) {
         transitive = false
     }
-    runtimeOnly(project(path: ":common", configuration: "transformDevelopmentFabric")) {
+    developmentFabric(project(path: ":common")) {
         transitive = false
     }
-    shadow(project(path: ":common", configuration: "transformProductionFabric")) {
+    shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) {
         transitive = false
     }
 }
@@ -59,7 +54,7 @@ processResources {
 
 shadowJar {
     relocate "net.jodah.typetools", "me.shedaniel.architectury.shadowed.impl.net.jodah.typetools"
-    configurations = [project.configurations.shadow]
+    configurations = [project.configurations.shadowCommon]
     classifier "shadow"
 }
 
@@ -72,9 +67,10 @@ remapJar {
 publishing {
     publications {
         mavenFabric(MavenPublication) {
+            artifactId = rootProject.archivesBaseName + "-fabric"
             artifact(remapJar.archivePath) {
                 builtBy build
-                classifier "fabric"
+                classifier null
             }
         }
     }

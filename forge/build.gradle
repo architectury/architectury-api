@@ -4,11 +4,11 @@ plugins {
 }
 
 loom {
-    mixinConfig = "architectury.mixins.json"
+    mixinConfigs = ["architectury.mixins.json", "architectury-common.mixins.json"]
 }
 
 configurations {
-    shadow
+    shadowCommon
     dev
 }
 
@@ -18,6 +18,7 @@ artifacts {
 
 architectury {
     platformSetupLoomIde()
+    forge()
 }
 
 dependencies {
@@ -25,15 +26,15 @@ dependencies {
     mappings loom.officialMojangMappings()
     forge "net.minecraftforge:forge:${rootProject.architectury.minecraft}-${rootProject.forge_version}"
     implementation "net.jodah:typetools:0.6.2"
-    shadow "net.jodah:typetools:0.6.2"
+    shadowCommon "net.jodah:typetools:0.6.2"
 
-    compileOnly(project(path: ":common")) {
+    implementation(project(path: ":common")) {
         transitive = false
     }
-    runtimeOnly(project(path: ":common", configuration: "transformDevelopmentForge")) {
+    developmentForge(project(path: ":common")) {
         transitive = false
     }
-    shadow(project(path: ":common", configuration: "transformProductionForge")) {
+    shadowCommon(project(path: ":common", configuration: "transformProductionForge")) {
         transitive = false
     }
 }
@@ -50,7 +51,7 @@ shadowJar {
     exclude "fabric.mod.json"
     exclude "architectury-common.accessWidener"
 
-    configurations = [project.configurations.shadow]
+    configurations = [project.configurations.shadowCommon]
     classifier "shadow"
 }
 
@@ -63,9 +64,10 @@ remapJar {
 publishing {
     publications {
         mavenForge(MavenPublication) {
+            artifactId = rootProject.archivesBaseName + "-forge"
             artifact(remapJar.archivePath) {
                 builtBy build
-                classifier "forge"
+                classifier null
             }
         }
     }

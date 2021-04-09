@@ -4,7 +4,7 @@ plugins {
 }
 
 loom {
-    mixinConfig = "architectury.mixins.json"
+    mixinConfig "architectury.mixins.json"
     
     localMods {
         it.add(project(":forge").sourceSets.main)
@@ -13,6 +13,7 @@ loom {
 
 architectury {
     platformSetupLoomIde()
+    forge()
 }
 
 dependencies {
@@ -21,16 +22,16 @@ dependencies {
     forge "net.minecraftforge:forge:${gradle.rootProject.architectury.minecraft}-${rootProject.forge_version}"
 
     implementation project(path: ":forge", configuration: "dev")
-    compileOnly(project(path: ":common")) {
+    implementation(project(path: ":common")) {
         transitive = false
     }
-    runtimeOnly(project(path: ":common", configuration: "transformDevelopmentForge")) {
+    developmentForge(project(path: ":common")) {
         transitive = false
     }
-    compileOnly(project(path: ":testmod-common")) {
+    implementation(project(path: ":testmod-common")) {
         transitive = false
     }
-    runtimeOnly(project(path: ":testmod-common", configuration: "transformDevelopmentForge")) {
+    developmentForge(project(path: ":testmod-common")) {
         transitive = false
     }
 }

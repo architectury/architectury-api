@@ -19,7 +19,7 @@
 
 package me.shedaniel.architectury.mixin.fabric;
 
-import me.shedaniel.architectury.event.events.PlayerEvent;
+import me.shedaniel.architectury.event.events.BlockEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -44,7 +44,7 @@ public class MixinServerPlayerGameMode {
                                               ordinal = 0),
             locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
     private void onBreak(BlockPos blockPos, CallbackInfoReturnable<Boolean> cir, BlockState state) {
-        if (PlayerEvent.BREAK_BLOCK.invoker().breakBlock(this.level, blockPos, state, this.player, null) == InteractionResult.FAIL) {
+        if (BlockEvent.BREAK.invoker().breakBlock(this.level, blockPos, state, this.player, null) == InteractionResult.FAIL) {
             cir.setReturnValue(false);
         }
     }
