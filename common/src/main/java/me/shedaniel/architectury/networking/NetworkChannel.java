@@ -57,18 +57,6 @@ public final class NetworkChannel {
         return new NetworkChannel(id);
     }
     
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
-    public <T> void register(NetworkManager.Side side, Class<T> type, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<PacketContext>> messageConsumer) {
-        register(type, encoder, decoder, messageConsumer);
-    }
-    
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
-    public <T> void register(Optional<NetworkManager.Side> side, Class<T> type, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<PacketContext>> messageConsumer) {
-        register(type, encoder, decoder, messageConsumer);
-    }
-    
     public <T> void register(Class<T> type, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<PacketContext>> messageConsumer) {
         // TODO: this is pretty wasteful; add a way to specify custom or numeric ids
         String s = UUID.nameUUIDFromBytes(type.getName().getBytes(StandardCharsets.UTF_8)).toString().replace("-", "");
@@ -90,24 +78,6 @@ public final class NetworkChannel {
             h = 31 * h + str.charAt(i);
         }
         return h;
-    }
-    
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
-    public <T> void register(int id, Class<T> type, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<PacketContext>> messageConsumer) {
-        register(type, encoder, decoder, messageConsumer);
-    }
-    
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
-    public <T> void register(NetworkManager.Side side, int id, Class<T> type, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<PacketContext>> messageConsumer) {
-        register(type, encoder, decoder, messageConsumer);
-    }
-    
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
-    public <T> void register(Optional<NetworkManager.Side> side, int id, Class<T> type, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<PacketContext>> messageConsumer) {
-        register(type, encoder, decoder, messageConsumer);
     }
     
     public <T> Packet<?> toPacket(NetworkManager.Side side, T message) {

@@ -45,13 +45,6 @@ public interface EntityEvent {
      */
     Event<Add> ADD = EventFactory.createInteractionResult();
     
-    /**
-     * @deprecated use {@link BlockEvent#PLACE}
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
-    Event<PlaceBlock> PLACE_BLOCK = EventFactory.createInteractionResult();
-    
     interface LivingDeath {
         InteractionResult die(LivingEntity entity, DamageSource source);
     }
@@ -62,9 +55,5 @@ public interface EntityEvent {
     
     interface Add {
         InteractionResult add(Entity entity, Level world);
-    }
-    
-    interface PlaceBlock {
-        InteractionResult placeBlock(Level world, BlockPos pos, BlockState state, @Nullable Entity placer);
     }
 }

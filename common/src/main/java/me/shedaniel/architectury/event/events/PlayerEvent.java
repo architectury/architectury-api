@@ -52,13 +52,6 @@ public interface PlayerEvent {
     Event<OpenMenu> OPEN_MENU = EventFactory.createLoop();
     Event<CloseMenu> CLOSE_MENU = EventFactory.createLoop();
     
-    /**
-     * @deprecated use {@link BlockEvent#BREAK}
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
-    Event<BreakBlock> BREAK_BLOCK = EventFactory.createInteractionResult();
-    
     interface PlayerJoin {
         void join(ServerPlayer player);
     }
@@ -101,10 +94,6 @@ public interface PlayerEvent {
     
     interface DropItem {
         InteractionResult drop(Player player, ItemEntity entity);
-    }
-    
-    interface BreakBlock {
-        InteractionResult breakBlock(Level world, BlockPos pos, BlockState state, ServerPlayer player, @Nullable IntValue xp);
     }
     
     interface OpenMenu {
