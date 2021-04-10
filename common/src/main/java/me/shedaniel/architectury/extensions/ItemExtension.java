@@ -17,26 +17,17 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package me.shedaniel.architectury.hooks.fabric;
+package me.shedaniel.architectury.extensions;
 
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
-public class EntityHooksImpl {
-    public static String getEncodeId(Entity entity) {
-        return entity.getEncodeId();
-    }
-    
-    @Nullable
-    public static Entity fromCollision(CollisionContext ctx) {
-        return ((CollisionContextExtension) ctx).arch$getEntity();
-    }
-    
-    public interface CollisionContextExtension {
-        @Nullable
-        default Entity arch$getEntity() {
-            return null;
-        }
-    }
+public interface ItemExtension {
+    /**
+     * Invoked every tick when this item is equipped.
+     *
+     * @param stack  the item stack of the armor
+     * @param player the player wearing the armor
+     */
+    void tickArmor(ItemStack stack, Player player);
 }

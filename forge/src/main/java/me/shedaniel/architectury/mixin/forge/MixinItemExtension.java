@@ -17,26 +17,19 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package me.shedaniel.architectury.hooks.fabric;
+package me.shedaniel.architectury.mixin.forge;
 
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import org.jetbrains.annotations.Nullable;
+import me.shedaniel.architectury.extensions.ItemExtension;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.common.extensions.IForgeItem;
+import org.spongepowered.asm.mixin.Mixin;
 
-public class EntityHooksImpl {
-    public static String getEncodeId(Entity entity) {
-        return entity.getEncodeId();
-    }
-    
-    @Nullable
-    public static Entity fromCollision(CollisionContext ctx) {
-        return ((CollisionContextExtension) ctx).arch$getEntity();
-    }
-    
-    public interface CollisionContextExtension {
-        @Nullable
-        default Entity arch$getEntity() {
-            return null;
-        }
+@Mixin(ItemExtension.class)
+public interface MixinItemExtension extends IForgeItem {
+    @Override
+    default void onArmorTick(ItemStack stack, Level world, Player player) {
+        ((ItemExtension) this).tickArmor(stack, player);
     }
 }
