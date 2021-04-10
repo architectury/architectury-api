@@ -17,31 +17,30 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package me.shedaniel.architectury.extensions;
+package me.shedaniel.architectury.test.registry.objects;
 
+import me.shedaniel.architectury.extensions.ItemExtension;
+import me.shedaniel.architectury.test.TestMod;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-public interface ItemExtension {
-    /**
-     * Invoked every tick when this item is equipped.
-     *
-     * @param stack  the item stack
-     * @param player the player wearing the armor
-     */
-    default void tickArmor(ItemStack stack, Player player) {
+public class EquippableTickingItem extends Item implements ItemExtension {
+    public EquippableTickingItem(Properties properties) {
+        super(properties);
     }
     
-    /**
-     * Returns the {@link EquipmentSlot} for {@link ItemStack}.
-     *
-     * @param stack the item stack
-     * @return the {@link EquipmentSlot}, return {@code null} to default to vanilla's {@link net.minecraft.world.entity.Mob#getEquipmentSlotForItem(ItemStack)}
-     */
+    @Override
+    public void tickArmor(ItemStack stack, Player player) {
+        TestMod.SINK.accept("Ticking " + new TranslatableComponent(stack.getDescriptionId()).getString());
+    }
+    
     @Nullable
-    default EquipmentSlot getCustomEquipmentSlot(ItemStack stack) {
-        return null;
+    @Override
+    public EquipmentSlot getCustomEquipmentSlot(ItemStack stack) {
+        return EquipmentSlot.HEAD;
     }
 }

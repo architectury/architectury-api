@@ -24,6 +24,7 @@ import me.shedaniel.architectury.registry.BlockProperties;
 import me.shedaniel.architectury.registry.DeferredRegister;
 import me.shedaniel.architectury.registry.RegistrySupplier;
 import me.shedaniel.architectury.test.TestMod;
+import me.shedaniel.architectury.test.registry.objects.EquippableTickingItem;
 import me.shedaniel.architectury.test.tab.TestCreativeTabs;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
@@ -44,6 +45,8 @@ public class TestRegistries {
     
     public static final RegistrySupplier<Item> TEST_ITEM = ITEMS.register("test_item", () ->
             new Item(new Item.Properties().tab(TestCreativeTabs.TEST_TAB)));
+    public static final RegistrySupplier<Item> TEST_EQUIPPABLE = ITEMS.register("test_eqippable", () ->
+            new EquippableTickingItem(new Item.Properties().tab(TestCreativeTabs.TEST_TAB)));
     
     public static final RegistrySupplier<Block> TEST_BLOCK = BLOCKS.register("test_block", () ->
             new Block(BlockProperties.copy(Blocks.STONE)));
