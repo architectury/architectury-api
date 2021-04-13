@@ -19,33 +19,34 @@
 
 package me.shedaniel.architectury.mixin.fabric;
 
-import me.shedaniel.architectury.hooks.fabric.EntityHooksImpl;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.EntityCollisionContext;
-import org.jetbrains.annotations.Nullable;
+import me.shedaniel.architectury.extensions.ItemExtension;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(EntityCollisionContext.class)
-public abstract class MixinEntityCollisionContext implements CollisionContext, EntityHooksImpl.CollisionContextExtension {
+@Mixin(Inventory.class)
+public class MixinInventory {
+    @Shadow
+    @Final
+    public NonNullList<ItemStack> armor;
     
-    @Unique
-    private Entity entity = null;
+    @Shadow
+    @Final
+    public Player player;
     
-    @Inject(method = "<init>(Lnet/minecraft/world/entity/Entity;)V",
-            at = @At("RETURN"))
-    public void saveEntity(Entity entity, CallbackInfo ci) {
-        this.entity = entity;
+    @Inject(method = "tick", at = @At("RETURN"))
+    private void updateItems(CallbackInfo ci) {
+        for (ItemStack stack : armor) {
+            if (stack.getItem() instanceof ItemExtension) {
+                ((ItemExtension) stack.getItem()).tickArmor(stack, player);
+            }
+        }
     }
-    
-    @Nullable
-    @Override
-    public Entity arch$getEntity() {
-        return entity;
-    }
-    
 }

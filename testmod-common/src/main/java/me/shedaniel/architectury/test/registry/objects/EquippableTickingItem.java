@@ -17,26 +17,30 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package me.shedaniel.architectury.hooks.fabric;
+package me.shedaniel.architectury.test.registry.objects;
 
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.phys.shapes.CollisionContext;
+import me.shedaniel.architectury.extensions.ItemExtension;
+import me.shedaniel.architectury.test.TestMod;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-public class EntityHooksImpl {
-    public static String getEncodeId(Entity entity) {
-        return entity.getEncodeId();
+public class EquippableTickingItem extends Item implements ItemExtension {
+    public EquippableTickingItem(Properties properties) {
+        super(properties);
+    }
+    
+    @Override
+    public void tickArmor(ItemStack stack, Player player) {
+        TestMod.SINK.accept("Ticking " + new TranslatableComponent(stack.getDescriptionId()).getString());
     }
     
     @Nullable
-    public static Entity fromCollision(CollisionContext ctx) {
-        return ((CollisionContextExtension) ctx).arch$getEntity();
-    }
-    
-    public interface CollisionContextExtension {
-        @Nullable
-        default Entity arch$getEntity() {
-            return null;
-        }
+    @Override
+    public EquipmentSlot getCustomEquipmentSlot(ItemStack stack) {
+        return EquipmentSlot.HEAD;
     }
 }

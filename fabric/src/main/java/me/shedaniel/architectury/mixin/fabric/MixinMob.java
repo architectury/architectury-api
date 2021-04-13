@@ -19,10 +19,26 @@
 
 package me.shedaniel.architectury.mixin.fabric;
 
-import me.shedaniel.architectury.hooks.fabric.EntityHooksImpl;
-import net.minecraft.world.phys.shapes.CollisionContext;
+import me.shedaniel.architectury.extensions.ItemExtension;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(CollisionContext.class)
-public interface MixinCollisionContext extends EntityHooksImpl.CollisionContextExtension {
+@Mixin(Mob.class)
+public class MixinMob {
+    @Inject(method = "getEquipmentSlotForItem", at = @At("HEAD"), cancellable = true)
+    private static void getEquipmentSlotForItem(ItemStack stack, CallbackInfoReturnable<EquipmentSlot> cir) {
+        Item item = stack.getItem();
+        if (item instanceof ItemExtension) {
+            EquipmentSlot slot = ((ItemExtension) item).getCustomEquipmentSlot(stack);
+            if (slot != null) {
+                cir.setReturnValue(slot);
+            }
+        }
+    }
 }
