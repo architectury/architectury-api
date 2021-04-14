@@ -39,6 +39,7 @@
         "MixinMob",
         "MixinNaturalSpawner",
         "MixinPatrolSpawner",
+        "MixinPhantomSpawner",
         "MixinPlayer",
         "MixinPlayerAdvancements",
         "MixinPlayerList",
