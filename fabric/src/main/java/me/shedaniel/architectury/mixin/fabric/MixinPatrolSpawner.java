@@ -40,16 +40,16 @@ public abstract class MixinPatrolSpawner {
     @Inject(
             method = "spawnPatrolMember",
             at = @At(
-                    value = "INVOKE",
+                    value = "INVOKE_ASSIGN",
                     target = "Lnet/minecraft/world/entity/EntityType;create(Lnet/minecraft/world/level/Level;)Lnet/minecraft/world/entity/Entity;",
                     ordinal = 0,
-                    shift = At.Shift.AFTER
+                    shift = At.Shift.BY,
+                    by = 2
             ),
             cancellable = true,
             locals = LocalCapture.CAPTURE_FAILHARD
     )
-    private void checkPatrolSpawn(ServerLevel level, BlockPos pos, Random r, boolean b, CallbackInfoReturnable<Boolean> cir,
-            BlockState state, PatrollingMonster entity) {
+    private void checkPatrolSpawn(ServerLevel level, BlockPos pos, Random r, boolean b, CallbackInfoReturnable<Boolean> cir, PatrollingMonster entity) {
         if (EntityEvent.CHECK_SPAWN.invoker().canSpawn(entity, level, pos.getX(), pos.getY(), pos.getZ(), MobSpawnType.PATROL, null) == InteractionResult.FAIL) {
             cir.setReturnValue(false);
             cir.cancel();
