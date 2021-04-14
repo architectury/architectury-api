@@ -7,6 +7,11 @@
   "authors": [
     "shedaniel"
   ],
+  "contact": {
+    "issues": "https://github.com/architectury/architectury-api/issues",
+    "sources": "https://github.com/architectury/architectury-api",
+    "homepage": "https://architectury.github.io/architectury-documentations/"
+  },
   "license": "LGPL-3",
   "environment": "*",
   "mixins": [
@@ -25,6 +30,7 @@
     ]
   },
   "accessWidener": "architectury.accessWidener",
+  "icon": "icon.png",
   "depends": {
     "minecraft": ">=1.16.4"
   },
