@@ -28,12 +28,15 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,6 +54,14 @@ public interface PlayerEvent {
     Event<DropItem> DROP_ITEM = EventFactory.createLoop();
     Event<OpenMenu> OPEN_MENU = EventFactory.createLoop();
     Event<CloseMenu> CLOSE_MENU = EventFactory.createLoop();
+    /**
+     * Invoked when a player attempts to fill a bucket using right-click.
+     * You can return a non-PASS interaction result to cancel further processing by other mods.
+     * 
+     * On Forge, FAIL cancels the event, and SUCCESS sets the event as handled.
+     * On Fabric, any non-PASS result is returned directly and immediately.
+     */
+    Event<FillBucket> FILL_BUCKET = EventFactory.createInteractionResultHolder();
     
     /**
      * @deprecated use {@link BlockEvent#BREAK}
@@ -113,5 +124,9 @@ public interface PlayerEvent {
     
     interface CloseMenu {
         void close(Player player, AbstractContainerMenu menu);
+    }
+    
+    interface FillBucket {
+        InteractionResultHolder<ItemStack> fill(Player player, Level level, ItemStack stack, @Nullable HitResult target);
     }
 }

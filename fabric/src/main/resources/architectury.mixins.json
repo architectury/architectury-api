@@ -23,6 +23,7 @@
     "LivingDeathInvoker",
     "MixinBlockEntityExtension",
     "MixinBlockItem",
+    "MixinBucketItem",
     "MixinCollisionContext",
     "MixinCommands",
     "MixinDedicatedServer",

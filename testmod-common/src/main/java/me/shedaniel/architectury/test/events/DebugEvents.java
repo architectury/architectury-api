@@ -178,6 +178,10 @@ public class DebugEvents {
         PlayerEvent.CHANGE_DIMENSION.register((player, oldLevel, newLevel) -> {
             SINK.accept(player.getScoreboardName() + " switched from " + oldLevel.location() + " to " + newLevel.location() + logSide(player.level));
         });
+        PlayerEvent.FILL_BUCKET.register(((player, level, stack, target) -> {
+            SINK.accept("%s used a bucket (%s) in %s%s while looking at %s", player.getScoreboardName(), stack, level.dimension().location(), logSide(level), target == null ? "nothing" : target.getLocation());
+            return InteractionResultHolder.pass(null);
+        }));
         LightningEvent.STRIKE.register((bolt, level, pos, toStrike) -> {
             SINK.accept(bolt.getScoreboardName() + " struck at " + toShortString(pos) + logSide(level));
         });

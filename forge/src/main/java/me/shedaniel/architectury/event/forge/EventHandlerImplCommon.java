@@ -19,6 +19,7 @@
 
 package me.shedaniel.architectury.event.forge;
 
+import me.shedaniel.architectury.event.events.PlayerEvent;
 import me.shedaniel.architectury.event.events.*;
 import me.shedaniel.architectury.utils.IntValue;
 import net.minecraft.network.chat.Component;
@@ -39,11 +40,8 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.player.AdvancementEvent;
-import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
-import net.minecraftforge.event.entity.player.PlayerContainerEvent;
+import net.minecraftforge.event.entity.player.*;
 import net.minecraftforge.event.entity.player.PlayerEvent.*;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.BlockEvent.EntityPlaceEvent;
 import net.minecraftforge.event.world.BlockEvent.FarmlandTrampleEvent;
@@ -219,6 +217,24 @@ public class EventHandlerImplCommon {
     public static void event(FarmlandTrampleEvent event) {
         if (InteractionEvent.FARMLAND_TRAMPLE.invoker().trample((Level) event.getWorld(), event.getPos(), event.getState(), event.getFallDistance(), event.getEntity()) == InteractionResult.FAIL) {
             event.setCanceled(true);
+        }
+    }
+    
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(FillBucketEvent event) {
+        ItemStack oldItem = event.getEmptyBucket();
+        InteractionResultHolder<ItemStack> result = PlayerEvent.FILL_BUCKET.invoker().fill(event.getPlayer(), event.getWorld(), oldItem, event.getTarget());
+        switch (result.getResult()) {
+            case FAIL:
+                event.setCanceled(true);
+                break;
+            case SUCCESS:
+            case CONSUME:
+                event.setResult(Event.Result.ALLOW);
+                event.setFilledBucket(result.getObject());
+                break;
+            case PASS:
+                break;
         }
     }
     
