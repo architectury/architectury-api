@@ -37,6 +37,7 @@
     "MixinLivingEntity",
     "MixinMob",
     "MixinNaturalSpawner",
+    "MixinPatrolSpawner",
     "MixinPlayer",
     "MixinPlayerAdvancements",
     "MixinPlayerList",
