@@ -26,7 +26,11 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -48,6 +52,10 @@ public interface EntityEvent {
      * Invoked when an entity enters a chunk.
      */
     Event<EnterChunk> ENTER_CHUNK = EventFactory.createLoop();
+    /**
+     * Invoked when an entity is about to be spawned, equivalent to forge's {@code LivingSpawnEvent.CheckSpawn}
+     */
+    Event<CheckSpawn> CHECK_SPAWN = EventFactory.createInteractionResult();
     
     /**
      * @deprecated use {@link BlockEvent#PLACE}
@@ -74,5 +82,9 @@ public interface EntityEvent {
     
     interface EnterChunk {
         void enterChunk(Entity entity, int chunkX, int chunkZ, int prevX, int prevZ);
+    }
+    
+    interface CheckSpawn {
+        InteractionResult canSpawn(Entity entity, LevelAccessor world, double x, double y, double z, MobSpawnType type, @Nullable BaseSpawner spawner);
     }
 }

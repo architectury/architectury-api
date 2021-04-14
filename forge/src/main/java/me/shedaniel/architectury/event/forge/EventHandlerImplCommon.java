@@ -41,6 +41,7 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.entity.player.*;
 import net.minecraftforge.event.entity.player.PlayerEvent.*;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
@@ -242,6 +243,22 @@ public class EventHandlerImplCommon {
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(EnteringChunk event) {
         EntityEvent.ENTER_CHUNK.invoker().enterChunk(event.getEntity(), event.getNewChunkX(), event.getNewChunkZ(), event.getOldChunkX(), event.getOldChunkZ());
+    }
+    
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(LivingSpawnEvent.CheckSpawn event) {
+        InteractionResult result = EntityEvent.CHECK_SPAWN.invoker().canSpawn(event.getEntity(), event.getWorld(), event.getX(), event.getY(), event.getZ(), event.getSpawnReason(), event.getSpawner());
+        switch (result) {
+            case FAIL:
+                event.setResult(Event.Result.DENY);
+                break;
+            case SUCCESS:
+            case CONSUME:
+                event.setResult(Event.Result.ALLOW);
+                break;
+            case PASS:
+                break;
+        }
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
