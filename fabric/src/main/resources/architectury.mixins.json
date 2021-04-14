@@ -36,6 +36,7 @@
     "MixinLevelChunk",
     "MixinLivingEntity",
     "MixinMob",
+    "MixinNaturalSpawner",
     "MixinPlayer",
     "MixinPlayerAdvancements",
     "MixinPlayerList",
