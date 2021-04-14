@@ -46,6 +46,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent.*;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.BlockEvent.EntityPlaceEvent;
+import net.minecraftforge.event.world.BlockEvent.FarmlandTrampleEvent;
 import net.minecraftforge.event.world.ExplosionEvent.Detonate;
 import net.minecraftforge.event.world.ExplosionEvent.Start;
 import net.minecraftforge.event.world.WorldEvent;
@@ -210,6 +211,13 @@ public class EventHandlerImplCommon {
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(EntityJoinWorldEvent event) {
         if (EntityEvent.ADD.invoker().add(event.getEntity(), event.getWorld()) == InteractionResult.FAIL) {
+            event.setCanceled(true);
+        }
+    }
+    
+    @SubscribeEvent
+    public static void event(FarmlandTrampleEvent event) {
+        if (InteractionEvent.FARMLAND_TRAMPLE.invoker().trample((Level) event.getWorld(), event.getPos(), event.getState(), event.getFallDistance(), event.getEntity()) == InteractionResult.FAIL) {
             event.setCanceled(true);
         }
     }

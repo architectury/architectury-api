@@ -29,6 +29,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 public interface InteractionEvent {
@@ -38,6 +39,10 @@ public interface InteractionEvent {
     Event<ClientLeftClickAir> CLIENT_LEFT_CLICK_AIR = EventFactory.createLoop();
     Event<ClientRightClickAir> CLIENT_RIGHT_CLICK_AIR = EventFactory.createLoop();
     Event<InteractEntity> INTERACT_ENTITY = EventFactory.createInteractionResult();
+    /**
+     * Invoked before a farmland block is trampled by an entity, equivalent to forge's {@code BlockEvent.FarmlandTrampleEvent}
+     */
+    Event<FarmlandTrample> FARMLAND_TRAMPLE = EventFactory.createInteractionResult();
     
     interface RightClickBlock {
         InteractionResult click(Player player, InteractionHand hand, BlockPos pos, Direction face);
@@ -65,5 +70,9 @@ public interface InteractionEvent {
     
     interface BlockBreak {
         InteractionResult breakBlock(Player player, BlockPos pos, BlockState state);
+    }
+    
+    interface FarmlandTrample {
+        InteractionResult trample(Level world, BlockPos pos, BlockState state, float distance, Entity entity);
     }
 }
