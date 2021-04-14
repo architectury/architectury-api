@@ -30,6 +30,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.core.Position;
 import net.minecraft.core.Vec3i;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -89,6 +90,13 @@ public class DebugEvents {
             }
             return InteractionResult.PASS;
         });
+        EntityEvent.ENTER_CHUNK.register(((entity, nx, nz, ox, oz) -> {
+            if (entity instanceof Player && entity.inChunk) {
+                Player player = (Player) entity;
+                SINK.accept("%s switched chunks: %s => %s", entity.getScoreboardName(), chunkPos(ox, oz), chunkPos(nx, nz));
+                player.displayClientMessage(new TextComponent("Entering chunk: " + chunkPos(nx, nz)), true);
+            }
+        }));
         ExplosionEvent.DETONATE.register((world, explosion, affectedEntities) -> {
             SINK.accept(world.dimension().location() + " explodes at " + toShortString(ExplosionHooks.getPosition(explosion)) + logSide(world));
         });
@@ -289,6 +297,10 @@ public class DebugEvents {
             SINK.accept("Screen has been changed to " + toSimpleName(screen));
             return InteractionResultHolder.pass(screen);
         });
+    }
+    
+    private static String chunkPos(int x, int z) {
+        return "[" + x + ", " + z + "]";
     }
     
     private static String toSimpleName(Object o) {

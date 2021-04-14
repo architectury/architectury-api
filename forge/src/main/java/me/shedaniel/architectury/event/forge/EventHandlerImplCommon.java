@@ -36,6 +36,7 @@ import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
+import net.minecraftforge.event.entity.EntityEvent.EnteringChunk;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -213,7 +214,7 @@ public class EventHandlerImplCommon {
         }
     }
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(FarmlandTrampleEvent event) {
         if (InteractionEvent.FARMLAND_TRAMPLE.invoker().trample((Level) event.getWorld(), event.getPos(), event.getState(), event.getFallDistance(), event.getEntity()) == InteractionResult.FAIL) {
             event.setCanceled(true);
@@ -236,6 +237,11 @@ public class EventHandlerImplCommon {
             case PASS:
                 break;
         }
+    }
+    
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(EnteringChunk event) {
+        EntityEvent.ENTER_CHUNK.invoker().enterChunk(event.getEntity(), event.getNewChunkX(), event.getNewChunkZ(), event.getOldChunkX(), event.getOldChunkZ());
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)

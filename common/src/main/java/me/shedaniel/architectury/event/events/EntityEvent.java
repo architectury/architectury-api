@@ -44,6 +44,10 @@ public interface EntityEvent {
      * Invoked before entity is added to a world, equivalent to forge's {@code EntityJoinWorldEvent}.
      */
     Event<Add> ADD = EventFactory.createInteractionResult();
+    /**
+     * Invoked when an entity enters a chunk.
+     */
+    Event<EnterChunk> ENTER_CHUNK = EventFactory.createLoop();
     
     /**
      * @deprecated use {@link BlockEvent#PLACE}
@@ -66,5 +70,9 @@ public interface EntityEvent {
     
     interface PlaceBlock {
         InteractionResult placeBlock(Level world, BlockPos pos, BlockState state, @Nullable Entity placer);
+    }
+    
+    interface EnterChunk {
+        void enterChunk(Entity entity, int chunkX, int chunkZ, int prevX, int prevZ);
     }
 }

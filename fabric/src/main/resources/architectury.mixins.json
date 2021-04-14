@@ -33,6 +33,7 @@
     "MixinFurnaceResultSlot",
     "MixinInventory",
     "MixinItemEntity",
+    "MixinLevelChunk",
     "MixinLivingEntity",
     "MixinMob",
     "MixinPlayer",
