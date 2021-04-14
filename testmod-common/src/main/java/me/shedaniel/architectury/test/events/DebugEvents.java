@@ -35,7 +35,9 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 
 import java.util.Optional;
@@ -104,6 +106,13 @@ public class DebugEvents {
         });
         InteractionEvent.INTERACT_ENTITY.register((player, entity, hand) -> {
             SINK.accept(player.getScoreboardName() + " interacts with " + entity.getScoreboardName() + " using " + (hand == InteractionHand.MAIN_HAND ? "main hand" : "off hand") + logSide(player.level));
+            return InteractionResult.PASS;
+        });
+        InteractionEvent.FARMLAND_TRAMPLE.register((level, pos, state, distance, entity) -> {
+            if (entity instanceof Player && ((Player) entity).getItemBySlot(EquipmentSlot.FEET).getItem() == Items.DIAMOND_BOOTS) {
+                return InteractionResult.FAIL;
+            }
+            SINK.accept("%s trampled farmland (%s) at %s in %s (Fall height: %f blocks)", entity, state, pos, level, distance);
             return InteractionResult.PASS;
         });
         LifecycleEvent.SERVER_BEFORE_START.register(instance -> {
