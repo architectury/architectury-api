@@ -49,7 +49,7 @@ public abstract class MixinPatrolSpawner {
             locals = LocalCapture.CAPTURE_FAILHARD
     )
     private void checkPatrolSpawn(ServerLevel level, BlockPos pos, Random r, boolean b, CallbackInfoReturnable<Boolean> cir, PatrollingMonster entity) {
-        if (Boolean.FALSE.equals(EntityEvent.CHECK_SPAWN.invoker().canSpawn(entity, level, pos.getX(), pos.getY(), pos.getZ(), MobSpawnType.PATROL, null).value())) {
+        if (Boolean.FALSE.equals(EntityEvent.LIVING_CHECK_SPAWN.invoker().canSpawn(entity, level, pos.getX(), pos.getY(), pos.getZ(), MobSpawnType.PATROL, null).value())) {
             cir.setReturnValue(false);
         }
     }

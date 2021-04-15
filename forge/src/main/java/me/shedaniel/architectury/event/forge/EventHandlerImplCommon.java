@@ -231,7 +231,7 @@ public class EventHandlerImplCommon {
         if (result.interruptsFurtherEvaluation()) {
             event.setCanceled(true);
             event.setFilledBucket(result.object());
-    
+            
             if (result.value() != null) {
                 event.setResult(result.value() ? Event.Result.ALLOW : Event.Result.DENY);
             }
@@ -245,7 +245,7 @@ public class EventHandlerImplCommon {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(LivingSpawnEvent.CheckSpawn event) {
-        EventResult result = EntityEvent.CHECK_SPAWN.invoker().canSpawn(event.getEntity(), event.getWorld(), event.getX(), event.getY(), event.getZ(), event.getSpawnReason(), event.getSpawner());
+        EventResult result = EntityEvent.LIVING_CHECK_SPAWN.invoker().canSpawn(event.getEntityLiving(), event.getWorld(), event.getX(), event.getY(), event.getZ(), event.getSpawnReason(), event.getSpawner());
         if (result.interruptsFurtherEvaluation()) {
             if (result.value() != null) {
                 event.setResult(result.value() == Boolean.TRUE ? Event.Result.ALLOW : Event.Result.DENY);

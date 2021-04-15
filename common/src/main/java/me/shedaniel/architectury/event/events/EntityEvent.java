@@ -28,7 +28,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -46,6 +45,10 @@ public interface EntityEvent {
      */
     Event<LivingAttack> LIVING_ATTACK = EventFactory.createInteractionResult();
     /**
+     * Invoked when an entity is about to be spawned, equivalent to forge's {@code LivingSpawnEvent.CheckSpawn}
+     */
+    Event<LivingCheckSpawn> LIVING_CHECK_SPAWN = EventFactory.createEventResult();
+    /**
      * Invoked before entity is added to a world, equivalent to forge's {@code EntityJoinWorldEvent}.
      */
     Event<Add> ADD = EventFactory.createInteractionResult();
@@ -53,10 +56,6 @@ public interface EntityEvent {
      * Invoked when an entity enters a chunk,  equivalent to forge's {@code EnteringChunk}
      */
     Event<EnterChunk> ENTER_CHUNK = EventFactory.createLoop();
-    /**
-     * Invoked when an entity is about to be spawned, equivalent to forge's {@code LivingSpawnEvent.CheckSpawn}
-     */
-    Event<CheckSpawn> CHECK_SPAWN = EventFactory.createEventResult();
     
     /**
      * @deprecated use {@link BlockEvent#PLACE}
@@ -73,6 +72,10 @@ public interface EntityEvent {
         InteractionResult attack(LivingEntity entity, DamageSource source, float amount);
     }
     
+    interface LivingCheckSpawn {
+        EventResult canSpawn(LivingEntity entity, LevelAccessor world, double x, double y, double z, MobSpawnType type, @Nullable BaseSpawner spawner);
+    }
+    
     interface Add {
         InteractionResult add(Entity entity, Level world);
     }
@@ -85,7 +88,4 @@ public interface EntityEvent {
         void enterChunk(Entity entity, int chunkX, int chunkZ, int prevX, int prevZ);
     }
     
-    interface CheckSpawn {
-        EventResult canSpawn(Entity entity, LevelAccessor world, double x, double y, double z, MobSpawnType type, @Nullable BaseSpawner spawner);
-    }
 }

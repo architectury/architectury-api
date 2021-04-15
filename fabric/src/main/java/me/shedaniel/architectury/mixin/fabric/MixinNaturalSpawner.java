@@ -21,33 +21,14 @@ package me.shedaniel.architectury.mixin.fabric;
 
 import me.shedaniel.architectury.event.EventResult;
 import me.shedaniel.architectury.event.events.EntityEvent;
-import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.NaturalSpawner;
-import net.minecraft.world.level.NaturalSpawner.AfterSpawnCallback;
-import net.minecraft.world.level.NaturalSpawner.SpawnPredicate;
-import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.StructureFeatureManager;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.MobSpawnSettings;
-import net.minecraft.world.level.biome.MobSpawnSettings.SpawnerData;
-import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.ChunkGenerator;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-
-import java.util.List;
-import java.util.Random;
 
 @Mixin(NaturalSpawner.class)
 public abstract class MixinNaturalSpawner {
@@ -65,7 +46,7 @@ public abstract class MixinNaturalSpawner {
             )
     )
     private static boolean overrideNaturalSpawnCondition(ServerLevel level, Mob entity, double f) {
-        EventResult result = EntityEvent.CHECK_SPAWN.invoker().canSpawn(entity, level, entity.xOld, entity.yOld, entity.zOld, MobSpawnType.NATURAL, null);
+        EventResult result = EntityEvent.LIVING_CHECK_SPAWN.invoker().canSpawn(entity, level, entity.xOld, entity.yOld, entity.zOld, MobSpawnType.NATURAL, null);
         if (result.value() != null) {
             return result.value();
         } else {
@@ -82,7 +63,7 @@ public abstract class MixinNaturalSpawner {
             )
     )
     private static boolean overrideChunkGenSpawnCondition(Mob mob, LevelAccessor level, MobSpawnType type) {
-        EventResult result = EntityEvent.CHECK_SPAWN.invoker().canSpawn(mob, level, mob.xOld, mob.yOld, mob.zOld, MobSpawnType.CHUNK_GENERATION, null);
+        EventResult result = EntityEvent.LIVING_CHECK_SPAWN.invoker().canSpawn(mob, level, mob.xOld, mob.yOld, mob.zOld, MobSpawnType.CHUNK_GENERATION, null);
         if (result.value() != null) {
             return result.value();
         } else {

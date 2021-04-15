@@ -30,6 +30,7 @@ import me.shedaniel.architectury.utils.Env;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screens.ChatScreen;
+import net.minecraft.client.gui.screens.inventory.AnvilScreen;
 import net.minecraft.core.Position;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.TextComponent;
@@ -42,6 +43,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
 
@@ -98,6 +100,27 @@ public class DebugEvents {
                 SINK.accept("%s switched chunks: %s => %s", entity.getScoreboardName(), chunkPos(ox, oz), chunkPos(nx, nz));
                 player.displayClientMessage(new TextComponent("Entering chunk: " + chunkPos(nx, nz)), true);
             }
+        }));
+        EntityEvent.LIVING_CHECK_SPAWN.register(((entity, level, x, y, z, type, spawner) -> {
+            StringBuilder sb = new StringBuilder();
+            sb.append(entity.getType());
+            sb.append(" is trying to spawn");
+            sb.append(" at ");
+            sb.append(toShortString(new Vec3(x, y, z)));
+            if (level instanceof Level) {
+                sb.append(" in world ");
+                sb.append(((Level) level).dimension().location());
+            }
+            sb.append(" from cause ");
+            sb.append(type.name());
+            if (spawner != null) {
+                sb.append(" (");
+                sb.append(spawner);
+                sb.append(") ");
+            }
+            
+            SINK.accept(sb.toString());
+            return EventResult.pass();
         }));
         ExplosionEvent.DETONATE.register((world, explosion, affectedEntities) -> {
             SINK.accept(world.dimension().location() + " explodes at " + toShortString(ExplosionHooks.getPosition(explosion)) + logSide(world));
@@ -292,7 +315,7 @@ public class DebugEvents {
             return InteractionResult.PASS;
         });
         GuiEvent.SET_SCREEN.register(screen -> {
-            if (screen instanceof ChatScreen) {
+            if (screen instanceof AnvilScreen) {
                 return InteractionResultHolder.fail(screen);
             }
             
