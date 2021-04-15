@@ -19,6 +19,8 @@
 
 package me.shedaniel.architectury.event.forge;
 
+import me.shedaniel.architectury.event.CompoundEventResult;
+import me.shedaniel.architectury.event.EventResult;
 import me.shedaniel.architectury.event.events.PlayerEvent;
 import me.shedaniel.architectury.event.events.*;
 import me.shedaniel.architectury.utils.IntValue;
@@ -217,7 +219,7 @@ public class EventHandlerImplCommon {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(FarmlandTrampleEvent event) {
-        if (InteractionEvent.FARMLAND_TRAMPLE.invoker().trample((Level) event.getWorld(), event.getPos(), event.getState(), event.getFallDistance(), event.getEntity()) == InteractionResult.FAIL) {
+        if (InteractionEvent.FARMLAND_TRAMPLE.invoker().trample((Level) event.getWorld(), event.getPos(), event.getState(), event.getFallDistance(), event.getEntity()).value() != null) {
             event.setCanceled(true);
         }
     }
@@ -225,18 +227,14 @@ public class EventHandlerImplCommon {
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(FillBucketEvent event) {
         ItemStack oldItem = event.getEmptyBucket();
-        InteractionResultHolder<ItemStack> result = PlayerEvent.FILL_BUCKET.invoker().fill(event.getPlayer(), event.getWorld(), oldItem, event.getTarget());
-        switch (result.getResult()) {
-            case FAIL:
-                event.setCanceled(true);
-                break;
-            case SUCCESS:
-            case CONSUME:
-                event.setResult(Event.Result.ALLOW);
-                event.setFilledBucket(result.getObject());
-                break;
-            case PASS:
-                break;
+        CompoundEventResult<ItemStack> result = PlayerEvent.FILL_BUCKET.invoker().fill(event.getPlayer(), event.getWorld(), oldItem, event.getTarget());
+        if (result.interruptsFurtherEvaluation()) {
+            event.setCanceled(true);
+            event.setFilledBucket(result.object());
+    
+            if (result.value() != null) {
+                event.setResult(result.value() ? Event.Result.ALLOW : Event.Result.DENY);
+            }
         }
     }
     
@@ -247,17 +245,12 @@ public class EventHandlerImplCommon {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(LivingSpawnEvent.CheckSpawn event) {
-        InteractionResult result = EntityEvent.CHECK_SPAWN.invoker().canSpawn(event.getEntity(), event.getWorld(), event.getX(), event.getY(), event.getZ(), event.getSpawnReason(), event.getSpawner());
-        switch (result) {
-            case FAIL:
-                event.setResult(Event.Result.DENY);
-                break;
-            case SUCCESS:
-            case CONSUME:
-                event.setResult(Event.Result.ALLOW);
-                break;
-            case PASS:
-                break;
+        EventResult result = EntityEvent.CHECK_SPAWN.invoker().canSpawn(event.getEntity(), event.getWorld(), event.getX(), event.getY(), event.getZ(), event.getSpawnReason(), event.getSpawner());
+        if (result.interruptsFurtherEvaluation()) {
+            if (result.value() != null) {
+                event.setResult(result.value() == Boolean.TRUE ? Event.Result.ALLOW : Event.Result.DENY);
+            }
+            event.setCanceled(true);
         }
     }
     

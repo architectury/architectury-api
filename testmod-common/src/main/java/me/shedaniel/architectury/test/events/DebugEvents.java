@@ -20,6 +20,8 @@
 package me.shedaniel.architectury.test.events;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import me.shedaniel.architectury.event.CompoundEventResult;
+import me.shedaniel.architectury.event.EventResult;
 import me.shedaniel.architectury.event.events.*;
 import me.shedaniel.architectury.event.events.client.*;
 import me.shedaniel.architectury.hooks.ExplosionHooks;
@@ -118,10 +120,10 @@ public class DebugEvents {
         });
         InteractionEvent.FARMLAND_TRAMPLE.register((level, pos, state, distance, entity) -> {
             if (entity instanceof Player && ((Player) entity).getItemBySlot(EquipmentSlot.FEET).getItem() == Items.DIAMOND_BOOTS) {
-                return InteractionResult.FAIL;
+                return EventResult.interrupt(false);
             }
             SINK.accept("%s trampled farmland (%s) at %s in %s (Fall height: %f blocks)", entity, state, pos, level, distance);
-            return InteractionResult.PASS;
+            return EventResult.pass();
         });
         LifecycleEvent.SERVER_BEFORE_START.register(instance -> {
             SINK.accept("Server ready to start");
@@ -188,7 +190,7 @@ public class DebugEvents {
         });
         PlayerEvent.FILL_BUCKET.register(((player, level, stack, target) -> {
             SINK.accept("%s used a bucket (%s) in %s%s while looking at %s", player.getScoreboardName(), stack, level.dimension().location(), logSide(level), target == null ? "nothing" : target.getLocation());
-            return InteractionResultHolder.pass(null);
+            return CompoundEventResult.pass();
         }));
         LightningEvent.STRIKE.register((bolt, level, pos, toStrike) -> {
             SINK.accept(bolt.getScoreboardName() + " struck at " + toShortString(pos) + logSide(level));

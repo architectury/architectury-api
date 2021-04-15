@@ -19,9 +19,9 @@
 
 package me.shedaniel.architectury.mixin.fabric;
 
+import me.shedaniel.architectury.event.CompoundEventResult;
 import me.shedaniel.architectury.event.events.PlayerEvent;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
@@ -48,9 +48,9 @@ public class MixinBucketItem {
             cancellable = true
     )
     public void fillBucket(Level level, Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir, ItemStack stack, HitResult target) {
-        InteractionResultHolder<ItemStack> event = PlayerEvent.FILL_BUCKET.invoker().fill(player, level, stack, target);
-        if (event.getResult() != InteractionResult.PASS) {
-            cir.setReturnValue(event);
+        CompoundEventResult<ItemStack> result = PlayerEvent.FILL_BUCKET.invoker().fill(player, level, stack, target);
+        if (result.interruptsFurtherEvaluation() && result.value() != null) {
+            cir.setReturnValue(result.asMinecraft());
             cir.cancel();
         }
     }

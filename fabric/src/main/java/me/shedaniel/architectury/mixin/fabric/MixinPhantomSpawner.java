@@ -16,6 +16,7 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
+
 package me.shedaniel.architectury.mixin.fabric;
 
 import me.shedaniel.architectury.event.events.EntityEvent;
@@ -55,7 +56,7 @@ public abstract class MixinPhantomSpawner {
     private void checkPhantomSpawn(ServerLevel level, boolean bl, boolean bl2, CallbackInfoReturnable<Integer> cir,
             Random random, int i, Iterator<ServerPlayer> it, Player player, BlockPos pos, DifficultyInstance diff, BlockPos pos2,
             SpawnGroupData sgd, int l, int m, Phantom entity) {
-        if (EntityEvent.CHECK_SPAWN.invoker().canSpawn(entity, level, pos.getX(), pos.getY(), pos.getZ(), MobSpawnType.NATURAL, null) == InteractionResult.FAIL) {
+        if (EntityEvent.CHECK_SPAWN.invoker().canSpawn(entity, level, pos.getX(), pos.getY(), pos.getZ(), MobSpawnType.NATURAL, null).value() == Boolean.FALSE) {
             cir.setReturnValue(0);
             cir.cancel();
         }

@@ -21,6 +21,7 @@ package me.shedaniel.architectury.event.events;
 
 import me.shedaniel.architectury.event.Event;
 import me.shedaniel.architectury.event.EventFactory;
+import me.shedaniel.architectury.event.EventResult;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -42,7 +43,7 @@ public interface InteractionEvent {
     /**
      * Invoked before a farmland block is trampled by an entity, equivalent to forge's {@code BlockEvent.FarmlandTrampleEvent}
      */
-    Event<FarmlandTrample> FARMLAND_TRAMPLE = EventFactory.createInteractionResult();
+    Event<FarmlandTrample> FARMLAND_TRAMPLE = EventFactory.createEventResult();
     
     interface RightClickBlock {
         InteractionResult click(Player player, InteractionHand hand, BlockPos pos, Direction face);
@@ -73,6 +74,6 @@ public interface InteractionEvent {
     }
     
     interface FarmlandTrample {
-        InteractionResult trample(Level world, BlockPos pos, BlockState state, float distance, Entity entity);
+        EventResult trample(Level world, BlockPos pos, BlockState state, float distance, Entity entity);
     }
 }

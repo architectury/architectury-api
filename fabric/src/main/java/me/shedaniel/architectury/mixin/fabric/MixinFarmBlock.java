@@ -21,33 +21,45 @@ package me.shedaniel.architectury.mixin.fabric;
 
 import me.shedaniel.architectury.event.events.InteractionEvent;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.FarmBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import org.apache.commons.lang3.tuple.Triple;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(FarmBlock.class)
 public abstract class MixinFarmBlock {
+    @Unique
+    private static ThreadLocal<Triple<Long, Float, Entity>> turnToDirtLocal = new ThreadLocal<>();
     
-    @Shadow
-    public static void turnToDirt(BlockState blockState, Level level, BlockPos blockPos) {
-    }
-    
-    @Redirect(
+    @Inject(
             method = "fallOn",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/world/level/block/FarmBlock;turnToDirt(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;)V"
             )
     )
-    private void redirectTurnToDirt(BlockState state, Level level, BlockPos pos, Level l2, BlockPos pos2, Entity entity, float f) {
-        if (InteractionEvent.FARMLAND_TRAMPLE.invoker().trample(level, pos, state, f, entity) == InteractionResult.PASS) {
-            turnToDirt(state, level, pos);
+    private void fallOn(Level level, BlockPos blockPos, Entity entity, float f, CallbackInfo ci) {
+        turnToDirtLocal.set(Triple.of(blockPos.asLong(), f, entity));
+    }
+    
+    @Inject(method = "turnToDirt", at = @At("HEAD"), cancellable = true)
+    private static void turnToDirt(BlockState state, Level level, BlockPos pos, CallbackInfo ci) {
+        Triple<Long, Float, Entity> triple = turnToDirtLocal.get();
+        turnToDirtLocal.remove();
+        if (triple != null && triple.getLeft() == pos.asLong()) {
+            if (InteractionEvent.FARMLAND_TRAMPLE.invoker().trample(level, pos, state, triple.getMiddle(), triple.getRight()).value() != null) {
+                ci.cancel();
+            }
         }
     }
 }

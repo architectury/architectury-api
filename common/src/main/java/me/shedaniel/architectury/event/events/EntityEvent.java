@@ -21,6 +21,7 @@ package me.shedaniel.architectury.event.events;
 
 import me.shedaniel.architectury.event.Event;
 import me.shedaniel.architectury.event.EventFactory;
+import me.shedaniel.architectury.event.EventResult;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -49,13 +50,13 @@ public interface EntityEvent {
      */
     Event<Add> ADD = EventFactory.createInteractionResult();
     /**
-     * Invoked when an entity enters a chunk.
+     * Invoked when an entity enters a chunk,  equivalent to forge's {@code EnteringChunk}
      */
     Event<EnterChunk> ENTER_CHUNK = EventFactory.createLoop();
     /**
      * Invoked when an entity is about to be spawned, equivalent to forge's {@code LivingSpawnEvent.CheckSpawn}
      */
-    Event<CheckSpawn> CHECK_SPAWN = EventFactory.createInteractionResult();
+    Event<CheckSpawn> CHECK_SPAWN = EventFactory.createEventResult();
     
     /**
      * @deprecated use {@link BlockEvent#PLACE}
@@ -85,6 +86,6 @@ public interface EntityEvent {
     }
     
     interface CheckSpawn {
-        InteractionResult canSpawn(Entity entity, LevelAccessor world, double x, double y, double z, MobSpawnType type, @Nullable BaseSpawner spawner);
+        EventResult canSpawn(Entity entity, LevelAccessor world, double x, double y, double z, MobSpawnType type, @Nullable BaseSpawner spawner);
     }
 }

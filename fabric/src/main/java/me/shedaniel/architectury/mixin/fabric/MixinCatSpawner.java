@@ -16,6 +16,7 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
+
 package me.shedaniel.architectury.mixin.fabric;
 
 import me.shedaniel.architectury.event.events.EntityEvent;
@@ -38,7 +39,6 @@ import java.util.Random;
 
 @Mixin(CatSpawner.class)
 public abstract class MixinCatSpawner {
-    
     @Inject(
             method = "spawnCat",
             at = @At(
@@ -50,7 +50,7 @@ public abstract class MixinCatSpawner {
             locals = LocalCapture.CAPTURE_FAILHARD
     )
     private void checkCatSpawn(BlockPos pos, ServerLevel level, CallbackInfoReturnable<Integer> cir, Cat entity) {
-        if (EntityEvent.CHECK_SPAWN.invoker().canSpawn(entity, level, pos.getX(), pos.getY(), pos.getZ(), MobSpawnType.NATURAL, null) == InteractionResult.FAIL) {
+        if (EntityEvent.CHECK_SPAWN.invoker().canSpawn(entity, level, pos.getX(), pos.getY(), pos.getZ(), MobSpawnType.NATURAL, null).value() == Boolean.FALSE) {
             cir.setReturnValue(0);
             cir.cancel();
         }
