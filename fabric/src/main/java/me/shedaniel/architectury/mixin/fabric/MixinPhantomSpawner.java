@@ -50,7 +50,7 @@ public abstract class MixinPhantomSpawner {
                     shift = At.Shift.BEFORE
             ),
             cancellable = true,
-            locals = LocalCapture.CAPTURE_FAILHARD
+            locals = LocalCapture.CAPTURE_FAILSOFT // SOFT, because this will break in 2 seconds
     )
     private void checkPhantomSpawn(ServerLevel level, boolean bl, boolean bl2, CallbackInfoReturnable<Integer> cir,
             Random random, int i, Iterator<ServerPlayer> it, Player player, BlockPos pos, DifficultyInstance diff, BlockPos pos2,
