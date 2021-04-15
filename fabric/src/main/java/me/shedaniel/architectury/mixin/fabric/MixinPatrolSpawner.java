@@ -19,14 +19,11 @@
 
 package me.shedaniel.architectury.mixin.fabric;
 
-import me.shedaniel.architectury.event.EventResult;
 import me.shedaniel.architectury.event.events.EntityEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.monster.PatrollingMonster;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.PatrolSpawner;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -52,9 +49,8 @@ public abstract class MixinPatrolSpawner {
             locals = LocalCapture.CAPTURE_FAILHARD
     )
     private void checkPatrolSpawn(ServerLevel level, BlockPos pos, Random r, boolean b, CallbackInfoReturnable<Boolean> cir, PatrollingMonster entity) {
-        EventResult result = EntityEvent.CHECK_SPAWN.invoker().canSpawn(entity, level, pos.getX(), pos.getY(), pos.getZ(), MobSpawnType.PATROL, null);
-        if (result.value() != null) {
-            cir.setReturnValue(result.value());
+        if (Boolean.FALSE.equals(EntityEvent.CHECK_SPAWN.invoker().canSpawn(entity, level, pos.getX(), pos.getY(), pos.getZ(), MobSpawnType.PATROL, null).value())) {
+            cir.setReturnValue(false);
         }
     }
 }
