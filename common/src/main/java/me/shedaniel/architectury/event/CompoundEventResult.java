@@ -58,6 +58,39 @@ public class CompoundEventResult<T> {
         return new CompoundEventResult<>(EventResult.interrupt(value), object);
     }
     
+    /**
+     * Interrupts the event and stops it from being passed on to other listeners,
+     * denotes the {@code true} outcome and may or may not set an extra data of the event.
+     *
+     * @param object the extra data of the result, this usually is the returning value of the event
+     * @return an event that interrupts the event
+     */
+    public static <T> CompoundEventResult<T> interruptTrue(T object) {
+        return new CompoundEventResult<>(EventResult.interruptTrue(), object);
+    }
+    
+    /**
+     * Interrupts the event and stops it from being passed on to other listeners,
+     * does not set an outcome and may or may not set an extra data of the event.
+     *
+     * @param object the extra data of the result, this usually is the returning value of the event
+     * @return an event that interrupts the event
+     */
+    public static <T> CompoundEventResult<T> interruptDefault(T object) {
+        return new CompoundEventResult<>(EventResult.interruptDefault(), object);
+    }
+    
+    /**
+     * Interrupts the event and stops it from being passed on to other listeners,
+     * denotes the {@code false} outcome and may or may not set an extra data of the event.
+     *
+     * @param object the extra data of the result, this usually is the returning value of the event
+     * @return an event that interrupts the event
+     */
+    public static <T> CompoundEventResult<T> interruptFalse(T object) {
+        return new CompoundEventResult<>(EventResult.interruptFalse(), object);
+    }
+    
     private CompoundEventResult(EventResult result, T object) {
         this.result = result;
         this.object = object;

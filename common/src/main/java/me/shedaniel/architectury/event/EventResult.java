@@ -56,6 +56,36 @@ public final class EventResult {
         return FALSE;
     }
     
+    /**
+     * Interrupts the event and stops it from being passed on to other listeners,
+     * and denotes the {@code true} outcome.
+     *
+     * @return an event that interrupts the event
+     */
+    public static EventResult interruptTrue() {
+        return TRUE;
+    }
+    
+    /**
+     * Interrupts the event and stops it from being passed on to other listeners,
+     * and does not set an outcome.
+     *
+     * @return an event that interrupts the event
+     */
+    public static EventResult interruptDefault() {
+        return STOP;
+    }
+    
+    /**
+     * Interrupts the event and stops it from being passed on to other listeners,
+     * and denotes the {@code false} outcome.
+     *
+     * @return an event that interrupts the event
+     */
+    public static EventResult interruptFalse() {
+        return FALSE;
+    }
+    
     private final boolean interruptsFurtherEvaluation;
     
     private final Boolean value;
