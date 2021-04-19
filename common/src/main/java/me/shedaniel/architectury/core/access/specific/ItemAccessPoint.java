@@ -1,7 +1,7 @@
 package me.shedaniel.architectury.core.access.specific;
 
 import me.shedaniel.architectury.core.access.DelegateAccessPoint;
-import me.shedaniel.architectury.impl.ItemAccessPointImpl;
+import me.shedaniel.architectury.impl.access.ItemAccessPointImpl;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.item.Item;
 

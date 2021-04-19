@@ -1,19 +1,15 @@
 package me.shedaniel.architectury.core.access.combined;
 
-import me.shedaniel.architectury.core.access.AccessPoint;
 import me.shedaniel.architectury.core.access.specific.*;
-import me.shedaniel.architectury.impl.CombinedAccessImpl;
-
-import java.util.Collection;
-import java.util.function.Function;
+import me.shedaniel.architectury.impl.access.CombinedAccessImpl;
 
 public interface CombinedAccess<T> extends ProvidedAccess<T>, BlockAccess<T>, LevelAccess<T>, ChunkAccess<T>,
         ItemAccess<T>, EntityAccess<T> {
-    static <T> CombinedAccess<T> create(Function<Collection<T>, T> compiler) {
-        return new CombinedAccessImpl<>(compiler);
+    static <T> CombinedAccess<T> create() {
+        return new CombinedAccessImpl<>();
     }
     
-    AccessPoint<T, ?> general();
+    ProvidedAccessPoint<T, ?> general();
     
     BlockAccessPoint<T, ?> block();
     

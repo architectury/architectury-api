@@ -1,4 +1,4 @@
-package me.shedaniel.architectury.impl;
+package me.shedaniel.architectury.impl.access;
 
 import me.shedaniel.architectury.core.access.AccessPoint;
 import me.shedaniel.architectury.core.access.specific.EntityAccess;

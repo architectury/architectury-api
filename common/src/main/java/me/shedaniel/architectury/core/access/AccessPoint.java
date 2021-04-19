@@ -1,6 +1,6 @@
 package me.shedaniel.architectury.core.access;
 
-import me.shedaniel.architectury.impl.AccessPointImpl;
+import me.shedaniel.architectury.impl.access.AccessPointImpl;
 
 import java.util.Collection;
 import java.util.function.Consumer;

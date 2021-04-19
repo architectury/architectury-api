@@ -1,7 +1,7 @@
 package me.shedaniel.architectury.core.access.specific;
 
 import me.shedaniel.architectury.core.access.DelegateAccessPoint;
-import me.shedaniel.architectury.impl.BlockAccessPointImpl;
+import me.shedaniel.architectury.impl.access.BlockAccessPointImpl;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;

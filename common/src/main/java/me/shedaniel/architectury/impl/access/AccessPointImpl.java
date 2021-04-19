@@ -1,4 +1,4 @@
-package me.shedaniel.architectury.impl;
+package me.shedaniel.architectury.impl.access;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;

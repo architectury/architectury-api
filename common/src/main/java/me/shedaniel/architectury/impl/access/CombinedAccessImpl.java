@@ -1,6 +1,5 @@
-package me.shedaniel.architectury.impl;
+package me.shedaniel.architectury.impl.access;
 
-import me.shedaniel.architectury.core.access.AccessPoint;
 import me.shedaniel.architectury.core.access.combined.CombinedAccess;
 import me.shedaniel.architectury.core.access.specific.*;
 import net.minecraft.core.BlockPos;
@@ -13,19 +12,16 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.function.Function;
-
 public class CombinedAccessImpl<T> implements CombinedAccess<T> {
-    private final AccessPoint<T, ?> general;
+    private final ProvidedAccessPoint<T, ?> provided;
     private final BlockAccessPoint<T, ?> block;
     private final ChunkAccessPoint<T, ?> chunk;
     private final LevelAccessPoint<T, ?> level;
     private final EntityAccessPoint<T, ?> entity;
     private final ItemAccessPoint<T, ?> item;
     
-    public CombinedAccessImpl(Function<Collection<T>, T> compiler) {
-        this.general = AccessPoint.create(compiler);
+    public CombinedAccessImpl() {
+        this.provided = ProvidedAccessPoint.create();
         this.block = BlockAccessPoint.create();
         this.chunk = ChunkAccessPoint.create();
         this.level = LevelAccessPoint.create();
@@ -34,8 +30,8 @@ public class CombinedAccessImpl<T> implements CombinedAccess<T> {
     }
     
     @Override
-    public AccessPoint<T, ?> general() {
-        return general;
+    public ProvidedAccessPoint<T, ?> general() {
+        return provided;
     }
     
     @Override
@@ -65,7 +61,7 @@ public class CombinedAccessImpl<T> implements CombinedAccess<T> {
     
     @Override
     public T get(Object o) {
-        return general.get();
+        return provided.get(o);
     }
     
     @Override
