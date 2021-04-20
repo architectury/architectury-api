@@ -26,12 +26,12 @@ import net.minecraft.Util;
 import net.minecraft.world.level.material.Fluid;
 
 public final class FluidStorage {
-    public static final CombinedAccess<Storage<Fluid>> ACCESS = Util.make(CombinedAccess.create(Storage::combine), FluidStorage::linkPlatformFluid);
+    public static final CombinedAccess<Storage<Fluid>> ACCESS = Util.make(CombinedAccess.create(), FluidStorage::linkPlatformFluid);
     
     private FluidStorage() {}
     
     @ExpectPlatform
     private static void linkPlatformFluid(CombinedAccess<Storage<Fluid>> access) {
-        
+        throw new AssertionError();
     }
 }
