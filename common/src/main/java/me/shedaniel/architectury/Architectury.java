@@ -19,39 +19,17 @@
 
 package me.shedaniel.architectury;
 
-import com.google.common.collect.ImmutableMap;
-import org.apache.logging.log4j.LogManager;
+import me.shedaniel.architectury.targets.ArchitecturyTarget;
 import org.jetbrains.annotations.ApiStatus;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 @ApiStatus.Internal
 public class Architectury {
-    private static final String MOD_LOADER;
-    private static final ImmutableMap<String,String> MOD_LOADERS = ImmutableMap.<String,String>builder()
-            .put("net.fabricmc.loader.FabricLoader", "fabric")
-            .put("net.minecraftforge.fml.common.Mod", "forge")
-            .build();
-    
+    @Deprecated
     public static String getModLoader() {
-        return MOD_LOADER;
-    }
-    
-    static {
-        List<String> loader = new ArrayList<>();
-        for (Map.Entry<String, String> entry : MOD_LOADERS.entrySet()) {
-            try {
-                Class.forName(entry.getKey(), false, Architectury.class.getClassLoader());
-                loader.add(entry.getValue());
-                break;
-            } catch (ClassNotFoundException ignored) {}
-        }
-        if (loader.isEmpty())
-            throw new IllegalStateException("No detected mod loader!");
-        if (loader.size() >= 2)
-            LogManager.getLogger().error("Detected multiple mod loaders! Something is wrong on the classpath! " + String.join(", ", loader));
-        MOD_LOADER = loader.get(0);
+        // Never return quilt here, legacy architectury mods actually depend on checking Platform#getModLoader()
+        // Returning quilt will return in endless @ExpectPlatform errors, newer mods are expected to use ArchitecturyTarget#getCurrentTarget()
+        String currentTarget = ArchitecturyTarget.getCurrentTarget();
+        if (currentTarget.equals("quilt")) return "fabric";
+        return currentTarget;
     }
 }

@@ -23,6 +23,8 @@ import com.google.common.reflect.AbstractInvocationHandler;
 import me.shedaniel.architectury.ForgeEvent;
 import me.shedaniel.architectury.ForgeEventCancellable;
 import me.shedaniel.architectury.annotations.ExpectPlatform;
+import me.shedaniel.architectury.annotations.PlatformOnly;
+import me.shedaniel.architectury.platform.Platform;
 import net.jodah.typetools.TypeResolver;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -182,6 +184,7 @@ public final class EventFactory {
                 return null;
             }
         }));
+        if (Platform.isFabric()) return event;
         Class<?> superClass = clazz;
         do {
             if (superClass.isAnnotationPresent(ForgeEvent.class)) {
@@ -212,6 +215,7 @@ public final class EventFactory {
                 return InteractionResult.PASS;
             }
         }));
+        if (Platform.isFabric()) return event;
         Class<?> superClass = clazz;
         do {
             
@@ -251,6 +255,7 @@ public final class EventFactory {
                 return EventResult.pass();
             }
         }));
+        if (Platform.isFabric()) return event;
         Class<?> superClass = clazz;
         do {
             
@@ -272,30 +277,35 @@ public final class EventFactory {
     
     @ExpectPlatform
     @ApiStatus.Internal
+    @PlatformOnly(PlatformOnly.FORGE)
     public static <T> Event<Consumer<T>> attachToForge(Event<Consumer<T>> event) {
         throw new AssertionError();
     }
     
     @ExpectPlatform
     @ApiStatus.Internal
+    @PlatformOnly(PlatformOnly.FORGE)
     public static <T> Event<Actor<T>> attachToForgeActor(Event<Actor<T>> event) {
         throw new AssertionError();
     }
     
     @ExpectPlatform
     @ApiStatus.Internal
+    @PlatformOnly(PlatformOnly.FORGE)
     public static <T> Event<Actor<T>> attachToForgeActorCancellable(Event<Actor<T>> event) {
         throw new AssertionError();
     }
     
     @ExpectPlatform
     @ApiStatus.Internal
+    @PlatformOnly(PlatformOnly.FORGE)
     public static <T> Event<EventActor<T>> attachToForgeEventActor(Event<EventActor<T>> event) {
         throw new AssertionError();
     }
     
     @ExpectPlatform
     @ApiStatus.Internal
+    @PlatformOnly(PlatformOnly.FORGE)
     public static <T> Event<EventActor<T>> attachToForgeEventActorCancellable(Event<EventActor<T>> event) {
         throw new AssertionError();
     }
