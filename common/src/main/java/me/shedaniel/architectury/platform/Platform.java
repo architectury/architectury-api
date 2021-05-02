@@ -21,9 +21,11 @@ package me.shedaniel.architectury.platform;
 
 import me.shedaniel.architectury.Architectury;
 import me.shedaniel.architectury.annotations.ExpectPlatform;
+import me.shedaniel.architectury.targets.ArchitecturyTarget;
 import me.shedaniel.architectury.utils.Env;
 import net.fabricmc.api.EnvType;
 import net.minecraft.SharedConstants;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
@@ -37,8 +39,12 @@ public final class Platform {
     
     /**
      * @return the current mod loader, either "fabric" or "forge"
+     * @deprecated does not reflect the true mod loader, "quilt" is never returned,
+     *             use {@link ArchitecturyTarget#getCurrentTarget()} instead.
      */
     @NotNull
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     public static String getModLoader() {
         return Architectury.getModLoader();
     }
