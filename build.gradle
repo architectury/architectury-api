@@ -56,7 +56,7 @@ allprojects {
         header = rootProject.file("HEADER")
 
         ext {
-            name = "shedaniel"
+            name = "architectury"
             year = "2020, 2021"
         }
 

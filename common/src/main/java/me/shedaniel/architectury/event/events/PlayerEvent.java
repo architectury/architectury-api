@@ -1,6 +1,6 @@
 /*
  * This file is part of architectury.
- * Copyright (C) 2020, 2021 shedaniel
+ * Copyright (C) 2020, 2021 architectury
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -19,6 +19,7 @@
 
 package me.shedaniel.architectury.event.events;
 
+import me.shedaniel.architectury.event.CompoundEventResult;
 import me.shedaniel.architectury.event.Event;
 import me.shedaniel.architectury.event.EventFactory;
 import me.shedaniel.architectury.utils.IntValue;
@@ -34,6 +35,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,6 +53,14 @@ public interface PlayerEvent {
     Event<DropItem> DROP_ITEM = EventFactory.createLoop();
     Event<OpenMenu> OPEN_MENU = EventFactory.createLoop();
     Event<CloseMenu> CLOSE_MENU = EventFactory.createLoop();
+    /**
+     * Invoked when a player attempts to fill a bucket using right-click.
+     * You can return a non-PASS interaction result to cancel further processing by other mods.
+     * <p>
+     * On Forge, FAIL cancels the event, and SUCCESS sets the event as handled.
+     * On Fabric, any non-PASS result is returned directly and immediately.
+     */
+    Event<FillBucket> FILL_BUCKET = EventFactory.createCompoundEventResult();
     
     interface PlayerJoin {
         void join(ServerPlayer player);
@@ -102,5 +112,9 @@ public interface PlayerEvent {
     
     interface CloseMenu {
         void close(Player player, AbstractContainerMenu menu);
+    }
+    
+    interface FillBucket {
+        CompoundEventResult<ItemStack> fill(Player player, Level level, ItemStack stack, @Nullable HitResult target);
     }
 }

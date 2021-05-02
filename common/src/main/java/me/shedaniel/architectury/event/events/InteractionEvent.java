@@ -1,6 +1,6 @@
 /*
  * This file is part of architectury.
- * Copyright (C) 2020, 2021 shedaniel
+ * Copyright (C) 2020, 2021 architectury
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,6 +21,7 @@ package me.shedaniel.architectury.event.events;
 
 import me.shedaniel.architectury.event.Event;
 import me.shedaniel.architectury.event.EventFactory;
+import me.shedaniel.architectury.event.EventResult;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -29,6 +30,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 public interface InteractionEvent {
@@ -38,6 +40,10 @@ public interface InteractionEvent {
     Event<ClientLeftClickAir> CLIENT_LEFT_CLICK_AIR = EventFactory.createLoop();
     Event<ClientRightClickAir> CLIENT_RIGHT_CLICK_AIR = EventFactory.createLoop();
     Event<InteractEntity> INTERACT_ENTITY = EventFactory.createInteractionResult();
+    /**
+     * Invoked before a farmland block is trampled by an entity, equivalent to forge's {@code BlockEvent.FarmlandTrampleEvent}
+     */
+    Event<FarmlandTrample> FARMLAND_TRAMPLE = EventFactory.createEventResult();
     
     interface RightClickBlock {
         InteractionResult click(Player player, InteractionHand hand, BlockPos pos, Direction face);
@@ -65,5 +71,9 @@ public interface InteractionEvent {
     
     interface BlockBreak {
         InteractionResult breakBlock(Player player, BlockPos pos, BlockState state);
+    }
+    
+    interface FarmlandTrample {
+        EventResult trample(Level world, BlockPos pos, BlockState state, float distance, Entity entity);
     }
 }

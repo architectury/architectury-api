@@ -1,6 +1,6 @@
 /*
  * This file is part of architectury.
- * Copyright (C) 2020, 2021 shedaniel
+ * Copyright (C) 2020, 2021 architectury
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -19,6 +19,9 @@
 
 package me.shedaniel.architectury.event.forge;
 
+import me.shedaniel.architectury.event.CompoundEventResult;
+import me.shedaniel.architectury.event.EventResult;
+import me.shedaniel.architectury.event.events.PlayerEvent;
 import me.shedaniel.architectury.event.events.*;
 import me.shedaniel.architectury.utils.IntValue;
 import net.minecraft.network.chat.Component;
@@ -35,17 +38,17 @@ import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
+import net.minecraftforge.event.entity.EntityEvent.EnteringChunk;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.player.AdvancementEvent;
-import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
-import net.minecraftforge.event.entity.player.PlayerContainerEvent;
+import net.minecraftforge.event.entity.living.LivingSpawnEvent;
+import net.minecraftforge.event.entity.player.*;
 import net.minecraftforge.event.entity.player.PlayerEvent.*;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.BlockEvent.EntityPlaceEvent;
+import net.minecraftforge.event.world.BlockEvent.FarmlandTrampleEvent;
 import net.minecraftforge.event.world.ExplosionEvent.Detonate;
 import net.minecraftforge.event.world.ExplosionEvent.Start;
 import net.minecraftforge.event.world.WorldEvent;
@@ -210,6 +213,43 @@ public class EventHandlerImplCommon {
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(EntityJoinWorldEvent event) {
         if (EntityEvent.ADD.invoker().add(event.getEntity(), event.getWorld()) == InteractionResult.FAIL) {
+            event.setCanceled(true);
+        }
+    }
+    
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(FarmlandTrampleEvent event) {
+        if (InteractionEvent.FARMLAND_TRAMPLE.invoker().trample((Level) event.getWorld(), event.getPos(), event.getState(), event.getFallDistance(), event.getEntity()).value() != null) {
+            event.setCanceled(true);
+        }
+    }
+    
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(FillBucketEvent event) {
+        ItemStack oldItem = event.getEmptyBucket();
+        CompoundEventResult<ItemStack> result = PlayerEvent.FILL_BUCKET.invoker().fill(event.getPlayer(), event.getWorld(), oldItem, event.getTarget());
+        if (result.interruptsFurtherEvaluation()) {
+            event.setCanceled(true);
+            event.setFilledBucket(result.object());
+            
+            if (result.value() != null) {
+                event.setResult(result.value() ? Event.Result.ALLOW : Event.Result.DENY);
+            }
+        }
+    }
+    
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(EnteringChunk event) {
+        EntityEvent.ENTER_CHUNK.invoker().enterChunk(event.getEntity(), event.getNewChunkX(), event.getNewChunkZ(), event.getOldChunkX(), event.getOldChunkZ());
+    }
+    
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(LivingSpawnEvent.CheckSpawn event) {
+        EventResult result = EntityEvent.LIVING_CHECK_SPAWN.invoker().canSpawn(event.getEntityLiving(), event.getWorld(), event.getX(), event.getY(), event.getZ(), event.getSpawnReason(), event.getSpawner());
+        if (result.interruptsFurtherEvaluation()) {
+            if (result.value() != null) {
+                event.setResult(result.value() == Boolean.TRUE ? Event.Result.ALLOW : Event.Result.DENY);
+            }
             event.setCanceled(true);
         }
     }

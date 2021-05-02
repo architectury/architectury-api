@@ -1,7 +1,7 @@
 modLoader = "javafml"
 loaderVersion = "[33,)"
 issueTrackerURL = "https://github.com/shedaniel/architectury/issues"
-license = "LGPL-3"
+license = "GNU LGPLv3"
 
 [[mods]]
 modId = "architectury"
@@ -11,4 +11,12 @@ authors = "shedaniel"
 description = '''
 A intermediary api aimed to ease developing multiplatform mods.
 '''
+logoFile="icon.png"
 license = "LGPL-3"
+
+[[dependencies.architectury]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.16.2,)"
+ordering = "NONE"
+side = "BOTH"

@@ -1,6 +1,6 @@
 /*
  * This file is part of architectury.
- * Copyright (C) 2020, 2021 shedaniel
+ * Copyright (C) 2020, 2021 architectury
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,6 +20,8 @@
 package me.shedaniel.architectury.test.events;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import me.shedaniel.architectury.event.CompoundEventResult;
+import me.shedaniel.architectury.event.EventResult;
 import me.shedaniel.architectury.event.events.*;
 import me.shedaniel.architectury.event.events.client.*;
 import me.shedaniel.architectury.hooks.ExplosionHooks;
@@ -28,15 +30,20 @@ import me.shedaniel.architectury.utils.Env;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screens.ChatScreen;
+import net.minecraft.client.gui.screens.inventory.AnvilScreen;
 import net.minecraft.core.Position;
 import net.minecraft.core.Vec3i;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
 
@@ -87,6 +94,34 @@ public class DebugEvents {
             }
             return InteractionResult.PASS;
         });
+        EntityEvent.ENTER_CHUNK.register(((entity, nx, nz, ox, oz) -> {
+            if (entity instanceof Player && entity.inChunk) {
+                Player player = (Player) entity;
+                SINK.accept("%s switched chunks: %s => %s", entity.getScoreboardName(), chunkPos(ox, oz), chunkPos(nx, nz));
+                player.displayClientMessage(new TextComponent("Entering chunk: " + chunkPos(nx, nz)), true);
+            }
+        }));
+        EntityEvent.LIVING_CHECK_SPAWN.register(((entity, level, x, y, z, type, spawner) -> {
+            StringBuilder sb = new StringBuilder();
+            sb.append(entity.getType());
+            sb.append(" is trying to spawn");
+            sb.append(" at ");
+            sb.append(toShortString(new Vec3(x, y, z)));
+            if (level instanceof Level) {
+                sb.append(" in world ");
+                sb.append(((Level) level).dimension().location());
+            }
+            sb.append(" from cause ");
+            sb.append(type.name());
+            if (spawner != null) {
+                sb.append(" (");
+                sb.append(spawner);
+                sb.append(") ");
+            }
+            
+            SINK.accept(sb.toString());
+            return EventResult.pass();
+        }));
         ExplosionEvent.DETONATE.register((world, explosion, affectedEntities) -> {
             SINK.accept(world.dimension().location() + " explodes at " + toShortString(ExplosionHooks.getPosition(explosion)) + logSide(world));
         });
@@ -105,6 +140,13 @@ public class DebugEvents {
         InteractionEvent.INTERACT_ENTITY.register((player, entity, hand) -> {
             SINK.accept(player.getScoreboardName() + " interacts with " + entity.getScoreboardName() + " using " + (hand == InteractionHand.MAIN_HAND ? "main hand" : "off hand") + logSide(player.level));
             return InteractionResult.PASS;
+        });
+        InteractionEvent.FARMLAND_TRAMPLE.register((level, pos, state, distance, entity) -> {
+            if (entity instanceof Player && ((Player) entity).getItemBySlot(EquipmentSlot.FEET).getItem() == Items.DIAMOND_BOOTS) {
+                return EventResult.interrupt(false);
+            }
+            SINK.accept("%s trampled farmland (%s) at %s in %s (Fall height: %f blocks)", entity, state, pos, level, distance);
+            return EventResult.pass();
         });
         LifecycleEvent.SERVER_BEFORE_START.register(instance -> {
             SINK.accept("Server ready to start");
@@ -169,6 +211,10 @@ public class DebugEvents {
         PlayerEvent.CHANGE_DIMENSION.register((player, oldLevel, newLevel) -> {
             SINK.accept(player.getScoreboardName() + " switched from " + oldLevel.location() + " to " + newLevel.location() + logSide(player.level));
         });
+        PlayerEvent.FILL_BUCKET.register(((player, level, stack, target) -> {
+            SINK.accept("%s used a bucket (%s) in %s%s while looking at %s", player.getScoreboardName(), stack, level.dimension().location(), logSide(level), target == null ? "nothing" : target.getLocation());
+            return CompoundEventResult.pass();
+        }));
         LightningEvent.STRIKE.register((bolt, level, pos, toStrike) -> {
             SINK.accept(bolt.getScoreboardName() + " struck at " + toShortString(pos) + logSide(level));
         });
@@ -269,13 +315,17 @@ public class DebugEvents {
             return InteractionResult.PASS;
         });
         GuiEvent.SET_SCREEN.register(screen -> {
-            if (screen instanceof ChatScreen) {
+            if (screen instanceof AnvilScreen) {
                 return InteractionResultHolder.fail(screen);
             }
             
             SINK.accept("Screen has been changed to " + toSimpleName(screen));
             return InteractionResultHolder.pass(screen);
         });
+    }
+    
+    private static String chunkPos(int x, int z) {
+        return "[" + x + ", " + z + "]";
     }
     
     private static String toSimpleName(Object o) {

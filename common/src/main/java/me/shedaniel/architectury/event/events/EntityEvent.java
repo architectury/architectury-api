@@ -1,6 +1,6 @@
 /*
  * This file is part of architectury.
- * Copyright (C) 2020, 2021 shedaniel
+ * Copyright (C) 2020, 2021 architectury
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,12 +21,16 @@ package me.shedaniel.architectury.event.events;
 
 import me.shedaniel.architectury.event.Event;
 import me.shedaniel.architectury.event.EventFactory;
+import me.shedaniel.architectury.event.EventResult;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -41,9 +45,17 @@ public interface EntityEvent {
      */
     Event<LivingAttack> LIVING_ATTACK = EventFactory.createInteractionResult();
     /**
+     * Invoked when an entity is about to be spawned, equivalent to forge's {@code LivingSpawnEvent.CheckSpawn}
+     */
+    Event<LivingCheckSpawn> LIVING_CHECK_SPAWN = EventFactory.createEventResult();
+    /**
      * Invoked before entity is added to a world, equivalent to forge's {@code EntityJoinWorldEvent}.
      */
     Event<Add> ADD = EventFactory.createInteractionResult();
+    /**
+     * Invoked when an entity enters a chunk,  equivalent to forge's {@code EnteringChunk}
+     */
+    Event<EnterChunk> ENTER_CHUNK = EventFactory.createLoop();
     
     interface LivingDeath {
         InteractionResult die(LivingEntity entity, DamageSource source);
@@ -53,7 +65,16 @@ public interface EntityEvent {
         InteractionResult attack(LivingEntity entity, DamageSource source, float amount);
     }
     
+    interface LivingCheckSpawn {
+        EventResult canSpawn(LivingEntity entity, LevelAccessor world, double x, double y, double z, MobSpawnType type, @Nullable BaseSpawner spawner);
+    }
+    
     interface Add {
         InteractionResult add(Entity entity, Level world);
     }
+    
+    interface EnterChunk {
+        void enterChunk(Entity entity, int chunkX, int chunkZ, int prevX, int prevZ);
+    }
+    
 }

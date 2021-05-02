@@ -1,6 +1,6 @@
 /*
  * This file is part of architectury.
- * Copyright (C) 2020, 2021 shedaniel
+ * Copyright (C) 2020, 2021 architectury
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -25,6 +25,7 @@ import me.shedaniel.architectury.ForgeEventCancellable;
 import me.shedaniel.architectury.annotations.ExpectPlatform;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;
@@ -84,6 +85,28 @@ public final class EventFactory {
     }
     
     @SafeVarargs
+    public static <T> Event<T> createEventResult(T... typeGetter) {
+        if (typeGetter.length != 0) throw new IllegalStateException("array must be empty!");
+        return createEventResult((Class<T>) typeGetter.getClass().getComponentType());
+    }
+    
+    @SuppressWarnings("UnstableApiUsage")
+    public static <T> Event<T> createEventResult(Class<T> clazz) {
+        return of(listeners -> (T) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{clazz}, new AbstractInvocationHandler() {
+            @Override
+            protected Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {
+                for (T listener : listeners) {
+                    EventResult result = (EventResult) Objects.requireNonNull(method.invoke(listener, args));
+                    if (result.interruptsFurtherEvaluation()) {
+                        return result;
+                    }
+                }
+                return EventResult.pass();
+            }
+        }));
+    }
+    
+    @SafeVarargs
     public static <T> Event<T> createInteractionResultHolder(T... typeGetter) {
         if (typeGetter.length != 0) throw new IllegalStateException("array must be empty!");
         return createInteractionResultHolder((Class<T>) typeGetter.getClass().getComponentType());
@@ -101,6 +124,28 @@ public final class EventFactory {
                     }
                 }
                 return InteractionResultHolder.pass(null);
+            }
+        }));
+    }
+    
+    @SafeVarargs
+    public static <T> Event<T> createCompoundEventResult(T... typeGetter) {
+        if (typeGetter.length != 0) throw new IllegalStateException("array must be empty!");
+        return createCompoundEventResult((Class<T>) typeGetter.getClass().getComponentType());
+    }
+    
+    @SuppressWarnings("UnstableApiUsage")
+    public static <T> Event<T> createCompoundEventResult(Class<T> clazz) {
+        return of(listeners -> (T) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{clazz}, new AbstractInvocationHandler() {
+            @Override
+            protected Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {
+                for (T listener : listeners) {
+                    CompoundEventResult result = (CompoundEventResult) Objects.requireNonNull(method.invoke(listener, args));
+                    if (result.interruptsFurtherEvaluation()) {
+                        return result;
+                    }
+                }
+                return CompoundEventResult.pass();
             }
         }));
     }
@@ -171,18 +216,72 @@ public final class EventFactory {
         return event;
     }
     
+    @SafeVarargs
+    public static <T> Event<EventActor<T>> createEventActorLoop(T... typeGetter) {
+        if (typeGetter.length != 0) throw new IllegalStateException("array must be empty!");
+        return createEventActorLoop((Class<T>) typeGetter.getClass().getComponentType());
+    }
+    
+    @SuppressWarnings("UnstableApiUsage")
+    public static <T> Event<EventActor<T>> createEventActorLoop(Class<T> clazz) {
+        Event<EventActor<T>> event = of(listeners -> (EventActor<T>) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{EventActor.class}, new AbstractInvocationHandler() {
+            @Override
+            protected Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {
+                for (EventActor<T> listener : listeners) {
+                    EventResult result = (EventResult) method.invoke(listener, args);
+                    if (result.interruptsFurtherEvaluation()) {
+                        return result;
+                    }
+                }
+                return EventResult.pass();
+            }
+        }));
+        Class<?> superClass = clazz;
+        do {
+            
+            if (superClass.isAnnotationPresent(ForgeEventCancellable.class)) {
+                return attachToForgeEventActorCancellable(event);
+            }
+            superClass = superClass.getSuperclass();
+        } while (superClass != null);
+        superClass = clazz;
+        do {
+            
+            if (superClass.isAnnotationPresent(ForgeEvent.class)) {
+                return attachToForgeEventActor(event);
+            }
+            superClass = superClass.getSuperclass();
+        } while (superClass != null);
+        return event;
+    }
+    
     @ExpectPlatform
+    @ApiStatus.Internal
     public static <T> Event<Consumer<T>> attachToForge(Event<Consumer<T>> event) {
         throw new AssertionError();
     }
     
     @ExpectPlatform
+    @ApiStatus.Internal
     public static <T> Event<Actor<T>> attachToForgeActor(Event<Actor<T>> event) {
         throw new AssertionError();
     }
     
     @ExpectPlatform
+    @ApiStatus.Internal
     public static <T> Event<Actor<T>> attachToForgeActorCancellable(Event<Actor<T>> event) {
+        throw new AssertionError();
+    }
+    
+    @ExpectPlatform
+    @ApiStatus.Internal
+    public static <T> Event<EventActor<T>> attachToForgeEventActor(Event<EventActor<T>> event) {
+        throw new AssertionError();
+    }
+    
+    @ExpectPlatform
+    @ApiStatus.Internal
+    public static <T> Event<EventActor<T>> attachToForgeEventActorCancellable(Event<EventActor<T>> event) {
         throw new AssertionError();
     }
     

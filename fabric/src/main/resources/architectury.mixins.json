@@ -21,25 +21,37 @@
     "mixins": [
         "ExplosionPreInvoker",
         "LivingDeathInvoker",
+        "MixinBaseSpawner",
         "MixinBlockEntityExtension",
         "MixinBlockItem",
+        "MixinBucketItem",
+        "MixinCatSpawner",
         "MixinCommands",
         "MixinDedicatedServer",
         "MixinExplosion",
+        "MixinFarmBlock",
         "MixinFurnaceResultSlot",
+        "MixinInventory",
         "MixinItemEntity",
+        "MixinLevelChunk",
         "MixinLivingEntity",
-        "MixinPersistentEntitySectionManager", "MixinPlayer",
-    "MixinPlayerAdvancements",
-    "MixinPlayerList",
-    "MixinResultSlot",
-    "MixinServerGamePacketListenerImpl", "MixinServerLevel",
-    "MixinServerPlayer",
-    "MixinServerPlayerGameMode",
-    "PlayerAttackInvoker"
-  ],
-  "injectors": {
-    "maxShiftBy": 5,
-    "defaultRequire": 1
-  }
+        "MixinMob",
+        "MixinNaturalSpawner",
+        "MixinPatrolSpawner",
+        "MixinPersistentEntitySectionManager",
+        "MixinPhantomSpawner",
+        "MixinPlayer",
+        "MixinPlayerAdvancements",
+        "MixinPlayerList",
+        "MixinResultSlot",
+        "MixinServerGamePacketListenerImpl",
+        "MixinServerLevel",
+        "MixinServerPlayer",
+        "MixinServerPlayerGameMode",
+        "PlayerAttackInvoker"
+    ],
+    "injectors": {
+        "maxShiftBy": 5,
+        "defaultRequire": 1
+    }
 }

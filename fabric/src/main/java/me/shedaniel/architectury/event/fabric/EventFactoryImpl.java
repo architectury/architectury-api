@@ -1,6 +1,6 @@
 /*
  * This file is part of architectury.
- * Copyright (C) 2020, 2021 shedaniel
+ * Copyright (C) 2020, 2021 architectury
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,6 +21,8 @@ package me.shedaniel.architectury.event.fabric;
 
 import me.shedaniel.architectury.event.Actor;
 import me.shedaniel.architectury.event.Event;
+import me.shedaniel.architectury.event.EventActor;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.function.Consumer;
 
@@ -34,6 +36,16 @@ public class EventFactoryImpl {
     }
     
     public static <T> Event<Actor<T>> attachToForgeActorCancellable(Event<Actor<T>> event) {
+        return event;
+    }
+    
+    @ApiStatus.Internal
+    public static <T> Event<EventActor<T>> attachToForgeEventActor(Event<EventActor<T>> event) {
+        return event;
+    }
+    
+    @ApiStatus.Internal
+    public static <T> Event<EventActor<T>> attachToForgeEventActorCancellable(Event<EventActor<T>> event) {
         return event;
     }
 }
