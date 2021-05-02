@@ -19,33 +19,18 @@
 
 package me.shedaniel.architectury.mixin.fabric;
 
-import me.shedaniel.architectury.event.events.EntityEvent;
+import me.shedaniel.architectury.hooks.fabric.EntityHooksImpl;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.chunk.LevelChunk;
-import org.objectweb.asm.Opcodes;
-import org.spongepowered.asm.mixin.Final;
+import net.minecraft.world.level.entity.EntityInLevelCallback;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-@Mixin(LevelChunk.class)
-public class MixinLevelChunk {
-    @Shadow @Final private ChunkPos chunkPos;
-    
-    @Inject(
-            method = "addEntity",
-            at = @At(
-                    value = "FIELD",
-                    opcode = Opcodes.PUTFIELD,
-                    target = "Lnet/minecraft/world/entity/Entity;inChunk:Z",
-                    shift = At.Shift.BY,
-                    by = -1
-            )
-    )
-    public void enterChunk(Entity entity, CallbackInfo ci) {
-        EntityEvent.ENTER_CHUNK.invoker().enterChunk(entity, this.chunkPos.x, this.chunkPos.z, entity.xChunk, entity.zChunk);
+@Mixin(Entity.class)
+public class MixinEntity {
+    @ModifyVariable(method = "setLevelCallback", argsOnly = true, ordinal = 0, at = @At("HEAD"))
+    public EntityInLevelCallback modifyLevelCallback_setLevelCallback(EntityInLevelCallback callback) {
+        return EntityHooksImpl.wrapEntityInLevelCallback((Entity) (Object) this, callback);
     }
 }

@@ -48,7 +48,7 @@ public abstract class MixinFarmBlock {
                     target = "Lnet/minecraft/world/level/block/FarmBlock;turnToDirt(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;)V"
             )
     )
-    private void fallOn(Level level, BlockPos blockPos, Entity entity, float f, CallbackInfo ci) {
+    private void fallOn(Level level, BlockState blockState, BlockPos blockPos, Entity entity, float f, CallbackInfo ci) {
         turnToDirtLocal.set(Triple.of(blockPos.asLong(), f, entity));
     }
     

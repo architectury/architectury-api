@@ -53,9 +53,9 @@ public interface EntityEvent {
      */
     Event<Add> ADD = EventFactory.createInteractionResult();
     /**
-     * Invoked when an entity enters a chunk,  equivalent to forge's {@code EnteringChunk}
+     * Invoked when an entity enters a new section
      */
-    Event<EnterChunk> ENTER_CHUNK = EventFactory.createLoop();
+    Event<EnterSection> ENTER_SECTION = EventFactory.createLoop();
     
     interface LivingDeath {
         InteractionResult die(LivingEntity entity, DamageSource source);
@@ -73,8 +73,8 @@ public interface EntityEvent {
         InteractionResult add(Entity entity, Level world);
     }
     
-    interface EnterChunk {
-        void enterChunk(Entity entity, int chunkX, int chunkZ, int prevX, int prevZ);
+    interface EnterSection {
+        void enterSection(Entity entity, int sectionX, int sectionY, int sectionZ, int prevX, int prevY, int prevZ);
     }
     
 }

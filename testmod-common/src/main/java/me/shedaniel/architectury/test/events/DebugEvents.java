@@ -94,11 +94,11 @@ public class DebugEvents {
             }
             return InteractionResult.PASS;
         });
-        EntityEvent.ENTER_CHUNK.register(((entity, nx, nz, ox, oz) -> {
-            if (entity instanceof Player && entity.inChunk) {
+        EntityEvent.ENTER_SECTION.register(((entity, nx, ny, nz, ox, oy, oz) -> {
+            if (entity instanceof Player) {
                 Player player = (Player) entity;
-                SINK.accept("%s switched chunks: %s => %s", entity.getScoreboardName(), chunkPos(ox, oz), chunkPos(nx, nz));
-                player.displayClientMessage(new TextComponent("Entering chunk: " + chunkPos(nx, nz)), true);
+                SINK.accept("%s switched section: %s => %s", entity.getScoreboardName(), sectionPos(ox, oy, oz), sectionPos(nx, oy, nz));
+                player.displayClientMessage(new TextComponent("Entering chunk: " + sectionPos(nx, ny, nz)), true);
             }
         }));
         EntityEvent.LIVING_CHECK_SPAWN.register(((entity, level, x, y, z, type, spawner) -> {
@@ -326,6 +326,10 @@ public class DebugEvents {
     
     private static String chunkPos(int x, int z) {
         return "[" + x + ", " + z + "]";
+    }
+    
+    private static String sectionPos(int x, int y, int z) {
+        return "[" + x + ", " + y + ", " + z + "]";
     }
     
     private static String toSimpleName(Object o) {

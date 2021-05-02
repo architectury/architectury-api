@@ -33,7 +33,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(BaseSpawner.class)
 public abstract class MixinBaseSpawner {
     @Redirect(
-            method = "tick",
+            method = "serverTick",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/world/entity/Mob;checkSpawnRules(Lnet/minecraft/world/level/LevelAccessor;Lnet/minecraft/world/entity/MobSpawnType;)Z",
@@ -50,7 +50,7 @@ public abstract class MixinBaseSpawner {
     }
     
     @Redirect(
-            method = "tick",
+            method = "serverTick",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/world/entity/Mob;checkSpawnObstruction(Lnet/minecraft/world/level/LevelReader;)Z",

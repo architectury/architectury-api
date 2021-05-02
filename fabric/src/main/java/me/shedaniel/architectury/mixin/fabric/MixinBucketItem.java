@@ -27,6 +27,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -41,13 +42,13 @@ public class MixinBucketItem {
             method = "use",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/phys/HitResult;getType()Lnet/minecraft/world/phys/HitResult$Type;",
+                    target = "Lnet/minecraft/world/phys/BlockHitResult;getType()Lnet/minecraft/world/phys/HitResult$Type;",
                     ordinal = 0
             ),
             locals = LocalCapture.CAPTURE_FAILHARD,
             cancellable = true
     )
-    public void fillBucket(Level level, Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir, ItemStack stack, HitResult target) {
+    public void fillBucket(Level level, Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir, ItemStack stack, BlockHitResult target) {
         CompoundEventResult<ItemStack> result = PlayerEvent.FILL_BUCKET.invoker().fill(player, level, stack, target);
         if (result.interruptsFurtherEvaluation() && result.value() != null) {
             cir.setReturnValue(result.asMinecraft());

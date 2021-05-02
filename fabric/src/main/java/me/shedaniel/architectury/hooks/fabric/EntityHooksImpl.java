@@ -19,7 +19,10 @@
 
 package me.shedaniel.architectury.hooks.fabric;
 
+import me.shedaniel.architectury.event.events.EntityEvent;
+import net.minecraft.core.SectionPos;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.entity.EntityInLevelCallback;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import org.jetbrains.annotations.Nullable;
@@ -32,5 +35,30 @@ public class EntityHooksImpl {
     @Nullable
     public static Entity fromCollision(CollisionContext ctx) {
         return ctx instanceof EntityCollisionContext ? ((EntityCollisionContext) ctx).getEntity().orElse(null) : null;
+    }
+    
+    public static EntityInLevelCallback wrapEntityInLevelCallback(Entity entity, EntityInLevelCallback callback) {
+        if (callback == EntityInLevelCallback.NULL) return callback;
+        if (callback == null) return callback;
+        return new EntityInLevelCallback() {
+            private long lastSectionKey = SectionPos.asLong(entity.blockPosition());
+            
+            @Override
+            public void onMove() {
+                callback.onMove();
+                long currentSectionKey = SectionPos.asLong(entity.blockPosition());
+                if (currentSectionKey != lastSectionKey) {
+                    EntityEvent.ENTER_SECTION.invoker().enterSection(entity, SectionPos.x(lastSectionKey), SectionPos.y(lastSectionKey),
+                            SectionPos.z(lastSectionKey), SectionPos.x(currentSectionKey), SectionPos.y(currentSectionKey),
+                            SectionPos.z(currentSectionKey));
+                    lastSectionKey = currentSectionKey;
+                }
+            }
+            
+            @Override
+            public void onRemove(Entity.RemovalReason removalReason) {
+                callback.onRemove(removalReason);
+            }
+        };
     }
 }
