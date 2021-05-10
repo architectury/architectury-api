@@ -20,7 +20,6 @@
 package me.shedaniel.architectury.registry;
 
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -32,13 +31,11 @@ public interface RegistrySupplier<T> extends Supplier<T> {
     /**
      * @return the identifier of the registry
      */
-    @NotNull
     ResourceLocation getRegistryId();
     
     /**
      * @return the identifier of the entry
      */
-    @NotNull
     ResourceLocation getId();
     
     /**
@@ -54,7 +51,6 @@ public interface RegistrySupplier<T> extends Supplier<T> {
         return null;
     }
     
-    @NotNull
     default Optional<T> toOptional() {
         return Optional.ofNullable(getOrNull());
     }
@@ -73,7 +69,6 @@ public interface RegistrySupplier<T> extends Supplier<T> {
         }
     }
     
-    @NotNull
     default Stream<T> stream() {
         if (!isPresent()) {
             return Stream.empty();

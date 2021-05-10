@@ -22,7 +22,6 @@ package me.shedaniel.architectury.platform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screens.Screen;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
@@ -30,16 +29,12 @@ import java.util.Collection;
 import java.util.Optional;
 
 public interface Mod {
-    @NotNull
     String getModId();
     
-    @NotNull
     String getVersion();
     
-    @NotNull
     String getName();
     
-    @NotNull
     String getDescription();
     
     /**
@@ -48,25 +43,19 @@ public interface Mod {
      * @param preferredSize the preferred logo size, only used in fabric
      * @return the logo file path relative to the file
      */
-    @NotNull
     Optional<String> getLogoFile(int preferredSize);
     
-    @NotNull
     Path getFilePath();
     
-    @NotNull
     Collection<String> getAuthors();
     
     @Nullable
     Collection<String> getLicense();
     
-    @NotNull
     Optional<String> getHomepage();
     
-    @NotNull
     Optional<String> getSources();
     
-    @NotNull
     Optional<String> getIssueTracker();
     
     @Environment(EnvType.CLIENT)

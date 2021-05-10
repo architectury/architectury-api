@@ -21,21 +21,16 @@ package me.shedaniel.architectury.registry.registries;
 
 import me.shedaniel.architectury.core.RegistryEntry;
 import me.shedaniel.architectury.registry.Registry;
-import org.jetbrains.annotations.NotNull;
 
 public interface RegistryBuilder<T extends RegistryEntry<T>> {
-    @NotNull
     Registry<T> build();
     
-    @NotNull
-    RegistryBuilder<T> option(@NotNull RegistryOption option);
+    RegistryBuilder<T> option(RegistryOption option);
     
-    @NotNull
     default RegistryBuilder<T> saveToDisc() {
         return option(StandardRegistryOption.SAVE_TO_DISC);
     }
     
-    @NotNull
     default RegistryBuilder<T> syncToClients() {
         return option(StandardRegistryOption.SYNC_TO_CLIENTS);
     }

@@ -20,7 +20,6 @@
 package me.shedaniel.architectury.utils;
 
 import com.google.common.math.LongMath;
-import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
 
@@ -161,7 +160,7 @@ public final class Fraction extends Number implements Comparable<Fraction> {
     }
     
     @Override
-    public int compareTo(@NotNull Fraction fraction) {
+    public int compareTo(Fraction fraction) {
         return Long.compare(numerator * fraction.denominator, denominator * fraction.numerator);
     }
     

@@ -21,7 +21,6 @@ package me.shedaniel.architectury.registry;
 
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -30,20 +29,16 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 public interface Registry<T> extends Iterable<T> {
-    @NotNull
     default Supplier<T> delegate(ResourceLocation id) {
         return delegateSupplied(id);
     }
     
-    @NotNull
     RegistrySupplier<T> delegateSupplied(ResourceLocation id);
     
-    @NotNull
     default Supplier<T> register(ResourceLocation id, Supplier<T> supplier) {
         return registerSupplied(id, supplier);
     }
     
-    @NotNull
     RegistrySupplier<T> registerSupplied(ResourceLocation id, Supplier<T> supplier);
     
     @Nullable

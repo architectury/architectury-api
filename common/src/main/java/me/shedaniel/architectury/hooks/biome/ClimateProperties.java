@@ -24,27 +24,21 @@ import net.minecraft.world.level.biome.Biome.TemperatureModifier;
 import org.jetbrains.annotations.NotNull;
 
 public interface ClimateProperties {
-    @NotNull
     Precipitation getPrecipitation();
     
     float getTemperature();
     
-    @NotNull
     TemperatureModifier getTemperatureModifier();
     
     float getDownfall();
     
     interface Mutable extends ClimateProperties {
-        @NotNull
-        Mutable setPrecipitation(@NotNull Precipitation precipitation);
+        Mutable setPrecipitation(Precipitation precipitation);
         
-        @NotNull
         Mutable setTemperature(float temperature);
         
-        @NotNull
-        Mutable setTemperatureModifier(@NotNull TemperatureModifier temperatureModifier);
+        Mutable setTemperatureModifier(TemperatureModifier temperatureModifier);
         
-        @NotNull
         Mutable setDownfall(float downfall);
     }
 }

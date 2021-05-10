@@ -26,7 +26,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResultHolder;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
@@ -44,13 +43,11 @@ public interface ClientChatEvent {
     
     @Environment(EnvType.CLIENT)
     interface Client {
-        @NotNull
         InteractionResultHolder<String> process(String message);
     }
     
     @Environment(EnvType.CLIENT)
     interface ClientReceived {
-        @NotNull
         InteractionResultHolder<Component> process(ChatType type, Component message, @Nullable UUID sender);
     }
 }

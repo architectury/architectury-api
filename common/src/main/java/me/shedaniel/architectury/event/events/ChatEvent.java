@@ -24,7 +24,6 @@ import me.shedaniel.architectury.event.EventFactory;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResultHolder;
-import org.jetbrains.annotations.NotNull;
 
 public interface ChatEvent {
     /**
@@ -33,7 +32,6 @@ public interface ChatEvent {
     Event<Server> SERVER = EventFactory.createInteractionResultHolder();
     
     interface Server {
-        @NotNull
         InteractionResultHolder<Component> process(ServerPlayer player, String message, Component component);
     }
 }

@@ -25,7 +25,6 @@ import me.shedaniel.architectury.registry.registries.RegistryBuilder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -39,7 +38,6 @@ public final class Registries {
     private final RegistryProvider provider;
     private final String modId;
     
-    @NotNull
     public static Registries get(String modId) {
         return REGISTRIES.computeIfAbsent(modId, Registries::new);
     }
@@ -49,18 +47,15 @@ public final class Registries {
         this.modId = modId;
     }
     
-    @NotNull
     public <T> Registry<T> get(ResourceKey<net.minecraft.core.Registry<T>> key) {
         return this.provider.get(key);
     }
     
-    @NotNull
     @Deprecated
     public <T> Registry<T> get(net.minecraft.core.Registry<T> registry) {
         return this.provider.get(registry);
     }
     
-    @NotNull
     @SafeVarargs
     public final <T extends RegistryEntry<T>> RegistryBuilder<T> builder(ResourceLocation registryId, T... typeGetter) {
         if (typeGetter.length != 0) throw new IllegalStateException("array must be empty!");
@@ -103,7 +98,6 @@ public final class Registries {
         throw new AssertionError();
     }
     
-    @NotNull
     public String getModId() {
         return modId;
     }

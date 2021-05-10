@@ -26,7 +26,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Extensions to {@link net.minecraft.world.level.block.entity.BlockEntity}, implement this on to your class.
@@ -36,13 +35,12 @@ public interface BlockEntityExtension {
      * Handles data sent by {@link BlockEntityExtension#saveClientData(CompoundTag)} on the server.
      */
     @Environment(EnvType.CLIENT)
-    void loadClientData(@NotNull BlockState pos, @NotNull CompoundTag tag);
+    void loadClientData(BlockState pos, CompoundTag tag);
     
     /**
      * Writes data to sync to the client.
      */
-    @NotNull
-    CompoundTag saveClientData(@NotNull CompoundTag tag);
+    CompoundTag saveClientData(CompoundTag tag);
     
     /**
      * Sync data to the clients by {@link BlockEntityExtension#saveClientData(CompoundTag)} and {@link BlockEntityExtension#loadClientData(BlockState, CompoundTag)}.
