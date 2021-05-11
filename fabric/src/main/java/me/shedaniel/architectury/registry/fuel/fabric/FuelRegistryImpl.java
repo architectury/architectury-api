@@ -26,12 +26,16 @@ import net.minecraft.world.level.ItemLike;
 public class FuelRegistryImpl {
     public static void register(int time, ItemLike... items) {
         for (ItemLike item : items) {
-            FuelRegistry.INSTANCE.add(item, time);
+            if (time >= 0) {
+                FuelRegistry.INSTANCE.add(item, time);
+            } else {
+                FuelRegistry.INSTANCE.remove(item);
+            }
         }
     }
     
     public static int get(ItemStack stack) {
         Integer time = FuelRegistry.INSTANCE.get(stack.getItem());
-        return time == null ? -1 : time;
+        return time == null ? 0 : time;
     }
 }

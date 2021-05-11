@@ -26,11 +26,24 @@ import net.minecraft.world.level.ItemLike;
 public final class FuelRegistry {
     private FuelRegistry() {}
     
+    /**
+     * Registers a burn time for items.
+     *
+     * @param time  the new burn time, use {@code 0} for non-fuel items,
+     *              and {@code -1} to use vanilla logic
+     * @param items the array of items to register for
+     */
     @ExpectPlatform
     public static void register(int time, ItemLike... items) {
         throw new AssertionError();
     }
     
+    /**
+     * Returns the burn time of an {@link ItemStack}.
+     *
+     * @param stack the stack
+     * @return the burn time of the stack, returns {@code 0} if not a fuel
+     */
     @ExpectPlatform
     public static int get(ItemStack stack) {
         throw new AssertionError();

@@ -23,6 +23,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.furnace.FurnaceFuelBurnTimeEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -35,14 +36,13 @@ public class FuelRegistryImpl {
     }
     
     public static void register(int time, ItemLike... items) {
-        if (time < 0) time = -1;
         for (ItemLike item : items) {
             ITEMS.put(item, time);
         }
     }
     
     public static int get(ItemStack stack) {
-        return stack.getBurnTime();
+        return ForgeHooks.getBurnTime(stack);
     }
     
     @SubscribeEvent
@@ -50,7 +50,7 @@ public class FuelRegistryImpl {
         if (event.getItemStack().isEmpty()) return;
         int time = ITEMS.getOrDefault(event.getItemStack().getItem(), Integer.MIN_VALUE);
         if (time != Integer.MIN_VALUE) {
-            event.setBurnTime(time < 0 ? -1 : time);
+            event.setBurnTime(time);
         }
     }
 }
