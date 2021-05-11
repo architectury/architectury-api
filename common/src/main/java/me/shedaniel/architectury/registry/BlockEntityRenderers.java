@@ -34,7 +34,7 @@ public final class BlockEntityRenderers {
     private BlockEntityRenderers() {}
     
     @ExpectPlatform
-    public static <T extends BlockEntity> void registerRenderer(BlockEntityType<T> type, Function<BlockEntityRenderDispatcher, BlockEntityRenderer<T>> provider) {
+    public static <T extends BlockEntity> void registerRenderer(BlockEntityType<T> type, Function<BlockEntityRenderDispatcher, BlockEntityRenderer<? super T>> provider) {
         throw new AssertionError();
     }
 }
