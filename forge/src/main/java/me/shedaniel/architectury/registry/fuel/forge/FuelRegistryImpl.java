@@ -21,12 +21,9 @@ package me.shedaniel.architectury.registry.fuel.forge;
 
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import me.shedaniel.architectury.forge.ArchitecturyForge;
-import me.shedaniel.architectury.platform.forge.EventBuses;
-import net.minecraft.tags.Tag;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.furnace.FurnaceFuelBurnTimeEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -34,9 +31,7 @@ public class FuelRegistryImpl {
     private static final Object2IntMap<ItemLike> ITEMS = new Object2IntLinkedOpenHashMap<>();
     
     static {
-        EventBuses.onRegistered(ArchitecturyForge.MOD_ID, bus -> {
-            bus.register(FuelRegistryImpl.class);
-        });
+        MinecraftForge.EVENT_BUS.register(FuelRegistryImpl.class);
     }
     
     public static void register(int time, ItemLike... items) {
