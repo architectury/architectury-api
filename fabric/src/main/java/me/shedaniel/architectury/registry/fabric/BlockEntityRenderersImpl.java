@@ -29,6 +29,6 @@ import java.util.function.Function;
 
 public class BlockEntityRenderersImpl {
     public static <T extends BlockEntity> void registerRenderer(BlockEntityType<T> type, Function<BlockEntityRenderDispatcher, BlockEntityRenderer<? super T>> provider) {
-        BlockEntityRendererRegistry.INSTANCE.<T>register(type, provider);
+        BlockEntityRendererRegistry.INSTANCE.register(type, provider);
     }
 }
