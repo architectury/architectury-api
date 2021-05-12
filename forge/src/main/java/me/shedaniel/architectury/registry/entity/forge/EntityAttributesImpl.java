@@ -29,10 +29,11 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 public class EntityAttributesImpl {
-    private static final Map<Supplier<EntityType<? extends LivingEntity>>, Supplier<AttributeSupplier.Builder>> ATTRIBUTES = new HashMap<>();
+    private static final Map<Supplier<EntityType<? extends LivingEntity>>, Supplier<AttributeSupplier.Builder>> ATTRIBUTES = new ConcurrentHashMap<>();
     
     public static void register(Supplier<EntityType<? extends LivingEntity>> type, Supplier<AttributeSupplier.Builder> attribute) {
         ATTRIBUTES.put(type, attribute);
