@@ -17,24 +17,35 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package me.shedaniel.architectury.registry;
+package me.shedaniel.architectury.registry.fuel;
 
 import me.shedaniel.architectury.annotations.ExpectPlatform;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 
-import java.util.function.Function;
-
-@Environment(EnvType.CLIENT)
-public final class BlockEntityRenderers {
-    private BlockEntityRenderers() {}
+public final class FuelRegistry {
+    private FuelRegistry() {}
     
+    /**
+     * Registers a burn time for items.
+     *
+     * @param time  the new burn time, use {@code 0} for non-fuel items,
+     *              and {@code -1} to use vanilla logic
+     * @param items the array of items to register for
+     */
     @ExpectPlatform
-    public static <T extends BlockEntity> void registerRenderer(BlockEntityType<T> type, Function<BlockEntityRenderDispatcher, BlockEntityRenderer<? super T>> provider) {
+    public static void register(int time, ItemLike... items) {
+        throw new AssertionError();
+    }
+    
+    /**
+     * Returns the burn time of an {@link ItemStack}.
+     *
+     * @param stack the stack
+     * @return the burn time of the stack, returns {@code 0} if not a fuel
+     */
+    @ExpectPlatform
+    public static int get(ItemStack stack) {
         throw new AssertionError();
     }
 }

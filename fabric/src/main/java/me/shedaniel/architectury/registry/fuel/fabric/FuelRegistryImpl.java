@@ -17,18 +17,25 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package me.shedaniel.architectury.registry.fabric;
+package me.shedaniel.architectury.registry.fuel.fabric;
 
-import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.fabricmc.fabric.api.registry.FuelRegistry;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 
-import java.util.function.Function;
-
-public class BlockEntityRenderersImpl {
-    public static <T extends BlockEntity> void registerRenderer(BlockEntityType<T> type, Function<BlockEntityRenderDispatcher, BlockEntityRenderer<? super T>> provider) {
-        BlockEntityRendererRegistry.INSTANCE.register(type, provider);
+public class FuelRegistryImpl {
+    public static void register(int time, ItemLike... items) {
+        for (ItemLike item : items) {
+            if (time >= 0) {
+                FuelRegistry.INSTANCE.add(item, time);
+            } else {
+                FuelRegistry.INSTANCE.remove(item);
+            }
+        }
+    }
+    
+    public static int get(ItemStack stack) {
+        Integer time = FuelRegistry.INSTANCE.get(stack.getItem());
+        return time == null ? 0 : time;
     }
 }

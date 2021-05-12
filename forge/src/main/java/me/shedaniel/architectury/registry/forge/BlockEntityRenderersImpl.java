@@ -28,7 +28,7 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import java.util.function.Function;
 
 public class BlockEntityRenderersImpl {
-    public static <T extends BlockEntity> void registerRenderer(BlockEntityType<T> type, Function<BlockEntityRenderDispatcher, BlockEntityRenderer<T>> provider) {
+    public static <T extends BlockEntity> void registerRenderer(BlockEntityType<T> type, Function<BlockEntityRenderDispatcher, BlockEntityRenderer<? super T>> provider) {
         ClientRegistry.bindTileEntityRenderer(type, provider);
     }
 }
