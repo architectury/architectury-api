@@ -28,32 +28,77 @@ import net.minecraft.world.InteractionResult;
 
 @Environment(EnvType.CLIENT)
 public interface ClientRawInputEvent {
+    
     /**
-     * Invoked after the mouse has scrolled, but doesn't have a screen opened, and in a world, equivalent to forge's {@code InputEvent.MouseScrollEvent}.
+     * @see MouseScrolled#mouseScrolled(Minecraft, double)
      */
     Event<MouseScrolled> MOUSE_SCROLLED = EventFactory.createInteractionResult();
+    
     /**
-     * Invoked after the mouse has clicked, before the screen intercepts, equivalent to forge's {@code InputEvent.RawMouseEvent}.
+     * @see MouseClicked#mouseClicked(Minecraft, int, int, int)
      */
     Event<MouseClicked> MOUSE_CLICKED_PRE = EventFactory.createInteractionResult();
+    
     /**
-     * Invoked after the mouse has clicked, after the screen intercepts, equivalent to forge's {@code InputEvent.MouseInputEvent}.
+     * @see MouseClicked#mouseClicked(Minecraft, int, int, int)
      */
     Event<MouseClicked> MOUSE_CLICKED_POST = EventFactory.createInteractionResult();
+    
     /**
-     * Invoked after a key was pressed, after the screen intercepts, equivalent to forge's {@code InputEvent.KeyInputEvent}.
+     * @see KeyPressed#keyPressed(Minecraft, int, int, int, int)
      */
     Event<KeyPressed> KEY_PRESSED = EventFactory.createInteractionResult();
     
     interface KeyPressed {
+        /**
+         * Called whenever a key input is performed.
+         * Equal to the forge {@code InputEvent.KeyInputEvent} event.
+         * 
+         * @param client The minecraft instance performing it.
+         * @param keyCode The key code. Look at {@link org.lwjgl.glfw.GLFW} line 66 to 211 for key codes.
+         * @param scanCode The raw keyboard scan code.
+         * @param action The action that should be performed.
+         * @param modifiers Additional modifiers.
+         * @return Any other result than {@link InteractionResult#PASS} leads to the cancellation of the key press.
+         * 
+         * @see me.shedaniel.architectury.mixin.fabric.client.MixinKeyboardHandler#onRawKey(long, int, int, int, int, org.spongepowered.asm.mixin.injection.callback.CallbackInfo)
+         * @see me.shedaniel.architectury.event.forge.EventHandlerImplClient#event(net.minecraftforge.client.event.InputEvent.KeyInputEvent)
+         */
         InteractionResult keyPressed(Minecraft client, int keyCode, int scanCode, int action, int modifiers);
     }
     
     interface MouseScrolled {
+        /**
+         * Called whenever the mouse scroll wheel is used.
+         * Equal to the forge {@code InputEvent.MouseScrollEvent} event.
+         * 
+         * @param client The minecraft instance performing it.
+         * @param amount The amount of movement.
+         * @return Any other result than {@link InteractionResult#PASS} leads to the cancellation of the mouse scroll functions.
+         * At the time this is actually called, any open screen already has processed the scroll movement and so it can't be undone.
+         * 
+         * @see me.shedaniel.architectury.mixin.fabric.client.MixinMouseHandler#onRawMouseScrolled(long, double, double, org.spongepowered.asm.mixin.injection.callback.CallbackInfo, double)
+         * @see me.shedaniel.architectury.event.forge.EventHandlerImplClient#event(net.minecraftforge.client.event.InputEvent.MouseScrollEvent)
+         */
         InteractionResult mouseScrolled(Minecraft client, double amount);
     }
     
     interface MouseClicked {
+        /**
+         * Called whenever a mouse button is clicked.
+         * There are two variants, either a raw mouse input or the input after it is processed by the game.
+         * 
+         * @param client The minecraft instance performing it.
+         * @param button The pressed mouse button. Look at {@link org.lwjgl.glfw.GLFW} line 214 to 226 for mouse button codes.
+         * @param action The action that should be performed.
+         * @param mods Additional modifiers.
+         * @return Any other result than {@link InteractionResult#PASS} leads to the cancellation of the mouse click.
+         * 
+         * @see me.shedaniel.architectury.mixin.fabric.client.MixinMouseHandler#onRawMouseClicked(long, int, int, int, org.spongepowered.asm.mixin.injection.callback.CallbackInfo)
+         * @see me.shedaniel.architectury.mixin.fabric.client.MixinMouseHandler#onRawMouseClickedPost(long, int, int, int, org.spongepowered.asm.mixin.injection.callback.CallbackInfo)
+         * @see me.shedaniel.architectury.event.forge.EventHandlerImplClient#event(net.minecraftforge.client.event.InputEvent.RawMouseEvent)
+         * @see me.shedaniel.architectury.event.forge.EventHandlerImplClient#event(net.minecraftforge.client.event.InputEvent.MouseInputEvent)
+         */
         InteractionResult mouseClicked(Minecraft client, int button, int action, int mods);
     }
 }
