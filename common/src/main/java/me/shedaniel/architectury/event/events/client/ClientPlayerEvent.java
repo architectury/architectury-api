@@ -28,22 +28,59 @@ import org.jetbrains.annotations.Nullable;
 
 @Environment(EnvType.CLIENT)
 public interface ClientPlayerEvent {
+    
+    /**
+     * @see ClientPlayerJoin#join(LocalPlayer)
+     */
     Event<ClientPlayerJoin> CLIENT_PLAYER_JOIN = EventFactory.createLoop();
+    
+    /**
+     * @see ClientPlayerQuit#quit(LocalPlayer)
+     */
     Event<ClientPlayerQuit> CLIENT_PLAYER_QUIT = EventFactory.createLoop();
+    
+    /**
+     * @see ClientPlayerRespawn#respawn(LocalPlayer, LocalPlayer)
+     */
     Event<ClientPlayerRespawn> CLIENT_PLAYER_RESPAWN = EventFactory.createLoop();
     
     @Environment(EnvType.CLIENT)
     interface ClientPlayerJoin {
+        /**
+         * Called whenever a client player joins into a Level
+         * 
+         * @param player The player joining. Equal to {@link net.minecraft.client.Minecraft#player}
+         *               
+         * @see me.shedaniel.architectury.mixin.fabric.client.MixinClientPacketListener#handleLogin(net.minecraft.network.protocol.game.ClientboundLoginPacket, org.spongepowered.asm.mixin.injection.callback.CallbackInfo)
+         * @see me.shedaniel.architectury.event.forge.EventHandlerImplClient#event(net.minecraftforge.client.event.ClientPlayerNetworkEvent.LoggedInEvent)
+         */
         void join(LocalPlayer player);
     }
     
     @Environment(EnvType.CLIENT)
     interface ClientPlayerQuit {
+        /**
+         * Called whenever a client leaves a level and it is cleared on the client side.
+         * 
+         * @param player The player leaving.
+         *               
+         * @see me.shedaniel.architectury.mixin.fabric.client.MixinMinecraft#handleLogin(net.minecraft.client.gui.screens.Screen, org.spongepowered.asm.mixin.injection.callback.CallbackInfo)
+         * @see me.shedaniel.architectury.event.forge.EventHandlerImplClient#event(net.minecraftforge.client.event.ClientPlayerNetworkEvent.LoggedOutEvent)
+         */
         void quit(@Nullable LocalPlayer player);
     }
     
     @Environment(EnvType.CLIENT)
     interface ClientPlayerRespawn {
+        /**
+         * Called whenever the packet for client respawning is received by the client.
+         * 
+         * @param oldPlayer The player before the respawn happened.
+         * @param newPlayer The player after the respawn happened.
+         *                  
+         * @see me.shedaniel.architectury.mixin.fabric.client.MixinClientPacketListener#handleRespawn(net.minecraft.network.protocol.game.ClientboundRespawnPacket, org.spongepowered.asm.mixin.injection.callback.CallbackInfo)
+         * @see me.shedaniel.architectury.event.forge.EventHandlerImplClient#event(net.minecraftforge.client.event.ClientPlayerNetworkEvent.RespawnEvent)
+         */
         void respawn(LocalPlayer oldPlayer, LocalPlayer newPlayer);
     }
 }
