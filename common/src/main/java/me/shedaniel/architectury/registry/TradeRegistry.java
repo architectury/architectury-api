@@ -28,7 +28,7 @@ public class TradeRegistry {
      * @param rare Is this a rare trade. Rare trades only have a five times lower chance of being used.
      * @param trades The trades to add to the wandering trader.
      *
-     * When the Modloader is forge the {@code WandererTradesEvent} event is used.
+     * When the mod loader is Forge, the {@code WandererTradesEvent} event is used.
      */
     @ExpectPlatform
     public static void registerTradeForWanderer(boolean rare, VillagerTrades.ItemListing... trades){
