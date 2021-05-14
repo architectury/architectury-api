@@ -23,7 +23,7 @@ public class TradeRegistry {
     }
     
     /**
-     * Register a Trade (ItemListing) to a wandering trader by its rarity.
+     * Register a trade ({@link VillagerTrades.ItemListing}) to a wandering trader by its rarity.
      *
      * @param rare Is this a rare trade. Rare trades only have a five times lower chance of being used.
      * @param trades The trades to add to the wandering trader.
