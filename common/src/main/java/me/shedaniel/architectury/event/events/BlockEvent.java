@@ -32,32 +32,59 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 public interface BlockEvent {
-    
-    // Block interaction events
     /**
-     * Called when a player breaks a block.
+     * @see Break#breakBlock(Level, BlockPos, BlockState, ServerPlayer, IntValue)
      */
     Event<Break> BREAK = EventFactory.createInteractionResult();
     /**
      * Called when a block is placed in the world by an entity.
      */
     Event<Place> PLACE = EventFactory.createInteractionResult();
-    
     /**
-     * Called when a falling block (sand, anvil, etc.) is about to land.
-     * Use fallState#getBlock to get the type of block for more granular control.
+     * THIS EVENT IS ONLY FIRED ON FABRIC!
+     * @see FallingLand#onLand(Level, BlockPos, BlockState, BlockState, FallingBlockEntity)
      */
     Event<FallingLand> FALLING_LAND = EventFactory.createLoop();
     
     interface Break {
+        /**
+         * Called when a block is destroyed by a player.
+         * 
+         * @param world The level the block is in.
+         * @param pos The position of the block.
+         * @param state The current state of the block.
+         * @param player The player who is breaking the block.
+         * @param xp The experience that are dropped when the block was destroyed. Always null on fabric!
+         * @return Return {@link InteractionResult#FAIL} to cancel the block breaking.
+         */
         InteractionResult breakBlock(Level world, BlockPos pos, BlockState state, ServerPlayer player, @Nullable IntValue xp);
     }
     
     interface Place {
+        /**
+         * Called when a block is placed.
+         *
+         * @param world The level the block is in.
+         * @param pos The position of the block.
+         * @param state The future state of the block.
+         * @param placer The entity who is placing it. Can be null, when the placer isn't a entity.
+         * @return Any other value than {@link InteractionResult#PASS} cancels the block placement.
+         */
         InteractionResult placeBlock(Level world, BlockPos pos, BlockState state, @Nullable Entity placer);
     }
     
     interface FallingLand {
+        /**
+         * Called when a falling block is about to land.
+         * 
+         * THIS EVENT IS ONLY FIRED ON FABRIC!
+         *
+         * @param level The level the block is in.
+         * @param pos The position of the block.
+         * @param fallState The current state of the falling block.
+         * @param landOn The current state of the block the falling one is landing on.
+         * @param entity The falling block entity.
+         */
         void onLand(Level level, BlockPos pos, BlockState fallState, BlockState landOn, FallingBlockEntity entity);
     }
 }
