@@ -9,7 +9,7 @@ public class TradeRegistry {
     private TradeRegistry(){}
     
     /**
-     * Register a Trade (ItemListing) for a villager by it's profession and level.
+     * Register a trade ({@link VillagerTrades.ItemListing}) for a villager by its profession and level.
      *
      * @param profession The Profession the villager needs to have this trade.
      * @param level The level the villager needs. Range is 1 to 5 with 1 being the lowest level and 5 the highest.
