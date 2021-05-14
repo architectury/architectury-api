@@ -19,7 +19,8 @@ import java.util.*;
 public class TradeRegistryImpl {
     
     private static final Map<VillagerProfession, Int2ObjectMap<List<VillagerTrades.ItemListing>>> TRADES_TO_ADD = new HashMap<>();
-    private static final Int2ObjectMap<List<VillagerTrades.ItemListing>> WANDERER_TRADES_TO_ADD = new Int2ObjectOpenHashMap<>();
+    private static final List<VillagerTrades.ItemListing> WANDERER_TRADER_TRADES_GENERIC = new ArrayList<>();
+    private static final List<VillagerTrades.ItemListing> WANDERER_TRADER_TRADES_RARE = new ArrayList<>();
     
     public static void registerVillagerTrade(VillagerProfession profession, int level, VillagerTrades.ItemListing... trades) {
         if(level < 1 || level > 5){
@@ -36,10 +37,11 @@ public class TradeRegistryImpl {
     }
     
     public static void registerTradeForWanderer(boolean rare, VillagerTrades.ItemListing... trades) {
-        int level = rare ? 2 : 1;
-        List<VillagerTrades.ItemListing> tradesForLevel = WANDERER_TRADES_TO_ADD.getOrDefault(level, new ArrayList<>());
-        Collections.addAll(tradesForLevel, trades);
-        WANDERER_TRADES_TO_ADD.put(level, tradesForLevel);
+        if(rare){
+            Collections.addAll(WANDERER_TRADER_TRADES_RARE, trades);
+        } else {
+            Collections.addAll(WANDERER_TRADER_TRADES_GENERIC, trades);
+        }
     }
     
     @SubscribeEvent
@@ -53,13 +55,11 @@ public class TradeRegistryImpl {
 
     @SubscribeEvent
     public static void onWanderingTradeRegistering(WandererTradesEvent event){
-        List<VillagerTrades.ItemListing> genericTrades = WANDERER_TRADES_TO_ADD.get(1);
-        List<VillagerTrades.ItemListing> rareTrades = WANDERER_TRADES_TO_ADD.get(2);
-        if(genericTrades != null){
-            event.getGenericTrades().addAll(genericTrades);
+        if(!WANDERER_TRADER_TRADES_GENERIC.isEmpty()){
+            event.getGenericTrades().addAll(WANDERER_TRADER_TRADES_GENERIC);
         }
-        if(rareTrades != null){
-            event.getRareTrades().addAll(rareTrades);
+        if(!WANDERER_TRADER_TRADES_RARE.isEmpty()){
+            event.getRareTrades().addAll(WANDERER_TRADER_TRADES_RARE);
         }
     }
 }
