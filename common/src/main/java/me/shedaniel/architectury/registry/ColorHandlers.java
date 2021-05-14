@@ -32,7 +32,8 @@ import java.util.function.Supplier;
 
 @Environment(EnvType.CLIENT)
 public final class ColorHandlers {
-    private ColorHandlers() {}
+    private ColorHandlers() {
+    }
     
     public static void registerItemColors(ItemColor color, ItemLike... items) {
         Supplier<ItemLike>[] array = new Supplier[items.length];

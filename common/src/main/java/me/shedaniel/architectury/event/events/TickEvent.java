@@ -35,11 +35,15 @@ public interface TickEvent<T> {
     
     void tick(T instance);
     
-    interface Server extends TickEvent<MinecraftServer> {}
+    interface Server extends TickEvent<MinecraftServer> {
+    }
     
-    interface WorldTick<T extends Level> extends TickEvent<T> {}
+    interface WorldTick<T extends Level> extends TickEvent<T> {
+    }
     
-    interface ServerWorld extends WorldTick<ServerLevel> {}
+    interface ServerWorld extends WorldTick<ServerLevel> {
+    }
     
-    interface Player extends TickEvent<net.minecraft.world.entity.player.Player> {}
+    interface Player extends TickEvent<net.minecraft.world.entity.player.Player> {
+    }
 }

@@ -33,13 +33,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ResultSlot.class)
 public class MixinResultSlot {
-    @Shadow @Final private Player player;
+    @Shadow
+    @Final
+    private Player player;
     
-    @Shadow @Final private CraftingContainer craftSlots;
+    @Shadow
+    @Final
+    private CraftingContainer craftSlots;
     
     @Inject(method = "checkTakeAchievements", at = @At(value = "INVOKE",
-                                                       target = "Lnet/minecraft/world/item/ItemStack;onCraftedBy(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/player/Player;I)V",
-                                                       shift = At.Shift.AFTER))
+            target = "Lnet/minecraft/world/item/ItemStack;onCraftedBy(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/player/Player;I)V",
+            shift = At.Shift.AFTER))
     private void craft(ItemStack itemStack, CallbackInfo ci) {
         PlayerEvent.CRAFT_ITEM.invoker().craft(player, itemStack, craftSlots);
     }

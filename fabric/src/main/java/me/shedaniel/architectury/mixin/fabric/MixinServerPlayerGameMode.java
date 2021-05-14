@@ -35,13 +35,15 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(ServerPlayerGameMode.class)
 public class MixinServerPlayerGameMode {
-    @Shadow public ServerLevel level;
+    @Shadow
+    public ServerLevel level;
     
-    @Shadow public ServerPlayer player;
+    @Shadow
+    public ServerPlayer player;
     
     @Inject(method = "destroyBlock", at = @At(value = "INVOKE",
-                                              target = "Lnet/minecraft/world/level/block/state/BlockState;getBlock()Lnet/minecraft/world/level/block/Block;",
-                                              ordinal = 0),
+            target = "Lnet/minecraft/world/level/block/state/BlockState;getBlock()Lnet/minecraft/world/level/block/Block;",
+            ordinal = 0),
             locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
     private void onBreak(BlockPos blockPos, CallbackInfoReturnable<Boolean> cir, BlockState state) {
         if (BlockEvent.BREAK.invoker().breakBlock(this.level, blockPos, state, this.player, null) == InteractionResult.FAIL) {

@@ -19,8 +19,8 @@
 
 package me.shedaniel.architectury.test.trade;
 
-import me.shedaniel.architectury.registry.trade.TradeRegistry;
 import me.shedaniel.architectury.registry.trade.SimpleTrade;
+import me.shedaniel.architectury.registry.trade.TradeRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;

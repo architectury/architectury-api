@@ -22,7 +22,8 @@ package me.shedaniel.architectury.hooks;
 import net.minecraft.world.level.storage.LevelResource;
 
 public class LevelResourceHooks {
-    private LevelResourceHooks() {}
+    private LevelResourceHooks() {
+    }
     
     public static LevelResource create(String id) {
         return new LevelResource(id);

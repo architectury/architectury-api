@@ -30,7 +30,8 @@ import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public final class ScreenHooks {
-    private ScreenHooks() {}
+    private ScreenHooks() {
+    }
     
     @ExpectPlatform
     public static List<AbstractWidget> getButtons(Screen screen) {

@@ -5,7 +5,7 @@ plugins {
 
 loom {
     mixinConfig "architectury.mixins.json"
-    
+
     localMods {
         it.add(project(":forge").sourceSets.main)
     }

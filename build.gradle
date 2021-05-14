@@ -23,11 +23,11 @@ allprojects {
     apply plugin: "java"
     apply plugin: "architectury-plugin"
     apply plugin: "org.cadixdev.licenser"
-    
+
     ext {
         isSnapshot = System.getenv("PR_NUM") != null
     }
-    
+
     def runNumber = (System.getenv("GITHUB_RUN_NUMBER") == null ? "9999" : System.getenv("GITHUB_RUN_NUMBER"))
 
     if (!ext.isSnapshot) {
@@ -37,7 +37,7 @@ allprojects {
         version = rootProject.base_version + "-PR." + System.getenv("PR_NUM") + "." + runNumber
         archivesBaseName = rootProject.archives_base_name_snapshot
     }
-    
+
     group = rootProject.maven_group
 
     tasks.withType(JavaCompile) {

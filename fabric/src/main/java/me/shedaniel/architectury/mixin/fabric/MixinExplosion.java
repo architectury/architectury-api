@@ -38,13 +38,28 @@ import java.util.Set;
 
 @Mixin(Explosion.class)
 public class MixinExplosion implements ExplosionHooksImpl.ExplosionExtensions {
-    @Shadow @Final private Level level;
-    @Shadow @Final private double x;
-    @Shadow @Final private double y;
-    @Shadow @Final private double z;
-    @Shadow @Final @Nullable private Entity source;
-    @Shadow @Final @Mutable private float radius;
-    @Unique Vec3 position;
+    @Shadow
+    @Final
+    private Level level;
+    @Shadow
+    @Final
+    private double x;
+    @Shadow
+    @Final
+    private double y;
+    @Shadow
+    @Final
+    private double z;
+    @Shadow
+    @Final
+    @Nullable
+    private Entity source;
+    @Shadow
+    @Final
+    @Mutable
+    private float radius;
+    @Unique
+    Vec3 position;
     
     @Inject(method = "explode", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/Vec3;<init>(DDD)V", ordinal = 0),
             locals = LocalCapture.CAPTURE_FAILHARD)

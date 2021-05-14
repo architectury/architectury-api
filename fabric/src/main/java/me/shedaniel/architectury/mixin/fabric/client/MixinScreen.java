@@ -44,9 +44,13 @@ import java.util.List;
 
 @Mixin(Screen.class)
 public abstract class MixinScreen implements ScreenInputDelegate {
-    @Shadow @Final public List<AbstractWidget> buttons;
-    @Unique private static ThreadLocal<TooltipEventPositionContextImpl> tooltipPositionContext = ThreadLocal.withInitial(TooltipEventPositionContextImpl::new);
-    @Unique private static ThreadLocal<TooltipEventColorContextImpl> tooltipColorContext = ThreadLocal.withInitial(TooltipEventColorContextImpl::new);
+    @Shadow
+    @Final
+    public List<AbstractWidget> buttons;
+    @Unique
+    private static ThreadLocal<TooltipEventPositionContextImpl> tooltipPositionContext = ThreadLocal.withInitial(TooltipEventPositionContextImpl::new);
+    @Unique
+    private static ThreadLocal<TooltipEventColorContextImpl> tooltipColorContext = ThreadLocal.withInitial(TooltipEventColorContextImpl::new);
     
     @Shadow
     public abstract List<? extends GuiEventListener> children();
@@ -102,13 +106,13 @@ public abstract class MixinScreen implements ScreenInputDelegate {
     }
     
     @ModifyVariable(method = "renderTooltip(Lcom/mojang/blaze3d/vertex/PoseStack;Ljava/util/List;II)V",
-                    at = @At(value = "HEAD"), ordinal = 0)
+            at = @At(value = "HEAD"), ordinal = 0)
     private int modifyTooltipX(int original) {
         return tooltipPositionContext.get().getTooltipX();
     }
     
     @ModifyVariable(method = "renderTooltip(Lcom/mojang/blaze3d/vertex/PoseStack;Ljava/util/List;II)V",
-                    at = @At(value = "HEAD"), ordinal = 1)
+            at = @At(value = "HEAD"), ordinal = 1)
     private int modifyTooltipY(int original) {
         return tooltipPositionContext.get().getTooltipY();
     }

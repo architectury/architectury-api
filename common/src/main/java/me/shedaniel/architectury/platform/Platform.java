@@ -32,14 +32,15 @@ import java.util.Collection;
 import java.util.Optional;
 
 public final class Platform {
-    private Platform() {}
+    private Platform() {
+    }
     
     private static int simpleLoaderCache = -1;
     
     /**
      * @return the current mod loader, either "fabric" or "forge"
      * @deprecated does not reflect the true mod loader, "quilt" is never returned,
-     *             use {@link ArchitecturyTarget#getCurrentTarget()} instead.
+     * use {@link ArchitecturyTarget#getCurrentTarget()} instead.
      */
     @Deprecated
     @ApiStatus.ScheduledForRemoval(inVersion = "2.0")

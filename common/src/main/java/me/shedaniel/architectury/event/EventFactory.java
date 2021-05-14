@@ -39,7 +39,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public final class EventFactory {
-    private EventFactory() {}
+    private EventFactory() {
+    }
     
     @Deprecated
     @ApiStatus.ScheduledForRemoval

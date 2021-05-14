@@ -31,7 +31,8 @@ import java.util.function.Function;
 
 @Environment(EnvType.CLIENT)
 public final class BlockEntityRenderers {
-    private BlockEntityRenderers() {}
+    private BlockEntityRenderers() {
+    }
     
     @ExpectPlatform
     public static <T extends BlockEntity> void registerRenderer(BlockEntityType<T> type, Function<BlockEntityRenderDispatcher, BlockEntityRenderer<? super T>> provider) {

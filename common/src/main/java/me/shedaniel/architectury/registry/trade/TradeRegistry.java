@@ -24,7 +24,8 @@ import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
 
 public class TradeRegistry {
-    private TradeRegistry() {}
+    private TradeRegistry() {
+    }
     
     /**
      * Register a trade ({@link VillagerTrades.ItemListing}) for a villager by its profession and level.

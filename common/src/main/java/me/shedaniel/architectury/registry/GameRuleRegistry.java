@@ -26,15 +26,16 @@ import net.minecraft.world.level.GameRules;
  * A registry for registering game rules.
  */
 public final class GameRuleRegistry {
-    private GameRuleRegistry() {}
-
+    private GameRuleRegistry() {
+    }
+    
     /**
      * Registers a game rule.
      *
      * @param name     the rule's name
      * @param category the rule category
      * @param type     the type of the rule
-     * @param <T> the type of the rule value
+     * @param <T>      the type of the rule value
      * @return a key for the registered rule
      */
     @ExpectPlatform

@@ -24,7 +24,8 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 
 public final class ReloadListeners {
-    private ReloadListeners() {}
+    private ReloadListeners() {
+    }
     
     @ExpectPlatform
     public static void registerReloadListener(PackType type, PreparableReloadListener listener) {

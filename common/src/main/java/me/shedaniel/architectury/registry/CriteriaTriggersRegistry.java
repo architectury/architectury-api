@@ -23,7 +23,8 @@ import me.shedaniel.architectury.annotations.ExpectPlatform;
 import net.minecraft.advancements.CriterionTrigger;
 
 public final class CriteriaTriggersRegistry {
-    private CriteriaTriggersRegistry() {}
+    private CriteriaTriggersRegistry() {
+    }
     
     /**
      * Invokes {@link net.minecraft.advancements.CriteriaTriggers#register(CriterionTrigger)}.
