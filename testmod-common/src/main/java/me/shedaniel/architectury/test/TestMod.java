@@ -28,6 +28,7 @@ import me.shedaniel.architectury.test.gamerule.TestGameRules;
 import me.shedaniel.architectury.test.registry.TestRegistries;
 import me.shedaniel.architectury.test.registry.client.TestKeybinds;
 import me.shedaniel.architectury.test.tags.TestTags;
+import me.shedaniel.architectury.test.trade.TestTrades;
 import me.shedaniel.architectury.utils.Env;
 import me.shedaniel.architectury.utils.EnvExecutor;
 
@@ -40,6 +41,7 @@ public class TestMod {
         TestRegistries.initialize();
         TestGameRules.init();
         TestTags.initialize();
+        TestTrades.init();
         if (Platform.getEnvironment() == Env.CLIENT)
             TestKeybinds.initialize();
     }
