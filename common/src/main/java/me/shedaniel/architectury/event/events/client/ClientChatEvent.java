@@ -32,12 +32,10 @@ import java.util.UUID;
 
 @Environment(EnvType.CLIENT)
 public interface ClientChatEvent {
-    
     /**
      * @see Client#process(String) 
      */
     Event<Client> CLIENT = EventFactory.createInteractionResultHolder();
-    
     /**
      * @see ClientReceived#process(ChatType, Component, UUID) 
      */
@@ -52,9 +50,6 @@ public interface ClientChatEvent {
          * @param message The raw chat message the client wants to send.
          * @return Returning {@link InteractionResultHolder#fail(Object)} will result in an empty string being usaged as message.
          * All other results will lead to the message being changed to the specified string ({@link InteractionResultHolder#getObject()}).
-         * 
-         * @see me.shedaniel.architectury.mixin.fabric.client.MixinScreen#modifyMessage(String)
-         * @see me.shedaniel.architectury.event.forge.EventHandlerImplClient#event(net.minecraftforge.client.event.ClientChatEvent)
          */
         InteractionResultHolder<String> process(String message);
     }
@@ -71,9 +66,6 @@ public interface ClientChatEvent {
          * @param sender The Packet sender. Can be null, but probably is the sending player uuid or {@link net.minecraft.Util#NIL_UUID}
          * @return Returning {@link InteractionResultHolder#fail(Object)} will result in a cancellation of the message and so it is not processed further.
          * All other results will lead to the packet getting processed normally.
-         * 
-         * @see me.shedaniel.architectury.mixin.fabric.client.MixinClientPacketListener#handleChat(net.minecraft.network.protocol.game.ClientboundChatPacket, org.spongepowered.asm.mixin.injection.callback.CallbackInfo)
-         * @see me.shedaniel.architectury.event.forge.EventHandlerImplClient#event(net.minecraftforge.client.event.ClientChatReceivedEvent)
          */
         InteractionResultHolder<Component> process(ChatType type, Component message, @Nullable UUID sender);
     }
