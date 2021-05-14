@@ -12,7 +12,7 @@ public class TestTrades {
     
     public static void init(){
         for (VillagerProfession villagerProfession : Registry.VILLAGER_PROFESSION) {
-            TradeRegistry.register(villagerProfession, 1, TestTrades.createTrades());
+            TradeRegistry.registerVillagerTrade(villagerProfession, 1, TestTrades.createTrades());
         }
         TradeRegistry.registerTradeForWanderer(false, TestTrades.createTrades());
     }
