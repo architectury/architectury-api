@@ -15,7 +15,7 @@ public class TradeRegistry {
      * @param level The level the villager needs. Range is 1 to 5 with 1 being the lowest level and 5 the highest.
      * @param trades The trades to add to this profession at the specified level.
      *               
-     * When the Modloader is forge the {@code VillagerTradesEvent} event is used.
+     * When the mod loader is Forge, the {@code VillagerTradesEvent} event is used.
      */
     @ExpectPlatform
     public static void registerVillagerTrade(VillagerProfession profession, int level, VillagerTrades.ItemListing... trades){
