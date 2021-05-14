@@ -20,7 +20,6 @@
 package me.shedaniel.architectury.test;
 
 import me.shedaniel.architectury.platform.Platform;
-import me.shedaniel.architectury.registry.TradeRegistry;
 import me.shedaniel.architectury.test.debug.ConsoleMessageSink;
 import me.shedaniel.architectury.test.debug.MessageSink;
 import me.shedaniel.architectury.test.debug.client.ClientOverlayMessageSink;
