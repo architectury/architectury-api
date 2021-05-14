@@ -31,11 +31,18 @@ public class TradeRegistry {
      * When the mod loader is Forge, the {@code VillagerTradesEvent} event is used.
      *
      * @param profession The Profession the villager needs to have this trade.
-     * @param level      The level the villager needs. Range is 1 to 5 with 1 being the lowest level and 5 the highest.
+     * @param level      The level the villager needs. Vanilla range is 1 to 5, however mods may extend that upper limit further.
      * @param trades     The trades to add to this profession at the specified level.
      */
-    @ExpectPlatform
     public static void registerVillagerTrade(VillagerProfession profession, int level, VillagerTrades.ItemListing... trades) {
+        if (level < 1) {
+            throw new IllegalArgumentException("Villager Trade level has to be at least 1!");
+        }
+        registerVillagerTrade0(profession, level, trades);
+    }
+    
+    @ExpectPlatform
+    private static void registerVillagerTrade0(VillagerProfession profession, int level, VillagerTrades.ItemListing... trades) {
         throw new AssertionError();
     }
     
@@ -43,7 +50,7 @@ public class TradeRegistry {
      * Register a trade ({@link VillagerTrades.ItemListing}) to a wandering trader by its rarity.
      * When the mod loader is Forge, the {@code WandererTradesEvent} event is used.
      *
-     * @param rare   Is this a rare trade. Rare trades only have a five times lower chance of being used.
+     * @param rare   Whether this trade is "rare". Rare trades have a five times lower chance of being used.
      * @param trades The trades to add to the wandering trader.
      */
     @ExpectPlatform
