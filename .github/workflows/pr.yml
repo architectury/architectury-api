@@ -1,4 +1,4 @@
-name: Snapshot Compile & Release
+name: Build PR snapshot
 
 on:
   pull_request:
