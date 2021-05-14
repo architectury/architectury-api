@@ -20,6 +20,7 @@
 package me.shedaniel.architectury.registry.forge;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Suppliers;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import me.shedaniel.architectury.core.RegistryEntry;
@@ -32,7 +33,6 @@ import me.shedaniel.architectury.registry.registries.RegistryOption;
 import me.shedaniel.architectury.registry.registries.StandardRegistryOption;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.LazyLoadedValue;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -157,7 +157,7 @@ public class RegistriesImpl {
         
         @Override
         public @NotNull RegistrySupplier<T> delegateSupplied(ResourceLocation id) {
-            LazyLoadedValue<T> value = new LazyLoadedValue<>(() -> get(id));
+            Supplier<T> value = Suppliers.memoize(() -> get(id));
             return new RegistrySupplier<T>() {
                 @Override
                 public @NotNull ResourceLocation getRegistryId() {
@@ -274,7 +274,7 @@ public class RegistriesImpl {
         
         @Override
         public @NotNull RegistrySupplier<T> delegateSupplied(ResourceLocation id) {
-            LazyLoadedValue<T> value = new LazyLoadedValue<>(() -> get(id));
+            Supplier<T> value = Suppliers.memoize(() -> get(id));
             return new RegistrySupplier<T>() {
                 @Override
                 public @NotNull ResourceLocation getRegistryId() {

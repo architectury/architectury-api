@@ -19,9 +19,9 @@
 
 package me.shedaniel.architectury.registry;
 
+import com.google.common.base.Suppliers;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.LazyLoadedValue;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -44,23 +44,8 @@ public class DeferredRegister<T> {
     }
     
     public static <T> DeferredRegister<T> create(String modId, ResourceKey<net.minecraft.core.Registry<T>> key) {
-        LazyLoadedValue<Registries> value = new LazyLoadedValue<>(() -> Registries.get(modId));
-        return new DeferredRegister<>(value::get, key, Objects.requireNonNull(modId));
-    }
-    
-    @Deprecated
-    public static <T> DeferredRegister<T> create(Registries registries, ResourceKey<net.minecraft.core.Registry<T>> key) {
-        return new DeferredRegister<>(() -> registries, key, null);
-    }
-    
-    @Deprecated
-    public static <T> DeferredRegister<T> create(Supplier<Registries> registries, ResourceKey<net.minecraft.core.Registry<T>> key) {
-        return new DeferredRegister<>(registries, key, null);
-    }
-    
-    @Deprecated
-    public static <T> DeferredRegister<T> create(LazyLoadedValue<Registries> registries, ResourceKey<net.minecraft.core.Registry<T>> key) {
-        return create(registries::get, key);
+        Supplier<Registries> value = Suppliers.memoize(() -> Registries.get(modId));
+        return new DeferredRegister<>(value, key, Objects.requireNonNull(modId));
     }
     
     public <R extends T> RegistrySupplier<R> register(String id, Supplier<? extends R> supplier) {
@@ -96,27 +81,27 @@ public class DeferredRegister<T> {
         private final ResourceLocation id;
         private final Supplier<R> supplier;
         private RegistrySupplier<R> value;
-    
+        
         public Entry(ResourceLocation id, Supplier<R> supplier) {
             this.id = id;
             this.supplier = supplier;
         }
-    
+        
         @Override
         public ResourceLocation getRegistryId() {
             return key.location();
         }
-    
+        
         @Override
         public ResourceLocation getId() {
             return id;
         }
-    
+        
         @Override
         public boolean isPresent() {
             return value != null && value.isPresent();
         }
-    
+        
         @Override
         public R get() {
             if (isPresent()) {
@@ -124,12 +109,12 @@ public class DeferredRegister<T> {
             }
             throw new NullPointerException("Registry Object not present: " + this.id);
         }
-    
+        
         @Override
         public int hashCode() {
             return com.google.common.base.Objects.hashCode(getRegistryId(), getId());
         }
-    
+        
         @Override
         public boolean equals(Object obj) {
             if (this == obj) return true;
@@ -137,7 +122,7 @@ public class DeferredRegister<T> {
             RegistrySupplier<?> other = (RegistrySupplier<?>) obj;
             return other.getRegistryId().equals(getRegistryId()) && other.getId().equals(getId());
         }
-    
+        
         @Override
         public String toString() {
             return getRegistryId().toString() + "@" + id.toString();

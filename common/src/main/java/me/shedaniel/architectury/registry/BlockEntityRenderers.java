@@ -34,12 +34,8 @@ import java.util.function.Function;
 public final class BlockEntityRenderers {
     private BlockEntityRenderers() {}
     
-    public static <T extends BlockEntity> void registerRenderer(BlockEntityType<T> type, Function<BlockEntityRenderDispatcher, BlockEntityRenderer<? super T>> provider) {
-        registerRenderer(type, (BlockEntityRendererProvider.Context context) -> provider.apply(context.getBlockEntityRenderDispatcher()));
-    }
-    
     @ExpectPlatform
-    public static <T extends BlockEntity> void registerRenderer(BlockEntityType<T> type, BlockEntityRendererProvider<T> provider) {
+    public static <T extends BlockEntity> void registerRenderer(BlockEntityType<T> type, BlockEntityRendererProvider<? super T> provider) {
         throw new AssertionError();
     }
 }

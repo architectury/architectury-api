@@ -20,6 +20,7 @@
 package me.shedaniel.architectury.registry.fabric;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Suppliers;
 import me.shedaniel.architectury.core.RegistryEntry;
 import me.shedaniel.architectury.registry.Registries;
 import me.shedaniel.architectury.registry.Registry;
@@ -32,7 +33,6 @@ import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.LazyLoadedValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -112,7 +112,7 @@ public class RegistriesImpl {
         
         @Override
         public @NotNull RegistrySupplier<T> delegateSupplied(ResourceLocation id) {
-            LazyLoadedValue<T> value = new LazyLoadedValue<>(() -> get(id));
+            Supplier<T> value = Suppliers.memoize(() -> get(id));
             return new RegistrySupplier<T>() {
                 @Override
                 public @NotNull ResourceLocation getRegistryId() {
