@@ -36,7 +36,7 @@ public class TradeRegistryImpl {
         TRADES_TO_ADD.put(profession, tradesForProfession);
     }
     
-    public static void registerTradeForWanderer(boolean rare, VillagerTrades.ItemListing... trades) {
+    public static void registerTradeForWanderingTrader(boolean rare, VillagerTrades.ItemListing... trades) {
         if(rare){
             Collections.addAll(WANDERER_TRADER_TRADES_RARE, trades);
         } else {

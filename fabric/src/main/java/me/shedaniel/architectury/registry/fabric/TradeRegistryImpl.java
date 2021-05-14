@@ -15,7 +15,7 @@ public class TradeRegistryImpl {
         TradeOfferHelper.registerVillagerOffers(profession, level, allTradesList -> Collections.addAll(allTradesList, trades));
     }
 
-    public static void registerTradeForWanderer(boolean rare, VillagerTrades.ItemListing... trades) {
+    public static void registerTradeForWanderingTrader(boolean rare, VillagerTrades.ItemListing... trades) {
         TradeOfferHelper.registerWanderingTraderOffers(rare ? 2 : 1, allTradesList -> Collections.addAll(allTradesList, trades));
     }
 }

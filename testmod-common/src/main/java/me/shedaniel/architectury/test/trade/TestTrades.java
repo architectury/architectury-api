@@ -14,7 +14,7 @@ public class TestTrades {
         for (VillagerProfession villagerProfession : Registry.VILLAGER_PROFESSION) {
             TradeRegistry.registerVillagerTrade(villagerProfession, 1, TestTrades.createTrades());
         }
-        TradeRegistry.registerTradeForWanderer(false, TestTrades.createTrades());
+        TradeRegistry.registerTradeForWanderingTrader(false, TestTrades.createTrades());
     }
     
     private static VillagerTrades.ItemListing[] createTrades(){

@@ -31,7 +31,7 @@ public class TradeRegistry {
      * When the mod loader is Forge, the {@code WandererTradesEvent} event is used.
      */
     @ExpectPlatform
-    public static void registerTradeForWanderer(boolean rare, VillagerTrades.ItemListing... trades){
+    public static void registerTradeForWanderingTrader(boolean rare, VillagerTrades.ItemListing... trades){
         throw new AssertionError();
     }
     
