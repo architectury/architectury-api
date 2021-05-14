@@ -19,10 +19,11 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-      - name: Upload to Maven
-        run: ./gradlew publish --stacktrace
+      - name: Build snapshot
+        run: ./gradlew build --stacktrace
         if: |
-          !contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.pull_request.title, '[ci skip]')
-        env:
-          MAVEN_PASS: ${{ secrets.MAVEN_PASS }}
-          PR_NUM: ${{github.event.number}}
+          !contains(github.event.pull_request.title, '[ci skip]')
+      - name: Verify license integrity
+        run: ./gradlew licenseCheck
+        if: |
+          !contains(github.event.pull_request.title, '[ci skip]')
