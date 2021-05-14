@@ -1,7 +1,5 @@
 package me.shedaniel.architectury.test.trade;
 
-import me.shedaniel.architectury.event.events.client.ClientPlayerEvent;
-import me.shedaniel.architectury.event.events.client.ClientTickEvent;
 import me.shedaniel.architectury.registry.TradeRegistry;
 import me.shedaniel.architectury.trade.SimpleTrade;
 import net.minecraft.core.Registry;
@@ -16,6 +14,7 @@ public class TestTrades {
         for (VillagerProfession villagerProfession : Registry.VILLAGER_PROFESSION) {
             TradeRegistry.register(villagerProfession, 1, TestTrades.createTrades());
         }
+        TradeRegistry.registerTradeForWanderer(false, TestTrades.createTrades());
     }
     
     private static VillagerTrades.ItemListing[] createTrades(){

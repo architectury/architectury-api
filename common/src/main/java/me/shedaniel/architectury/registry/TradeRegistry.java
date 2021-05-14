@@ -13,4 +13,9 @@ public class TradeRegistry {
         throw new AssertionError();
     }
     
+    @ExpectPlatform
+    public static void registerTradeForWanderer(boolean rare, VillagerTrades.ItemListing... trades){
+        throw new AssertionError();
+    }
+    
 }

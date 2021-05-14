@@ -17,4 +17,15 @@ public class TradeRegistryImpl {
             VillagerTrades.TRADES.get(profession).put(level, combinedTrades);
         }
     }
+
+    public static void registerTradeForWanderer(boolean rare, VillagerTrades.ItemListing... trades) {
+        int level = rare ? 2 : 1;
+        if (VillagerTrades.WANDERING_TRADER_TRADES.containsKey(level)) {
+            VillagerTrades.ItemListing[] originalTrades = VillagerTrades.WANDERING_TRADER_TRADES.get(level);
+            VillagerTrades.ItemListing[] combinedTrades = ArrayUtils.addAll(originalTrades, trades);
+            VillagerTrades.WANDERING_TRADER_TRADES.put(level, combinedTrades);
+        } else {
+            VillagerTrades.WANDERING_TRADER_TRADES.put(level, trades);
+        }
+    }
 }
