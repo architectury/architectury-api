@@ -25,7 +25,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class BlockEntityRenderersImpl {
-    public static <T extends BlockEntity> void registerRenderer(BlockEntityType<T> type, BlockEntityRendererProvider<T> provider) {
+    public static <T extends BlockEntity> void registerRenderer(BlockEntityType<T> type, BlockEntityRendererProvider<? super T> provider) {
         BlockEntityRendererRegistry.INSTANCE.register(type, provider);
     }
 }

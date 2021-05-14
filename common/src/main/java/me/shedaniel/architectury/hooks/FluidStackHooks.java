@@ -31,7 +31,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class FluidStackHooks {
@@ -92,60 +91,60 @@ public class FluidStackHooks {
     @ExpectPlatform
     @Environment(EnvType.CLIENT)
     @Nullable
-    public static TextureAtlasSprite getStillTexture(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, @NotNull FluidState state) {
+    public static TextureAtlasSprite getStillTexture(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, FluidState state) {
         throw new AssertionError();
     }
     
     @ExpectPlatform
     @Environment(EnvType.CLIENT)
     @Nullable
-    public static TextureAtlasSprite getStillTexture(@NotNull FluidStack stack) {
+    public static TextureAtlasSprite getStillTexture(FluidStack stack) {
         throw new AssertionError();
     }
     
     @ExpectPlatform
     @Environment(EnvType.CLIENT)
     @Nullable
-    public static TextureAtlasSprite getStillTexture(@NotNull Fluid fluid) {
+    public static TextureAtlasSprite getStillTexture(Fluid fluid) {
         throw new AssertionError();
     }
     
     @ExpectPlatform
     @Environment(EnvType.CLIENT)
     @Nullable
-    public static TextureAtlasSprite getFlowingTexture(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, @NotNull FluidState state) {
+    public static TextureAtlasSprite getFlowingTexture(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, FluidState state) {
         throw new AssertionError();
     }
     
     @ExpectPlatform
     @Environment(EnvType.CLIENT)
     @Nullable
-    public static TextureAtlasSprite getFlowingTexture(@NotNull FluidStack stack) {
+    public static TextureAtlasSprite getFlowingTexture(FluidStack stack) {
         throw new AssertionError();
     }
     
     @ExpectPlatform
     @Environment(EnvType.CLIENT)
     @Nullable
-    public static TextureAtlasSprite getFlowingTexture(@NotNull Fluid fluid) {
+    public static TextureAtlasSprite getFlowingTexture(Fluid fluid) {
         throw new AssertionError();
     }
     
     @ExpectPlatform
     @Environment(EnvType.CLIENT)
-    public static int getColor(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, @NotNull FluidState state) {
+    public static int getColor(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, FluidState state) {
         throw new AssertionError();
     }
     
     @ExpectPlatform
     @Environment(EnvType.CLIENT)
-    public static int getColor(@NotNull FluidStack stack) {
+    public static int getColor(FluidStack stack) {
         throw new AssertionError();
     }
     
     @ExpectPlatform
     @Environment(EnvType.CLIENT)
-    public static int getColor(@NotNull Fluid fluid) {
+    public static int getColor(Fluid fluid) {
         throw new AssertionError();
     }
 }

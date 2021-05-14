@@ -26,7 +26,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.TextFilter;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
-import org.jetbrains.annotations.NotNull;
 
 public interface ChatEvent {
     /**
@@ -35,7 +34,6 @@ public interface ChatEvent {
     Event<Server> SERVER = EventFactory.createInteractionResultHolder();
     
     interface Server {
-        @NotNull
         InteractionResult process(ServerPlayer player, TextFilter.FilteredText message, ChatComponent component);
     }
     

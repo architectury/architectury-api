@@ -41,7 +41,6 @@ import java.util.OptionalInt;
 import java.util.function.Supplier;
 
 public final class BiomeHooks {
-    @NotNull
     public static BiomeProperties getBiomeProperties(Biome biome) {
         return new BiomeWrapped(biome);
     }
@@ -74,31 +73,26 @@ public final class BiomeHooks {
         }
         
         @Override
-        @NotNull
         public ClimateProperties getClimateProperties() {
             return climateProperties;
         }
         
         @Override
-        @NotNull
         public EffectsProperties getEffectsProperties() {
             return effectsProperties;
         }
         
-        @NotNull
         @Override
         public GenerationProperties getGenerationProperties() {
             return generationProperties;
         }
         
-        @NotNull
         @Override
         public SpawnProperties getSpawnProperties() {
             return spawnProperties;
         }
         
         @Override
-        @NotNull
         public BiomeCategory getCategory() {
             return biome.biomeCategory;
         }
@@ -138,41 +132,38 @@ public final class BiomeHooks {
         }
         
         @Override
-        public @NotNull ClimateProperties.Mutable getClimateProperties() {
+        public ClimateProperties.Mutable getClimateProperties() {
             return (ClimateProperties.Mutable) super.getClimateProperties();
         }
         
         @Override
-        public @NotNull EffectsProperties.Mutable getEffectsProperties() {
+        public EffectsProperties.Mutable getEffectsProperties() {
             return (EffectsProperties.Mutable) super.getEffectsProperties();
         }
         
         @Override
-        public @NotNull GenerationProperties.Mutable getGenerationProperties() {
+        public GenerationProperties.Mutable getGenerationProperties() {
             return (GenerationProperties.Mutable) super.getGenerationProperties();
         }
         
         @Override
-        public @NotNull SpawnProperties.Mutable getSpawnProperties() {
+        public SpawnProperties.Mutable getSpawnProperties() {
             return (SpawnProperties.Mutable) super.getSpawnProperties();
         }
         
         @Override
-        @NotNull
-        public Mutable setCategory(@NotNull BiomeCategory category) {
+        public Mutable setCategory(BiomeCategory category) {
             biome.biomeCategory = category;
             return this;
         }
         
         @Override
-        @NotNull
         public Mutable setDepth(float depth) {
             biome.depth = depth;
             return this;
         }
         
         @Override
-        @NotNull
         public Mutable setScale(float scale) {
             biome.scale = scale;
             return this;
@@ -191,35 +182,30 @@ public final class BiomeHooks {
         }
         
         @Override
-        @NotNull
-        public Mutable setPrecipitation(@NotNull Biome.Precipitation precipitation) {
+        public Mutable setPrecipitation(Biome.Precipitation precipitation) {
             climateSettings.precipitation = precipitation;
             return this;
         }
         
         @Override
-        @NotNull
         public Mutable setTemperature(float temperature) {
             climateSettings.temperature = temperature;
             return this;
         }
         
         @Override
-        @NotNull
-        public Mutable setTemperatureModifier(@NotNull Biome.TemperatureModifier temperatureModifier) {
+        public Mutable setTemperatureModifier(Biome.TemperatureModifier temperatureModifier) {
             climateSettings.temperatureModifier = temperatureModifier;
             return this;
         }
         
         @Override
-        @NotNull
         public Mutable setDownfall(float downfall) {
             climateSettings.downfall = downfall;
             return this;
         }
         
         @Override
-        @NotNull
         public Biome.Precipitation getPrecipitation() {
             return climateSettings.precipitation;
         }
@@ -230,7 +216,6 @@ public final class BiomeHooks {
         }
         
         @Override
-        @NotNull
         public Biome.TemperatureModifier getTemperatureModifier() {
             return climateSettings.temperatureModifier;
         }
@@ -253,84 +238,72 @@ public final class BiomeHooks {
         }
         
         @Override
-        @NotNull
         public EffectsProperties.Mutable setFogColor(int color) {
             effects.fogColor = color;
             return this;
         }
         
         @Override
-        @NotNull
         public EffectsProperties.Mutable setWaterColor(int color) {
             effects.waterColor = color;
             return this;
         }
         
         @Override
-        @NotNull
         public EffectsProperties.Mutable setWaterFogColor(int color) {
             effects.waterFogColor = color;
             return this;
         }
         
         @Override
-        @NotNull
         public EffectsProperties.Mutable setSkyColor(int color) {
             effects.skyColor = color;
             return this;
         }
         
         @Override
-        @NotNull
         public EffectsProperties.Mutable setFoliageColorOverride(@Nullable Integer colorOverride) {
             effects.foliageColorOverride = Optional.ofNullable(colorOverride);
             return this;
         }
         
         @Override
-        @NotNull
         public EffectsProperties.Mutable setGrassColorOverride(@Nullable Integer colorOverride) {
             effects.grassColorOverride = Optional.ofNullable(colorOverride);
             return this;
         }
         
         @Override
-        @NotNull
-        public EffectsProperties.Mutable setGrassColorModifier(@NotNull GrassColorModifier modifier) {
+        public EffectsProperties.Mutable setGrassColorModifier(GrassColorModifier modifier) {
             effects.grassColorModifier = modifier;
             return this;
         }
         
         @Override
-        @NotNull
         public EffectsProperties.Mutable setAmbientParticle(@Nullable AmbientParticleSettings settings) {
             effects.ambientParticleSettings = Optional.ofNullable(settings);
             return this;
         }
         
         @Override
-        @NotNull
         public EffectsProperties.Mutable setAmbientLoopSound(@Nullable SoundEvent sound) {
             effects.ambientLoopSoundEvent = Optional.ofNullable(sound);
             return this;
         }
         
         @Override
-        @NotNull
         public EffectsProperties.Mutable setAmbientMoodSound(@Nullable AmbientMoodSettings settings) {
             effects.ambientMoodSettings = Optional.ofNullable(settings);
             return this;
         }
         
         @Override
-        @NotNull
         public EffectsProperties.Mutable setAmbientAdditionsSound(@Nullable AmbientAdditionsSettings settings) {
             effects.ambientAdditionsSettings = Optional.ofNullable(settings);
             return this;
         }
         
         @Override
-        @NotNull
         public EffectsProperties.Mutable setBackgroundMusic(@Nullable Music music) {
             effects.backgroundMusic = Optional.ofNullable(music);
             return this;
@@ -357,49 +330,41 @@ public final class BiomeHooks {
         }
         
         @Override
-        @NotNull
         public OptionalInt getFoliageColorOverride() {
             return effects.foliageColorOverride.map(OptionalInt::of).orElseGet(OptionalInt::empty);
         }
         
         @Override
-        @NotNull
         public OptionalInt getGrassColorOverride() {
             return effects.grassColorOverride.map(OptionalInt::of).orElseGet(OptionalInt::empty);
         }
         
         @Override
-        @NotNull
         public GrassColorModifier getGrassColorModifier() {
             return effects.grassColorModifier;
         }
         
         @Override
-        @NotNull
         public Optional<AmbientParticleSettings> getAmbientParticle() {
             return effects.ambientParticleSettings;
         }
         
         @Override
-        @NotNull
         public Optional<SoundEvent> getAmbientLoopSound() {
             return effects.ambientLoopSoundEvent;
         }
         
         @Override
-        @NotNull
         public Optional<AmbientMoodSettings> getAmbientMoodSound() {
             return effects.ambientMoodSettings;
         }
         
         @Override
-        @NotNull
         public Optional<AmbientAdditionsSettings> getAmbientAdditionsSound() {
             return effects.ambientAdditionsSettings;
         }
         
         @Override
-        @NotNull
         public Optional<Music> getBackgroundMusic() {
             return effects.backgroundMusic;
         }
@@ -417,22 +382,22 @@ public final class BiomeHooks {
         }
         
         @Override
-        public @NotNull Optional<Supplier<ConfiguredSurfaceBuilder<?>>> getSurfaceBuilder() {
+        public Optional<Supplier<ConfiguredSurfaceBuilder<?>>> getSurfaceBuilder() {
             return Optional.ofNullable(settings.getSurfaceBuilder());
         }
         
         @Override
-        public @NotNull List<Supplier<ConfiguredWorldCarver<?>>> getCarvers(GenerationStep.Carving carving) {
+        public List<Supplier<ConfiguredWorldCarver<?>>> getCarvers(GenerationStep.Carving carving) {
             return settings.getCarvers(carving);
         }
         
         @Override
-        public @NotNull List<List<Supplier<ConfiguredFeature<?, ?>>>> getFeatures() {
+        public List<List<Supplier<ConfiguredFeature<?, ?>>>> getFeatures() {
             return settings.features();
         }
         
         @Override
-        public @NotNull List<Supplier<ConfiguredStructureFeature<?, ?>>> getStructureStarts() {
+        public List<Supplier<ConfiguredStructureFeature<?, ?>>> getStructureStarts() {
             return (List<Supplier<ConfiguredStructureFeature<?, ?>>>) settings.structures();
         }
     }
@@ -454,13 +419,11 @@ public final class BiomeHooks {
         }
         
         @Override
-        @NotNull
         public Map<MobCategory, List<MobSpawnSettings.SpawnerData>> getSpawners() {
             return null;
         }
         
         @Override
-        @NotNull
         public Map<EntityType<?>, MobSpawnSettings.MobSpawnCost> getMobSpawnCosts() {
             return null;
         }

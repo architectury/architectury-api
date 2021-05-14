@@ -24,23 +24,18 @@ import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.level.levelgen.surfacebuilders.ConfiguredSurfaceBuilder;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 public interface GenerationProperties {
-    @NotNull
     Optional<Supplier<ConfiguredSurfaceBuilder<?>>> getSurfaceBuilder();
     
-    @NotNull
     List<Supplier<ConfiguredWorldCarver<?>>> getCarvers(GenerationStep.Carving carving);
     
-    @NotNull
     List<List<Supplier<ConfiguredFeature<?, ?>>>> getFeatures();
     
-    @NotNull
     List<Supplier<ConfiguredStructureFeature<?, ?>>> getStructureStarts();
     
     interface Mutable extends GenerationProperties {

@@ -20,22 +20,16 @@
 package me.shedaniel.architectury.hooks.biome;
 
 import net.minecraft.world.level.biome.Biome.BiomeCategory;
-import org.jetbrains.annotations.NotNull;
 
 public interface BiomeProperties {
-    @NotNull
     ClimateProperties getClimateProperties();
     
-    @NotNull
     EffectsProperties getEffectsProperties();
     
-    @NotNull
     GenerationProperties getGenerationProperties();
     
-    @NotNull
     SpawnProperties getSpawnProperties();
     
-    @NotNull
     BiomeCategory getCategory();
     
     float getDepth();
@@ -44,28 +38,21 @@ public interface BiomeProperties {
     
     interface Mutable extends BiomeProperties {
         @Override
-        @NotNull
         ClimateProperties.Mutable getClimateProperties();
         
         @Override
-        @NotNull
         EffectsProperties.Mutable getEffectsProperties();
         
         @Override
-        @NotNull
         GenerationProperties.Mutable getGenerationProperties();
         
         @Override
-        @NotNull
         SpawnProperties.Mutable getSpawnProperties();
         
-        @NotNull
-        Mutable setCategory(@NotNull BiomeCategory category);
+        Mutable setCategory(BiomeCategory category);
         
-        @NotNull
         Mutable setDepth(float depth);
         
-        @NotNull
         Mutable setScale(float scale);
     }
 }

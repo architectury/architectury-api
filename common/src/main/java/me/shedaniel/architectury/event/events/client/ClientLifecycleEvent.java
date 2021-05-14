@@ -34,7 +34,7 @@ public interface ClientLifecycleEvent {
      */
     @Deprecated Event<ClientState> CLIENT_STARTED = EventFactory.createLoop();
     /**
-     * Invoked when client is initialising, not available in forge.
+     * Invoked when client is stopping, not available in forge.
      */
     @Deprecated Event<ClientState> CLIENT_STOPPING = EventFactory.createLoop();
     /**

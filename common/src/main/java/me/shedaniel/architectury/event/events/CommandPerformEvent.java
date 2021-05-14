@@ -24,7 +24,6 @@ import me.shedaniel.architectury.event.Actor;
 import me.shedaniel.architectury.event.Event;
 import me.shedaniel.architectury.event.EventFactory;
 import net.minecraft.commands.CommandSourceStack;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class CommandPerformEvent {
@@ -33,22 +32,20 @@ public class CommandPerformEvent {
      */
     public static final Event<Actor<CommandPerformEvent>> EVENT = EventFactory.createActorLoop();
     
-    @NotNull
     private ParseResults<CommandSourceStack> results;
     @Nullable
     private Throwable throwable;
     
-    public CommandPerformEvent(@NotNull ParseResults<CommandSourceStack> results, @Nullable Throwable throwable) {
+    public CommandPerformEvent(ParseResults<CommandSourceStack> results, @Nullable Throwable throwable) {
         this.results = results;
         this.throwable = throwable;
     }
     
-    @NotNull
     public ParseResults<CommandSourceStack> getResults() {
         return results;
     }
     
-    public void setResults(@NotNull ParseResults<CommandSourceStack> results) {
+    public void setResults(ParseResults<CommandSourceStack> results) {
         this.results = results;
     }
     

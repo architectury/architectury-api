@@ -31,14 +31,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class PlatformImpl {
-    public static final Map<String, Mod.ConfigurationScreenProvider> CONFIG_SCREENS = new HashMap<>();
-    private static final Map<String, Mod> mods = new HashMap<>();
+    public static final Map<String, Mod.ConfigurationScreenProvider> CONFIG_SCREENS = new ConcurrentHashMap<>();
+    private static final Map<String, Mod> mods = new ConcurrentHashMap<>();
     
     public static Path getGameFolder() {
         return FabricLoader.getInstance().getGameDir();

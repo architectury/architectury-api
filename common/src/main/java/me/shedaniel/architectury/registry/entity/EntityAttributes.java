@@ -17,28 +17,27 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package me.shedaniel.architectury.hooks.biome;
+package me.shedaniel.architectury.registry.entity;
 
-import net.minecraft.world.level.biome.Biome.Precipitation;
-import net.minecraft.world.level.biome.Biome.TemperatureModifier;
-import org.jetbrains.annotations.NotNull;
+import me.shedaniel.architectury.annotations.ExpectPlatform;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 
-public interface ClimateProperties {
-    Precipitation getPrecipitation();
+import java.util.function.Supplier;
+
+public final class EntityAttributes {
+    private EntityAttributes() {}
     
-    float getTemperature();
-    
-    TemperatureModifier getTemperatureModifier();
-    
-    float getDownfall();
-    
-    interface Mutable extends ClimateProperties {
-        Mutable setPrecipitation(Precipitation precipitation);
-        
-        Mutable setTemperature(float temperature);
-        
-        Mutable setTemperatureModifier(TemperatureModifier temperatureModifier);
-        
-        Mutable setDownfall(float downfall);
+    /**
+     * Registers default attributes to entities.
+     *
+     * @param type      the type of entity
+     * @param attribute the attributes to register
+     * @see net.minecraft.world.entity.ai.attributes.DefaultAttributes
+     */
+    @ExpectPlatform
+    public static void register(Supplier<EntityType<? extends LivingEntity>> type, Supplier<AttributeSupplier.Builder> attribute) {
+        throw new AssertionError();
     }
 }

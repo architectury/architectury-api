@@ -23,7 +23,6 @@ import com.google.common.base.Predicates;
 import me.shedaniel.architectury.annotations.ExpectPlatform;
 import me.shedaniel.architectury.hooks.biome.BiomeProperties;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
@@ -66,10 +65,8 @@ public final class BiomeModifications {
     }
     
     public interface BiomeContext {
-        @NotNull
         ResourceLocation getKey();
         
-        @NotNull
         BiomeProperties getProperties();
     }
 }

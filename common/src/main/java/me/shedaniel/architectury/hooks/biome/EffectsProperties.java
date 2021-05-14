@@ -25,7 +25,6 @@ import net.minecraft.world.level.biome.AmbientAdditionsSettings;
 import net.minecraft.world.level.biome.AmbientMoodSettings;
 import net.minecraft.world.level.biome.AmbientParticleSettings;
 import net.minecraft.world.level.biome.BiomeSpecialEffects.GrassColorModifier;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -40,65 +39,45 @@ public interface EffectsProperties {
     
     int getSkyColor();
     
-    @NotNull
     OptionalInt getFoliageColorOverride();
     
-    @NotNull
     OptionalInt getGrassColorOverride();
     
-    @NotNull
     GrassColorModifier getGrassColorModifier();
     
-    @NotNull
     Optional<AmbientParticleSettings> getAmbientParticle();
     
-    @NotNull
     Optional<SoundEvent> getAmbientLoopSound();
     
-    @NotNull
     Optional<AmbientMoodSettings> getAmbientMoodSound();
     
-    @NotNull
     Optional<AmbientAdditionsSettings> getAmbientAdditionsSound();
     
-    @NotNull
     Optional<Music> getBackgroundMusic();
     
     interface Mutable extends EffectsProperties {
-        @NotNull
         EffectsProperties.Mutable setFogColor(int color);
         
-        @NotNull
         EffectsProperties.Mutable setWaterColor(int color);
         
-        @NotNull
         EffectsProperties.Mutable setWaterFogColor(int color);
         
-        @NotNull
         EffectsProperties.Mutable setSkyColor(int color);
         
-        @NotNull
         EffectsProperties.Mutable setFoliageColorOverride(@Nullable Integer colorOverride);
         
-        @NotNull
         EffectsProperties.Mutable setGrassColorOverride(@Nullable Integer colorOverride);
         
-        @NotNull
-        EffectsProperties.Mutable setGrassColorModifier(@NotNull GrassColorModifier modifier);
+        EffectsProperties.Mutable setGrassColorModifier(GrassColorModifier modifier);
         
-        @NotNull
         EffectsProperties.Mutable setAmbientParticle(@Nullable AmbientParticleSettings settings);
         
-        @NotNull
         EffectsProperties.Mutable setAmbientLoopSound(@Nullable SoundEvent sound);
         
-        @NotNull
         EffectsProperties.Mutable setAmbientMoodSound(@Nullable AmbientMoodSettings settings);
         
-        @NotNull
         EffectsProperties.Mutable setAmbientAdditionsSound(@Nullable AmbientAdditionsSettings settings);
         
-        @NotNull
         EffectsProperties.Mutable setBackgroundMusic(@Nullable Music music);
     }
 }

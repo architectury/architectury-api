@@ -37,10 +37,11 @@ import javax.annotation.Nonnull;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class PlatformImpl {
-    private static final Map<String, Mod> mods = new HashMap<>();
+    private static final Map<String, Mod> mods = new ConcurrentHashMap<>();
     
     public static Path getGameFolder() {
         return FMLPaths.GAMEDIR.get();

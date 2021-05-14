@@ -21,10 +21,11 @@ package me.shedaniel.architectury.platform;
 
 import me.shedaniel.architectury.Architectury;
 import me.shedaniel.architectury.annotations.ExpectPlatform;
+import me.shedaniel.architectury.targets.ArchitecturyTarget;
 import me.shedaniel.architectury.utils.Env;
 import net.fabricmc.api.EnvType;
 import net.minecraft.SharedConstants;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.nio.file.Path;
 import java.util.Collection;
@@ -37,8 +38,11 @@ public final class Platform {
     
     /**
      * @return the current mod loader, either "fabric" or "forge"
+     * @deprecated does not reflect the true mod loader, "quilt" is never returned,
+     *             use {@link ArchitecturyTarget#getCurrentTarget()} instead.
      */
-    @NotNull
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     public static String getModLoader() {
         return Architectury.getModLoader();
     }
@@ -68,30 +72,25 @@ public final class Platform {
         }
     }
     
-    @NotNull
     public static String getMinecraftVersion() {
         return SharedConstants.getCurrentVersion().getId();
     }
     
-    @NotNull
     @ExpectPlatform
     public static Path getGameFolder() {
         throw new AssertionError();
     }
     
-    @NotNull
     @ExpectPlatform
     public static Path getConfigFolder() {
         throw new AssertionError();
     }
     
-    @NotNull
     @ExpectPlatform
     public static Env getEnvironment() {
         throw new AssertionError();
     }
     
-    @NotNull
     @ExpectPlatform
     public static EnvType getEnv() {
         throw new AssertionError();
@@ -102,13 +101,11 @@ public final class Platform {
         throw new AssertionError();
     }
     
-    @NotNull
     @ExpectPlatform
     public static Mod getMod(String id) {
         throw new AssertionError();
     }
     
-    @NotNull
     public static Optional<Mod> getOptionalMod(String id) {
         try {
             return Optional.of(getMod(id));
@@ -117,13 +114,11 @@ public final class Platform {
         }
     }
     
-    @NotNull
     @ExpectPlatform
     public static Collection<Mod> getMods() {
         throw new AssertionError();
     }
     
-    @NotNull
     @ExpectPlatform
     public static Collection<String> getModIds() {
         throw new AssertionError();

@@ -17,28 +17,25 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package me.shedaniel.architectury.hooks.biome;
+package me.shedaniel.architectury.registry.fuel.fabric;
 
-import net.minecraft.world.level.biome.Biome.Precipitation;
-import net.minecraft.world.level.biome.Biome.TemperatureModifier;
-import org.jetbrains.annotations.NotNull;
+import net.fabricmc.fabric.api.registry.FuelRegistry;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 
-public interface ClimateProperties {
-    Precipitation getPrecipitation();
+public class FuelRegistryImpl {
+    public static void register(int time, ItemLike... items) {
+        for (ItemLike item : items) {
+            if (time >= 0) {
+                FuelRegistry.INSTANCE.add(item, time);
+            } else {
+                FuelRegistry.INSTANCE.remove(item);
+            }
+        }
+    }
     
-    float getTemperature();
-    
-    TemperatureModifier getTemperatureModifier();
-    
-    float getDownfall();
-    
-    interface Mutable extends ClimateProperties {
-        Mutable setPrecipitation(Precipitation precipitation);
-        
-        Mutable setTemperature(float temperature);
-        
-        Mutable setTemperatureModifier(TemperatureModifier temperatureModifier);
-        
-        Mutable setDownfall(float downfall);
+    public static int get(ItemStack stack) {
+        Integer time = FuelRegistry.INSTANCE.get(stack.getItem());
+        return time == null ? 0 : time;
     }
 }
