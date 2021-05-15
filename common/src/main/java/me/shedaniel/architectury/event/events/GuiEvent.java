@@ -32,62 +32,131 @@ import net.minecraft.world.InteractionResultHolder;
 
 import java.util.List;
 
+/**
+ * Should be moved to the client package and renamed to ScreenEvent in version 2.0
+ */
 @Environment(EnvType.CLIENT)
 public interface GuiEvent {
     /**
-     * Invoked after in-game hud is rendered, equivalent to forge's {@code RenderGameOverlayEvent.Post@ElementType#ALL} and fabric's {@code HudRenderCallback}.
+     * @see RenderHud#renderHud(PoseStack, float)
      */
     Event<RenderHud> RENDER_HUD = EventFactory.createLoop();
+    /**
+     * @see DebugText#gatherText(List)
+     */
     Event<DebugText> DEBUG_TEXT_LEFT = EventFactory.createLoop();
     Event<DebugText> DEBUG_TEXT_RIGHT = EventFactory.createLoop();
     /**
-     * Invoked during Screen#init after previous widgets are cleared, equivalent to forge's {@code GuiScreenEvent.InitGuiEvent.Pre}.
+     * @see ScreenInitPre#init(Screen, List, List)
      */
     Event<ScreenInitPre> INIT_PRE = EventFactory.createInteractionResult();
     /**
-     * Invoked after Screen#init, equivalent to forge's {@code GuiScreenEvent.InitGuiEvent.Post}.
+     * @see ScreenInitPost#init(Screen, List, List)
      */
     Event<ScreenInitPost> INIT_POST = EventFactory.createLoop();
-    Event<ScreenRenderPre> RENDER_PRE = EventFactory.createInteractionResult();
-    Event<ScreenRenderPost> RENDER_POST = EventFactory.createLoop();
-    
     /**
-     * Invoked during Minecraft#setScreen, equivalent to forge's {@code GuiOpenEvent}.
+     * @see ScreenRenderPre#render(Screen, PoseStack, int, int, float)
+     */
+    Event<ScreenRenderPre> RENDER_PRE = EventFactory.createInteractionResult();
+    /**
+     * @see ScreenRenderPost#render(Screen, PoseStack, int, int, float)
+     */
+    Event<ScreenRenderPost> RENDER_POST = EventFactory.createLoop();
+    /**
+     * @see SetScreen#modifyScreen(Screen)
      */
     Event<SetScreen> SET_SCREEN = EventFactory.createInteractionResultHolder();
     
     @Environment(EnvType.CLIENT)
     interface RenderHud {
+        /**
+         * Called after the in-game hud is rendered.
+         * Equal to the forge {@code RenderGameOverlayEvent.Post@ElementType#ALL} event and fabric's {@code HudRenderCallback}.
+         * 
+         * @param matrices The render buffer.
+         * @param tickDelta The delta tick.
+         */
         void renderHud(PoseStack matrices, float tickDelta);
     }
     
     @Environment(EnvType.CLIENT)
     interface DebugText {
+        /**
+         * Called when the debug text is rendered. There are two different versions, for th left and for the right side.
+         * Equal to the forge {@code RenderGameOverlayEvent.Text} event, when {@code Minecraft.getInstance().options.renderDebug} is true.
+         * 
+         * @param strings Contains the already added strings. You can add your own lines by adding to the list.
+         */
         void gatherText(List<String> strings);
     }
     
     @Environment(EnvType.CLIENT)
     interface ScreenInitPre {
+        /**
+         * Called when a screen is initialized and after all widgets are cleared.
+         * Equal to the forge {@code GuiScreenEvent.InitGuiEvent.Pre} event.
+         * 
+         * @param screen The screen.
+         * @param widgets The widgets that are added after this event.
+         * @param children The listeners for the screen events.
+         * @return Returning {@link InteractionResult#FAIL} results in the rest of the init method being ignored.
+         */
         InteractionResult init(Screen screen, List<AbstractWidget> widgets, List<GuiEventListener> children);
     }
     
     @Environment(EnvType.CLIENT)
     interface ScreenInitPost {
+        /**
+         * Called when a screen is initialized after all the vanilla logic happened.
+         * Equal to the forge {@code GuiScreenEvent.InitGuiEvent.Post} event.
+         *
+         * @param screen The screen.
+         * @param widgets The widgets that were added.
+         * @param children The listeners for the screen events.
+         */
         void init(Screen screen, List<AbstractWidget> widgets, List<GuiEventListener> children);
     }
     
     @Environment(EnvType.CLIENT)
     interface ScreenRenderPre {
+        /**
+         * Called before any rendering is happening.
+         * Equal to the forge {@code GuiScreenEvent.DrawScreenEvent.Pre} event.
+         * 
+         * @param screen The screen.
+         * @param matrices The render buffer.
+         * @param mouseX The mouse x position.
+         * @param mouseY The mouse y position.
+         * @param delta The current tick delta.
+         * @return Returning {@link InteractionResult#FAIL} prevents any other rendering.
+         */
         InteractionResult render(Screen screen, PoseStack matrices, int mouseX, int mouseY, float delta);
     }
     
     @Environment(EnvType.CLIENT)
     interface ScreenRenderPost {
+        /**
+         * Called after all things have been rendered.
+         * Equal to the forge {@code GuiScreenEvent.DrawScreenEvent.Post} event.
+         *
+         * @param screen The screen.
+         * @param matrices The render buffer.
+         * @param mouseX The mouse x position.
+         * @param mouseY The mouse y position.
+         * @param delta The current tick delta.
+         */
         void render(Screen screen, PoseStack matrices, int mouseX, int mouseY, float delta);
     }
     
     @Environment(EnvType.CLIENT)
     interface SetScreen {
+        /**
+         * Called when a screen should be opened.
+         * Equal to the forge {@code GuiOpenEvent} event.
+         * 
+         * @param screen The screen that is gonna be opened.
+         * @return Return {@link InteractionResultHolder#fail(Object)} leads to the screen not being opened. The result is ignored. {@link InteractionResultHolder#success(Object)} leads to the passed new screen being used instead of the old one.
+         */
         InteractionResultHolder<Screen> modifyScreen(Screen screen);
     }
 }
