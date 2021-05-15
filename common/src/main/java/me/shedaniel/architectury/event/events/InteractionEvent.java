@@ -34,46 +34,132 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 public interface InteractionEvent {
+    /**
+     * @see LeftClickBlock#click(Player, InteractionHand, BlockPos, Direction)
+     */
     Event<LeftClickBlock> LEFT_CLICK_BLOCK = EventFactory.createInteractionResult();
+    /**
+     * @see RightClickBlock#click(Player, InteractionHand, BlockPos, Direction)
+     */
     Event<RightClickBlock> RIGHT_CLICK_BLOCK = EventFactory.createInteractionResult();
+    /**
+     * @see RightClickItem#click(Player, InteractionHand)
+     */
     Event<RightClickItem> RIGHT_CLICK_ITEM = EventFactory.createInteractionResultHolder();
+    /**
+     * @see ClientLeftClickAir#click(Player, InteractionHand)
+     */
     Event<ClientLeftClickAir> CLIENT_LEFT_CLICK_AIR = EventFactory.createLoop();
+    /**
+     * @see ClientRightClickAir#click(Player, InteractionHand)
+     */
     Event<ClientRightClickAir> CLIENT_RIGHT_CLICK_AIR = EventFactory.createLoop();
+    /**
+     * @see InteractEntity#interact(Player, Entity, InteractionHand)
+     */
     Event<InteractEntity> INTERACT_ENTITY = EventFactory.createInteractionResult();
     /**
-     * Invoked before a farmland block is trampled by an entity, equivalent to forge's {@code BlockEvent.FarmlandTrampleEvent}
+     * @see FarmlandTrample#trample(Level, BlockPos, BlockState, float, Entity)
      */
     Event<FarmlandTrample> FARMLAND_TRAMPLE = EventFactory.createEventResult();
     
     interface RightClickBlock {
+        /**
+         * Called whenever a player is right clicking a block.
+         * Equal to the forge {@code PlayerInteractEvent.RightClickBlock} event and fabric's {@code UseBlockCallback}.
+         * 
+         * @param player The player right clicking the block.
+         * @param hand The hand that is used.
+         * @param pos The position of the block in the level. Use {@link Player#getCommandSenderWorld()} to get the level.
+         * @param face The face of the block clicked.
+         * @return The event is canceled if anything else than {@link InteractionResult#PASS} is returned.
+         */
         InteractionResult click(Player player, InteractionHand hand, BlockPos pos, Direction face);
     }
     
     interface LeftClickBlock {
+        /**
+         * Called whenever a player is left clicking a block.
+         * Equal to the forge {@code PlayerInteractEvent.LeftClickBlock} event and fabric's {@code AttackBlockCallback}.
+         *
+         * @param player The player left clicking the block.
+         * @param hand The hand that is used.
+         * @param pos The position of the block in the level. Use {@link Player#getCommandSenderWorld()} to get the level.
+         * @param face The face of the block clicked.
+         * @return The event is canceled if anything else than {@link InteractionResult#PASS} is returned.
+         */
         InteractionResult click(Player player, InteractionHand hand, BlockPos pos, Direction face);
     }
     
     interface RightClickItem {
+        /**
+         * Called whenever a player is right clicking a block while holding an item.
+         * Equal to the forge {@code PlayerInteractEvent.RightClickItem} event and fabric's {@code UseItemCallback}.
+         *
+         * @param player The player right clicking the block.
+         * @param hand The hand that is used. You can get the {@link ItemStack} with {@link Player#getItemInHand(InteractionHand)}
+         * @return Whenever the return is not {@link InteractionResult#PASS}, the result value is used and the event is canceled.
+         */
         InteractionResultHolder<ItemStack> click(Player player, InteractionHand hand);
     }
     
     interface ClientRightClickAir {
+        /**
+         * Called when a player is right clicking the air.
+         * This is only fired on the client.
+         * Equal to the forge {@code PlayerInteractEvent.RightClickEmpty} event.
+         * 
+         * @param player The player. Always {@link net.minecraft.client.player.LocalPlayer}
+         * @param hand The hand used.
+         */
         void click(Player player, InteractionHand hand);
     }
     
     interface ClientLeftClickAir {
+        /**
+         * Called when a player is left clicking the air.
+         * This is only fired on the client.
+         * Equal to the forge {@code PlayerInteractEvent.LeftClickEmpty} event.
+         *
+         * @param player The player. Always {@link net.minecraft.client.player.LocalPlayer}
+         * @param hand The hand used.
+         */
         void click(Player player, InteractionHand hand);
     }
     
     interface InteractEntity {
+        /**
+         * Called when a player is right clicking on an entity.
+         * Equal to the forge {@code PlayerInteractEvent.EntityInteract} event.
+         * 
+         * @param player The player clicking the entity.
+         * @param entity Then entity the player clicks.
+         * @param hand The used hand.
+         * @return If the return value is not {@link InteractionResult#PASS}, event is cancelled and the used result is passed as return value.
+         */
         InteractionResult interact(Player player, Entity entity, InteractionHand hand);
     }
     
+    /**
+     * @deprecated use {@link BlockEvent#BREAK}
+     */
+    @Deprecated
     interface BlockBreak {
         InteractionResult breakBlock(Player player, BlockPos pos, BlockState state);
     }
     
     interface FarmlandTrample {
+        /**
+         * Called when a entity is trampling farmland.
+         * Equal to the forge {@code BlockEvent.FarmlandTrampleEvent} event.
+         * 
+         * @param world The level where the block and the player are located in.
+         * @param pos The position of the block.
+         * @param state The state of the block.
+         * @param distance The distance of the player to the block.
+         * @param entity The entity trampling.
+         * @return If any value is returned, the trampling is canceled.
+         */
         EventResult trample(Level world, BlockPos pos, BlockState state, float distance, Entity entity);
     }
 }
