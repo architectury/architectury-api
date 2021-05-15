@@ -37,23 +37,23 @@ import org.jetbrains.annotations.Nullable;
 
 public interface EntityEvent {
     /**
-     * Invoked before LivingEntity#die, equivalent to forge's {@code LivingDeathEvent}.
+     * @see LivingDeath#die(LivingEntity, DamageSource)
      */
     Event<LivingDeath> LIVING_DEATH = EventFactory.createInteractionResult();
     /**
-     * Invoked before LivingEntity#hurt, equivalent to forge's {@code LivingAttackEvent}.
+     * @see LivingAttack#attack(LivingEntity, DamageSource, float)
      */
     Event<LivingAttack> LIVING_ATTACK = EventFactory.createInteractionResult();
     /**
-     * Invoked when an entity is about to be spawned, equivalent to forge's {@code LivingSpawnEvent.CheckSpawn}
+     * @see LivingCheckSpawn#canSpawn(LivingEntity, LevelAccessor, double, double, double, MobSpawnType, BaseSpawner)
      */
     Event<LivingCheckSpawn> LIVING_CHECK_SPAWN = EventFactory.createEventResult();
     /**
-     * Invoked before entity is added to a world, equivalent to forge's {@code EntityJoinWorldEvent}.
+     * @see Add#add(Entity, Level)
      */
     Event<Add> ADD = EventFactory.createInteractionResult();
     /**
-     * Invoked when an entity enters a chunk,  equivalent to forge's {@code EnteringChunk}
+     * @see EnterChunk#enterChunk(Entity, int, int, int, int)
      */
     Event<EnterChunk> ENTER_CHUNK = EventFactory.createLoop();
     
@@ -65,26 +65,77 @@ public interface EntityEvent {
     Event<PlaceBlock> PLACE_BLOCK = EventFactory.createInteractionResult();
     
     interface LivingDeath {
+        /**
+         * Fired before a living entity is dieing.
+         * It is equal to the forge event {@code LivingDeathEvent} event.
+         * 
+         * @param entity The entity that is about to die.
+         * @param source Why the entity is about to die.
+         * @return Returning {@link InteractionResult#FAIL} prevents the entity from dieing.
+         */
         InteractionResult die(LivingEntity entity, DamageSource source);
     }
     
     interface LivingAttack {
+        /**
+         * Fired before a entity is being hurt.
+         * Equal to the forge {@code LivingAttackEvent} event.
+         * 
+         * You can't set the amount of damage the entity gets!
+         * 
+         * @param entity The entity that is attacked.
+         * @param source The reason why the entity takes damage.
+         * @param amount The amount of damage the entity takes.
+         * @return Returning {@link InteractionResult#FAIL} prevents the entity from taking damage.
+         */
         InteractionResult attack(LivingEntity entity, DamageSource source, float amount);
     }
     
     interface LivingCheckSpawn {
+        /**
+         * Fired before a entity is spawned into the level.
+         * Equal to the forge {@code LivingSpawnEvent.CheckSpawn} event.
+         * 
+         * @param entity The entity that is about to spawn.
+         * @param world The level the entity wants to spawn in.
+         * @param x The exact x spawn position.
+         * @param y The exact y spawn position.
+         * @param z The exact z spawn position.
+         * @param type The source of spawning.
+         * @param spawner The spawner. Can be null.
+         * @return Return {@link EventResult#interrupt(Boolean)} with true or false to let the entity spawn or prevent it.
+         */
         EventResult canSpawn(LivingEntity entity, LevelAccessor world, double x, double y, double z, MobSpawnType type, @Nullable BaseSpawner spawner);
     }
     
     interface Add {
+        /**
+         * Fired when a entity is added to the world.
+         * Equal to the forge {@code EntityJoinWorldEvent} event.
+         * 
+         * @param entity The entity to add to the level.
+         * @param world The level the entity is added to.
+         * @return Returning {@link InteractionResult#FAIL} prevents the addition of the entity to the world.
+         */
         InteractionResult add(Entity entity, Level world);
     }
     
+    @Deprecated
     interface PlaceBlock {
         InteractionResult placeBlock(Level world, BlockPos pos, BlockState state, @Nullable Entity placer);
     }
     
     interface EnterChunk {
+        /**
+         * Fired whenever a entity enters a chunk.
+         * Equal to the forge {@code EnteringChunk} event.
+         * 
+         * @param entity The entity moving to a different chunk.
+         * @param chunkX The chunk x coordinate.
+         * @param chunkZ The chunk z coordinate.
+         * @param prevX The previous chunk x coordinate.
+         * @param prevZ The previous chunk z coordinate.
+         */
         void enterChunk(Entity entity, int chunkX, int chunkZ, int prevX, int prevZ);
     }
     
