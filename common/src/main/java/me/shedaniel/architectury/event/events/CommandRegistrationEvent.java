@@ -27,9 +27,16 @@ import net.minecraft.commands.Commands;
 
 public interface CommandRegistrationEvent {
     /**
-     * Invoked after server registers its commands, equivalent to forge's {@code RegisterCommandsEvent} and fabric's {@code CommandRegistrationCallback}.
+     * @see CommandRegistrationEvent#register(CommandDispatcher, Commands.CommandSelection)
      */
     Event<CommandRegistrationEvent> EVENT = EventFactory.createLoop();
     
+    /**
+     * Event fired whenever a command is registered.
+     * Equal to the forge {@code RegisterCommandsEvent} event and fabric's {@code CommandRegistrationCallback}.
+     * 
+     * @param dispatcher The command dispatcher to register commands to.
+     * @param selection The selection where the command can be executed.
+     */
     void register(CommandDispatcher<CommandSourceStack> dispatcher, Commands.CommandSelection selection);
 }
