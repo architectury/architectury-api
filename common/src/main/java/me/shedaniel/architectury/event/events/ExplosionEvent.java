@@ -29,14 +29,36 @@ import net.minecraft.world.level.Level;
 import java.util.List;
 
 public interface ExplosionEvent {
+    /**
+     * @see Pre#explode(Level, Explosion)
+     */
     Event<Pre> PRE = EventFactory.createInteractionResult();
+    /**
+     * @see Detonate#explode(Level, Explosion, List)
+     */
     Event<Detonate> DETONATE = EventFactory.createLoop();
     
     interface Pre {
+        /**
+         * Called before an explosion happens.
+         * Equal to the forge {@code ExplosionEvent.Start} event
+         * 
+         * @param world The level the explosion is happening in.
+         * @param explosion The explosion.
+         * @return Returning {@link InteractionResult#FAIL} cancels the explosion.
+         */
         InteractionResult explode(Level world, Explosion explosion);
     }
     
     interface Detonate {
+        /**
+         * Called when an explosion happens.
+         * Equal to the forge {@code ExplosionEvent.Detonate} event.
+         * 
+         * @param world The level the explosion happens in.
+         * @param explosion The explosion happening.
+         * @param affectedEntities The entities affected by the explosion.
+         */
         void explode(Level world, Explosion explosion, List<Entity> affectedEntities);
     }
 }
