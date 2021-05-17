@@ -28,6 +28,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.Objects;
@@ -71,6 +72,19 @@ public final class NetworkManager {
     
     @ExpectPlatform
     public static boolean canPlayerReceive(ServerPlayer player, ResourceLocation id) {
+        throw new AssertionError();
+    }
+    
+    /**
+     * Easy to use utility method to create a entity spawn packet.
+     * This packet is needed everytime any mod adds a entity.
+     * The entity should override {@link Entity#getAddEntityPacket()} to point to this method!
+     *
+     * @param entity The entity which should be spawned. The 'this' keyword should do the trick all the time.
+     * @return It returns the ready to use packet, which can be returned by the {@link Entity#getAddEntityPacket()} method.
+     */
+    @ExpectPlatform
+    public static Packet<?> createEntitySpawnPacket(Entity entity){
         throw new AssertionError();
     }
     

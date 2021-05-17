@@ -20,9 +20,11 @@
 package me.shedaniel.architectury.test;
 
 import me.shedaniel.architectury.platform.Platform;
+import me.shedaniel.architectury.registry.entity.EntityRenderers;
 import me.shedaniel.architectury.test.debug.ConsoleMessageSink;
 import me.shedaniel.architectury.test.debug.MessageSink;
 import me.shedaniel.architectury.test.debug.client.ClientOverlayMessageSink;
+import me.shedaniel.architectury.test.entity.TestEntity;
 import me.shedaniel.architectury.test.events.DebugEvents;
 import me.shedaniel.architectury.test.gamerule.TestGameRules;
 import me.shedaniel.architectury.test.registry.TestRegistries;
@@ -31,6 +33,7 @@ import me.shedaniel.architectury.test.tags.TestTags;
 import me.shedaniel.architectury.test.trade.TestTrades;
 import me.shedaniel.architectury.utils.Env;
 import me.shedaniel.architectury.utils.EnvExecutor;
+import net.minecraft.client.renderer.entity.MinecartRenderer;
 
 public class TestMod {
     public static final MessageSink SINK = EnvExecutor.getEnvSpecific(() -> ClientOverlayMessageSink::new, () -> ConsoleMessageSink::new);
@@ -42,7 +45,9 @@ public class TestMod {
         TestGameRules.init();
         TestTags.initialize();
         TestTrades.init();
-        if (Platform.getEnvironment() == Env.CLIENT)
+        if (Platform.getEnvironment() == Env.CLIENT) {
             TestKeybinds.initialize();
+            EntityRenderers.register(TestEntity.TYPE, MinecartRenderer<TestEntity>::new);
+        }
     }
 }
