@@ -26,7 +26,7 @@ import net.minecraft.world.entity.npc.VillagerTrades;
 import java.util.Collections;
 
 public class TradeRegistryImpl {
-    private static void registerVillagerTrade0(VillagerProfession profession, int level, VillagerTrades.ItemListing... trades) {
+    public static void registerVillagerTrade0(VillagerProfession profession, int level, VillagerTrades.ItemListing... trades) {
         TradeOfferHelper.registerVillagerOffers(profession, level, allTradesList -> Collections.addAll(allTradesList, trades));
     }
     
