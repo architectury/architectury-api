@@ -1,0 +1,82 @@
+name: Build and Release
+
+on:
+  push:
+    paths:
+      - '**.gradle'
+      - '**.properties'
+      - '**/src/**'
+    branches:
+      - "1.16"
+      - "1.17"
+  workflow_dispatch:
+    inputs:
+      norelease:
+        description: 'Do not publish'
+        required: true
+        default: 'false'
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        java: [ 8-jdk, 11-jdk, 15-jdk ]
+    runs-on: ubuntu-20.04
+    container:
+      image: openjdk:${{ matrix.java }}
+      options: --user root
+    if: |
+      !contains(github.event.head_commit.message, '[ci skip]')
+    steps:
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - uses: gradle/wrapper-validation-action@v1
+      - name: Build with Gradle
+        run: |
+          ./gradlew build --stacktrace --no-daemon
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: '${{ github.event.repository.name }} Build #${{ github.run_number }}'
+          path: |
+            **/build/libs/
+            !build/libs/
+            !**/*-shadow.jar
+            !**/*-transformProduction([\w]+).jar
+  publish:
+    needs: build
+    runs-on: ubuntu-20.04
+    container:
+      image: openjdk:${{ matrix.java }}
+      options: --user root
+    if: |
+      !contains(github.event.head_commit.message, '[norelease]') && github.event.inputs.norelease != 'true'
+    steps:
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - name: Release to Maven and CurseForge
+        env:
+          # currently unused, may want to use these for changelogs though!
+          # GIT_COMMIT: ${{ github.event.after }}
+          # GIT_PREVIOUS_COMMIT: ${{ github.event.before }}
+          MAVEN_PASS: ${{ secrets.MAVEN_PASS }}
+          CURSE_API_KEY: ${{ secrets.CURSE_API_KEY }}
+        # TODO: make this use the artifacts from the previous build step
+        run: |
+          ./gradlew build publish curseforgePublish --stacktrace --no-daemon
