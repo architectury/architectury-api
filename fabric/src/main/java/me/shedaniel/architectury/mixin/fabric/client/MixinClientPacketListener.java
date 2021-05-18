@@ -43,9 +43,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPacketListener.class)
 public class MixinClientPacketListener {
-    @Shadow private Minecraft minecraft;
-    @Shadow @Final private RecipeManager recipeManager;
-    @Unique private LocalPlayer tmpPlayer;
+    @Shadow
+    private Minecraft minecraft;
+    @Shadow
+    @Final
+    private RecipeManager recipeManager;
+    @Unique
+    private LocalPlayer tmpPlayer;
     
     @Inject(method = "handleLogin", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Options;broadcastOptions()V"))
     private void handleLogin(ClientboundLoginPacket packet, CallbackInfo ci) {
@@ -58,14 +62,14 @@ public class MixinClientPacketListener {
     }
     
     @Inject(method = "handleRespawn", at = @At(value = "INVOKE",
-                                               target = "Lnet/minecraft/client/multiplayer/ClientLevel;addPlayer(ILnet/minecraft/client/player/AbstractClientPlayer;)V"))
+            target = "Lnet/minecraft/client/multiplayer/ClientLevel;addPlayer(ILnet/minecraft/client/player/AbstractClientPlayer;)V"))
     private void handleRespawn(ClientboundRespawnPacket packet, CallbackInfo ci) {
         ClientPlayerEvent.CLIENT_PLAYER_RESPAWN.invoker().respawn(tmpPlayer, minecraft.player);
         this.tmpPlayer = null;
     }
     
     @Inject(method = "handleChat", at = @At(value = "INVOKE",
-                                            target = "Lnet/minecraft/client/gui/Gui;handleChat(Lnet/minecraft/network/chat/ChatType;Lnet/minecraft/network/chat/Component;Ljava/util/UUID;)V"),
+            target = "Lnet/minecraft/client/gui/Gui;handleChat(Lnet/minecraft/network/chat/ChatType;Lnet/minecraft/network/chat/Component;Ljava/util/UUID;)V"),
             cancellable = true)
     private void handleChat(ClientboundChatPacket packet, CallbackInfo ci) {
         InteractionResultHolder<Component> process = ClientChatEvent.CLIENT_RECEIVED.invoker().process(packet.getType(), packet.getMessage(), packet.getSender());

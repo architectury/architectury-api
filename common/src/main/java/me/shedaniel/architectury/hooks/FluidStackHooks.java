@@ -35,7 +35,8 @@ import net.minecraft.world.level.material.FluidState;
 import org.jetbrains.annotations.Nullable;
 
 public class FluidStackHooks {
-    private FluidStackHooks() {}
+    private FluidStackHooks() {
+    }
     
     @ExpectPlatform
     public static Component getName(FluidStack stack) {

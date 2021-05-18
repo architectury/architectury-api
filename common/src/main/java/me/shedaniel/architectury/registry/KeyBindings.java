@@ -26,7 +26,8 @@ import net.minecraft.client.KeyMapping;
 
 @Environment(EnvType.CLIENT)
 public final class KeyBindings {
-    private KeyBindings() {}
+    private KeyBindings() {
+    }
     
     @ExpectPlatform
     public static void registerKeyBinding(KeyMapping binding) {

@@ -24,7 +24,8 @@ import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.server.packs.repository.RepositorySource;
 
 public class PackRepositoryHooks {
-    private PackRepositoryHooks() {}
+    private PackRepositoryHooks() {
+    }
     
     @ExpectPlatform
     public static void addSource(PackRepository repository, RepositorySource source) {

@@ -79,13 +79,13 @@ public class BiomeModificationsImpl {
     
     static {
         BiomeModification modification = net.fabricmc.fabric.api.biome.v1.BiomeModifications.create(FABRIC_MODIFICATION);
-        registerModification(modification,ModificationPhase.ADDITIONS, ADDITIONS);
-        registerModification(modification,ModificationPhase.POST_PROCESSING, POST_PROCESSING);
-        registerModification(modification,ModificationPhase.REMOVALS, REMOVALS);
-        registerModification(modification,ModificationPhase.REPLACEMENTS, REPLACEMENTS);
+        registerModification(modification, ModificationPhase.ADDITIONS, ADDITIONS);
+        registerModification(modification, ModificationPhase.POST_PROCESSING, POST_PROCESSING);
+        registerModification(modification, ModificationPhase.REMOVALS, REMOVALS);
+        registerModification(modification, ModificationPhase.REPLACEMENTS, REPLACEMENTS);
     }
     
-    private static void registerModification( BiomeModification modification, ModificationPhase phase, List<Pair<Predicate<BiomeContext>, BiConsumer<BiomeContext, BiomeProperties.Mutable>>> list ) {
+    private static void registerModification(BiomeModification modification, ModificationPhase phase, List<Pair<Predicate<BiomeContext>, BiConsumer<BiomeContext, BiomeProperties.Mutable>>> list) {
         modification.add(phase, Predicates.alwaysTrue(), (biomeSelectionContext, biomeModificationContext) -> {
             BiomeContext biomeContext = wrapSelectionContext(biomeSelectionContext);
             BiomeProperties.Mutable mutableBiome = wrapMutableBiome(biomeSelectionContext.getBiome(), biomeModificationContext);
@@ -153,43 +153,43 @@ public class BiomeModificationsImpl {
             super(biome);
             this.context = context;
         }
-    
+        
         @Override
         public Mutable setSurfaceBuilder(ConfiguredSurfaceBuilder<?> builder) {
             this.context.setBuiltInSurfaceBuilder(builder);
             return this;
         }
-    
+        
         @Override
         public Mutable addFeature(GenerationStep.Decoration decoration, ConfiguredFeature<?, ?> feature) {
             this.context.addBuiltInFeature(decoration, feature);
             return this;
         }
-    
+        
         @Override
         public Mutable addCarver(GenerationStep.Carving carving, ConfiguredWorldCarver<?> feature) {
             context.addBuiltInCarver(carving, feature);
             return this;
         }
-    
+        
         @Override
         public Mutable addStructure(ConfiguredStructureFeature<?, ?> feature) {
             context.addBuiltInStructure(feature);
             return this;
         }
-    
+        
         @Override
         public Mutable removeFeature(GenerationStep.Decoration decoration, ConfiguredFeature<?, ?> feature) {
             context.removeBuiltInFeature(decoration, feature);
             return this;
         }
-    
+        
         @Override
         public Mutable removeCarver(GenerationStep.Carving carving, ConfiguredWorldCarver<?> feature) {
             context.removeBuiltInCarver(carving, feature);
             return this;
         }
-    
+        
         @Override
         public Mutable removeStructure(ConfiguredStructureFeature<?, ?> feature) {
             context.removeBuiltInStructure(feature);
@@ -199,47 +199,47 @@ public class BiomeModificationsImpl {
     
     private static class MutableSpawnProperties extends BiomeHooks.SpawnSettingsWrapped implements SpawnProperties.Mutable {
         protected final SpawnSettingsContext context;
-    
+        
         public MutableSpawnProperties(Biome biome, SpawnSettingsContext context) {
             super(biome);
             this.context = context;
         }
-    
+        
         @Override
         public @NotNull Mutable setCreatureProbability(float probability) {
             context.setCreatureSpawnProbability(probability);
             return this;
         }
-    
+        
         @Override
         public Mutable addSpawn(MobCategory category, MobSpawnSettings.SpawnerData data) {
             context.addSpawn(category, data);
             return this;
         }
-    
+        
         @Override
         public boolean removeSpawns(BiPredicate<MobCategory, MobSpawnSettings.SpawnerData> predicate) {
             return context.removeSpawns(predicate);
         }
-    
+        
         @Override
         public Mutable setSpawnCost(EntityType<?> entityType, MobSpawnSettings.MobSpawnCost cost) {
             context.setSpawnCost(entityType, cost.getCharge(), cost.getEnergyBudget());
             return this;
         }
-    
+        
         @Override
         public Mutable setSpawnCost(EntityType<?> entityType, double mass, double gravityLimit) {
             context.setSpawnCost(entityType, mass, gravityLimit);
             return this;
         }
-    
+        
         @Override
         public Mutable clearSpawnCost(EntityType<?> entityType) {
             context.clearSpawnCost(entityType);
             return this;
         }
-    
+        
         @Override
         public @NotNull Mutable setPlayerSpawnFriendly(boolean friendly) {
             context.setPlayerSpawnFriendly(friendly);

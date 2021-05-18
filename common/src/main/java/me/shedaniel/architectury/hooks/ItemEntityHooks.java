@@ -24,7 +24,8 @@ import me.shedaniel.architectury.utils.IntValue;
 import net.minecraft.world.entity.item.ItemEntity;
 
 public final class ItemEntityHooks {
-    private ItemEntityHooks() {}
+    private ItemEntityHooks() {
+    }
     
     /**
      * The lifespan of an {@link ItemEntity}.

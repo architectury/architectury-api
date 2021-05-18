@@ -32,23 +32,23 @@ public class PlatformMethods {
         String lookupType = lookupClass.getName().replace("$", "") + "Impl";
         
         String platformExpectedClass = lookupType.substring(0, lookupType.lastIndexOf('.')) + "." + ArchitecturyTarget.getCurrentTarget() + "." +
-                                       lookupType.substring(lookupType.lastIndexOf('.') + 1);
+                lookupType.substring(lookupType.lastIndexOf('.') + 1);
         Class<?> newClass;
         try {
             newClass = Class.forName(platformExpectedClass, false, lookupClass.getClassLoader());
         } catch (ClassNotFoundException exception) {
             throw new PlatformExpectedError(lookupClass.getName() + "#" + name + " expected platform implementation in " + platformExpectedClass +
-                                            "#" + name + ", but the class doesn't exist!", exception);
+                    "#" + name + ", but the class doesn't exist!", exception);
         }
         MethodHandle platformMethod;
         try {
             platformMethod = lookup.findStatic(newClass, name, type);
         } catch (NoSuchMethodException exception) {
             throw new PlatformExpectedError(lookupClass.getName() + "#" + name + " expected platform implementation in " + platformExpectedClass +
-                                            "#" + name + ", but the method doesn't exist!", exception);
+                    "#" + name + ", but the method doesn't exist!", exception);
         } catch (IllegalAccessException exception) {
             throw new PlatformExpectedError(lookupClass.getName() + "#" + name + " expected platform implementation in " + platformExpectedClass +
-                                            "#" + name + ", but the method's modifier doesn't match the access requirements!", exception);
+                    "#" + name + ", but the method's modifier doesn't match the access requirements!", exception);
         }
         return new ConstantCallSite(platformMethod);
     }

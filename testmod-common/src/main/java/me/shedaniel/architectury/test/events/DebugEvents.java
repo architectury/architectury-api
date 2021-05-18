@@ -29,7 +29,6 @@ import me.shedaniel.architectury.platform.Platform;
 import me.shedaniel.architectury.utils.Env;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.inventory.AnvilScreen;
 import net.minecraft.core.Position;
 import net.minecraft.core.Vec3i;

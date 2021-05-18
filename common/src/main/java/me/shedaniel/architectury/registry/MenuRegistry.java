@@ -41,7 +41,8 @@ import java.util.function.Consumer;
  * A utility class to register {@link MenuType}s and {@link Screen}s for containers
  */
 public final class MenuRegistry {
-    private MenuRegistry() {}
+    private MenuRegistry() {
+    }
     
     /**
      * Opens the menu.

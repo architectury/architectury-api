@@ -43,9 +43,13 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Unique
 @Mixin(Minecraft.class)
 public abstract class MixinMinecraft {
-    @Shadow @Nullable public LocalPlayer player;
+    @Shadow
+    @Nullable
+    public LocalPlayer player;
     
-    @Shadow @Nullable public HitResult hitResult;
+    @Shadow
+    @Nullable
+    public HitResult hitResult;
     
     @Shadow
     public abstract void setScreen(@Nullable Screen screen);
@@ -75,10 +79,10 @@ public abstract class MixinMinecraft {
     @ModifyVariable(
             method = "setScreen",
             at = @At(value = "FIELD",
-                     opcode = Opcodes.PUTFIELD,
-                     target = "Lnet/minecraft/client/Minecraft;screen:Lnet/minecraft/client/gui/screens/Screen;",
-                     shift = At.Shift.BY,
-                     by = -1),
+                    opcode = Opcodes.PUTFIELD,
+                    target = "Lnet/minecraft/client/Minecraft;screen:Lnet/minecraft/client/gui/screens/Screen;",
+                    shift = At.Shift.BY,
+                    by = -1),
             argsOnly = true
     )
     public Screen modifyScreen(Screen screen) {
@@ -102,10 +106,10 @@ public abstract class MixinMinecraft {
     @Inject(
             method = "setScreen",
             at = @At(value = "FIELD",
-                     opcode = Opcodes.PUTFIELD,
-                     target = "Lnet/minecraft/client/Minecraft;screen:Lnet/minecraft/client/gui/screens/Screen;",
-                     shift = At.Shift.BY,
-                     by = -1),
+                    opcode = Opcodes.PUTFIELD,
+                    target = "Lnet/minecraft/client/Minecraft;screen:Lnet/minecraft/client/gui/screens/Screen;",
+                    shift = At.Shift.BY,
+                    by = -1),
             cancellable = true
     )
     public void cancelSetScreen(@Nullable Screen screen, CallbackInfo ci) {

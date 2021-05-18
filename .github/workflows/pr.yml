@@ -1,0 +1,46 @@
+name: Build PR snapshot
+
+on:
+  pull_request:
+    paths:
+      - '**.gradle'
+      - '**.properties'
+      - '**/src/**'
+    types: [ opened, synchronize, reopened ]
+jobs:
+  build:
+    strategy:
+      matrix:
+        java: [ 8-jdk, 11-jdk, 15-jdk ]
+    runs-on: ubuntu-20.04
+    container:
+      image: openjdk:${{ matrix.java }}
+      options: --user root
+    if: |	
+        !contains(github.event.pull_request.title, '[ci skip]')
+    steps:
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - uses: gradle/wrapper-validation-action@v1
+      - name: Build with Gradle
+        run: |
+          ./gradlew build --stacktrace --no-daemon
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: '${{ github.event.repository.name }} PR${{ github.event.number }} Snapshot #${{ github.run_number }}'
+          path: |
+            **/build/libs/
+            !build/libs/
+            !**/*-shadow.jar
+            !**/*-transformProduction([\w]+).jar
+      - name: Verify License integrity
+        run: ./gradlew licenseCheck

@@ -22,4 +22,5 @@ package me.shedaniel.architectury.utils;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public interface Value<T> extends Supplier<T>, Consumer<T> {}
+public interface Value<T> extends Supplier<T>, Consumer<T> {
+}

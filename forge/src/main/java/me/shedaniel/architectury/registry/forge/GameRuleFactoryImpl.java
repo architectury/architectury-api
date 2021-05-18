@@ -26,7 +26,8 @@ import net.minecraft.world.level.GameRules;
 import java.util.function.BiConsumer;
 
 public class GameRuleFactoryImpl {
-    private GameRuleFactoryImpl() {}
+    private GameRuleFactoryImpl() {
+    }
     
     public static GameRules.Type<GameRules.BooleanValue> createBooleanRule(boolean defaultValue) {
         return GameRulesAccessor.BooleanValueSimple.invokeCreateArchitectury(defaultValue);

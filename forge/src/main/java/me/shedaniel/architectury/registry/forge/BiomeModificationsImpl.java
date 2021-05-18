@@ -157,7 +157,9 @@ public class BiomeModificationsImpl {
     private static class GenerationSettingsBuilderWrapped implements GenerationProperties {
         protected final BiomeGenerationSettingsBuilder generation;
         
-        public GenerationSettingsBuilderWrapped(BiomeGenerationSettingsBuilder generation) {this.generation = generation;}
+        public GenerationSettingsBuilderWrapped(BiomeGenerationSettingsBuilder generation) {
+            this.generation = generation;
+        }
         
         @Override
         public @NotNull Optional<Supplier<ConfiguredSurfaceBuilder<?>>> getSurfaceBuilder() {
@@ -184,7 +186,9 @@ public class BiomeModificationsImpl {
     private static class SpawnSettingsBuilderWrapped implements SpawnProperties {
         protected final MobSpawnInfoBuilder builder;
         
-        public SpawnSettingsBuilderWrapped(MobSpawnInfoBuilder builder) {this.builder = builder;}
+        public SpawnSettingsBuilderWrapped(MobSpawnInfoBuilder builder) {
+            this.builder = builder;
+        }
         
         @Override
         public float getCreatureProbability() {
