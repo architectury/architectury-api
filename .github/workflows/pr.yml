@@ -25,10 +25,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       
-      - name: Set up JDK 8
+      - name: Set up JDK 16
         uses: actions/setup-java@v2
         with:
-          java-version: 8
+          java-version: 16
           distribution: 'adopt'
       
       - name: Cache Gradle wrapper
@@ -68,7 +68,7 @@ jobs:
     name: "Build"
     strategy:
       matrix:
-        java: [ 8, 15 ] # Build on Java 8 (version shipped with MC 1.16) and Java 15 (iirc the latest version supported by both loaders on 1.16)
+        java: [ 16 ] # Build on Java 16 (version shipped with MC 1.17)
     runs-on: ubuntu-20.04
     if: |
       !contains(github.event.head_commit.message, '[ci skip]')
@@ -116,16 +116,16 @@ jobs:
           rm -f  $HOME/.gradle/caches/journal-1/file-access.bin
           
       - name: Setting mod version
-        if: ${{ matrix.java == '8' }} # Only upload Java 8 artifacts for MC 1.16
+        if: ${{ matrix.java == '16' }} # Only upload Java 16 artifacts for MC 1.17
         run: |
           cat $GITHUB_WORKSPACE/gradle.properties | grep ^archives_base_name= >> $GITHUB_ENV
           cat $GITHUB_WORKSPACE/gradle.properties | grep ^minecraft_version= >> $GITHUB_ENV
           cat $GITHUB_WORKSPACE/gradle.properties | grep ^base_version= >> $GITHUB_ENV
       - name: Create package name
-        if: ${{ matrix.java == '8' }} # Only upload Java 8 artifacts for MC 1.16
+        if: ${{ matrix.java == '16' }} # Only upload Java 16 artifacts for MC 1.17
         run: echo "package_name=[$minecraft_version] $archives_base_name-$base_version.${{ github.run_number }}" >> $GITHUB_ENV
       - uses: actions/upload-artifact@v2
-        if: ${{ matrix.java == '8' }} # Only upload Java 8 artifacts for MC 1.16
+        if: ${{ matrix.java == '16' }} # Only upload Java 16 artifacts for MC 1.17
         with:
           name: ${{ env.package_name }}
           path: |
