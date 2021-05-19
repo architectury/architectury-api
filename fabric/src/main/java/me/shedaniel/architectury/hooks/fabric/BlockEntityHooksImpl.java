@@ -19,7 +19,6 @@
 
 package me.shedaniel.architectury.hooks.fabric;
 
-import com.google.common.base.Preconditions;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;

@@ -11,7 +11,7 @@ authors = "shedaniel"
 description = '''
 A intermediary api aimed to ease developing multiplatform mods.
 '''
-logoFile="icon.png"
+logoFile = "icon.png"
 license = "LGPL-3"
 
 [[dependencies.architectury]]

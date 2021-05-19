@@ -24,14 +24,12 @@ import me.shedaniel.architectury.impl.fabric.ChatComponentImpl;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.network.protocol.game.ServerboundChatPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.server.network.TextFilter;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
-import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -44,11 +42,15 @@ import java.util.Objects;
 
 @Mixin(ServerGamePacketListenerImpl.class)
 public abstract class MixinServerGamePacketListenerImpl {
-    @Shadow public ServerPlayer player;
+    @Shadow
+    public ServerPlayer player;
     
-    @Shadow @Final private MinecraftServer server;
+    @Shadow
+    @Final
+    private MinecraftServer server;
     
-    @Shadow private int chatSpamTickCount;
+    @Shadow
+    private int chatSpamTickCount;
     
     @Shadow
     public abstract void disconnect(Component component);

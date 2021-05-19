@@ -29,7 +29,8 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 public final class EventHandler {
-    private EventHandler() {}
+    private EventHandler() {
+    }
     
     private static boolean initialized = false;
     

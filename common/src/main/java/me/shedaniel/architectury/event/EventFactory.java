@@ -37,7 +37,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public final class EventFactory {
-    private EventFactory() {}
+    private EventFactory() {
+    }
     
     public static <T> Event<T> of(Function<List<T>, T> function) {
         return new EventImpl<>(function);

@@ -24,7 +24,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 
 public final class FuelRegistry {
-    private FuelRegistry() {}
+    private FuelRegistry() {
+    }
     
     /**
      * Registers a burn time for items.

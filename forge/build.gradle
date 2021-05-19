@@ -68,7 +68,7 @@ publishing {
             }
         }
     }
-    
+
     repositories {
         if (System.getenv("MAVEN_PASS") != null) {
             maven {

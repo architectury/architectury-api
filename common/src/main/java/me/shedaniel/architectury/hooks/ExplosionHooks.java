@@ -26,7 +26,8 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 public final class ExplosionHooks {
-    private ExplosionHooks() {}
+    private ExplosionHooks() {
+    }
     
     @ExpectPlatform
     public static Vec3 getPosition(Explosion explosion) {

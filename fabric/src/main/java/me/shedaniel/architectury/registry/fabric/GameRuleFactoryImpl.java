@@ -29,15 +29,15 @@ public class GameRuleFactoryImpl {
     public static GameRules.Type<GameRules.BooleanValue> createBooleanRule(boolean defaultValue) {
         return GameRuleFactory.createBooleanRule(defaultValue);
     }
-
+    
     public static GameRules.Type<GameRules.BooleanValue> createBooleanRule(boolean defaultValue, BiConsumer<MinecraftServer, GameRules.BooleanValue> changedCallback) {
         return GameRuleFactory.createBooleanRule(defaultValue, changedCallback);
     }
-
+    
     public static GameRules.Type<GameRules.IntegerValue> createIntRule(int defaultValue) {
         return GameRuleFactory.createIntRule(defaultValue);
     }
-
+    
     public static GameRules.Type<GameRules.IntegerValue> createIntRule(int defaultValue, BiConsumer<MinecraftServer, GameRules.IntegerValue> changedCallback) {
         return GameRuleFactory.createIntRule(defaultValue, changedCallback);
     }

@@ -21,7 +21,6 @@ package me.shedaniel.architectury.hooks.biome;
 
 import net.minecraft.world.level.biome.Biome.Precipitation;
 import net.minecraft.world.level.biome.Biome.TemperatureModifier;
-import org.jetbrains.annotations.NotNull;
 
 public interface ClimateProperties {
     Precipitation getPrecipitation();

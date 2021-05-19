@@ -54,7 +54,7 @@ public class MixinServerPlayer {
     
     @Inject(method = "doCloseContainer",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/AbstractContainerMenu;removed(Lnet/minecraft/world/entity/player/Player;)V",
-                     shift = At.Shift.AFTER))
+                    shift = At.Shift.AFTER))
     private void doCloseContainer(CallbackInfo ci) {
         PlayerEvent.CLOSE_MENU.invoker().close((ServerPlayer) (Object) this, ((ServerPlayer) (Object) this).containerMenu);
     }

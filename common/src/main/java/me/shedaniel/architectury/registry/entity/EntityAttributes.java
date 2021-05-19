@@ -27,7 +27,8 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import java.util.function.Supplier;
 
 public final class EntityAttributes {
-    private EntityAttributes() {}
+    private EntityAttributes() {
+    }
     
     /**
      * Registers default attributes to entities.

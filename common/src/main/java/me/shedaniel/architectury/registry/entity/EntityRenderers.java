@@ -32,7 +32,8 @@ import java.util.function.Function;
 
 @Environment(EnvType.CLIENT)
 public final class EntityRenderers {
-    private EntityRenderers() {}
+    private EntityRenderers() {
+    }
     
     @ExpectPlatform
     public static <T extends Entity> void register(EntityType<T> type, EntityRendererProvider<T> provider) {

@@ -52,7 +52,7 @@ public class MixinMouseHandler {
     
     @Inject(method = "onScroll",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;mouseScrolled(DDD)Z",
-                     ordinal = 0), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
+                    ordinal = 0), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
     public void onMouseScrolled(long handle, double xOffset, double yOffset, CallbackInfo info, double amount, double x, double y) {
         if (!info.isCancelled()) {
             InteractionResult result = ClientScreenInputEvent.MOUSE_SCROLLED_PRE.invoker().mouseScrolled(minecraft, minecraft.screen, x, y, amount);
@@ -63,7 +63,7 @@ public class MixinMouseHandler {
     
     @Inject(method = "onScroll",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;mouseScrolled(DDD)Z",
-                     ordinal = 0, shift = At.Shift.AFTER), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
+                    ordinal = 0, shift = At.Shift.AFTER), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
     public void onMouseScrolledPost(long handle, double xOffset, double yOffset, CallbackInfo info, double amount, double x, double y) {
         if (!info.isCancelled()) {
             InteractionResult result = ClientScreenInputEvent.MOUSE_SCROLLED_POST.invoker().mouseScrolled(minecraft, minecraft.screen, x, y, amount);
@@ -72,7 +72,7 @@ public class MixinMouseHandler {
     
     @Inject(method = "onScroll",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isSpectator()Z",
-                     ordinal = 0), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
+                    ordinal = 0), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
     public void onRawMouseScrolled(long handle, double xOffset, double yOffset, CallbackInfo info, double amount) {
         if (!info.isCancelled()) {
             InteractionResult result = ClientRawInputEvent.MOUSE_SCROLLED.invoker().mouseScrolled(minecraft, amount);
@@ -107,7 +107,7 @@ public class MixinMouseHandler {
     
     @Inject(method = "onPress", at = @At(value = "INVOKE",
                                          target = "Lnet/minecraft/client/Minecraft;getOverlay()Lnet/minecraft/client/gui/screens/Overlay;",
-                                         ordinal = 0), cancellable = true)
+            ordinal = 0), cancellable = true)
     public void onRawMouseClicked(long handle, int button, int action, int mods, CallbackInfo info) {
         if (!info.isCancelled()) {
             InteractionResult result = ClientRawInputEvent.MOUSE_CLICKED_PRE.invoker().mouseClicked(minecraft, button, action, mods);

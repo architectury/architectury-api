@@ -32,11 +32,13 @@ public interface ClientLifecycleEvent {
     /**
      * Invoked when client has been initialised, not available in forge.
      */
-    @Deprecated Event<ClientState> CLIENT_STARTED = EventFactory.createLoop();
+    @Deprecated
+    Event<ClientState> CLIENT_STARTED = EventFactory.createLoop();
     /**
      * Invoked when client is stopping, not available in forge.
      */
-    @Deprecated Event<ClientState> CLIENT_STOPPING = EventFactory.createLoop();
+    @Deprecated
+    Event<ClientState> CLIENT_STOPPING = EventFactory.createLoop();
     /**
      * Invoked after a world is loaded only on client, equivalent to forge's {@code WorldEvent.Load}.
      */
@@ -44,8 +46,10 @@ public interface ClientLifecycleEvent {
     Event<ClientState> CLIENT_SETUP = EventFactory.createLoop();
     
     @Environment(EnvType.CLIENT)
-    interface ClientState extends LifecycleEvent.InstanceState<Minecraft> {}
+    interface ClientState extends LifecycleEvent.InstanceState<Minecraft> {
+    }
     
     @Environment(EnvType.CLIENT)
-    interface ClientWorldState extends LifecycleEvent.WorldState<ClientLevel> {}
+    interface ClientWorldState extends LifecycleEvent.WorldState<ClientLevel> {
+    }
 }

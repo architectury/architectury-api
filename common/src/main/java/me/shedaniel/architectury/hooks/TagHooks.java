@@ -31,7 +31,8 @@ import net.minecraft.world.level.material.Fluid;
 import java.util.function.Supplier;
 
 public final class TagHooks {
-    private TagHooks() {}
+    private TagHooks() {
+    }
     
     @ExpectPlatform
     public static <T> Tag.Named<T> getOptional(ResourceLocation id, Supplier<TagCollection<T>> collection) {

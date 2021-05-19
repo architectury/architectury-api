@@ -23,7 +23,8 @@ import me.shedaniel.architectury.annotations.ExpectPlatform;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class BlockEntityHooks {
-    private BlockEntityHooks() {}
+    private BlockEntityHooks() {
+    }
     
     /**
      * Sync data to the clients.

@@ -63,11 +63,13 @@ public interface LifecycleEvent {
         void stateChanged(T instance);
     }
     
-    interface ServerState extends InstanceState<MinecraftServer> {}
+    interface ServerState extends InstanceState<MinecraftServer> {
+    }
     
     interface WorldState<T extends Level> {
         void act(T world);
     }
     
-    interface ServerWorldState extends WorldState<ServerLevel> {}
+    interface ServerWorldState extends WorldState<ServerLevel> {
+    }
 }

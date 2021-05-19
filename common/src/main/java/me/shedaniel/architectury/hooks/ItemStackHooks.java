@@ -26,7 +26,8 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 
 public final class ItemStackHooks {
-    private ItemStackHooks() {}
+    private ItemStackHooks() {
+    }
     
     public static ItemStack copyWithCount(ItemStack stack, int count) {
         ItemStack copy = stack.copy();

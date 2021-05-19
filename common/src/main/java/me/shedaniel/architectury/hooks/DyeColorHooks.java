@@ -23,7 +23,8 @@ import me.shedaniel.architectury.annotations.ExpectPlatform;
 import net.minecraft.world.item.DyeColor;
 
 public class DyeColorHooks {
-    private DyeColorHooks() {}
+    private DyeColorHooks() {
+    }
     
     @ExpectPlatform
     public static int getColorValue(DyeColor color) {
