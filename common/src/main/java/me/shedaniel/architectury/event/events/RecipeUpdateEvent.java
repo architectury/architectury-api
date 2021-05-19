@@ -25,9 +25,21 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.world.item.crafting.RecipeManager;
 
+/**
+ * Should be moved to the client package in version 2.0
+ */
 @Environment(EnvType.CLIENT)
 public interface RecipeUpdateEvent {
+    /**
+     * @see RecipeUpdateEvent#update(RecipeManager)
+     */
     Event<RecipeUpdateEvent> EVENT = EventFactory.createLoop();
     
+    /**
+     * Called when the client receives all recipes from the server.
+     * Equal to the forge {@code RecipesUpdatedEvent} event.
+     *
+     * @param recipeManager The recipe manager.
+     */
     void update(RecipeManager recipeManager);
 }

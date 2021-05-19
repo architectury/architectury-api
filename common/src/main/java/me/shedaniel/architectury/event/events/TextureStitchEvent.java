@@ -28,18 +28,40 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Consumer;
 
+/**
+ * Should be moved to the client package in version 2.0
+ */
 @Environment(EnvType.CLIENT)
 public interface TextureStitchEvent {
+    /**
+     * @see Pre#stitch(TextureAtlas, Consumer)
+     */
     Event<Pre> PRE = EventFactory.createLoop();
+    /**
+     * @see Post#stitch(TextureAtlas)
+     */
     Event<Post> POST = EventFactory.createLoop();
     
     @Environment(EnvType.CLIENT)
     interface Pre {
+        /**
+         * Called before the texture atlas is stitched.
+         * Equal to the forge {@code TextureStitchEvent.Pre} event.
+         *
+         * @param atlas The TextureAtlas.
+         * @param spriteAdder A consumer where you can add your own sprites to be stitched.
+         */
         void stitch(TextureAtlas atlas, Consumer<ResourceLocation> spriteAdder);
     }
     
     @Environment(EnvType.CLIENT)
     interface Post {
+        /**
+         * Called after the texture atlas has been completely stitched.
+         * Equal to the forge {@code TextureStitchEvent.Post} event.
+         *
+         * @param atlas The ready-to-use TextureAtlas.
+         */
         void stitch(TextureAtlas atlas);
     }
 }
