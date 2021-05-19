@@ -1,4 +1,4 @@
-name: Build and Release
+name: Build and Release (1.17)
 
 on:
   push:
