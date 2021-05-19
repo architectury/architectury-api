@@ -40,9 +40,15 @@ public interface ClientLifecycleEvent {
     @Deprecated
     Event<ClientState> CLIENT_STOPPING = EventFactory.createLoop();
     /**
-     * Invoked after a world is loaded only on client, equivalent to forge's {@code WorldEvent.Load}.
+     * Invoked after a world is loaded only on client.
+     * Equal to the forge {@code WorldEvent.Load} event.
      */
     Event<ClientWorldState> CLIENT_WORLD_LOAD = EventFactory.createLoop();
+    /**
+     * Invoked when the client sets up itself.
+     * For forge this happens when the {@code FMLClientSetupEvent} event is fired.
+     * On fabric this is called while the ArchitecturyAPI mod loads the client side.
+     */
     Event<ClientState> CLIENT_SETUP = EventFactory.createLoop();
     
     @Environment(EnvType.CLIENT)
