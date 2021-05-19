@@ -7,7 +7,6 @@ on:
       - '**.properties'
       - '**/src/**'
     branches:
-      - "1.16"
       - "1.17"
   workflow_dispatch:
     inputs:
