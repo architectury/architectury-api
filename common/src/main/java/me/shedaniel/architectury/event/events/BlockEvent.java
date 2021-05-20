@@ -48,7 +48,7 @@ public interface BlockEvent {
     
     interface Break {
         /**
-         * Called when a block is destroyed by a player.
+         * Invoked when a block is destroyed by a player.
          * 
          * @param world The level the block is in.
          * @param pos The position of the block.
