@@ -1,4 +1,4 @@
-name: Build PR snapshot
+name: Build PR snapshot (1.17)
 
 on:
   pull_request:
@@ -6,6 +6,8 @@ on:
       - '**.gradle'
       - '**.properties'
       - '**/src/**'
+    branches:
+      - "1.17"
     types: [ opened, synchronize, reopened ]
 jobs:
   validate-gradle:
@@ -20,8 +22,6 @@ jobs:
   license:
     name: "Verify License integrity"
     runs-on: ubuntu-20.04
-    if: |
-      !contains(github.event.head_commit.message, '[ci skip]')
     steps:
       - uses: actions/checkout@v2
       
@@ -71,7 +71,7 @@ jobs:
         java: [ 16 ] # Build on Java 16 (version shipped with MC 1.17)
     runs-on: ubuntu-20.04
     if: |
-      !contains(github.event.head_commit.message, '[ci skip]')
+      contains(github.event.pull_request.labels.*.name, 'api') && !contains(github.event.pull_request.title, '[ci skip]')
     steps:
       - uses: actions/checkout@v2
       
@@ -123,7 +123,7 @@ jobs:
           cat $GITHUB_WORKSPACE/gradle.properties | grep ^base_version= >> $GITHUB_ENV
       - name: Create package name
         if: ${{ matrix.java == '16' }} # Only upload Java 16 artifacts for MC 1.17
-        run: echo "package_name=[$minecraft_version] $archives_base_name-$base_version.${{ github.run_number }}" >> $GITHUB_ENV
+        run: echo "package_name=[$minecraft_version] $archives_base_name-$base_version-SNAPSHOT.PR${{ github.event.number }}" >> $GITHUB_ENV
       - uses: actions/upload-artifact@v2
         if: ${{ matrix.java == '16' }} # Only upload Java 16 artifacts for MC 1.17
         with:
