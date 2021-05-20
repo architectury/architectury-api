@@ -100,10 +100,10 @@ public interface ClientScreenInputEvent {
     interface KeyTyped {
         /**
          * Called whenever a char is typed within a screen.
-         * Equal to the forge {@code GuiScreenEvent.KeyboardCharTypedEvent} event.
+         * Equal to the Forge {@code GuiScreenEvent.KeyboardCharTypedEvent} event.
          * It consists of two versions, pre and post. The pre version is fired before the keys are processed by the screen.
          *
-         * @param client The minecraft instance performing it.
+         * @param client The Minecraft instance performing it.
          * @param screen The screen this keystroke was performed in.
          * @param character The typed character.
          * @param keyCode The key code. Look at {@link org.lwjgl.glfw.GLFW} line 66 to 211 for key codes.
