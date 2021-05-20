@@ -37,7 +37,7 @@ public interface BlockEvent {
      */
     Event<Break> BREAK = EventFactory.createInteractionResult();
     /**
-     * Called when a block is placed in the world by an entity.
+     * @see Place#placeBlock(Level, BlockPos, BlockState, Entity)
      */
     Event<Place> PLACE = EventFactory.createInteractionResult();
     /**
