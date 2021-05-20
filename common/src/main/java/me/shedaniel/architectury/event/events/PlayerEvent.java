@@ -70,18 +70,51 @@ public interface PlayerEvent {
     Event<BreakBlock> BREAK_BLOCK = EventFactory.createInteractionResult();
     
     interface PlayerJoin {
+        /**
+         * Invoked after a player joined a server level.
+         * This is fired on the server side only.
+         * Equal to the forge {@code PlayerLoggedInEvent} event.
+         *
+         * @param player The joined player.
+         */
         void join(ServerPlayer player);
     }
     
     interface PlayerQuit {
+        /**
+         * Invoked after a player logged out of a server level.
+         * This event is fired server side only.
+         * Equal to the forge {@code PlayerLoggedOutEvent} event.
+         *
+         * @param player The now logged out player.
+         */
         void quit(ServerPlayer player);
     }
     
     interface PlayerRespawn {
+        /**
+         * Invoked when a player is respawned (e.g. changing dimension).
+         * This event is fired server side only.
+         * Equal to the forge {@code PlayerRespawnEvent} event.
+         * To manipulate the player use {@link PlayerClone#clone(ServerPlayer, ServerPlayer, boolean)}.
+         *
+         * @param newPlayer The respawned player.
+         * @param conqueredEnd Has the player conquered the end. This is true when the player joined the end and now is leaving it. {@link ServerPlayer#wonGame}
+         */
         void respawn(ServerPlayer newPlayer, boolean conqueredEnd);
     }
     
     interface PlayerClone {
+        /**
+         * Invoked when a player respawns.
+         * This can be used to manipulate the new player.
+         * This event is fired server side only.
+         * Equal to the forge {@code PlayerEvent.Clone} event.
+         *
+         * @param oldPlayer The old player.
+         * @param newPlayer The new player.
+         * @param wonGame This is true when the player joined the end and now is leaving it. {@link ServerPlayer#wonGame}
+         */
         void clone(ServerPlayer oldPlayer, ServerPlayer newPlayer, boolean wonGame);
     }
     

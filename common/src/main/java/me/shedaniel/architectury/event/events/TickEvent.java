@@ -26,13 +26,54 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 
 public interface TickEvent<T> {
+    /**
+     * Called before a server tick is processed.
+     * Equal to the forge {@code ServerTickEvent} event in the START Phase.
+     *
+     * @see #tick(Object)
+     */
     Event<Server> SERVER_PRE = EventFactory.createLoop();
+    /**
+     * Called after a server tick has been processed.
+     * Equal to the forge {@code ServerTickEvent} event in the END Phase.
+     *
+     * @see #tick(Object)
+     */
     Event<Server> SERVER_POST = EventFactory.createLoop();
+    /**
+     * Called before a server level tick is processed.
+     * Equal to the forge {@code WorldTickEvent} event in the START Phase.
+     *
+     * @see #tick(Object)
+     */
     Event<ServerWorld> SERVER_WORLD_PRE = EventFactory.createLoop();
+    /**
+     * Called after a server level tick has been processed.
+     * Equal to the forge {@code WorldTickEvent} event in the END Phase.
+     *
+     * @see #tick(Object)
+     */
     Event<ServerWorld> SERVER_WORLD_POST = EventFactory.createLoop();
+    /**
+     * Called before a player tick is processed.
+     * Equal to the forge {@code PlayerTickEvent} event in the START Phase.
+     *
+     * @see #tick(Object)
+     */
     Event<Player> PLAYER_PRE = EventFactory.createLoop();
+    /**
+     * Called after a player tick has been processed.
+     * Equal to the forge {@code PlayerTickEvent} event in the END Phase.
+     *
+     * @see #tick(Object)
+     */
     Event<Player> PLAYER_POST = EventFactory.createLoop();
     
+    /**
+     * When the tick happens.
+     *
+     * @param instance The thing ticking.
+     */
     void tick(T instance);
     
     interface Server extends TickEvent<MinecraftServer> {
