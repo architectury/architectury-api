@@ -40,25 +40,60 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 public interface PlayerEvent {
+    /**
+     * @see PlayerJoin#join(ServerPlayer)
+     */
     Event<PlayerJoin> PLAYER_JOIN = EventFactory.createLoop();
+    /**
+     * @see PlayerQuit#quit(ServerPlayer)
+     */
     Event<PlayerQuit> PLAYER_QUIT = EventFactory.createLoop();
+    /**
+     * @see PlayerRespawn#respawn(ServerPlayer, boolean)
+     */
     Event<PlayerRespawn> PLAYER_RESPAWN = EventFactory.createLoop();
+    /**
+     * @see PlayerAdvancement#award(ServerPlayer, Advancement)
+     */
     Event<PlayerAdvancement> PLAYER_ADVANCEMENT = EventFactory.createLoop();
+    /**
+     * @see PlayerClone#clone(ServerPlayer, ServerPlayer, boolean)
+     */
     Event<PlayerClone> PLAYER_CLONE = EventFactory.createLoop();
+    /**
+     * @see CraftItem#craft(Player, ItemStack, Container)
+     */
     Event<CraftItem> CRAFT_ITEM = EventFactory.createLoop();
+    /**
+     * @see SmeltItem#smelt(Player, ItemStack)
+     */
     Event<SmeltItem> SMELT_ITEM = EventFactory.createLoop();
+    /**
+     * @see PickupItemPredicate#canPickup(Player, ItemEntity, ItemStack)
+     */
     Event<PickupItemPredicate> PICKUP_ITEM_PRE = EventFactory.createInteractionResult();
+    /**
+     * @see PickupItem#pickup(Player, ItemEntity, ItemStack)
+     */
     Event<PickupItem> PICKUP_ITEM_POST = EventFactory.createLoop();
+    /**
+     * @see ChangeDimension#change(ServerPlayer, ResourceKey, ResourceKey)
+     */
     Event<ChangeDimension> CHANGE_DIMENSION = EventFactory.createLoop();
+    /**
+     * @see DropItem#drop(Player, ItemEntity)
+     */
     Event<DropItem> DROP_ITEM = EventFactory.createLoop();
+    /**
+     * @see OpenMenu#open(Player, AbstractContainerMenu)
+     */
     Event<OpenMenu> OPEN_MENU = EventFactory.createLoop();
+    /**
+     * @see CloseMenu#close(Player, AbstractContainerMenu)
+     */
     Event<CloseMenu> CLOSE_MENU = EventFactory.createLoop();
     /**
-     * Invoked when a player attempts to fill a bucket using right-click.
-     * You can return a non-PASS interaction result to cancel further processing by other mods.
-     * <p>
-     * On Forge, FAIL cancels the event, and SUCCESS sets the event as handled.
-     * On Fabric, any non-PASS result is returned directly and immediately.
+     * @see FillBucket#fill(Player, Level, ItemStack, HitResult)
      */
     Event<FillBucket> FILL_BUCKET = EventFactory.createCompoundEventResult();
     
@@ -161,39 +196,93 @@ public interface PlayerEvent {
         /**
          * Invoked when a player tries to pickup a item entity.
          * Equal to the forge {@code EntityItemPickupEvent} event.
-         * @param player
-         * @param entity
-         * @param stack
+         *
+         * @param player The player picking up.
+         * @param entity The {@link ItemEntity} that the player tries to pick up.
+         * @param stack The content of the {@link ItemEntity}.
          * @return Forge ignores the return value. On Fabric a {@link InteractionResult#FAIL} results in the event getting canceled and the item not being picked up.
          */
         InteractionResult canPickup(Player player, ItemEntity entity, ItemStack stack);
     }
     
     interface PickupItem {
+        /**
+         * Invoked when a player has picked up an {@link ItemEntity}.
+         * Equal to the forge {@code ItemPickupEvent} event.
+         *
+         * @param player The player.
+         * @param entity The {@link ItemEntity} that the player picked up.
+         * @param stack The content of the {@link ItemEntity}.
+         */
         void pickup(Player player, ItemEntity entity, ItemStack stack);
     }
     
     interface ChangeDimension {
+        /**
+         * Invoked when a player changes their dimension.
+         * Equal to the forge {@code PlayerChangedDimensionEvent} event.
+         *
+         * @param player The teleporting player.
+         * @param oldLevel The level the player comes from.
+         * @param newLevel The level the player teleports into.
+         */
         void change(ServerPlayer player, ResourceKey<Level> oldLevel, ResourceKey<Level> newLevel);
     }
     
     interface DropItem {
+        /**
+         * Invoked when a player drops an item.
+         * Equal to the forge {@code ItemTossEvent} event.
+         *
+         * @param player The player dropping something.
+         * @param entity The entity that has spawned when the player dropped a ItemStack.
+         * @return Forge ignores the return value. On Fabric a {@link InteractionResult#FAIL} results in the event getting canceled and the item not being dropped.
+         */
         InteractionResult drop(Player player, ItemEntity entity);
     }
     
     interface BreakBlock {
+        /**
+         * Called by and equal to {@link BlockEvent#BREAK}.
+         */
         InteractionResult breakBlock(Level world, BlockPos pos, BlockState state, ServerPlayer player, @Nullable IntValue xp);
     }
     
     interface OpenMenu {
+        /**
+         * Invoked when a player opens a menu.
+         * Equal to the forge {@code PlayerContainerEvent.Open} event.
+         *
+         * If you want to prevent a certain menu to be opened, you have to catch the {@link me.shedaniel.architectury.event.events.GuiEvent#SET_SCREEN} event and open your own.
+         *
+         * @param player The player opening the menu.
+         * @param menu The menu that is opened.
+         */
         void open(Player player, AbstractContainerMenu menu);
     }
     
     interface CloseMenu {
+        /**
+         * Invoked when a player closes a menu.
+         * Equal to the forge {@code PlayerContainerEvent.Close} event.
+         **
+         * @param player The player closing the menu.
+         * @param menu The menu that is closed.
+         */
         void close(Player player, AbstractContainerMenu menu);
     }
     
     interface FillBucket {
+        /**
+         * Invoked when a player attempts to fill a bucket using right-click.
+         * You can return a non-PASS interaction result to cancel further processing by other mods.
+         *
+         * @param player The player filling the bucket.
+         * @param level The level the player is in.
+         * @param stack The bucket stack.
+         * @param target The target which the player has aimed at.
+         * @return On Forge, FAIL cancels the event, and SUCCESS sets the event as handled. On Fabric, any non-PASS result is returned directly and immediately.
+         */
         CompoundEventResult<ItemStack> fill(Player player, Level level, ItemStack stack, @Nullable HitResult target);
     }
 }
