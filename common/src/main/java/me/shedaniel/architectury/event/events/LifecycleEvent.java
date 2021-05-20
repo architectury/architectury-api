@@ -82,8 +82,8 @@ public interface LifecycleEvent {
      */
     Event<ServerWorldState> SERVER_WORLD_UNLOAD = EventFactory.createLoop();
     /**
-     * Invoked during a world is saved.
-     * Equal to the forge {@code WorldEvent.Save} event.
+     * Invoked when the world is being saved.
+     * Equal to forge's {@code WorldEvent.Save} event.
      *
      * @see ServerWorldState#act(Level)
      */
