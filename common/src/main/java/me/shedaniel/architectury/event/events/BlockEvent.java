@@ -62,7 +62,7 @@ public interface BlockEvent {
     
     interface Place {
         /**
-         * Called when a block is placed.
+         * Invoked when a block is placed.
          *
          * @param world The level the block is in.
          * @param pos The position of the block.
