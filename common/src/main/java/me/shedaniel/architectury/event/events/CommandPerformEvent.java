@@ -33,7 +33,7 @@ import org.jetbrains.annotations.Nullable;
  * <p>A command fails when any other result than {@link net.minecraft.world.InteractionResult#PASS} is returned.
  * When PASS is used the {@link CommandPerformEvent#getResults()} is used for execution.
  * 
- * This is equal to the forge {@code CommandEvent} event.
+ * <p>This is equal to the Forge {@code CommandEvent} event.
  */
 public class CommandPerformEvent {
     public static final Event<Actor<CommandPerformEvent>> EVENT = EventFactory.createActorLoop();
