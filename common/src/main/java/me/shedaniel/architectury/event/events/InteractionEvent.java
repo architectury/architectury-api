@@ -105,9 +105,9 @@ public interface InteractionEvent {
     
     interface ClientRightClickAir {
         /**
-         * Called when a player is right clicking the air.
-         * This is only fired on the client.
-         * Equal to the forge {@code PlayerInteractEvent.RightClickEmpty} event.
+         * Invoked whenever a player right clicks the air.
+         * This only occurs on the client.
+         * Equal to the Forge {@code PlayerInteractEvent.RightClickEmpty} event.
          * 
          * @param player The player. Always {@link net.minecraft.client.player.LocalPlayer}
          * @param hand The hand used.
@@ -117,9 +117,9 @@ public interface InteractionEvent {
     
     interface ClientLeftClickAir {
         /**
-         * Called when a player is left clicking the air.
-         * This is only fired on the client.
-         * Equal to the forge {@code PlayerInteractEvent.LeftClickEmpty} event.
+         * Invoked whenever a player left clicks the air.
+         * This only occurs on the client.
+         * Equal to the Forge {@code PlayerInteractEvent.LeftClickEmpty} event.
          *
          * @param player The player. Always {@link net.minecraft.client.player.LocalPlayer}
          * @param hand The hand used.
@@ -129,8 +129,8 @@ public interface InteractionEvent {
     
     interface InteractEntity {
         /**
-         * Called when a player is right clicking on an entity.
-         * Equal to the forge {@code PlayerInteractEvent.EntityInteract} event.
+         * Invoked whenever a player right clicks an entity.
+         * Equal to the Forge {@code PlayerInteractEvent.EntityInteract} event.
          * 
          * @param player The player clicking the entity.
          * @param entity Then entity the player clicks.
@@ -150,8 +150,8 @@ public interface InteractionEvent {
     
     interface FarmlandTrample {
         /**
-         * Called when a entity is trampling farmland.
-         * Equal to the forge {@code BlockEvent.FarmlandTrampleEvent} event.
+         * Called when an entity attempts to trample farmland.
+         * Equal to the Forge {@code BlockEvent.FarmlandTrampleEvent} event.
          * 
          * @param world The level where the block and the player are located in.
          * @param pos The position of the block.
