@@ -79,7 +79,7 @@ public interface EntityEvent {
     interface LivingAttack {
         /**
          * Fired before a entity is being hurt.
-         * Equal to the forge {@code LivingAttackEvent} event.
+         * Equal to the Forge {@code LivingAttackEvent} event.
          * 
          * You can't set the amount of damage the entity gets!
          * 
