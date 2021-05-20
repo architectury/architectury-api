@@ -33,7 +33,7 @@ public interface CommandRegistrationEvent {
     
     /**
      * Event fired whenever a command is registered.
-     * Equal to the forge {@code RegisterCommandsEvent} event and fabric's {@code CommandRegistrationCallback}.
+     * Equal to the Forge {@code RegisterCommandsEvent} event and Fabric's {@code CommandRegistrationCallback}.
      * 
      * @param dispatcher The command dispatcher to register commands to.
      * @param selection The selection where the command can be executed.
