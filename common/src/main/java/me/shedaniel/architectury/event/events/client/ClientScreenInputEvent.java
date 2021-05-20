@@ -68,10 +68,10 @@ public interface ClientScreenInputEvent {
     interface KeyPressed {
         /**
          * Called whenever a key press is performed inside a screen.
-         * Equal to the forge {@code GuiScreenEvent.KeyboardKeyPressedEvent} event.
+         * Equal to the Forge {@code GuiScreenEvent.KeyboardKeyPressedEvent} event.
          * It consists of two versions, pre and post. The pre version is fired before the keys are processed by the screen.
          *
-         * @param client The minecraft instance performing it.
+         * @param client The Minecraft instance performing it.
          * @param screen The screen this keystroke was performed in.
          * @param keyCode The key code. Look at {@link org.lwjgl.glfw.GLFW} line 66 to 211 for key codes.
          * @param scanCode The raw keyboard scan code.
