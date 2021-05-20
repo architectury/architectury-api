@@ -119,18 +119,53 @@ public interface PlayerEvent {
     }
     
     interface PlayerAdvancement {
+        /**
+         * Invoked when a player gets an advancement.
+         * This event is fired server side only.
+         * Equal to the forge {@code AdvancementEvent} event.
+         *
+         * @param player The player who got the advancement.
+         * @param advancement THe advancement the player got.
+         */
         void award(ServerPlayer player, Advancement advancement);
     }
     
     interface CraftItem {
+        /**
+         * Invoked when a player crafts an item.
+         * Equal to the forge {@code ItemCraftedEvent} event.
+         * This only applies for the vanilla crafting table (or any crafting table using the {@link net.minecraft.world.inventory.ResultSlot}) and
+         * the player inventory crafting grid.
+         * This is fired when the player takes something out of the result slot.
+         *
+         * @param player The player.
+         * @param constructed The ItemStack that has been crafted.
+         * @param inventory The inventory of the constructor.
+         */
         void craft(Player player, ItemStack constructed, Container inventory);
     }
     
     interface SmeltItem {
+        /**
+         * Invoked when a player smelts an item.
+         * Equal to the forge {@code ItemSmeltedEvent} event.
+         * This is fired when the player takes the stack out of the output slot.
+         *
+         * @param player The player.
+         * @param smelted The smelt result.
+         */
         void smelt(Player player, ItemStack smelted);
     }
     
     interface PickupItemPredicate {
+        /**
+         * Invoked when a player tries to pickup a item entity.
+         * Equal to the forge {@code EntityItemPickupEvent} event.
+         * @param player
+         * @param entity
+         * @param stack
+         * @return Forge ignores the return value. On Fabric a {@link InteractionResult#FAIL} results in the event getting canceled and the item not being picked up.
+         */
         InteractionResult canPickup(Player player, ItemEntity entity, ItemStack stack);
     }
     
