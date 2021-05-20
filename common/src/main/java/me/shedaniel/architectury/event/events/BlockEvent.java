@@ -77,7 +77,6 @@ public interface BlockEvent {
         /**
          * Invoked when a falling block is about to land.
          * 
-         * THIS EVENT IS ONLY FIRED ON FABRIC!
          *
          * @param level The level the block is in.
          * @param pos The position of the block.

@@ -78,7 +78,7 @@ public interface EntityEvent {
     
     interface LivingAttack {
         /**
-         * Fired before a entity is being hurt.
+         * Invoked before an entity is hurt by a damage source.
          * Equal to the Forge {@code LivingAttackEvent} event.
          * 
          * <p>You can't set the amount of damage the entity gets!
@@ -93,14 +93,15 @@ public interface EntityEvent {
     
     interface LivingCheckSpawn {
         /**
-         * Fired before a entity is spawned into the level.
-         * Equal to the forge {@code LivingSpawnEvent.CheckSpawn} event.
+         * Invoked before an entity is spawned into the world.
+         * This specifically concerns <i>spawning</i> through either a {@link BaseSpawner} or during world generation.
+         * Equal to the Forge {@code LivingSpawnEvent.CheckSpawn} event.
          * 
          * @param entity The entity that is about to spawn.
          * @param world The level the entity wants to spawn in.
-         * @param x The exact x spawn position.
-         * @param y The exact y spawn position.
-         * @param z The exact z spawn position.
+         * @param x The x-coordinate of the spawn position.
+         * @param y The y-coordinate of the spawn position.
+         * @param z The z-coordinate the spawn position.
          * @param type The source of spawning.
          * @param spawner The spawner. Can be null.
          * @return Return {@link EventResult#interrupt(Boolean)} with true or false to let the entity spawn or prevent it.
@@ -110,8 +111,8 @@ public interface EntityEvent {
     
     interface Add {
         /**
-         * Fired when a entity is added to the world.
-         * Equal to the forge {@code EntityJoinWorldEvent} event.
+         * Invoked when an entity is about to be added to the world.
+         * Equal to the Forge {@code EntityJoinWorldEvent} event.
          * 
          * @param entity The entity to add to the level.
          * @param world The level the entity is added to.
@@ -127,14 +128,14 @@ public interface EntityEvent {
     
     interface EnterChunk {
         /**
-         * Fired whenever a entity enters a chunk.
-         * Equal to the forge {@code EnteringChunk} event.
+         * Invoked whenever an entity enters a chunk.
+         * Equal to the Forge {@code EnteringChunk} event.
          * 
          * @param entity The entity moving to a different chunk.
-         * @param chunkX The chunk x coordinate.
-         * @param chunkZ The chunk z coordinate.
-         * @param prevX The previous chunk x coordinate.
-         * @param prevZ The previous chunk z coordinate.
+         * @param chunkX The chunk x-coordinate.
+         * @param chunkZ The chunk z-coordinate.
+         * @param prevX The previous chunk x-coordinate.
+         * @param prevZ The previous chunk z-coordinate.
          */
         void enterChunk(Entity entity, int chunkX, int chunkZ, int prevX, int prevZ);
     }

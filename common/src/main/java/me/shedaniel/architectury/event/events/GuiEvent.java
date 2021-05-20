@@ -70,8 +70,8 @@ public interface GuiEvent {
     @Environment(EnvType.CLIENT)
     interface RenderHud {
         /**
-         * Called after the in-game hud is rendered.
-         * Equal to the forge {@code RenderGameOverlayEvent.Post@ElementType#ALL} event and fabric's {@code HudRenderCallback}.
+         * Invoked after the in-game hud has been rendered.
+         * Equal to the Forge {@code RenderGameOverlayEvent.Post@ElementType#ALL} event and fabric's {@code HudRenderCallback}.
          * 
          * @param matrices The render buffer.
          * @param tickDelta The delta tick.
@@ -82,7 +82,7 @@ public interface GuiEvent {
     @Environment(EnvType.CLIENT)
     interface DebugText {
         /**
-         * Called when the debug text is rendered. There are two different versions, for th left and for the right side.
+         * Called when the debug text is rendered. There are two different versions, for the left and for the right side.
          * Equal to the forge {@code RenderGameOverlayEvent.Text} event, when {@code Minecraft.getInstance().options.renderDebug} is true.
          * 
          * @param strings Contains the already added strings. You can add your own lines by adding to the list.

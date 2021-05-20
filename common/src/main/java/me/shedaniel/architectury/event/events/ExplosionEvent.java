@@ -40,8 +40,8 @@ public interface ExplosionEvent {
     
     interface Pre {
         /**
-         * Called before an explosion happens.
-         * Equal to the forge {@code ExplosionEvent.Start} event
+         * Invoked before an explosion happens.
+         * Equal to the Forge {@code ExplosionEvent.Start} event.
          * 
          * @param world The level the explosion is happening in.
          * @param explosion The explosion.
@@ -52,8 +52,8 @@ public interface ExplosionEvent {
     
     interface Detonate {
         /**
-         * Called when an explosion happens.
-         * Equal to the forge {@code ExplosionEvent.Detonate} event.
+         * Invoked when an explosion is detonating.
+         * Equal to the Forge {@code ExplosionEvent.Detonate} event.
          * 
          * @param world The level the explosion happens in.
          * @param explosion The explosion happening.
