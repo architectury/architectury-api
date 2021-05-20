@@ -32,7 +32,6 @@ public interface LightningEvent {
     
     // TODO Pre - Called before a lightning bolt entity is added to the world. (cancellable)
     /**
-     * THIS EVENT IS ONLY FIRED ON FABRIC!
      * @see Strike#onStrike(LightningBolt, Level, Vec3, List)
      */
     Event<Strike> STRIKE = EventFactory.createLoop();
@@ -42,7 +41,6 @@ public interface LightningEvent {
         /**
          * Invoked after the lightning has gathered a list of entities to strike.
          *
-         * THIS EVENT IS ONLY FIRED ON FABRIC!
          *
          * @param bolt The lightning bolt.
          * @param level The level the lighting is spawned in.

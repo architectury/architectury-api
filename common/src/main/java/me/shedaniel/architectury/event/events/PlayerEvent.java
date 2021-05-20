@@ -108,7 +108,7 @@ public interface PlayerEvent {
         /**
          * Invoked after a player joined a server level.
          * This is fired on the server side only.
-         * Equal to the forge {@code PlayerLoggedInEvent} event.
+         * Equal to the Forge {@code PlayerLoggedInEvent} event.
          *
          * @param player The joined player.
          */
@@ -119,7 +119,7 @@ public interface PlayerEvent {
         /**
          * Invoked after a player logged out of a server level.
          * This event is fired server side only.
-         * Equal to the forge {@code PlayerLoggedOutEvent} event.
+         * Equal to the Forge {@code PlayerLoggedOutEvent} event.
          *
          * @param player The now logged out player.
          */
@@ -130,7 +130,7 @@ public interface PlayerEvent {
         /**
          * Invoked when a player is respawned (e.g. changing dimension).
          * This event is fired server side only.
-         * Equal to the forge {@code PlayerRespawnEvent} event.
+         * Equal to the Forge {@code PlayerRespawnEvent} event.
          * To manipulate the player use {@link PlayerClone#clone(ServerPlayer, ServerPlayer, boolean)}.
          *
          * @param newPlayer The respawned player.
@@ -144,7 +144,7 @@ public interface PlayerEvent {
          * Invoked when a player respawns.
          * This can be used to manipulate the new player.
          * This event is fired server side only.
-         * Equal to the forge {@code PlayerEvent.Clone} event.
+         * Equal to the Forge {@code PlayerEvent.Clone} event.
          *
          * @param oldPlayer The old player.
          * @param newPlayer The new player.
@@ -157,10 +157,10 @@ public interface PlayerEvent {
         /**
          * Invoked when a player gets an advancement.
          * This event is fired server side only.
-         * Equal to the forge {@code AdvancementEvent} event.
+         * Equal to the Forge {@code AdvancementEvent} event.
          *
          * @param player The player who got the advancement.
-         * @param advancement THe advancement the player got.
+         * @param advancement The advancement the player got.
          */
         void award(ServerPlayer player, Advancement advancement);
     }
@@ -168,7 +168,7 @@ public interface PlayerEvent {
     interface CraftItem {
         /**
          * Invoked when a player crafts an item.
-         * Equal to the forge {@code ItemCraftedEvent} event.
+         * Equal to the Forge {@code ItemCraftedEvent} event.
          * This only applies for the vanilla crafting table (or any crafting table using the {@link net.minecraft.world.inventory.ResultSlot}) and
          * the player inventory crafting grid.
          * This is fired when the player takes something out of the result slot.
@@ -183,7 +183,7 @@ public interface PlayerEvent {
     interface SmeltItem {
         /**
          * Invoked when a player smelts an item.
-         * Equal to the forge {@code ItemSmeltedEvent} event.
+         * Equal to the Forge {@code ItemSmeltedEvent} event.
          * This is fired when the player takes the stack out of the output slot.
          *
          * @param player The player.
@@ -195,7 +195,7 @@ public interface PlayerEvent {
     interface PickupItemPredicate {
         /**
          * Invoked when a player tries to pickup an {@link ItemEntity}.
-         * Equal to the forge {@code EntityItemPickupEvent} event.
+         * Equal to the Forge {@code EntityItemPickupEvent} event.
          *
          * @param player The player picking up.
          * @param entity The {@link ItemEntity} that the player tries to pick up.
@@ -208,7 +208,7 @@ public interface PlayerEvent {
     interface PickupItem {
         /**
          * Invoked when a player has picked up an {@link ItemEntity}.
-         * Equal to the forge {@code ItemPickupEvent} event.
+         * Equal to the Forge {@code ItemPickupEvent} event.
          *
          * @param player The player.
          * @param entity The {@link ItemEntity} that the player picked up.
@@ -220,7 +220,7 @@ public interface PlayerEvent {
     interface ChangeDimension {
         /**
          * Invoked when a player changes their dimension.
-         * Equal to the forge {@code PlayerChangedDimensionEvent} event.
+         * Equal to the Forge {@code PlayerChangedDimensionEvent} event.
          *
          * @param player The teleporting player.
          * @param oldLevel The level the player comes from.
@@ -232,7 +232,7 @@ public interface PlayerEvent {
     interface DropItem {
         /**
          * Invoked when a player drops an item.
-         * Equal to the forge {@code ItemTossEvent} event.
+         * Equal to the Forge {@code ItemTossEvent} event.
          *
          * @param player The player dropping something.
          * @param entity The entity that has spawned when the player dropped a ItemStack.
@@ -243,7 +243,7 @@ public interface PlayerEvent {
     
     interface BreakBlock {
         /**
-         * Called by and equal to {@link BlockEvent#BREAK}.
+         * Deprecated variant of {@link BlockEvent#BREAK}. Defers to the proper event.
          */
         InteractionResult breakBlock(Level world, BlockPos pos, BlockState state, ServerPlayer player, @Nullable IntValue xp);
     }
@@ -251,9 +251,9 @@ public interface PlayerEvent {
     interface OpenMenu {
         /**
          * Invoked when a player opens a menu.
-         * Equal to the forge {@code PlayerContainerEvent.Open} event.
+         * Equal to the Forge {@code PlayerContainerEvent.Open} event.
          *
-         * If you want to prevent a certain menu to be opened, you have to catch the {@link me.shedaniel.architectury.event.events.GuiEvent#SET_SCREEN} event and open your own.
+         * <p>If you want to prevent a certain menu to be opened, you have to catch the {@link me.shedaniel.architectury.event.events.GuiEvent#SET_SCREEN} event and open your own.
          *
          * @param player The player opening the menu.
          * @param menu The menu that is opened.
@@ -264,8 +264,8 @@ public interface PlayerEvent {
     interface CloseMenu {
         /**
          * Invoked when a player closes a menu.
-         * Equal to the forge {@code PlayerContainerEvent.Close} event.
-         **
+         * Equal to the Forge {@code PlayerContainerEvent.Close} event.
+         *
          * @param player The player closing the menu.
          * @param menu The menu that is closed.
          */

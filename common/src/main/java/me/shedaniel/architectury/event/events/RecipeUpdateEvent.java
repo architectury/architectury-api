@@ -36,8 +36,8 @@ public interface RecipeUpdateEvent {
     Event<RecipeUpdateEvent> EVENT = EventFactory.createLoop();
     
     /**
-     * Called when the client receives all recipes from the server.
-     * Equal to the forge {@code RecipesUpdatedEvent} event.
+     * Invoked when the client has received an updated list of recipes from the server.
+     * Equal to the Forge {@code RecipesUpdatedEvent} event.
      *
      * @param recipeManager The recipe manager.
      */

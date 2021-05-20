@@ -45,8 +45,8 @@ public interface TextureStitchEvent {
     @Environment(EnvType.CLIENT)
     interface Pre {
         /**
-         * Called before the texture atlas is stitched.
-         * Equal to the forge {@code TextureStitchEvent.Pre} event.
+         * Invoked before the texture atlas is stitched together.
+         * Equal to the Forge {@code TextureStitchEvent.Pre} event.
          *
          * @param atlas The TextureAtlas.
          * @param spriteAdder A consumer where you can add your own sprites to be stitched.
@@ -57,8 +57,8 @@ public interface TextureStitchEvent {
     @Environment(EnvType.CLIENT)
     interface Post {
         /**
-         * Called after the texture atlas has been completely stitched.
-         * Equal to the forge {@code TextureStitchEvent.Post} event.
+         * Invoked after the texture atlas has been fully stitched.
+         * Equal to the Forge {@code TextureStitchEvent.Post} event.
          *
          * @param atlas The ready-to-use TextureAtlas.
          */
