@@ -26,6 +26,7 @@ import net.minecraft.client.KeyboardHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.InteractionResult;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -45,7 +46,7 @@ public class MixinKeyboardHandler {
     @Shadow
     private boolean sendRepeatsToGui;
     
-    @ModifyVariable(method = {"method_1458", "lambda$charTyped$5"}, at = @At("HEAD"), require = 0, ordinal = 0, argsOnly = true)
+    @ModifyVariable(method = {"method_1458", "lambda$charTyped$7"}, at = @At("HEAD"), ordinal = 0, argsOnly = true)
     private static GuiEventListener wrapCharTypedFirst(GuiEventListener screen) {
         if (screen instanceof ScreenInputDelegate) {
             return ((ScreenInputDelegate) screen).architectury_delegateInputs();
@@ -53,24 +54,8 @@ public class MixinKeyboardHandler {
         return screen;
     }
     
-    @ModifyVariable(method = {"method_1473", "lambda$charTyped$6"}, at = @At("HEAD"), require = 0, ordinal = 0, argsOnly = true)
+    @ModifyVariable(method = {"method_1473", "lambda$charTyped$8"}, at = @At("HEAD"), ordinal = 0, argsOnly = true)
     private static GuiEventListener wrapCharTypedSecond(GuiEventListener screen) {
-        if (screen instanceof ScreenInputDelegate) {
-            return ((ScreenInputDelegate) screen).architectury_delegateInputs();
-        }
-        return screen;
-    }
-    
-    @ModifyVariable(method = "lambda$onCharEvent$5", at = @At("HEAD"), require = 0, ordinal = 0, argsOnly = true)
-    private GuiEventListener wrapCharTypedFirstOptiFabric(GuiEventListener screen) {
-        if (screen instanceof ScreenInputDelegate) {
-            return ((ScreenInputDelegate) screen).architectury_delegateInputs();
-        }
-        return screen;
-    }
-    
-    @ModifyVariable(method = "lambda$onCharEvent$6", at = @At("HEAD"), require = 0, ordinal = 0, argsOnly = true)
-    private GuiEventListener wrapCharTypedSecondOptiFabric(GuiEventListener screen) {
         if (screen instanceof ScreenInputDelegate) {
             return ((ScreenInputDelegate) screen).architectury_delegateInputs();
         }
@@ -100,13 +85,13 @@ public class MixinKeyboardHandler {
             target = "Lnet/minecraft/client/gui/screens/Screen;wrapScreenError(Ljava/lang/Runnable;Ljava/lang/String;Ljava/lang/String;)V",
             ordinal = 0, shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD,
             cancellable = true)
-    public void onKeyAfter(long long_1, int int_1, int int_2, int int_3, int int_4, CallbackInfo info, ContainerEventHandler containerEventHandler, boolean bls[]) {
+    public void onKeyAfter(long long_1, int int_1, int int_2, int int_3, int int_4, CallbackInfo info, Screen screen, boolean bls[]) {
         if (!info.isCancelled() && !bls[0]) {
             InteractionResult result;
             if (int_3 != 1 && (int_3 != 2 || !this.sendRepeatsToGui)) {
-                result = ClientScreenInputEvent.KEY_RELEASED_POST.invoker().keyReleased(minecraft, minecraft.screen, int_1, int_2, int_4);
+                result = ClientScreenInputEvent.KEY_RELEASED_POST.invoker().keyReleased(minecraft, screen, int_1, int_2, int_4);
             } else {
-                result = ClientScreenInputEvent.KEY_PRESSED_POST.invoker().keyPressed(minecraft, minecraft.screen, int_1, int_2, int_4);
+                result = ClientScreenInputEvent.KEY_PRESSED_POST.invoker().keyPressed(minecraft, screen, int_1, int_2, int_4);
             }
             if (result != InteractionResult.PASS)
                 info.cancel();

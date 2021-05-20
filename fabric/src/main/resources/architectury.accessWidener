@@ -1,7 +1,9 @@
 accessWidener v1 named
-accessible method net/minecraft/client/gui/screens/Screen addButton (Lnet/minecraft/client/gui/components/AbstractWidget;)Lnet/minecraft/client/gui/components/AbstractWidget;
+accessible method net/minecraft/client/gui/screens/Screen addRenderableWidget (Lnet/minecraft/client/gui/components/events/GuiEventListener;)Lnet/minecraft/client/gui/components/events/GuiEventListener;
+accessible method net/minecraft/client/gui/screens/Screen addRenderableOnly (Lnet/minecraft/client/gui/components/Widget;)Lnet/minecraft/client/gui/components/Widget;
 accessible method net/minecraft/client/gui/screens/Screen addWidget (Lnet/minecraft/client/gui/components/events/GuiEventListener;)Lnet/minecraft/client/gui/components/events/GuiEventListener;
-accessible field net/minecraft/client/gui/screens/Screen buttons Ljava/util/List;
+accessible field net/minecraft/client/gui/screens/Screen narratables Ljava/util/List;
+accessible field net/minecraft/client/gui/screens/Screen renderables Ljava/util/List;
 accessible field net/minecraft/world/level/block/state/BlockBehaviour properties Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;
 accessible field net/minecraft/world/level/block/state/BlockBehaviour$Properties material Lnet/minecraft/world/level/material/Material;
 mutable field net/minecraft/world/level/block/state/BlockBehaviour$Properties material Lnet/minecraft/world/level/material/Material;

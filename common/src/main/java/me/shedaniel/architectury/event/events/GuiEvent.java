@@ -22,6 +22,7 @@ package me.shedaniel.architectury.event.events;
 import com.mojang.blaze3d.vertex.PoseStack;
 import me.shedaniel.architectury.event.Event;
 import me.shedaniel.architectury.event.EventFactory;
+import me.shedaniel.architectury.hooks.screen.ScreenAccess;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -68,12 +69,12 @@ public interface GuiEvent {
     
     @Environment(EnvType.CLIENT)
     interface ScreenInitPre {
-        InteractionResult init(Screen screen, List<AbstractWidget> widgets, List<GuiEventListener> children);
+        InteractionResult init(Screen screen, ScreenAccess access);
     }
     
     @Environment(EnvType.CLIENT)
     interface ScreenInitPost {
-        void init(Screen screen, List<AbstractWidget> widgets, List<GuiEventListener> children);
+        void init(Screen screen, ScreenAccess access);
     }
     
     @Environment(EnvType.CLIENT)

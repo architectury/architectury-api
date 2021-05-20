@@ -21,13 +21,12 @@ package me.shedaniel.architectury.impl.fabric;
 
 import me.shedaniel.architectury.event.events.client.ClientScreenInputEvent;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.InteractionResult;
 
 public interface ScreenInputDelegate {
-    GuiEventListener architectury_delegateInputs();
+    Screen architectury_delegateInputs();
     
     class DelegateScreen extends Screen {
         private Screen parent;

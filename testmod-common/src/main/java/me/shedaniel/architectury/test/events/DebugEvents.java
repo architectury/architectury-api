@@ -257,7 +257,7 @@ public class DebugEvents {
         ClientPlayerEvent.CLIENT_PLAYER_RESPAWN.register((oldPlayer, newPlayer) -> {
             SINK.accept(newPlayer.getScoreboardName() + " respawned (client)");
         });
-        GuiEvent.INIT_PRE.register((screen, widgets, children) -> {
+        GuiEvent.INIT_PRE.register((screen, access) -> {
             SINK.accept(toSimpleName(screen) + " initializes");
             return InteractionResult.PASS;
         });

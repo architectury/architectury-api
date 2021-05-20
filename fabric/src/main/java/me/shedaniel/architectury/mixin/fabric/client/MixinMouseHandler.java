@@ -25,6 +25,7 @@ import me.shedaniel.architectury.impl.fabric.ScreenInputDelegate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.InteractionResult;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -83,9 +84,10 @@ public class MixinMouseHandler {
     
     @SuppressWarnings("UnresolvedMixinReference")
     @Inject(method = {"lambda$onPress$0", "method_1611"}, at = @At("HEAD"), cancellable = true, remap = false)
-    public void onGuiMouseClicked(boolean[] bls, double d, double e, int button, CallbackInfo info) {
+    private static void onGuiMouseClicked(boolean[] bls, Screen screen, double d, double e, int button, CallbackInfo info) {
+        var minecraft = Minecraft.getInstance();
         if (!info.isCancelled()) {
-            InteractionResult result = ClientScreenInputEvent.MOUSE_CLICKED_PRE.invoker().mouseClicked(minecraft, minecraft.screen, d, e, button);
+            InteractionResult result = ClientScreenInputEvent.MOUSE_CLICKED_PRE.invoker().mouseClicked(minecraft, screen, d, e, button);
             if (result != InteractionResult.PASS) {
                 bls[0] = true;
                 info.cancel();
@@ -95,9 +97,10 @@ public class MixinMouseHandler {
     
     @SuppressWarnings("UnresolvedMixinReference")
     @Inject(method = {"lambda$onPress$0", "method_1611"}, at = @At("RETURN"), cancellable = true, remap = false)
-    public void onGuiMouseClickedPost(boolean[] bls, double d, double e, int button, CallbackInfo info) {
+    private static void onGuiMouseClickedPost(boolean[] bls, Screen screen, double d, double e, int button, CallbackInfo info) {
+        var minecraft = Minecraft.getInstance();
         if (!info.isCancelled() && !bls[0]) {
-            InteractionResult result = ClientScreenInputEvent.MOUSE_CLICKED_POST.invoker().mouseClicked(minecraft, minecraft.screen, d, e, button);
+            InteractionResult result = ClientScreenInputEvent.MOUSE_CLICKED_POST.invoker().mouseClicked(minecraft, screen, d, e, button);
             if (result != InteractionResult.PASS) {
                 bls[0] = true;
                 info.cancel();
@@ -127,9 +130,10 @@ public class MixinMouseHandler {
     
     @SuppressWarnings("UnresolvedMixinReference")
     @Inject(method = {"lambda$onPress$1", "method_1605"}, at = @At("HEAD"), cancellable = true, remap = false)
-    public void onGuiMouseReleased(boolean[] bls, double d, double e, int button, CallbackInfo info) {
+    private static void onGuiMouseReleased(boolean[] bls, Screen screen, double d, double e, int button, CallbackInfo info) {
+        var minecraft = Minecraft.getInstance();
         if (!info.isCancelled()) {
-            InteractionResult result = ClientScreenInputEvent.MOUSE_RELEASED_PRE.invoker().mouseReleased(minecraft, minecraft.screen, d, e, button);
+            InteractionResult result = ClientScreenInputEvent.MOUSE_RELEASED_PRE.invoker().mouseReleased(minecraft, screen, d, e, button);
             if (result != InteractionResult.PASS) {
                 bls[0] = true;
                 info.cancel();
@@ -139,9 +143,10 @@ public class MixinMouseHandler {
     
     @SuppressWarnings("UnresolvedMixinReference")
     @Inject(method = {"lambda$onPress$1", "method_1605"}, at = @At("RETURN"), cancellable = true, remap = false)
-    public void onGuiMouseReleasedPost(boolean[] bls, double d, double e, int button, CallbackInfo info) {
+    private static void onGuiMouseReleasedPost(boolean[] bls, Screen screen, double d, double e, int button, CallbackInfo info) {
+        var minecraft = Minecraft.getInstance();
         if (!info.isCancelled() && !bls[0]) {
-            InteractionResult result = ClientScreenInputEvent.MOUSE_RELEASED_POST.invoker().mouseReleased(minecraft, minecraft.screen, d, e, button);
+            InteractionResult result = ClientScreenInputEvent.MOUSE_RELEASED_POST.invoker().mouseReleased(minecraft, screen, d, e, button);
             if (result != InteractionResult.PASS) {
                 bls[0] = true;
                 info.cancel();
@@ -151,7 +156,7 @@ public class MixinMouseHandler {
     
     @SuppressWarnings("UnresolvedMixinReference")
     @ModifyVariable(method = {"method_1602", "lambda$onMove$11"}, at = @At("HEAD"), ordinal = 0, argsOnly = true)
-    private GuiEventListener wrapMouseDragged(GuiEventListener screen) {
+    private Screen wrapMouseDragged(Screen screen) {
         if (screen instanceof ScreenInputDelegate) {
             return ((ScreenInputDelegate) screen).architectury_delegateInputs();
         }

@@ -23,17 +23,17 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import me.shedaniel.architectury.event.events.GuiEvent;
 import me.shedaniel.architectury.event.events.TooltipEvent;
 import me.shedaniel.architectury.event.events.client.ClientChatEvent;
+import me.shedaniel.architectury.hooks.screen.ScreenAccess;
+import me.shedaniel.architectury.impl.ScreenAccessImpl;
 import me.shedaniel.architectury.impl.TooltipEventColorContextImpl;
 import me.shedaniel.architectury.impl.TooltipEventPositionContextImpl;
 import me.shedaniel.architectury.impl.fabric.ScreenInputDelegate;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -44,39 +44,48 @@ import java.util.List;
 
 @Mixin(Screen.class)
 public abstract class MixinScreen implements ScreenInputDelegate {
-    @Shadow
-    @Final
-    public List<AbstractWidget> buttons;
     @Unique
     private static ThreadLocal<TooltipEventPositionContextImpl> tooltipPositionContext = ThreadLocal.withInitial(TooltipEventPositionContextImpl::new);
     @Unique
     private static ThreadLocal<TooltipEventColorContextImpl> tooltipColorContext = ThreadLocal.withInitial(TooltipEventColorContextImpl::new);
+    @Unique
+    private ScreenAccessImpl access;
     
     @Shadow
     public abstract List<? extends GuiEventListener> children();
     
     @Unique
-    private GuiEventListener inputDelegate;
+    private Screen inputDelegate;
+    
+    @Unique
+    private ScreenAccess getAccess() {
+        if (access == null) {
+            return access = new ScreenAccessImpl((Screen) (Object) this);
+        }
+        
+        access.setScreen((Screen) (Object) this); // Preventive set
+        return access;
+    }
     
     @Override
-    public GuiEventListener architectury_delegateInputs() {
+    public Screen architectury_delegateInputs() {
         if (inputDelegate == null) {
             inputDelegate = new DelegateScreen((Screen) (Object) this);
         }
         return inputDelegate;
     }
     
-    @Inject(method = "init(Lnet/minecraft/client/Minecraft;II)V", at = @At(value = "INVOKE", target = "Ljava/util/List;clear()V", ordinal = 0),
+    @Inject(method = "init(Lnet/minecraft/client/Minecraft;II)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;clearWidgets()V", ordinal = 0),
             cancellable = true)
     private void preInit(Minecraft minecraft, int i, int j, CallbackInfo ci) {
-        if (GuiEvent.INIT_PRE.invoker().init((Screen) (Object) this, buttons, (List<GuiEventListener>) children()) == InteractionResult.FAIL) {
+        if (GuiEvent.INIT_PRE.invoker().init((Screen) (Object) this, getAccess()) == InteractionResult.FAIL) {
             ci.cancel();
         }
     }
     
     @Inject(method = "init(Lnet/minecraft/client/Minecraft;II)V", at = @At(value = "RETURN"))
     private void postInit(Minecraft minecraft, int i, int j, CallbackInfo ci) {
-        GuiEvent.INIT_POST.invoker().init((Screen) (Object) this, buttons, (List<GuiEventListener>) children());
+        GuiEvent.INIT_POST.invoker().init((Screen) (Object) this, getAccess());
     }
     
     @ModifyVariable(method = "sendMessage(Ljava/lang/String;Z)V", at = @At("HEAD"), argsOnly = true, ordinal = 0)

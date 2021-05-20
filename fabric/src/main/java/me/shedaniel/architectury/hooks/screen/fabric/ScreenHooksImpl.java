@@ -17,34 +17,37 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package me.shedaniel.architectury.hooks;
+package me.shedaniel.architectury.hooks.screen.fabric;
 
-import me.shedaniel.architectury.annotations.ExpectPlatform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
 
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
-public final class ScreenHooks {
-    private ScreenHooks() {
+public class ScreenHooksImpl {
+    public static List<NarratableEntry> getNarratables(Screen screen) {
+        return screen.narratables;
     }
     
-    @ExpectPlatform
-    public static List<AbstractWidget> getButtons(Screen screen) {
-        throw new AssertionError();
+    public static List<Widget> getRenderables(Screen screen) {
+        return screen.renderables;
     }
     
-    @ExpectPlatform
-    public static <T extends AbstractWidget> T addButton(Screen screen, T widget) {
-        throw new AssertionError();
+    public static <T extends AbstractWidget & Widget & NarratableEntry> T addRenderableWidget(Screen screen, T widget) {
+        return screen.addRenderableWidget(widget);
     }
     
-    @ExpectPlatform
-    public static <T extends GuiEventListener> T addChild(Screen screen, T listener) {
-        throw new AssertionError();
+    public static <T extends Widget> T addRenderableOnly(Screen screen, T listener) {
+        return screen.addRenderableOnly(listener);
+    }
+    
+    public static <T extends GuiEventListener & NarratableEntry> T addWidget(Screen screen, T listener) {
+        return screen.addWidget(listener);
     }
 }
