@@ -81,7 +81,7 @@ public interface EntityEvent {
          * Fired before a entity is being hurt.
          * Equal to the Forge {@code LivingAttackEvent} event.
          * 
-         * You can't set the amount of damage the entity gets!
+         * <p>You can't set the amount of damage the entity gets!
          * 
          * @param entity The entity that is attacked.
          * @param source The reason why the entity takes damage.
