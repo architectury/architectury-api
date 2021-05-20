@@ -66,7 +66,7 @@ public interface EntityEvent {
     
     interface LivingDeath {
         /**
-         * Fired before a living entity is dying.
+         * Invoked before a living entity dies.
          * It is equal to the Forge {@code LivingDeathEvent} event.
          * 
          * @param entity The entity that is about to die.
@@ -81,7 +81,7 @@ public interface EntityEvent {
          * Invoked before an entity is hurt by a damage source.
          * Equal to the Forge {@code LivingAttackEvent} event.
          * 
-         * <p>You can't set the amount of damage the entity gets!
+         * <p>You currently cannot override the amount of damage the entity receives.
          * 
          * @param entity The entity that is attacked.
          * @param source The reason why the entity takes damage.

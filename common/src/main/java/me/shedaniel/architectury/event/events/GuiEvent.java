@@ -82,7 +82,8 @@ public interface GuiEvent {
     @Environment(EnvType.CLIENT)
     interface DebugText {
         /**
-         * Called when the debug text is rendered. There are two different versions, for the left and for the right side.
+         * Invoked when the debug text is being gathered for rendering.
+         * There are two different versions of this event, one for the left and one for the right side.
          * Equal to the Forge {@code RenderGameOverlayEvent.Text} event, when {@code Minecraft.getInstance().options.renderDebug} is true.
          * 
          * @param strings Contains the already added strings. You can add your own lines by adding to the list.
