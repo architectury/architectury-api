@@ -31,7 +31,7 @@ import org.jetbrains.annotations.Nullable;
  * The {@link ParseResults} can be modified and even a custom {@link Throwable} can be used to tell the source of failure.
  * 
  * <p>A command fails when any other result than {@link net.minecraft.world.InteractionResult#PASS} is returned.
- * When PASS is used the {@link CommandPerformEvent#getResults()} is used for execution.
+ * When PASS is used, the {@link CommandPerformEvent#getResults()} is used for execution.
  * 
  * <p>This is equal to the Forge {@code CommandEvent} event.
  */
