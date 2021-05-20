@@ -30,7 +30,7 @@ import org.jetbrains.annotations.Nullable;
  * A event fired whenever a command is issued.
  * The {@link ParseResults} can be modified and even a custom {@link Throwable} can be used to tell the source of failure.
  * 
- * A command fails when any other result than {@link net.minecraft.world.InteractionResult#PASS} is returned.
+ * <p>A command fails when any other result than {@link net.minecraft.world.InteractionResult#PASS} is returned.
  * When PASS is used the {@link CommandPerformEvent#getResults()} is used for execution.
  * 
  * This is equal to the forge {@code CommandEvent} event.
