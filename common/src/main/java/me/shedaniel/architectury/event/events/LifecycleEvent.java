@@ -91,7 +91,7 @@ public interface LifecycleEvent {
     
     interface InstanceState<T> {
         /**
-         * Called whenever the specified state change has happened.
+         * Parent event type for any events that are invoked on instance state change.
          *
          * @param instance The changed state.
          */
