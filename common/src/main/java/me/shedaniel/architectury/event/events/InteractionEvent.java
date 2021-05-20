@@ -65,8 +65,8 @@ public interface InteractionEvent {
     
     interface RightClickBlock {
         /**
-         * Called whenever a player is right clicking a block.
-         * Equal to the forge {@code PlayerInteractEvent.RightClickBlock} event and fabric's {@code UseBlockCallback}.
+         * Invoked whenever a player right clicks a block.
+         * Equal to the Forge {@code PlayerInteractEvent.RightClickBlock} event and Fabric's {@code UseBlockCallback}.
          * 
          * @param player The player right clicking the block.
          * @param hand The hand that is used.
@@ -79,8 +79,8 @@ public interface InteractionEvent {
     
     interface LeftClickBlock {
         /**
-         * Called whenever a player is left clicking a block.
-         * Equal to the forge {@code PlayerInteractEvent.LeftClickBlock} event and fabric's {@code AttackBlockCallback}.
+         * Invoked whenever a player left clicks a block.
+         * Equal to the Forge {@code PlayerInteractEvent.LeftClickBlock} event and Fabric's {@code AttackBlockCallback}.
          *
          * @param player The player left clicking the block.
          * @param hand The hand that is used.
@@ -93,8 +93,8 @@ public interface InteractionEvent {
     
     interface RightClickItem {
         /**
-         * Called whenever a player is right clicking a block while holding an item.
-         * Equal to the forge {@code PlayerInteractEvent.RightClickItem} event and fabric's {@code UseItemCallback}.
+         * Invoked whenever a player uses an item on a block.
+         * Equal to the Forge {@code PlayerInteractEvent.RightClickItem} event and Fabric's {@code UseItemCallback}.
          *
          * @param player The player right clicking the block.
          * @param hand The hand that is used. You can get the {@link ItemStack} with {@link Player#getItemInHand(InteractionHand)}
