@@ -34,7 +34,7 @@ public interface ChatEvent {
     interface Server {
         /**
          * Invoked when the server receives a message from a client.
-         * Equal to the forge {@code ServerChatEvent} event.
+         * Equal to the Forge {@code ServerChatEvent} event.
          * 
          * @param player The player who has sent the message.
          * @param message The raw message itself.
