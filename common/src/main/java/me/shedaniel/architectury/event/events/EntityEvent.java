@@ -66,7 +66,7 @@ public interface EntityEvent {
     
     interface LivingDeath {
         /**
-         * Fired before a living entity is dieing.
+         * Fired before a living entity is dying.
          * It is equal to the forge event {@code LivingDeathEvent} event.
          * 
          * @param entity The entity that is about to die.
