@@ -67,7 +67,7 @@ public interface ClientScreenInputEvent {
     
     interface KeyPressed {
         /**
-         * Called whenever a key press is performed inside a screen.
+         * Invoked whenever a key press is performed inside a screen.
          * Equal to the Forge {@code GuiScreenEvent.KeyboardKeyPressedEvent} event.
          * It consists of two versions, pre and post. The pre version is fired before the keys are processed by the screen.
          *
@@ -83,11 +83,11 @@ public interface ClientScreenInputEvent {
     
     interface KeyReleased {
         /**
-         * Called whenever a key release is performed inside a screen.
-         * Equal to the forge {@code GuiScreenEvent.KeyboardKeyReleasedEvent} event.
+         * Invoked whenever a held key is released inside a screen.
+         * Equal to the Forge {@code GuiScreenEvent.KeyboardKeyReleasedEvent} event.
          * It consists of two versions, pre and post. The pre version is fired before the keys are processed by the screen.
          *
-         * @param client The minecraft instance performing it.
+         * @param client The Minecraft instance performing it.
          * @param screen The screen this keystroke was performed in.
          * @param keyCode The key code. Look at {@link org.lwjgl.glfw.GLFW} line 66 to 211 for key codes.
          * @param scanCode The raw keyboard scan code.
@@ -99,7 +99,7 @@ public interface ClientScreenInputEvent {
     
     interface KeyTyped {
         /**
-         * Called whenever a char is typed within a screen.
+         * Invoked whenever a character is typed within a screen.
          * Equal to the Forge {@code GuiScreenEvent.KeyboardCharTypedEvent} event.
          * It consists of two versions, pre and post. The pre version is fired before the keys are processed by the screen.
          *
@@ -114,14 +114,14 @@ public interface ClientScreenInputEvent {
     
     interface MouseScrolled {
         /**
-         * Called whenever the mouse scroll wheel is moved.
-         * Equal to the forge {@code GuiScreenEvent.MouseScrollEvent} event.
+         * Invoked whenever the mouse scroll wheel is moved.
+         * Equal to the Forge {@code GuiScreenEvent.MouseScrollEvent} event.
          * It consists of two versions, pre and post. The pre version is fired before the scroll changes are processed by the screen.
          *
-         * @param client The minecraft instance performing it.
+         * @param client The Minecraft instance performing it.
          * @param screen The screen this keystroke was performed in.
-         * @param mouseX The x position of the mouse pointer.
-         * @param mouseY The y position of the mouse pointer.
+         * @param mouseX The x-coordinate of the mouse cursor.
+         * @param mouseY The y-coordinate of the mouse cursor.
          * @param amount The amount the scroll wheel is moved.
          * @return Any other result than {@link InteractionResult#PASS} leads to the cancellation of the key release.
          */
@@ -131,13 +131,13 @@ public interface ClientScreenInputEvent {
     interface MouseReleased {
         /**
          * Called whenever a mouse button is released.
-         * Equal to the forge {@code GuiScreenEvent.MouseReleasedEvent} event.
+         * Equal to the Forge {@code GuiScreenEvent.MouseReleasedEvent} event.
          * It consists of two versions, pre and post. The pre version is fired before the button click is processed by the screen.
          *
-         * @param client The minecraft instance performing it.
+         * @param client The Minecraft instance performing it.
          * @param screen The screen this keystroke was performed in.
-         * @param mouseX The x position of the mouse pointer.
-         * @param mouseY The y position of the mouse pointer.
+         * @param mouseX The x-coordinate of the mouse cursor.
+         * @param mouseY The y-coordinate of the mouse cursor.
          * @param button The released mouse button. Look at {@link org.lwjgl.glfw.GLFW} line 214 to 226 for mouse button codes.
          * @return Any other result than {@link InteractionResult#PASS} leads to the cancellation of the key release.
          */
@@ -146,17 +146,17 @@ public interface ClientScreenInputEvent {
     
     interface MouseDragged {
         /**
-         * Called whenever the mouse is moved, while pressing a mouse button.
-         * Equal to the forge {@code GuiScreenEvent.MouseDragEvent} event.
+         * Invoked whenever the mouse is dragged across a screen.
+         * Equal to the Forge {@code GuiScreenEvent.MouseDragEvent} event.
          * It consists of two versions, pre and post. The pre version is fired before the dragging is processed by the screen.
          *
-         * @param client The minecraft instance performing it.
+         * @param client The Minecraft instance performing it.
          * @param screen The screen this keystroke was performed in.
-         * @param mouseX1 The starting x position of the mouse pointer.
-         * @param mouseY1 The starting y position of the mouse pointer.
+         * @param mouseX1 The initial x-coordinate of the mouse cursor.
+         * @param mouseY1 The initial y-coordinate of the mouse cursor.
          * @param button The released mouse button. Look at {@link org.lwjgl.glfw.GLFW} line 214 to 226 for mouse button codes.
-         * @param mouseX2 The final x position of the mouse pointer.
-         * @param mouseY2 The final y position of the mouse pointer.
+         * @param mouseX2 The final x-coordinate of the mouse cursor.
+         * @param mouseY2 The final y-coordinate of the mouse cursor.
          * @return Any other result than {@link InteractionResult#PASS} leads to the cancellation of the key release.
          */
         InteractionResult mouseDragged(Minecraft client, Screen screen, double mouseX1, double mouseY1, int button, double mouseX2, double mouseY2);
@@ -164,14 +164,14 @@ public interface ClientScreenInputEvent {
     
     interface MouseClicked {
         /**
-         * Called whenever a mouse button is clicked. A click consists of the press and release of the button.
-         * Equal to the forge {@code GuiScreenEvent.MouseClickedEvent} event.
+         * Invoked whenever a mouse click is performed. A click consists of the press and release of a mouse button.
+         * Equal to the Forge {@code GuiScreenEvent.MouseClickedEvent} event.
          * It consists of two versions, pre and post. The pre version is fired before the button click is processed by the screen.
          *
-         * @param client The minecraft instance performing it.
+         * @param client The Minecraft instance performing it.
          * @param screen The screen this keystroke was performed in.
-         * @param mouseX The x position of the mouse pointer.
-         * @param mouseY The y position of the mouse pointer.
+         * @param mouseX The x-coordinate of the mouse cursor.
+         * @param mouseY The y-coordinate of the mouse cursor.
          * @param button The released mouse button. Look at {@link org.lwjgl.glfw.GLFW} line 214 to 226 for mouse button codes.
          * @return Any other result than {@link InteractionResult#PASS} leads to the cancellation of the key release.
          */

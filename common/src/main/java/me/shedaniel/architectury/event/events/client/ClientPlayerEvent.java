@@ -44,7 +44,7 @@ public interface ClientPlayerEvent {
     @Environment(EnvType.CLIENT)
     interface ClientPlayerJoin {
         /**
-         * Called whenever a client player joins into a Level
+         * Invoked whenever a client player joins a level
          * 
          * @param player The player joining. Equal to {@link net.minecraft.client.Minecraft#player}
          */
@@ -54,7 +54,7 @@ public interface ClientPlayerEvent {
     @Environment(EnvType.CLIENT)
     interface ClientPlayerQuit {
         /**
-         * Called whenever a client leaves a level and it is cleared on the client side.
+         * Invoked whenever a client player leaves a level and is cleared on the client side.
          * 
          * @param player The player leaving.
          */
@@ -64,7 +64,7 @@ public interface ClientPlayerEvent {
     @Environment(EnvType.CLIENT)
     interface ClientPlayerRespawn {
         /**
-         * Called whenever the packet for client respawning is received by the client.
+         * Invoked whenever the player respawn packet is received by the client.
          * 
          * @param oldPlayer The player before the respawn happened.
          * @param newPlayer The player after the respawn happened.

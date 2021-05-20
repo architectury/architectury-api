@@ -44,10 +44,10 @@ public interface ClientRawInputEvent {
     
     interface KeyPressed {
         /**
-         * Called whenever a key input is performed.
-         * Equal to the forge {@code InputEvent.KeyInputEvent} event.
+         * Invoked whenever a key input is performed.
+         * Equal to the Forge {@code InputEvent.KeyInputEvent} event.
          * 
-         * @param client The minecraft instance performing it.
+         * @param client The Minecraft instance performing it.
          * @param keyCode The key code. Look at {@link org.lwjgl.glfw.GLFW} line 66 to 211 for key codes.
          * @param scanCode The raw keyboard scan code.
          * @param action The action that should be performed.
@@ -59,10 +59,10 @@ public interface ClientRawInputEvent {
     
     interface MouseScrolled {
         /**
-         * Called whenever the mouse scroll wheel is used.
-         * Equal to the forge {@code InputEvent.MouseScrollEvent} event.
+         * Invoked whenever the mouse scroll wheel is used.
+         * Equal to the Forge {@code InputEvent.MouseScrollEvent} event.
          * 
-         * @param client The minecraft instance performing it.
+         * @param client The Minecraft instance performing it.
          * @param amount The amount of movement.
          * @return Any other result than {@link InteractionResult#PASS} leads to the cancellation of the mouse scroll functions.
          * At the time this is actually called, any open screen already has processed the scroll movement and so it can't be undone.
@@ -72,10 +72,10 @@ public interface ClientRawInputEvent {
     
     interface MouseClicked {
         /**
-         * Called whenever a mouse button is clicked.
+         * Invoked whenever a mouse button is pressed.
          * There are two variants, either a raw mouse input or the input after it is processed by the game.
          * 
-         * @param client The minecraft instance performing it.
+         * @param client The Minecraft instance performing it.
          * @param button The pressed mouse button. Look at {@link org.lwjgl.glfw.GLFW} line 214 to 226 for mouse button codes.
          * @param action The action that should be performed.
          * @param mods Additional modifiers.

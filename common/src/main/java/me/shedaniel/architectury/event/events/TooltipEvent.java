@@ -43,13 +43,13 @@ public interface TooltipEvent {
      */
     Event<Item> ITEM = EventFactory.createLoop();
     /**
-     * THIS EVENT IS ONLY FIRED ON FABRIC!
+     * This is not invoked on Forge due to fundamental code differences!
      *
      * @see RenderVanilla#renderTooltip(PoseStack, List, int, int)
      */
     Event<RenderVanilla> RENDER_VANILLA_PRE = EventFactory.createInteractionResult();
     /**
-     * THIS EVENT IS ONLY FIRED ON FORGE!
+     * This is not invoked on Forge due to fundamental code differences!
      *
      * @see RenderForge#renderTooltip(PoseStack, List, int, int)
      */
@@ -67,8 +67,8 @@ public interface TooltipEvent {
     interface Item {
         /**
          * Called whenever a item tooltip is rendered.
-         * Equal to the forge {@code ItemTooltipEvent} event and
-         * fabric's {@code ItemTooltipCallback}.
+         * Equal to the Forge {@code ItemTooltipEvent} event and
+         * Fabric's {@code ItemTooltipCallback}.
          *
          * @param stack The rendered stack.
          * @param lines The tooltip components. Components can be added or removed.
@@ -82,12 +82,12 @@ public interface TooltipEvent {
         /**
          * Called before the tooltip for a tooltip is rendered.
          *
-         * THIS EVENT IS ONLY FIRED ON FABRIC!
+         * This is not invoked on Forge due to fundamental differences in Forge and vanilla logic.
          *
          * @param matrices The render buffer.
          * @param texts The texts that are rendered. Can be manipulated.
-         * @param x The x position.
-         * @param y The y position.
+         * @param x The x-coordinate of the tooltip.
+         * @param y The y-coordinate of the tooltip.
          * @return Returning {@link InteractionResult#FAIL} cancels the rendering.
          */
         InteractionResult renderTooltip(PoseStack matrices, List<? extends FormattedCharSequence> texts, int x, int y);
@@ -98,12 +98,12 @@ public interface TooltipEvent {
         /**
          * Called before the tooltip for a tooltip is rendered.
          *
-         * THIS EVENT IS ONLY FIRED ON FORGE!
+         * This is not invoked on Forge due to fundamental differences in Forge and vanilla logic.
          *
          * @param matrices The render buffer.
          * @param texts The texts that are rendered. Can be manipulated.
-         * @param x The x position.
-         * @param y The y position.
+         * @param x The x-coordinate of the tooltip.
+         * @param y The y-coordinate of the tooltip.
          * @return Returning {@link InteractionResult#FAIL} cancels the rendering.
          */
         InteractionResult renderTooltip(PoseStack matrices, List<? extends FormattedText> texts, int x, int y);
@@ -126,8 +126,8 @@ public interface TooltipEvent {
          * Event to manipulate the color of the tooltip.
          *
          * @param matrices The render buffer.
-         * @param x The x position.
-         * @param y The y position.
+         * @param x The x-coordinate of the tooltip.
+         * @param y The y-coordinate of the tooltip.
          * @param context The current color context.
          */
         void renderTooltip(PoseStack matrices, int x, int y, ColorContext context);
