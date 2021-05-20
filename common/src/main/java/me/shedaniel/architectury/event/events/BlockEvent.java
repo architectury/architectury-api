@@ -75,7 +75,7 @@ public interface BlockEvent {
     
     interface FallingLand {
         /**
-         * Called when a falling block is about to land.
+         * Invoked when a falling block is about to land.
          * 
          * THIS EVENT IS ONLY FIRED ON FABRIC!
          *
