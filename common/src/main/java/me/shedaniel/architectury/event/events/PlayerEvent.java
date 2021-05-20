@@ -194,7 +194,7 @@ public interface PlayerEvent {
     
     interface PickupItemPredicate {
         /**
-         * Invoked when a player tries to pickup a item entity.
+         * Invoked when a player tries to pickup an {@link ItemEntity}.
          * Equal to the forge {@code EntityItemPickupEvent} event.
          *
          * @param player The player picking up.
