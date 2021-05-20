@@ -103,7 +103,7 @@ public interface LifecycleEvent {
     
     interface WorldState<T extends Level> {
         /**
-         * Called whenever the world has changed.
+         * Parent event type for any events that are invoked on world state change.
          *
          * @param world The world that has changed.
          */
