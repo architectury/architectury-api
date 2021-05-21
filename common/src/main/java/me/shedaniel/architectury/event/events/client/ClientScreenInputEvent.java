@@ -120,7 +120,7 @@ public interface ClientScreenInputEvent {
          *
          * @param client The Minecraft instance performing it.
          * @param screen The screen this keystroke was performed in.
-         * @param mouseX The x-coordinate of the mouse cursor.
+         * @param mouseX The scaled x-coordinate of the mouse cursor.
          * @param mouseY The y-coordinate of the mouse cursor.
          * @param amount The amount the scroll wheel is moved.
          * @return Any other result than {@link InteractionResult#PASS} leads to the cancellation of the key release.

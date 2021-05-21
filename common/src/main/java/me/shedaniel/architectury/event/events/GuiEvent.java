@@ -86,7 +86,7 @@ public interface GuiEvent {
          * There are two different versions of this event, one for the left and one for the right side.
          * Equal to the Forge {@code RenderGameOverlayEvent.Text} event, when {@code Minecraft.getInstance().options.renderDebug} is true.
          * 
-         * @param strings Contains the already added strings. You can add your own lines by adding to the list.
+         * @param strings The current debug text strings.
          */
         void gatherText(List<String> strings);
     }
