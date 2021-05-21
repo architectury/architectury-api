@@ -49,6 +49,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent.*;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.BlockEvent.EntityPlaceEvent;
 import net.minecraftforge.event.world.BlockEvent.FarmlandTrampleEvent;
+import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.event.world.ExplosionEvent.Detonate;
 import net.minecraftforge.event.world.ExplosionEvent.Start;
 import net.minecraftforge.event.world.WorldEvent;
@@ -369,6 +370,18 @@ public class EventHandlerImplCommon {
         if (event.getPlayer() instanceof ServerPlayer) {
             PlayerEvent.CHANGE_DIMENSION.invoker().change((ServerPlayer) event.getPlayer(), event.getFrom(), event.getTo());
         }
+    }
+    
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(ChunkDataEvent.Save event){
+        if(event.getWorld() instanceof ServerLevel){
+            ChunkEvent.SAVE.invoker().save(event.getChunk(), (ServerLevel) event.getWorld(), event.getData());
+        }
+    }
+    
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(ChunkDataEvent.Load event){
+        ChunkEvent.LOAD.invoker().load(event.getChunk(), event.getStatus(), event.getData());
     }
     
     public static class ModBasedEventHandler {
