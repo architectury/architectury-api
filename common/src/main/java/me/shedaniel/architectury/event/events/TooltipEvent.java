@@ -84,7 +84,7 @@ public interface TooltipEvent {
          *
          * This is not invoked on Forge due to fundamental differences in Forge and vanilla logic.
          *
-         * @param matrices The render buffer.
+         * @param matrices The pose stack.
          * @param texts The texts that are rendered. Can be manipulated.
          * @param x The x-coordinate of the tooltip.
          * @param y The y-coordinate of the tooltip.
@@ -100,7 +100,7 @@ public interface TooltipEvent {
          *
          * This is not invoked on Forge due to fundamental differences in Forge and vanilla logic.
          *
-         * @param matrices The render buffer.
+         * @param matrices The pose stack.
          * @param texts The texts that are rendered. Can be manipulated.
          * @param x The x-coordinate of the tooltip.
          * @param y The y-coordinate of the tooltip.
@@ -114,7 +114,7 @@ public interface TooltipEvent {
         /**
          * Event to manipulate the position of the tooltip.
          *
-         * @param matrices The render buffer.
+         * @param matrices The pose stack.
          * @param context The current position context.
          */
         void renderTooltip(PoseStack matrices, PositionContext context);
@@ -125,7 +125,7 @@ public interface TooltipEvent {
         /**
          * Event to manipulate the color of the tooltip.
          *
-         * @param matrices The render buffer.
+         * @param matrices The pose stack.
          * @param x The x-coordinate of the tooltip.
          * @param y The y-coordinate of the tooltip.
          * @param context The current color context.

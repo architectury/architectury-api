@@ -33,7 +33,7 @@ import net.minecraft.world.InteractionResultHolder;
 import java.util.List;
 
 /**
- * Should be moved to the client package and renamed to ScreenEvent in version 2.0
+ * Should be moved to the client package in version 2.0.
  */
 @Environment(EnvType.CLIENT)
 public interface GuiEvent {
@@ -71,10 +71,10 @@ public interface GuiEvent {
     interface RenderHud {
         /**
          * Invoked after the in-game hud has been rendered.
-         * Equal to the Forge {@code RenderGameOverlayEvent.Post@ElementType#ALL} event and fabric's {@code HudRenderCallback}.
+         * Equal to Forge's {@code RenderGameOverlayEvent.Post@ElementType#ALL} and Fabric's {@code HudRenderCallback}.
          * 
-         * @param matrices The render buffer.
-         * @param tickDelta The delta tick.
+         * @param matrices The pose stack.
+         * @param tickDelta The tick delta.
          */
         void renderHud(PoseStack matrices, float tickDelta);
     }
@@ -84,7 +84,7 @@ public interface GuiEvent {
         /**
          * Invoked when the debug text is being gathered for rendering.
          * There are two different versions of this event, one for the left and one for the right side.
-         * Equal to the Forge {@code RenderGameOverlayEvent.Text} event, when {@code Minecraft.getInstance().options.renderDebug} is true.
+         * Equal to Forge's {@code RenderGameOverlayEvent.Text}, when {@code Minecraft.getInstance().options.renderDebug} is true.
          * 
          * @param strings The current debug text strings.
          */
@@ -125,7 +125,7 @@ public interface GuiEvent {
          * Equal to the Forge {@code GuiScreenEvent.DrawScreenEvent.Pre} event.
          * 
          * @param screen The screen.
-         * @param matrices The render buffer.
+         * @param matrices The pose stack.
          * @param mouseX The x-coordinate of the mouse cursor.
          * @param mouseY The y-coordinate of the mouse cursor.
          * @param delta The current tick delta.
@@ -141,7 +141,7 @@ public interface GuiEvent {
          * Equal to the Forge {@code GuiScreenEvent.DrawScreenEvent.Post} event.
          *
          * @param screen The screen.
-         * @param matrices The render buffer.
+         * @param matrices The pose stack.
          * @param mouseX The x-coordinate of the mouse cursor.
          * @param mouseY The y-coordinate of the mouse cursor.
          * @param delta The current tick delta.

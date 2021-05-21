@@ -32,8 +32,8 @@ public interface CommandRegistrationEvent {
     Event<CommandRegistrationEvent> EVENT = EventFactory.createLoop();
     
     /**
-     * This event is invoked during command registration.
-     * Equal to the Forge {@code RegisterCommandsEvent} event and Fabric's {@code CommandRegistrationCallback}.
+     * This event is invoked after the server registers it's commands.
+     * Equal to Forge's {@code RegisterCommandsEvent} and Fabric's {@code CommandRegistrationCallback}.
      * 
      * @param dispatcher The command dispatcher to register commands to.
      * @param selection The selection where the command can be executed.

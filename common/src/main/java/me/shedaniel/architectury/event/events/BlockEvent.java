@@ -41,7 +41,6 @@ public interface BlockEvent {
      */
     Event<Place> PLACE = EventFactory.createInteractionResult();
     /**
-     * THIS EVENT IS ONLY FIRED ON FABRIC!
      * @see FallingLand#onLand(Level, BlockPos, BlockState, BlockState, FallingBlockEntity)
      */
     Event<FallingLand> FALLING_LAND = EventFactory.createLoop();
@@ -76,7 +75,6 @@ public interface BlockEvent {
     interface FallingLand {
         /**
          * Invoked when a falling block is about to land.
-         * 
          *
          * @param level The level the block is in.
          * @param pos The position of the block.

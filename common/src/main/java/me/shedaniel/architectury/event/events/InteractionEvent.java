@@ -32,6 +32,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.ApiStatus;
 
 public interface InteractionEvent {
     /**
@@ -70,7 +71,7 @@ public interface InteractionEvent {
          * 
          * @param player The player right clicking the block.
          * @param hand The hand that is used.
-         * @param pos The position of the block in the level. Use {@link Player#getCommandSenderWorld()} to get the level.
+         * @param pos The position of the block in the level.
          * @param face The face of the block clicked.
          * @return The event is canceled if anything else than {@link InteractionResult#PASS} is returned.
          */
@@ -143,6 +144,7 @@ public interface InteractionEvent {
     /**
      * @deprecated use {@link BlockEvent#BREAK}
      */
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     @Deprecated
     interface BlockBreak {
         InteractionResult breakBlock(Player player, BlockPos pos, BlockState state);

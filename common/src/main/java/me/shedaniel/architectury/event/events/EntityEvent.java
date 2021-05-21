@@ -71,7 +71,7 @@ public interface EntityEvent {
          * 
          * @param entity The entity that is about to die.
          * @param source Why the entity is about to die.
-         * @return Returning {@link InteractionResult#FAIL} prevents the entity from dieing.
+         * @return Returning {@link InteractionResult#FAIL} prevents the entity from dying.
          */
         InteractionResult die(LivingEntity entity, DamageSource source);
     }
