@@ -28,9 +28,6 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Consumer;
 
-/**
- * Should be moved to the client package in version 2.0
- */
 @Environment(EnvType.CLIENT)
 public interface TextureStitchEvent {
     /**

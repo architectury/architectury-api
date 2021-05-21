@@ -32,9 +32,6 @@ import net.minecraft.world.InteractionResultHolder;
 
 import java.util.List;
 
-/**
- * Should be moved to the client package in version 2.0.
- */
 @Environment(EnvType.CLIENT)
 public interface GuiEvent {
     /**
@@ -156,7 +153,8 @@ public interface GuiEvent {
          * Equal to the Forge {@code GuiOpenEvent} event.
          * 
          * @param screen The screen that is gonna be opened.
-         * @return Returning {@link InteractionResultHolder#fail(Object)} leads to the screen not being opened. The result is ignored. {@link InteractionResultHolder#success(Object)} leads to the passed new screen being used instead of the old one.
+         * @return Returning {@link InteractionResultHolder#fail(Object)} leads to the screen not being opened.
+         * {@link InteractionResultHolder#success(Object)} leads to the passed new screen being used instead of the old one.
          */
         InteractionResultHolder<Screen> modifyScreen(Screen screen);
     }

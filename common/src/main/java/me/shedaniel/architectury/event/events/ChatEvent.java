@@ -40,7 +40,6 @@ public interface ChatEvent {
          * @param message The raw message itself.
          * @param component The message as component.
          * @return Returning {@link InteractionResultHolder#fail(Object)} leads to the cancellation of the message receiving.
-         * Every other {@link InteractionResultHolder#getObject()} is used as the component to process further.
          */
         InteractionResultHolder<Component> process(ServerPlayer player, String message, Component component);
     }

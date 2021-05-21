@@ -73,7 +73,7 @@ public interface ClientScreenInputEvent {
          *
          * @param client The Minecraft instance performing it.
          * @param screen The screen this keystroke was performed in.
-         * @param keyCode The key code. E.g. {@link org.lwjgl.glfw.GLFW#GLFW_KEY_SPACE}.
+         * @param keyCode The key code.
          * @param scanCode The raw keyboard scan code.
          * @param modifiers Additional modifiers.
          * @return Any other result than {@link InteractionResult#PASS} leads to the cancellation of the key press.
@@ -89,7 +89,7 @@ public interface ClientScreenInputEvent {
          *
          * @param client The Minecraft instance performing it.
          * @param screen The screen this keystroke was performed in.
-         * @param keyCode The key code. E.g. {@link org.lwjgl.glfw.GLFW#GLFW_KEY_SPACE}.
+         * @param keyCode The key code.
          * @param scanCode The raw keyboard scan code.
          * @param modifiers Additional modifiers.
          * @return Any other result than {@link InteractionResult#PASS} leads to the cancellation of the key release.
@@ -106,7 +106,7 @@ public interface ClientScreenInputEvent {
          * @param client The Minecraft instance performing it.
          * @param screen The screen this keystroke was performed in.
          * @param character The typed character.
-         * @param keyCode The key code. E.g. {@link org.lwjgl.glfw.GLFW#GLFW_KEY_SPACE}.
+         * @param keyCode The key code.
          * @return Any other result than {@link InteractionResult#PASS} leads to the cancellation of the key release.
          */
         InteractionResult charTyped(Minecraft client, Screen screen, char character, int keyCode);
@@ -138,7 +138,7 @@ public interface ClientScreenInputEvent {
          * @param screen The screen this keystroke was performed in.
          * @param mouseX The x-coordinate of the mouse cursor.
          * @param mouseY The y-coordinate of the mouse cursor.
-         * @param button The released mouse button. E.g. {@link org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_RIGHT}.
+         * @param button The released mouse button.
          * @return Any other result than {@link InteractionResult#PASS} leads to the cancellation of the key release.
          */
         InteractionResult mouseReleased(Minecraft client, Screen screen, double mouseX, double mouseY, int button);
@@ -154,7 +154,7 @@ public interface ClientScreenInputEvent {
          * @param screen The screen this keystroke was performed in.
          * @param mouseX1 The initial x-coordinate of the mouse cursor.
          * @param mouseY1 The initial y-coordinate of the mouse cursor.
-         * @param button The released mouse button. E.g. {@link org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_RIGHT}.
+         * @param button The released mouse button.
          * @param mouseX2 The final x-coordinate of the mouse cursor.
          * @param mouseY2 The final y-coordinate of the mouse cursor.
          * @return Any other result than {@link InteractionResult#PASS} leads to the cancellation of the key release.
@@ -172,7 +172,7 @@ public interface ClientScreenInputEvent {
          * @param screen The screen this keystroke was performed in.
          * @param mouseX The x-coordinate of the mouse cursor.
          * @param mouseY The y-coordinate of the mouse cursor.
-         * @param button The released mouse button. E.g. {@link org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_RIGHT}.
+         * @param button The released mouse button.
          * @return Any other result than {@link InteractionResult#PASS} leads to the cancellation of the key release.
          */
         InteractionResult mouseClicked(Minecraft client, Screen screen, double mouseX, double mouseY, int button);

@@ -33,9 +33,6 @@ import net.minecraft.world.item.TooltipFlag;
 
 import java.util.List;
 
-/**
- * Should be moved to the client package in version 2.0
- */
 @Environment(EnvType.CLIENT)
 public interface TooltipEvent {
     /**

@@ -48,7 +48,7 @@ public interface ClientRawInputEvent {
          * Equal to the Forge {@code InputEvent.KeyInputEvent} event.
          * 
          * @param client The Minecraft instance performing it.
-         * @param keyCode The key code. E.g. {@link org.lwjgl.glfw.GLFW#GLFW_KEY_SPACE}.
+         * @param keyCode The key code.
          * @param scanCode The raw keyboard scan code.
          * @param action The action that should be performed.
          * @param modifiers Additional modifiers.
@@ -76,7 +76,7 @@ public interface ClientRawInputEvent {
          * There are two variants, either a raw mouse input or the input after it is processed by the game.
          * 
          * @param client The Minecraft instance performing it.
-         * @param button The pressed mouse button. E.g. {@link org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_RIGHT}.
+         * @param button The pressed mouse button.
          * @param action The action that should be performed.
          * @param mods Additional modifiers.
          * @return Any other result than {@link InteractionResult#PASS} leads to the cancellation of the mouse click.

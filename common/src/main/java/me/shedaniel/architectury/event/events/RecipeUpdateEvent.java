@@ -25,9 +25,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.world.item.crafting.RecipeManager;
 
-/**
- * Should be moved to the client package in version 2.0
- */
 @Environment(EnvType.CLIENT)
 public interface RecipeUpdateEvent {
     /**

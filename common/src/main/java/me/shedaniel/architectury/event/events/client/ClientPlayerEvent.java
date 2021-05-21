@@ -46,7 +46,7 @@ public interface ClientPlayerEvent {
         /**
          * Invoked whenever a client player joins a level
          * 
-         * @param player The player joining. Equal to {@link net.minecraft.client.Minecraft#player}
+         * @param player The player joining.
          */
         void join(LocalPlayer player);
     }
