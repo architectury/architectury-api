@@ -33,10 +33,10 @@ public interface CommandRegistrationEvent {
     
     /**
      * This event is invoked after the server registers it's commands.
-     * Equal to Forge's {@code RegisterCommandsEvent} and Fabric's {@code CommandRegistrationCallback}.
-     * 
+     * Equivalent to Forge's {@code RegisterCommandsEvent} and Fabric's {@code CommandRegistrationCallback}.
+     *
      * @param dispatcher The command dispatcher to register commands to.
-     * @param selection The selection where the command can be executed.
+     * @param selection  The selection where the command can be executed.
      */
     void register(CommandDispatcher<CommandSourceStack> dispatcher, Commands.CommandSelection selection);
 }

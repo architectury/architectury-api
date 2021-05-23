@@ -68,9 +68,9 @@ public interface GuiEvent {
     interface RenderHud {
         /**
          * Invoked after the in-game hud has been rendered.
-         * Equal to Forge's {@code RenderGameOverlayEvent.Post@ElementType#ALL} and Fabric's {@code HudRenderCallback}.
-         * 
-         * @param matrices The pose stack.
+         * Equivalent to Forge's {@code RenderGameOverlayEvent.Post@ElementType#ALL} and Fabric's {@code HudRenderCallback}.
+         *
+         * @param matrices  The pose stack.
          * @param tickDelta The tick delta.
          */
         void renderHud(PoseStack matrices, float tickDelta);
@@ -81,8 +81,8 @@ public interface GuiEvent {
         /**
          * Invoked when the debug text is being gathered for rendering.
          * There are two different versions of this event, one for the left and one for the right side.
-         * Equal to Forge's {@code RenderGameOverlayEvent.Text}, when {@code Minecraft.getInstance().options.renderDebug} is true.
-         * 
+         * Equivalent to Forge's {@code RenderGameOverlayEvent.Text}, when {@code Minecraft.getInstance().options.renderDebug} is true.
+         *
          * @param strings The current debug text strings.
          */
         void gatherText(List<String> strings);
@@ -92,10 +92,10 @@ public interface GuiEvent {
     interface ScreenInitPre {
         /**
          * Invoked when a screen is being initialized and after the previous widgets have been cleared.
-         * Equal to the Forge {@code GuiScreenEvent.InitGuiEvent.Pre} event.
-         * 
-         * @param screen The screen.
-         * @param widgets The widgets that are added after this event.
+         * Equivalent to Forge's {@code GuiScreenEvent.InitGuiEvent.Pre} event.
+         *
+         * @param screen   The screen.
+         * @param widgets  The widgets that are added after this event.
          * @param children The listeners for the screen events.
          * @return Returning {@link InteractionResult#FAIL} results in the rest of the init method being ignored.
          */
@@ -106,10 +106,10 @@ public interface GuiEvent {
     interface ScreenInitPost {
         /**
          * Invoked after a screen has been initialized and all the vanilla initialization logic has happened.
-         * Equal to the Forge {@code GuiScreenEvent.InitGuiEvent.Post} event.
+         * Equivalent to Forge's {@code GuiScreenEvent.InitGuiEvent.Post} event.
          *
-         * @param screen The screen.
-         * @param widgets The widgets that were added.
+         * @param screen   The screen.
+         * @param widgets  The widgets that were added.
          * @param children The listeners for the screen events.
          */
         void init(Screen screen, List<AbstractWidget> widgets, List<GuiEventListener> children);
@@ -119,13 +119,13 @@ public interface GuiEvent {
     interface ScreenRenderPre {
         /**
          * Invoked before any screen is rendered.
-         * Equal to the Forge {@code GuiScreenEvent.DrawScreenEvent.Pre} event.
-         * 
-         * @param screen The screen.
+         * Equivalent to Forge's {@code GuiScreenEvent.DrawScreenEvent.Pre} event.
+         *
+         * @param screen   The screen.
          * @param matrices The pose stack.
-         * @param mouseX The x-coordinate of the mouse cursor.
-         * @param mouseY The y-coordinate of the mouse cursor.
-         * @param delta The current tick delta.
+         * @param mouseX   The x-coordinate of the mouse cursor.
+         * @param mouseY   The y-coordinate of the mouse cursor.
+         * @param delta    The current tick delta.
          * @return Returning {@link InteractionResult#FAIL} prevents any other rendering.
          */
         InteractionResult render(Screen screen, PoseStack matrices, int mouseX, int mouseY, float delta);
@@ -135,13 +135,13 @@ public interface GuiEvent {
     interface ScreenRenderPost {
         /**
          * Invoked after a screen has finished rendering using the vanilla logic.
-         * Equal to the Forge {@code GuiScreenEvent.DrawScreenEvent.Post} event.
+         * Equivalent to Forge's {@code GuiScreenEvent.DrawScreenEvent.Post} event.
          *
-         * @param screen The screen.
+         * @param screen   The screen.
          * @param matrices The pose stack.
-         * @param mouseX The x-coordinate of the mouse cursor.
-         * @param mouseY The y-coordinate of the mouse cursor.
-         * @param delta The current tick delta.
+         * @param mouseX   The x-coordinate of the mouse cursor.
+         * @param mouseY   The y-coordinate of the mouse cursor.
+         * @param delta    The current tick delta.
          */
         void render(Screen screen, PoseStack matrices, int mouseX, int mouseY, float delta);
     }
@@ -150,8 +150,8 @@ public interface GuiEvent {
     interface SetScreen {
         /**
          * Invoked before a new screen is set to open.
-         * Equal to the Forge {@code GuiOpenEvent} event.
-         * 
+         * Equivalent to Forge's {@code GuiOpenEvent} event.
+         *
          * @param screen The screen that is gonna be opened.
          * @return Returning {@link InteractionResultHolder#fail(Object)} leads to the screen not being opened.
          * {@link InteractionResultHolder#success(Object)} leads to the passed new screen being used instead of the old one.

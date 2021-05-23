@@ -33,11 +33,11 @@ import java.util.UUID;
 @Environment(EnvType.CLIENT)
 public interface ClientChatEvent {
     /**
-     * @see Client#process(String) 
+     * @see Client#process(String)
      */
     Event<Client> CLIENT = EventFactory.createInteractionResultHolder();
     /**
-     * @see ClientReceived#process(ChatType, Component, UUID) 
+     * @see ClientReceived#process(ChatType, Component, UUID)
      */
     Event<ClientReceived> CLIENT_RECEIVED = EventFactory.createInteractionResultHolder();
     
@@ -45,8 +45,8 @@ public interface ClientChatEvent {
     interface Client {
         /**
          * Event to modify the chat message a clients sends.
-         * It is equal to the Forge {@code ClientChatEvent} event.
-         * 
+         * Equivalent to Forge's {@code ClientChatEvent} event.
+         *
          * @param message The raw chat message the client wants to send.
          * @return Returning {@link InteractionResultHolder#fail(Object)} will result in an empty string being used as message.
          */
@@ -57,12 +57,12 @@ public interface ClientChatEvent {
     interface ClientReceived {
         /**
          * Event to intercept the receiving of an chat message.
-         * Called as soon as the client receives the chat message packet.
-         * It is equal to the Forge {@code ClientChatReceivedEvent} event.
-         * 
-         * @param type Where was the message emitted from.
+         * Invoked as soon as the client receives the chat message packet.
+         * Equivalent to Forge's {@code ClientChatReceivedEvent} event.
+         *
+         * @param type    Where was the message emitted from.
          * @param message The chat message.
-         * @param sender The packet sender. Can be null, but probably is the sending player UUID or {@link net.minecraft.Util#NIL_UUID}
+         * @param sender  The packet sender. Can be null, but probably is the sending player UUID or {@link net.minecraft.Util#NIL_UUID}
          * @return Returning {@link InteractionResultHolder#fail(Object)} will result in a cancellation of the message and so it is not processed further.
          */
         InteractionResultHolder<Component> process(ChatType type, Component message, @Nullable UUID sender);

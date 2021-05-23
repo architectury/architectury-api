@@ -48,12 +48,12 @@ public interface BlockEvent {
     interface Break {
         /**
          * Invoked when a block is destroyed by a player.
-         * 
-         * @param world The level the block is in.
-         * @param pos The position of the block.
-         * @param state The current state of the block.
+         *
+         * @param world  The level the block is in.
+         * @param pos    The position of the block.
+         * @param state  The current state of the block.
          * @param player The player who is breaking the block.
-         * @param xp The experience that are dropped when the block was destroyed. Always null on fabric!
+         * @param xp     The experience that are dropped when the block was destroyed. Always null on fabric!
          * @return Return {@link InteractionResult#FAIL} to cancel the block breaking.
          */
         InteractionResult breakBlock(Level world, BlockPos pos, BlockState state, ServerPlayer player, @Nullable IntValue xp);
@@ -63,9 +63,9 @@ public interface BlockEvent {
         /**
          * Invoked when a block is placed.
          *
-         * @param world The level the block is in.
-         * @param pos The position of the block.
-         * @param state The future state of the block.
+         * @param world  The level the block is in.
+         * @param pos    The position of the block.
+         * @param state  The future state of the block.
          * @param placer The entity who is placing it. Can be null, when the placer isn't a entity.
          * @return Any other value than {@link InteractionResult#PASS} cancels the block placement.
          */
@@ -76,11 +76,11 @@ public interface BlockEvent {
         /**
          * Invoked when a falling block is about to land.
          *
-         * @param level The level the block is in.
-         * @param pos The position of the block.
+         * @param level     The level the block is in.
+         * @param pos       The position of the block.
          * @param fallState The current state of the falling block.
-         * @param landOn The current state of the block the falling one is landing on.
-         * @param entity The falling block entity.
+         * @param landOn    The current state of the block the falling one is landing on.
+         * @param entity    The falling block entity.
          */
         void onLand(Level level, BlockPos pos, BlockState fallState, BlockState landOn, FallingBlockEntity entity);
     }

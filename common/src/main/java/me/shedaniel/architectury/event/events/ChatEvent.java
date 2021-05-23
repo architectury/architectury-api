@@ -34,10 +34,10 @@ public interface ChatEvent {
     interface Server {
         /**
          * Invoked when the server receives a message from a client.
-         * Equal to the Forge {@code ServerChatEvent} event.
-         * 
-         * @param player The player who has sent the message.
-         * @param message The raw message itself.
+         * Equivalent to Forge's {@code ServerChatEvent} event.
+         *
+         * @param player    The player who has sent the message.
+         * @param message   The raw message itself.
          * @param component The message as component.
          * @return Returning {@link InteractionResultHolder#fail(Object)} leads to the cancellation of the message receiving.
          */

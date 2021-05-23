@@ -30,21 +30,20 @@ import java.util.List;
 
 public interface LightningEvent {
     
-    // TODO Pre - Called before a lightning bolt entity is added to the world. (cancellable)
+    // TODO Pre - Invoked before a lightning bolt entity is added to the world. (cancellable)
     /**
      * @see Strike#onStrike(LightningBolt, Level, Vec3, List)
      */
     Event<Strike> STRIKE = EventFactory.createLoop();
-    // TODO Post - Called before a lightning bolt entity is removed from the world.
+    // TODO Post - Invoked before a lightning bolt entity is removed from the world.
     
     interface Strike {
         /**
          * Invoked after the lightning has gathered a list of entities to strike.
          *
-         *
-         * @param bolt The lightning bolt.
-         * @param level The level the lighting is spawned in.
-         * @param pos The position the lightning strikes.
+         * @param bolt     The lightning bolt.
+         * @param level    The level the lighting is spawned in.
+         * @param pos      The position the lightning strikes.
          * @param toStrike A list of all entities the lightning affects. Remove entities from this list to stop them from being hit.
          */
         void onStrike(LightningBolt bolt, Level level, Vec3 pos, List<Entity> toStrike);

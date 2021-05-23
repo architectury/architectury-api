@@ -29,11 +29,11 @@ import org.jetbrains.annotations.Nullable;
 /**
  * This event is invoked whenever a command is issued.
  * The {@link ParseResults} can be modified and even a custom {@link Throwable} can be used to tell the source of failure.
- * 
+ *
  * <p>A command fails when any other result than {@link net.minecraft.world.InteractionResult#PASS} is returned.
  * When PASS is used, the {@link CommandPerformEvent#getResults()} is used for execution.
- * 
- * <p>This is equal to the Forge {@code CommandEvent} event.
+ *
+ * <p> Equivalent to Forge's {@code CommandEvent} event.
  */
 public class CommandPerformEvent {
     public static final Event<Actor<CommandPerformEvent>> EVENT = EventFactory.createActorLoop();
@@ -43,7 +43,7 @@ public class CommandPerformEvent {
     private Throwable throwable;
     
     /**
-     * @param results The initial used parsed results.
+     * @param results   The initial used parsed results.
      * @param throwable The initial used throwable.
      */
     public CommandPerformEvent(ParseResults<CommandSourceStack> results, @Nullable Throwable throwable) {

@@ -45,7 +45,7 @@ public interface ClientPlayerEvent {
     interface ClientPlayerJoin {
         /**
          * Invoked whenever a client player joins a level
-         * 
+         *
          * @param player The player joining.
          */
         void join(LocalPlayer player);
@@ -55,7 +55,7 @@ public interface ClientPlayerEvent {
     interface ClientPlayerQuit {
         /**
          * Invoked whenever a client player leaves a level and is cleared on the client side.
-         * 
+         *
          * @param player The player leaving.
          */
         void quit(@Nullable LocalPlayer player);
@@ -65,7 +65,7 @@ public interface ClientPlayerEvent {
     interface ClientPlayerRespawn {
         /**
          * Invoked whenever the player respawn packet is received by the client.
-         * 
+         *
          * @param oldPlayer The player before the respawn happened.
          * @param newPlayer The player after the respawn happened.
          */

@@ -28,7 +28,7 @@ import net.minecraft.world.level.Level;
 public interface LifecycleEvent {
     /**
      * Invoked before initial server startup. This is the earliest point at which the server will be available.
-     * Equal to Forge's {@code FMLServerAboutToStartEvent} event and
+     * Equivalent to Forge's {@code FMLServerAboutToStartEvent} event and
      * Fabric's {@code ServerLifecycleEvents#SERVER_STARTING}.
      *
      * @see ServerState#stateChanged(Object)
@@ -36,14 +36,14 @@ public interface LifecycleEvent {
     Event<ServerState> SERVER_BEFORE_START = EventFactory.createLoop();
     /**
      * Invoked during server startup.
-     * Equal to the Forge {@code FMLServerStartingEvent} event.
+     * Equivalent to Forge's {@code FMLServerStartingEvent} event.
      *
      * @see ServerState#stateChanged(Object)
      */
     Event<ServerState> SERVER_STARTING = EventFactory.createLoop();
     /**
      * Invoked when the server has started and is ready to accept players.
-     * Equal to Forge's {@code FMLServerStartedEvent} event
+     * Equivalent to Forge's {@code FMLServerStartedEvent} event
      * and Fabric's {@code ServerLifecycleEvents#SERVER_STARTED}.
      *
      * @see ServerState#stateChanged(Object)
@@ -51,7 +51,7 @@ public interface LifecycleEvent {
     Event<ServerState> SERVER_STARTED = EventFactory.createLoop();
     /**
      * Invoked when the server begins shutting down.
-     * Equal to Forge's {@code FMLServerStoppingEvent} event and
+     * Equivalent to Forge's {@code FMLServerStoppingEvent} event and
      * Fabric's {@code ServerLifecycleEvents#SERVER_STOPPING}.
      *
      * @see ServerState#stateChanged(Object)
@@ -59,7 +59,7 @@ public interface LifecycleEvent {
     Event<ServerState> SERVER_STOPPING = EventFactory.createLoop();
     /**
      * Invoked when the server has finished stopping, and is about to fully shut down.
-     * Equal to Forge's {@code FMLServerStoppedEvent} event and
+     * Equivalent to Forge's {@code FMLServerStoppedEvent} event and
      * Fabric's {@code ServerLifecycleEvents#SERVER_STOPPED}.
      *
      * @see ServerState#stateChanged(Object)
@@ -67,7 +67,7 @@ public interface LifecycleEvent {
     Event<ServerState> SERVER_STOPPED = EventFactory.createLoop();
     /**
      * Invoked when a world is loaded on the server-side.
-     * Equal to Forge's {@code WorldEvent.Load} event (on server)
+     * Equivalent to Forge's {@code WorldEvent.Load} event (on server)
      * and Fabric's {@code ServerWorldEvents#LOAD}.
      *
      * @see ServerWorldState#act(Level)
@@ -75,7 +75,7 @@ public interface LifecycleEvent {
     Event<ServerWorldState> SERVER_WORLD_LOAD = EventFactory.createLoop();
     /**
      * Invoked when a world is unloaded on the server-side.
-     * Equal to Forge's {@code WorldEvent.Unload} event (on server)
+     * Equivalent to Forge's {@code WorldEvent.Unload} event (on server)
      * and Fabric's {@code ServerWorldEvents#UNLOAD}.
      *
      * @see ServerWorldState#act(Level)
@@ -83,7 +83,7 @@ public interface LifecycleEvent {
     Event<ServerWorldState> SERVER_WORLD_UNLOAD = EventFactory.createLoop();
     /**
      * Invoked when the world is being saved.
-     * Equal to Forge's {@code WorldEvent.Save} event.
+     * Equivalent to Forge's {@code WorldEvent.Save} event.
      *
      * @see ServerWorldState#act(Level)
      */

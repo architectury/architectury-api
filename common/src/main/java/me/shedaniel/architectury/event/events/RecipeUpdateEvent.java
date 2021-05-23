@@ -34,7 +34,7 @@ public interface RecipeUpdateEvent {
     
     /**
      * Invoked when the client has received an updated list of recipes from the server.
-     * Equal to the Forge {@code RecipesUpdatedEvent} event.
+     * Equivalent to Forge's {@code RecipesUpdatedEvent} event.
      *
      * @param recipeManager The recipe manager.
      */

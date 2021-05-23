@@ -45,12 +45,12 @@ public interface ClientRawInputEvent {
     interface KeyPressed {
         /**
          * Invoked whenever a key input is performed.
-         * Equal to the Forge {@code InputEvent.KeyInputEvent} event.
-         * 
-         * @param client The Minecraft instance performing it.
-         * @param keyCode The key code.
-         * @param scanCode The raw keyboard scan code.
-         * @param action The action that should be performed.
+         * Equivalent to Forge's {@code InputEvent.KeyInputEvent} event.
+         *
+         * @param client    The Minecraft instance performing it.
+         * @param keyCode   The key code.
+         * @param scanCode  The raw keyboard scan code.
+         * @param action    The action that should be performed.
          * @param modifiers Additional modifiers.
          * @return Any other result than {@link InteractionResult#PASS} leads to the cancellation of the key press.
          */
@@ -60,8 +60,8 @@ public interface ClientRawInputEvent {
     interface MouseScrolled {
         /**
          * Invoked whenever the mouse scroll wheel is used.
-         * Equal to the Forge {@code InputEvent.MouseScrollEvent} event.
-         * 
+         * Equivalent to Forge's {@code InputEvent.MouseScrollEvent} event.
+         *
          * @param client The Minecraft instance performing it.
          * @param amount The amount of movement.
          * @return Any other result than {@link InteractionResult#PASS} leads to the cancellation of the mouse scroll functions.
@@ -74,11 +74,11 @@ public interface ClientRawInputEvent {
         /**
          * Invoked whenever a mouse button is pressed.
          * There are two variants, either a raw mouse input or the input after it is processed by the game.
-         * 
+         *
          * @param client The Minecraft instance performing it.
          * @param button The pressed mouse button.
          * @param action The action that should be performed.
-         * @param mods Additional modifiers.
+         * @param mods   Additional modifiers.
          * @return Any other result than {@link InteractionResult#PASS} leads to the cancellation of the mouse click.
          */
         InteractionResult mouseClicked(Minecraft client, int button, int action, int mods);

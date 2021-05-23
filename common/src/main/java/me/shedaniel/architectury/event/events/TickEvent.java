@@ -28,42 +28,42 @@ import net.minecraft.world.level.Level;
 public interface TickEvent<T> {
     /**
      * Invoked before a server tick is processed.
-     * Equal to the forge {@code ServerTickEvent} event in the START Phase.
+     * Equivalent to Forge's {@code ServerTickEvent} event in the START Phase.
      *
      * @see #tick(Object)
      */
     Event<Server> SERVER_PRE = EventFactory.createLoop();
     /**
      * Invoked after a server tick has been processed.
-     * Equal to the forge {@code ServerTickEvent} event in the END Phase.
+     * Equivalent to Forge's {@code ServerTickEvent} event in the END Phase.
      *
      * @see #tick(Object)
      */
     Event<Server> SERVER_POST = EventFactory.createLoop();
     /**
      * Invoked before a server level tick is processed.
-     * Equal to the forge {@code WorldTickEvent} event in the START Phase.
+     * Equivalent to Forge's {@code WorldTickEvent} event in the START Phase.
      *
      * @see #tick(Object)
      */
     Event<ServerWorld> SERVER_WORLD_PRE = EventFactory.createLoop();
     /**
      * Invoked after a server level tick has been processed.
-     * Equal to the forge {@code WorldTickEvent} event in the END Phase.
+     * Equivalent to Forge's {@code WorldTickEvent} event in the END Phase.
      *
      * @see #tick(Object)
      */
     Event<ServerWorld> SERVER_WORLD_POST = EventFactory.createLoop();
     /**
      * Invoked before a player tick is processed.
-     * Equal to the forge {@code PlayerTickEvent} event in the START Phase.
+     * Equivalent to Forge's {@code PlayerTickEvent} event in the START Phase.
      *
      * @see #tick(Object)
      */
     Event<Player> PLAYER_PRE = EventFactory.createLoop();
     /**
      * Invoked after a player tick has been processed.
-     * Equal to the forge {@code PlayerTickEvent} event in the END Phase.
+     * Equivalent to Forge's {@code PlayerTickEvent} event in the END Phase.
      *
      * @see #tick(Object)
      */

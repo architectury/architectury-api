@@ -67,8 +67,8 @@ public interface EntityEvent {
     interface LivingDeath {
         /**
          * Invoked before a living entity dies.
-         * It is equal to the Forge {@code LivingDeathEvent} event.
-         * 
+         * Equivalent to Forge's {@code LivingDeathEvent} event.
+         *
          * @param entity The entity that is about to die.
          * @param source Why the entity is about to die.
          * @return Returning {@link InteractionResult#FAIL} prevents the entity from dying.
@@ -79,10 +79,10 @@ public interface EntityEvent {
     interface LivingAttack {
         /**
          * Invoked before an entity is hurt by a damage source.
-         * Equal to the Forge {@code LivingAttackEvent} event.
-         * 
+         * Equivalent to Forge's {@code LivingAttackEvent} event.
+         *
          * <p>You currently cannot override the amount of damage the entity receives.
-         * 
+         *
          * @param entity The entity that is attacked.
          * @param source The reason why the entity takes damage.
          * @param amount The amount of damage the entity takes.
@@ -95,14 +95,14 @@ public interface EntityEvent {
         /**
          * Invoked before an entity is spawned into the world.
          * This specifically concerns <i>spawning</i> through either a {@link BaseSpawner} or during world generation.
-         * Equal to the Forge {@code LivingSpawnEvent.CheckSpawn} event.
-         * 
-         * @param entity The entity that is about to spawn.
-         * @param world The level the entity wants to spawn in.
-         * @param x The x-coordinate of the spawn position.
-         * @param y The y-coordinate of the spawn position.
-         * @param z The z-coordinate the spawn position.
-         * @param type The source of spawning.
+         * Equivalent to Forge's {@code LivingSpawnEvent.CheckSpawn} event.
+         *
+         * @param entity  The entity that is about to spawn.
+         * @param world   The level the entity wants to spawn in.
+         * @param x       The x-coordinate of the spawn position.
+         * @param y       The y-coordinate of the spawn position.
+         * @param z       The z-coordinate the spawn position.
+         * @param type    The source of spawning.
          * @param spawner The spawner. Can be null.
          * @return Return {@link EventResult#interrupt(Boolean)} with true or false to let the entity spawn or prevent it.
          */
@@ -112,10 +112,10 @@ public interface EntityEvent {
     interface Add {
         /**
          * Invoked when an entity is about to be added to the world.
-         * Equal to the Forge {@code EntityJoinWorldEvent} event.
-         * 
+         * Equivalent to Forge's {@code EntityJoinWorldEvent} event.
+         *
          * @param entity The entity to add to the level.
-         * @param world The level the entity is added to.
+         * @param world  The level the entity is added to.
          * @return Returning {@link InteractionResult#FAIL} prevents the addition of the entity to the world.
          */
         InteractionResult add(Entity entity, Level world);
@@ -129,13 +129,13 @@ public interface EntityEvent {
     interface EnterChunk {
         /**
          * Invoked whenever an entity enters a chunk.
-         * Equal to the Forge {@code EnteringChunk} event.
-         * 
+         * Equivalent to Forge's {@code EnteringChunk} event.
+         *
          * @param entity The entity moving to a different chunk.
          * @param chunkX The chunk x-coordinate.
          * @param chunkZ The chunk z-coordinate.
-         * @param prevX The previous chunk x-coordinate.
-         * @param prevZ The previous chunk z-coordinate.
+         * @param prevX  The previous chunk x-coordinate.
+         * @param prevZ  The previous chunk z-coordinate.
          */
         void enterChunk(Entity entity, int chunkX, int chunkZ, int prevX, int prevZ);
     }

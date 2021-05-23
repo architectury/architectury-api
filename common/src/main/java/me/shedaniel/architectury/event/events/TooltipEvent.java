@@ -40,14 +40,10 @@ public interface TooltipEvent {
      */
     Event<Item> ITEM = EventFactory.createLoop();
     /**
-     * This is not invoked on Forge due to fundamental code differences!
-     *
      * @see RenderVanilla#renderTooltip(PoseStack, List, int, int)
      */
     Event<RenderVanilla> RENDER_VANILLA_PRE = EventFactory.createInteractionResult();
     /**
-     * This is not invoked on Forge due to fundamental code differences!
-     *
      * @see RenderForge#renderTooltip(PoseStack, List, int, int)
      */
     Event<RenderForge> RENDER_FORGE_PRE = EventFactory.createInteractionResult();
@@ -63,13 +59,13 @@ public interface TooltipEvent {
     @Environment(EnvType.CLIENT)
     interface Item {
         /**
-         * Called whenever a item tooltip is rendered.
-         * Equal to the Forge {@code ItemTooltipEvent} event and
+         * Invoked whenever an item tooltip is rendered.
+         * Equivalent to Forge's {@code ItemTooltipEvent} event and
          * Fabric's {@code ItemTooltipCallback}.
          *
          * @param stack The rendered stack.
          * @param lines The tooltip components. Components can be added or removed.
-         * @param flag A flag indicating if advanced mode is active.
+         * @param flag  A flag indicating if advanced mode is active.
          */
         void append(ItemStack stack, List<Component> lines, TooltipFlag flag);
     }
@@ -77,14 +73,16 @@ public interface TooltipEvent {
     @Environment(EnvType.CLIENT)
     interface RenderVanilla {
         /**
-         * Called before the tooltip for a tooltip is rendered.
+         * Invoked before the tooltip for a tooltip is rendered.
          *
-         * This is not invoked on Forge due to fundamental differences in Forge and vanilla logic.
+         * <p> This is <b>not</b> invoked on Forge due to
+         * {@link RenderForge#renderTooltip(PoseStack, List, int, int) fundamental differences}
+         * in Forge and vanilla tooltip logic.
          *
          * @param matrices The pose stack.
-         * @param texts The texts that are rendered. Can be manipulated.
-         * @param x The x-coordinate of the tooltip.
-         * @param y The y-coordinate of the tooltip.
+         * @param texts    The texts that are rendered. Can be manipulated.
+         * @param x        The x-coordinate of the tooltip.
+         * @param y        The y-coordinate of the tooltip.
          * @return Returning {@link InteractionResult#FAIL} cancels the rendering.
          */
         InteractionResult renderTooltip(PoseStack matrices, List<? extends FormattedCharSequence> texts, int x, int y);
@@ -93,14 +91,16 @@ public interface TooltipEvent {
     @Environment(EnvType.CLIENT)
     interface RenderForge {
         /**
-         * Called before the tooltip for a tooltip is rendered.
+         * Invoked before the tooltip for a tooltip is rendered.
          *
-         * This is not invoked on Forge due to fundamental differences in Forge and vanilla logic.
+         * <p> This is <b>only</b> invoked on Forge due to
+         * {@link RenderVanilla#renderTooltip(PoseStack, List, int, int) fundamental differences}
+         * in Forge and vanilla tooltip logic.
          *
          * @param matrices The pose stack.
-         * @param texts The texts that are rendered. Can be manipulated.
-         * @param x The x-coordinate of the tooltip.
-         * @param y The y-coordinate of the tooltip.
+         * @param texts    The texts that are rendered. Can be manipulated.
+         * @param x        The x-coordinate of the tooltip.
+         * @param y        The y-coordinate of the tooltip.
          * @return Returning {@link InteractionResult#FAIL} cancels the rendering.
          */
         InteractionResult renderTooltip(PoseStack matrices, List<? extends FormattedText> texts, int x, int y);
@@ -112,7 +112,7 @@ public interface TooltipEvent {
          * Event to manipulate the position of the tooltip.
          *
          * @param matrices The pose stack.
-         * @param context The current position context.
+         * @param context  The current position context.
          */
         void renderTooltip(PoseStack matrices, PositionContext context);
     }
@@ -123,9 +123,9 @@ public interface TooltipEvent {
          * Event to manipulate the color of the tooltip.
          *
          * @param matrices The pose stack.
-         * @param x The x-coordinate of the tooltip.
-         * @param y The y-coordinate of the tooltip.
-         * @param context The current color context.
+         * @param x        The x-coordinate of the tooltip.
+         * @param y        The y-coordinate of the tooltip.
+         * @param context  The current color context.
          */
         void renderTooltip(PoseStack matrices, int x, int y, ColorContext context);
     }
