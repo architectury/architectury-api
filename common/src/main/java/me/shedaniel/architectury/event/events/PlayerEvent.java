@@ -276,6 +276,7 @@ public interface PlayerEvent {
          * @param level  The level the player is in.
          * @param stack  The bucket stack.
          * @param target The target which the player has aimed at.
+         * @return A {@link CompoundEventResult} determining the outcome of the event.
          * @return On Forge, FAIL cancels the event, and SUCCESS sets the event as handled. On Fabric, any non-PASS result is returned directly and immediately.
          */
         CompoundEventResult<ItemStack> fill(Player player, Level level, ItemStack stack, @Nullable HitResult target);

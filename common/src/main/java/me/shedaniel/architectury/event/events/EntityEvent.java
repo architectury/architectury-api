@@ -103,7 +103,7 @@ public interface EntityEvent {
          * @param y       The y-coordinate of the spawn position.
          * @param z       The z-coordinate the spawn position.
          * @param type    The source of spawning.
-         * @param spawner The spawner. Can be null.
+         * @param spawner The spawner. Can be {@code null}.
          * @return Return {@link EventResult#interrupt(Boolean)} with true or false to let the entity spawn or prevent it.
          */
         EventResult canSpawn(LivingEntity entity, LevelAccessor world, double x, double y, double z, MobSpawnType type, @Nullable BaseSpawner spawner);

@@ -62,7 +62,7 @@ public interface ClientChatEvent {
          *
          * @param type    Where was the message emitted from.
          * @param message The chat message.
-         * @param sender  The packet sender. Can be null, but probably is the sending player UUID or {@link net.minecraft.Util#NIL_UUID}
+         * @param sender  The packet sender. Can be {@code null}, but probably is the sending player UUID or {@link net.minecraft.Util#NIL_UUID}
          * @return Returning {@link InteractionResultHolder#fail(Object)} will result in a cancellation of the message and so it is not processed further.
          */
         InteractionResultHolder<Component> process(ChatType type, Component message, @Nullable UUID sender);

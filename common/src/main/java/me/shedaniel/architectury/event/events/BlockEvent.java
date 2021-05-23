@@ -53,7 +53,7 @@ public interface BlockEvent {
          * @param pos    The position of the block.
          * @param state  The current state of the block.
          * @param player The player who is breaking the block.
-         * @param xp     The experience that are dropped when the block was destroyed. Always null on fabric!
+         * @param xp     The experience that are dropped when the block was destroyed. Always {@code null} on fabric!
          * @return Return {@link InteractionResult#FAIL} to cancel the block breaking.
          */
         InteractionResult breakBlock(Level world, BlockPos pos, BlockState state, ServerPlayer player, @Nullable IntValue xp);
@@ -66,7 +66,7 @@ public interface BlockEvent {
          * @param world  The level the block is in.
          * @param pos    The position of the block.
          * @param state  The future state of the block.
-         * @param placer The entity who is placing it. Can be null, when the placer isn't a entity.
+         * @param placer The entity who is placing it. Can be {@code null}, e.g. when a dispenser places something.
          * @return Any other value than {@link InteractionResult#PASS} cancels the block placement.
          */
         InteractionResult placeBlock(Level world, BlockPos pos, BlockState state, @Nullable Entity placer);
