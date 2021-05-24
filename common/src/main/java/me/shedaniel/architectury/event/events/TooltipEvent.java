@@ -64,7 +64,7 @@ public interface TooltipEvent {
          * Fabric's {@code ItemTooltipCallback}.
          *
          * @param stack The rendered stack.
-         * @param lines The tooltip components. Components can be added or removed.
+         * @param lines The mutable list of tooltip components.
          * @param flag  A flag indicating if advanced mode is active.
          */
         void append(ItemStack stack, List<Component> lines, TooltipFlag flag);
@@ -80,7 +80,7 @@ public interface TooltipEvent {
          * in Forge and vanilla tooltip logic.
          *
          * @param matrices The pose stack.
-         * @param texts    The texts that are rendered. Can be manipulated.
+         * @param texts    The mutable list of components that are rendered.
          * @param x        The x-coordinate of the tooltip.
          * @param y        The y-coordinate of the tooltip.
          * @return Returning {@link InteractionResult#FAIL} cancels the rendering.
@@ -98,7 +98,7 @@ public interface TooltipEvent {
          * in Forge and vanilla tooltip logic.
          *
          * @param matrices The pose stack.
-         * @param texts    The texts that are rendered. Can be manipulated.
+         * @param texts    The mutable list of components that are rendered.
          * @param x        The x-coordinate of the tooltip.
          * @param y        The y-coordinate of the tooltip.
          * @return Returning {@link InteractionResult#FAIL} cancels the rendering.

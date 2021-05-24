@@ -95,8 +95,8 @@ public interface GuiEvent {
          * Equivalent to Forge's {@code GuiScreenEvent.InitGuiEvent.Pre} event.
          *
          * @param screen   The screen.
-         * @param widgets  The widgets that are added after this event.
-         * @param children The listeners for the screen events.
+         * @param widgets  The widgets of the screen.
+         * @param children The listeners of the screen.
          * @return Returning {@link InteractionResult#FAIL} results in the rest of the init method being ignored.
          */
         InteractionResult init(Screen screen, List<AbstractWidget> widgets, List<GuiEventListener> children);
@@ -109,8 +109,8 @@ public interface GuiEvent {
          * Equivalent to Forge's {@code GuiScreenEvent.InitGuiEvent.Post} event.
          *
          * @param screen   The screen.
-         * @param widgets  The widgets that were added.
-         * @param children The listeners for the screen events.
+         * @param widgets  The widgets of the screen.
+         * @param children The listeners of the screen.
          */
         void init(Screen screen, List<AbstractWidget> widgets, List<GuiEventListener> children);
     }
@@ -152,7 +152,7 @@ public interface GuiEvent {
          * Invoked before a new screen is set to open.
          * Equivalent to Forge's {@code GuiOpenEvent} event.
          *
-         * @param screen The screen that is gonna be opened.
+         * @param screen The screen that is going to be opened.
          * @return Returning {@link InteractionResultHolder#fail(Object)} leads to the screen not being opened.
          * {@link InteractionResultHolder#success(Object)} leads to the passed new screen being used instead of the old one.
          */

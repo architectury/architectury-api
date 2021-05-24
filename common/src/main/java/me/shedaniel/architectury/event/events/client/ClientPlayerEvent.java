@@ -66,8 +66,8 @@ public interface ClientPlayerEvent {
         /**
          * Invoked whenever the player respawn packet is received by the client.
          *
-         * @param oldPlayer The player before the respawn happened.
-         * @param newPlayer The player after the respawn happened.
+         * @param oldPlayer The player before the respawn.
+         * @param newPlayer The player after the respawn.
          */
         void respawn(LocalPlayer oldPlayer, LocalPlayer newPlayer);
     }

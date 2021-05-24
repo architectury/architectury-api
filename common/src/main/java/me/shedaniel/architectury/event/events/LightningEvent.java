@@ -44,7 +44,7 @@ public interface LightningEvent {
          * @param bolt     The lightning bolt.
          * @param level    The level the lighting is spawned in.
          * @param pos      The position the lightning strikes.
-         * @param toStrike A list of all entities the lightning affects. Remove entities from this list to stop them from being hit.
+         * @param toStrike A list of all entities the lightning affects.
          */
         void onStrike(LightningBolt bolt, Level level, Vec3 pos, List<Entity> toStrike);
     }

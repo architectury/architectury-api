@@ -70,7 +70,7 @@ public interface EntityEvent {
          * Equivalent to Forge's {@code LivingDeathEvent} event.
          *
          * @param entity The entity that is about to die.
-         * @param source Why the entity is about to die.
+         * @param source The source of damage triggering the death.
          * @return Returning {@link InteractionResult#FAIL} prevents the entity from dying.
          */
         InteractionResult die(LivingEntity entity, DamageSource source);

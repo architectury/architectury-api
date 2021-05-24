@@ -98,7 +98,7 @@ public interface InteractionEvent {
          * Equivalent to Forge's {@code PlayerInteractEvent.RightClickItem} event and Fabric's {@code UseItemCallback}.
          *
          * @param player The player right clicking the block.
-         * @param hand   The hand that is used. You can get the {@link ItemStack} with {@link Player#getItemInHand(InteractionHand)}
+         * @param hand   The hand that is used.
          * @return Whenever the return is not {@link InteractionResult#PASS}, the result value is used and the event is canceled.
          */
         InteractionResultHolder<ItemStack> click(Player player, InteractionHand hand);

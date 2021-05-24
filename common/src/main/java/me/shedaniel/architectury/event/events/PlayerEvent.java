@@ -131,7 +131,7 @@ public interface PlayerEvent {
          * To manipulate the player use {@link PlayerClone#clone(ServerPlayer, ServerPlayer, boolean)}.
          *
          * @param newPlayer    The respawned player.
-         * @param conqueredEnd Has the player conquered the end. This is true when the player joined the end and now is leaving it. {@link ServerPlayer#wonGame}
+         * @param conqueredEnd Whether the player has conquered the end. This is true when the player joined the end and now is leaving it. {@link ServerPlayer#wonGame}
          */
         void respawn(ServerPlayer newPlayer, boolean conqueredEnd);
     }
