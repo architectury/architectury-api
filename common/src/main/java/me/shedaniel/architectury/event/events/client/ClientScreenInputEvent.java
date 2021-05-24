@@ -129,7 +129,7 @@ public interface ClientScreenInputEvent {
          * @param client The Minecraft instance performing it.
          * @param screen The screen this keystroke was performed in.
          * @param mouseX The scaled x-coordinate of the mouse cursor.
-         * @param mouseY The y-coordinate of the mouse cursor.
+         * @param mouseY The scaled y-coordinate of the mouse cursor.
          * @param amount The amount the scroll wheel is moved.
          * @return Any other result than {@link InteractionResult#PASS} leads to the cancellation of the key release.
          */
@@ -146,8 +146,8 @@ public interface ClientScreenInputEvent {
          *
          * @param client The Minecraft instance performing it.
          * @param screen The screen this keystroke was performed in.
-         * @param mouseX The x-coordinate of the mouse cursor.
-         * @param mouseY The y-coordinate of the mouse cursor.
+         * @param mouseX The scaled x-coordinate of the mouse cursor.
+         * @param mouseY The scaled y-coordinate of the mouse cursor.
          * @param button The released mouse button.
          * @return Any other result than {@link InteractionResult#PASS} leads to the cancellation of the key release.
          */
@@ -164,11 +164,11 @@ public interface ClientScreenInputEvent {
          *
          * @param client  The Minecraft instance performing it.
          * @param screen  The screen this keystroke was performed in.
-         * @param mouseX1 The initial x-coordinate of the mouse cursor.
-         * @param mouseY1 The initial y-coordinate of the mouse cursor.
+         * @param mouseX1 The initial scaled x-coordinate of the mouse cursor.
+         * @param mouseY1 The initial scaled y-coordinate of the mouse cursor.
          * @param button  The released mouse button.
-         * @param mouseX2 The final x-coordinate of the mouse cursor.
-         * @param mouseY2 The final y-coordinate of the mouse cursor.
+         * @param mouseX2 The final scaled x-coordinate of the mouse cursor.
+         * @param mouseY2 The final scaled y-coordinate of the mouse cursor.
          * @return Any other result than {@link InteractionResult#PASS} leads to the cancellation of the key release.
          */
         InteractionResult mouseDragged(Minecraft client, Screen screen, double mouseX1, double mouseY1, int button, double mouseX2, double mouseY2);
@@ -184,8 +184,8 @@ public interface ClientScreenInputEvent {
          *
          * @param client The Minecraft instance performing it.
          * @param screen The screen this keystroke was performed in.
-         * @param mouseX The x-coordinate of the mouse cursor.
-         * @param mouseY The y-coordinate of the mouse cursor.
+         * @param mouseX The scaled x-coordinate of the mouse cursor.
+         * @param mouseY The scaled y-coordinate of the mouse cursor.
          * @param button The released mouse button.
          * @return Any other result than {@link InteractionResult#PASS} leads to the cancellation of the key release.
          */

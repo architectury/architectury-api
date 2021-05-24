@@ -123,8 +123,8 @@ public interface GuiEvent {
          *
          * @param screen   The screen.
          * @param matrices The pose stack.
-         * @param mouseX   The x-coordinate of the mouse cursor.
-         * @param mouseY   The y-coordinate of the mouse cursor.
+         * @param mouseX   The scaled x-coordinate of the mouse cursor.
+         * @param mouseY   The scaled y-coordinate of the mouse cursor.
          * @param delta    The current tick delta.
          * @return Returning {@link InteractionResult#FAIL} prevents any other rendering.
          */
@@ -139,8 +139,8 @@ public interface GuiEvent {
          *
          * @param screen   The screen.
          * @param matrices The pose stack.
-         * @param mouseX   The x-coordinate of the mouse cursor.
-         * @param mouseY   The y-coordinate of the mouse cursor.
+         * @param mouseX   The scaled x-coordinate of the mouse cursor.
+         * @param mouseY   The scaled y-coordinate of the mouse cursor.
          * @param delta    The current tick delta.
          */
         void render(Screen screen, PoseStack matrices, int mouseX, int mouseY, float delta);
