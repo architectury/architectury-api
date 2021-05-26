@@ -24,20 +24,22 @@ import me.shedaniel.architectury.event.EventFactory;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.ProtoChunk;
+import org.jetbrains.annotations.Nullable;
 
 public interface ChunkEvent {
     /**
-     * @see Save#save(ChunkAccess, ServerLevel, CompoundTag)
+     * @see SaveData#save(ChunkAccess, ServerLevel, CompoundTag)
      */
-    Event<Save> SAVE = EventFactory.createLoop();
+    Event<SaveData> SAVE_DATA = EventFactory.createLoop();
     /**
-     * @see Load#load(ChunkAccess, ServerLevel, CompoundTag)
+     * @see LoadData#load(ChunkAccess, ServerLevel, CompoundTag)
      */
-    Event<Load> LOAD = EventFactory.createLoop();
+    Event<LoadData> LOAD_DATA = EventFactory.createLoop();
     
-    interface Save {
+    interface SaveData {
         /**
-         * Invoked when a chunk is saved, just before the data is written.
+         * Invoked when a chunk's data is saved, just before the data is written.
          * Add your own data to the {@link CompoundTag} parameter to get your data saved as well.
          * Equivalent to Forge's {@code ChunkDataEvent.Save}.
          *
@@ -48,16 +50,16 @@ public interface ChunkEvent {
         void save(ChunkAccess chunk, ServerLevel level, CompoundTag nbt);
     }
     
-    interface Load {
+    interface LoadData {
         /**
-         * Invoked just before a chunk is fully read.
+         * Invoked just before a chunk's data is fully read.
          * You can read out your own data from the {@link CompoundTag} parameter, when you have saved one before.
          * Equivalent to Forge's {@code ChunkDataEvent.Load}.
          *
          * @param chunk The chunk that is loaded.
-         * @param level The level the chunk is in.
+         * @param level The level the chunk is in. Can be {@code null}, e.g. if {@code chunk} is a {@link ProtoChunk}.
          * @param nbt   The chunk data that was read from the save file.
          */
-        void load(ChunkAccess chunk, ServerLevel level, CompoundTag nbt);
+        void load(ChunkAccess chunk, @Nullable ServerLevel level, CompoundTag nbt);
     }
 }

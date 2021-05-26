@@ -46,6 +46,6 @@ public class MixinChunkMap {
             locals = LocalCapture.CAPTURE_FAILHARD
     )
     private void save(ChunkAccess chunkAccess, CallbackInfoReturnable<Boolean> cir, ChunkPos pos, ChunkStatus chunkStatus, CompoundTag nbt) {
-        ChunkEvent.SAVE.invoker().save(chunkAccess, this.level, nbt);
+        ChunkEvent.SAVE_DATA.invoker().save(chunkAccess, this.level, nbt);
     }
 }

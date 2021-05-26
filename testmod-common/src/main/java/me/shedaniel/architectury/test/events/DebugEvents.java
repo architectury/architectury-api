@@ -217,10 +217,10 @@ public class DebugEvents {
         LightningEvent.STRIKE.register((bolt, level, pos, toStrike) -> {
             SINK.accept(bolt.getScoreboardName() + " struck at " + toShortString(pos) + logSide(level));
         });
-        ChunkEvent.LOAD.register((chunk, level, nbt) -> {
+        ChunkEvent.LOAD_DATA.register((chunk, level, nbt) -> {
             SINK.accept("Chunk loaded at x=" + chunk.getPos().x + ", z=" + chunk.getPos().z + " in dimension '" + level.dimension().location() + "'");
         });
-        ChunkEvent.SAVE.register((chunk, level, nbt) -> {
+        ChunkEvent.SAVE_DATA.register((chunk, level, nbt) -> {
             SINK.accept("Chunk saved at x=" + chunk.getPos().x + ", z=" + chunk.getPos().z + " in dimension '" + level.dimension().location() + "'");
         });
     }

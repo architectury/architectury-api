@@ -44,6 +44,6 @@ public class MixinChunkSerializer {
                              ChunkBiomeContainer chunkBiomeContainer, UpgradeData upgradeData, ProtoTickList<?> protoTickList, ProtoTickList<?> protoTickList2,
                              boolean bl, ListTag listTag, int i, LevelChunkSection[] levelChunkSections, boolean bl2, ChunkSource chunkSource,
                              LevelLightEngine levelLightEngine, long l, ChunkStatus.ChunkType chunkType, ChunkAccess chunk) {
-        ChunkEvent.LOAD.invoker().load(chunk, serverLevel, compoundTag);
+        ChunkEvent.LOAD_DATA.invoker().load(chunk, serverLevel, compoundTag);
     }
 }

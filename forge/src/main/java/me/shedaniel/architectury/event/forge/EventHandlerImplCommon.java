@@ -376,7 +376,7 @@ public class EventHandlerImplCommon {
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(ChunkDataEvent.Save event) {
         if (event.getWorld() instanceof ServerLevel) {
-            ChunkEvent.SAVE.invoker().save(event.getChunk(), (ServerLevel) event.getWorld(), event.getData());
+            ChunkEvent.SAVE_DATA.invoker().save(event.getChunk(), (ServerLevel) event.getWorld(), event.getData());
         }
     }
     
@@ -386,7 +386,7 @@ public class EventHandlerImplCommon {
         if (!(level instanceof ServerLevel)) {
             level = ((WorldEventAttachment) event).architectury$getAttachedLevel();
         }
-        ChunkEvent.LOAD.invoker().load(event.getChunk(), level instanceof ServerLevel ? (ServerLevel) level : null, event.getData());
+        ChunkEvent.LOAD_DATA.invoker().load(event.getChunk(), level instanceof ServerLevel ? (ServerLevel) level : null, event.getData());
     }
     
     public interface WorldEventAttachment {
