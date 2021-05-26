@@ -49,7 +49,7 @@ public interface ChunkEvent {
         /**
          * Invoked just before a chunk is fully read.
          * You can read out your own data from the {@link CompoundTag} parameter, when you have saved one before.
-         * Equal to Forge's {@code ChunkDataEvent.Load}.
+         * Equivalent to Forge's {@code ChunkDataEvent.Load}.
          *
          * @param chunk The chunk that is loaded.
          * @param type The type of the chunk.
