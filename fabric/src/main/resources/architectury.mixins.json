@@ -26,6 +26,8 @@
     "MixinBlockItem",
     "MixinBucketItem",
     "MixinCatSpawner",
+    "MixinChunkMap",
+    "MixinChunkSerializer",
     "MixinCollisionContext",
     "MixinCommands",
     "MixinDedicatedServer",

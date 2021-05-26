@@ -31,6 +31,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.ServerChatEvent;
@@ -49,6 +50,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent.*;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.BlockEvent.EntityPlaceEvent;
 import net.minecraftforge.event.world.BlockEvent.FarmlandTrampleEvent;
+import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.event.world.ExplosionEvent.Detonate;
 import net.minecraftforge.event.world.ExplosionEvent.Start;
 import net.minecraftforge.event.world.WorldEvent;
@@ -369,6 +371,28 @@ public class EventHandlerImplCommon {
         if (event.getPlayer() instanceof ServerPlayer) {
             PlayerEvent.CHANGE_DIMENSION.invoker().change((ServerPlayer) event.getPlayer(), event.getFrom(), event.getTo());
         }
+    }
+    
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(ChunkDataEvent.Save event) {
+        if (event.getWorld() instanceof ServerLevel) {
+            ChunkEvent.SAVE_DATA.invoker().save(event.getChunk(), (ServerLevel) event.getWorld(), event.getData());
+        }
+    }
+    
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(ChunkDataEvent.Load event) {
+        LevelAccessor level = event.getChunk().getWorldForge();
+        if (!(level instanceof ServerLevel)) {
+            level = ((WorldEventAttachment) event).architectury$getAttachedLevel();
+        }
+        ChunkEvent.LOAD_DATA.invoker().load(event.getChunk(), level instanceof ServerLevel ? (ServerLevel) level : null, event.getData());
+    }
+    
+    public interface WorldEventAttachment {
+        LevelAccessor architectury$getAttachedLevel();
+        
+        void architectury$attachLevel(LevelAccessor level);
     }
     
     public static class ModBasedEventHandler {
