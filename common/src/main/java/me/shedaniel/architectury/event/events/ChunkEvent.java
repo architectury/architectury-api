@@ -57,7 +57,7 @@ public interface ChunkEvent {
          * Equivalent to Forge's {@code ChunkDataEvent.Load}.
          *
          * @param chunk The chunk that is loaded.
-         * @param level The level the chunk is in. Can be {@code null}, e.g. if {@code chunk} is a {@link ProtoChunk}.
+         * @param level The level the chunk is in, may be {@code null}.
          * @param nbt   The chunk data that was read from the save file.
          */
         void load(ChunkAccess chunk, @Nullable ServerLevel level, CompoundTag nbt);
