@@ -235,6 +235,14 @@ public class DebugEvents {
     
     @Environment(EnvType.CLIENT)
     public static void debugEventsClient() {
+        ClientTickEvent.CLIENT_WORLD_PRE.register(instance -> {
+            try {
+                // Uncomment the following line to see the profiler spike for root.tick.level.architecturyClientLevelPreTick
+                //Thread.sleep(10);
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+        });
         ClientChatEvent.CLIENT.register(message -> {
             SINK.accept("Client chat sent: " + message);
             return InteractionResultHolder.pass(message);
