@@ -36,7 +36,7 @@ public interface ChunkEvent {
         /**
          * Invoked when a chunk is saved, just before the data is written.
          * Add your own data to the {@link CompoundTag} parameter to get your data saved as well.
-         * Equal to Forge's {@code ChunkDataEvent.Save}.
+         * Equivalent to Forge's {@code ChunkDataEvent.Save}.
          *
          * @param chunk The chunk that is saved.
          * @param level The level the chunk is in.
