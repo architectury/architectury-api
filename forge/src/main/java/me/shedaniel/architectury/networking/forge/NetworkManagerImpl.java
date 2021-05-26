@@ -150,7 +150,7 @@ public class NetworkManagerImpl {
         return clientReceivables.get(player).contains(id);
     }
     
-    public static Packet<?> createEntitySpawnPacket(Entity entity){
+    public static Packet<?> createAddEntityPacket(Entity entity){
         return NetworkHooks.getEntitySpawningPacket(entity);
     }
     

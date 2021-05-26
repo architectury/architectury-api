@@ -89,7 +89,7 @@ public class NetworkManagerImpl {
         return ServerSidePacketRegistry.INSTANCE.canPlayerReceive(player, id);
     }
     
-    public static Packet<?> createEntitySpawnPacket(Entity entity) {
+    public static Packet<?> createAddEntityPacket(Entity entity) {
         return SpawnEntityPacket.create(entity);
     }
     

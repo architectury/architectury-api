@@ -40,6 +40,6 @@ public class TestEntity extends AbstractMinecart {
     
     @Override
     public Packet<?> getAddEntityPacket() {
-        return NetworkManager.createEntitySpawnPacket(this);
+        return NetworkManager.createAddEntityPacket(this);
     }
 }
