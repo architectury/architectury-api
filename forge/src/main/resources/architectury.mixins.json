@@ -16,6 +16,7 @@
     "MixinBlockEntity",
     "MixinBlockEntityExtension",
     "MixinChunkSerializer",
+    "MixinClientLevel",
     "MixinItemExtension",
     "MixinRegistryEntry",
     "MixinWorldEvent",
