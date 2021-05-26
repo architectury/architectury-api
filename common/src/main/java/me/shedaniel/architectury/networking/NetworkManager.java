@@ -85,7 +85,7 @@ public final class NetworkManager {
      * @see Entity#getAddEntityPacket()
      */
     @ExpectPlatform
-    public static Packet<?> createEntitySpawnPacket(Entity entity){
+    public static Packet<?> createEntitySpawnPacket(Entity entity) {
         throw new AssertionError();
     }
     
