@@ -53,7 +53,7 @@ public interface ChunkEvent {
          *
          * @param chunk The chunk that is loaded.
          * @param type The type of the chunk.
-         * @param nbt THe chunk data that was read from the save file.
+         * @param nbt The chunk data that was read from the save file.
          */
         void load(ChunkAccess chunk, ChunkStatus.ChunkType type, CompoundTag nbt);
     }
