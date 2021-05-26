@@ -27,7 +27,6 @@ import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.level.Level;
 
 public class TestEntity extends AbstractMinecart {
-    
     public static final EntityType<TestEntity> TYPE = EntityType.Builder.of(TestEntity::new, MobCategory.MISC).sized(0.98F, 0.7F).clientTrackingRange(8).build("test_entity");
     
     public TestEntity(EntityType<? extends AbstractMinecart> entityType, Level level) {
