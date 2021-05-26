@@ -23,6 +23,7 @@ import me.shedaniel.architectury.event.events.TextureStitchEvent;
 import me.shedaniel.architectury.event.events.*;
 import me.shedaniel.architectury.event.events.client.ClientChatEvent;
 import me.shedaniel.architectury.event.events.client.*;
+import me.shedaniel.architectury.hooks.ScreenHooks;
 import me.shedaniel.architectury.impl.TooltipEventColorContextImpl;
 import me.shedaniel.architectury.impl.TooltipEventPositionContextImpl;
 import net.minecraft.client.Minecraft;
@@ -82,14 +83,14 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(GuiScreenEvent.InitGuiEvent.Pre event) {
-        if (GuiEvent.INIT_PRE.invoker().init(event.getGui(), event.getWidgetList(), (List<GuiEventListener>) event.getGui().children()) != InteractionResult.PASS) {
+        if (GuiEvent.INIT_PRE.invoker().init(event.getGui(), ScreenHooks.getButtons(event.getGui()), (List<GuiEventListener>) event.getGui().children()) != InteractionResult.PASS) {
             event.setCanceled(true);
         }
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(GuiScreenEvent.InitGuiEvent.Post event) {
-        GuiEvent.INIT_POST.invoker().init(event.getGui(), event.getWidgetList(), (List<GuiEventListener>) event.getGui().children());
+        GuiEvent.INIT_POST.invoker().init(event.getGui(), ScreenHooks.getButtons(event.getGui()), (List<GuiEventListener>) event.getGui().children());
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)

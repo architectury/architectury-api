@@ -15,6 +15,7 @@
     "GameRulesAccessor$IntegerValueSimple",
     "MixinBlockEntity",
     "MixinBlockEntityExtension",
+    "MixinClientLevel",
     "MixinItemExtension",
     "MixinRegistryEntry",
     "MobSpawnSettingsBuilderAccessor"
