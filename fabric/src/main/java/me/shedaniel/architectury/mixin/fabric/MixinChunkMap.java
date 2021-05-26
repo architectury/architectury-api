@@ -48,5 +48,4 @@ public class MixinChunkMap {
     private void save(ChunkAccess chunkAccess, CallbackInfoReturnable<Boolean> cir, ChunkPos pos, ChunkStatus chunkStatus, CompoundTag nbt) {
         ChunkEvent.SAVE.invoker().save(chunkAccess, this.level, nbt);
     }
-    
 }

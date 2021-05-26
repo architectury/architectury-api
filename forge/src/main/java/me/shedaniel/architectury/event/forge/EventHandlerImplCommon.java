@@ -31,6 +31,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.ServerChatEvent;
@@ -373,15 +374,25 @@ public class EventHandlerImplCommon {
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void event(ChunkDataEvent.Save event){
-        if(event.getWorld() instanceof ServerLevel){
+    public static void event(ChunkDataEvent.Save event) {
+        if (event.getWorld() instanceof ServerLevel) {
             ChunkEvent.SAVE.invoker().save(event.getChunk(), (ServerLevel) event.getWorld(), event.getData());
         }
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void event(ChunkDataEvent.Load event){
-        ChunkEvent.LOAD.invoker().load(event.getChunk(), event.getStatus(), event.getData());
+    public static void event(ChunkDataEvent.Load event) {
+        LevelAccessor level = event.getChunk().getWorldForge();
+        if (!(level instanceof ServerLevel)) {
+            level = ((WorldEventAttachment) event).architectury$getAttachedLevel();
+        }
+        ChunkEvent.LOAD.invoker().load(event.getChunk(), level instanceof ServerLevel ? (ServerLevel) level : null, event.getData());
+    }
+    
+    public interface WorldEventAttachment {
+        LevelAccessor architectury$getAttachedLevel();
+        
+        void architectury$attachLevel(LevelAccessor level);
     }
     
     public static class ModBasedEventHandler {

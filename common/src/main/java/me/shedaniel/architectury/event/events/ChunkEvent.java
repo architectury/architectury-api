@@ -24,12 +24,15 @@ import me.shedaniel.architectury.event.EventFactory;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.ChunkStatus;
 
 public interface ChunkEvent {
-    
+    /**
+     * @see Save#save(ChunkAccess, ServerLevel, CompoundTag)
+     */
     Event<Save> SAVE = EventFactory.createLoop();
-    
+    /**
+     * @see Load#load(ChunkAccess, ServerLevel, CompoundTag)
+     */
     Event<Load> LOAD = EventFactory.createLoop();
     
     interface Save {
@@ -40,7 +43,7 @@ public interface ChunkEvent {
          *
          * @param chunk The chunk that is saved.
          * @param level The level the chunk is in.
-         * @param nbt The chunk data that is written to the save file.
+         * @param nbt   The chunk data that is written to the save file.
          */
         void save(ChunkAccess chunk, ServerLevel level, CompoundTag nbt);
     }
@@ -52,10 +55,9 @@ public interface ChunkEvent {
          * Equivalent to Forge's {@code ChunkDataEvent.Load}.
          *
          * @param chunk The chunk that is loaded.
-         * @param type The type of the chunk.
-         * @param nbt The chunk data that was read from the save file.
+         * @param level The level the chunk is in.
+         * @param nbt   The chunk data that was read from the save file.
          */
-        void load(ChunkAccess chunk, ChunkStatus.ChunkType type, CompoundTag nbt);
+        void load(ChunkAccess chunk, ServerLevel level, CompoundTag nbt);
     }
-    
 }

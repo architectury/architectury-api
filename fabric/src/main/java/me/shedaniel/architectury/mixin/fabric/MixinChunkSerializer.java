@@ -38,10 +38,12 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(ChunkSerializer.class)
 public class MixinChunkSerializer {
-    
     @Inject(method = "read", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
-    private static void load(ServerLevel serverLevel, StructureManager structureManager, PoiManager poiManager, ChunkPos chunkPos, CompoundTag compoundTag, CallbackInfoReturnable<ProtoChunk> cir, ChunkGenerator chunkGenerator, BiomeSource biomeSource, CompoundTag compoundTagLevelData, ChunkBiomeContainer chunkBiomeContainer, UpgradeData upgradeData, ProtoTickList<?> protoTickList, ProtoTickList<?> protoTickList2, boolean bl, ListTag listTag, int i, LevelChunkSection[] levelChunkSections, boolean bl2, ChunkSource chunkSource, LevelLightEngine levelLightEngine, long l, ChunkStatus.ChunkType chunkType, ChunkAccess chunk){
-        ChunkEvent.LOAD.invoker().load(chunk, chunkType, compoundTag);
+    private static void load(ServerLevel serverLevel, StructureManager structureManager, PoiManager poiManager, ChunkPos chunkPos, CompoundTag compoundTag,
+                             CallbackInfoReturnable<ProtoChunk> cir, ChunkGenerator chunkGenerator, BiomeSource biomeSource, CompoundTag compoundTagLevelData,
+                             ChunkBiomeContainer chunkBiomeContainer, UpgradeData upgradeData, ProtoTickList<?> protoTickList, ProtoTickList<?> protoTickList2,
+                             boolean bl, ListTag listTag, int i, LevelChunkSection[] levelChunkSections, boolean bl2, ChunkSource chunkSource,
+                             LevelLightEngine levelLightEngine, long l, ChunkStatus.ChunkType chunkType, ChunkAccess chunk) {
+        ChunkEvent.LOAD.invoker().load(chunk, serverLevel, compoundTag);
     }
-    
 }
