@@ -69,7 +69,7 @@ jobs:
         java: [ 8, 15 ] # Build on Java 8 (version shipped with MC 1.16) and Java 15 (iirc the latest version supported by both loaders on 1.16)
     runs-on: ubuntu-20.04
     if: |
-      contains( github.event.pull_request.labels.*.name, 'api') && !contains(github.event.pull_request.title, '[ci skip]')
+      !contains(github.event.pull_request.title, '[ci skip]')
     steps:
       - uses: actions/checkout@v2
       
