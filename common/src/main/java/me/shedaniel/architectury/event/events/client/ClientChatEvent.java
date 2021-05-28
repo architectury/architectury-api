@@ -33,21 +33,38 @@ import java.util.UUID;
 @Environment(EnvType.CLIENT)
 public interface ClientChatEvent {
     /**
-     * Invoked when client tries to send a message, equivalent to forge's {@code ClientChatEvent}.
+     * @see Client#process(String)
      */
     Event<Client> CLIENT = EventFactory.createInteractionResultHolder();
     /**
-     * Invoked when client receives a message, equivalent to forge's {@code ClientChatReceivedEvent}.
+     * @see ClientReceived#process(ChatType, Component, UUID)
      */
     Event<ClientReceived> CLIENT_RECEIVED = EventFactory.createInteractionResultHolder();
     
     @Environment(EnvType.CLIENT)
     interface Client {
+        /**
+         * Event to modify the chat message a clients sends.
+         * Equivalent to Forge's {@code ClientChatEvent} event.
+         *
+         * @param message The raw chat message the client wants to send.
+         * @return Returning {@link InteractionResultHolder#fail(Object)} will result in an empty string being used as message.
+         */
         InteractionResultHolder<String> process(String message);
     }
     
     @Environment(EnvType.CLIENT)
     interface ClientReceived {
+        /**
+         * Event to intercept the receiving of an chat message.
+         * Invoked as soon as the client receives the chat message packet.
+         * Equivalent to Forge's {@code ClientChatReceivedEvent} event.
+         *
+         * @param type    Where was the message emitted from.
+         * @param message The chat message.
+         * @param sender  The packet sender. Can be {@code null}, but probably is the sending player UUID or {@link net.minecraft.Util#NIL_UUID}
+         * @return Returning {@link InteractionResultHolder#fail(Object)} will result in a cancellation of the message and so it is not processed further.
+         */
         InteractionResultHolder<Component> process(ChatType type, Component message, @Nullable UUID sender);
     }
 }

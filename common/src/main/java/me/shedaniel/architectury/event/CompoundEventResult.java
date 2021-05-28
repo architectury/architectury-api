@@ -28,7 +28,7 @@ import net.minecraft.world.InteractionResultHolder;
  * @param <T> the type of the extra result
  * @see #pass()
  * @see #interrupt(Boolean, Object)
- * @see CompoundEventResult
+ * @see EventResult
  */
 public class CompoundEventResult<T> {
     private static final CompoundEventResult<?> PASS = new CompoundEventResult<>(EventResult.pass(), null);

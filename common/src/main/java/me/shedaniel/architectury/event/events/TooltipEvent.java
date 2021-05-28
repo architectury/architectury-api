@@ -35,40 +35,98 @@ import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public interface TooltipEvent {
+    /**
+     * @see Item#append(ItemStack, List, TooltipFlag)
+     */
     Event<Item> ITEM = EventFactory.createLoop();
     /**
-     * Render vanilla events are not invoked on the forge side.
+     * @see RenderVanilla#renderTooltip(PoseStack, List, int, int)
      */
     Event<RenderVanilla> RENDER_VANILLA_PRE = EventFactory.createInteractionResult();
     /**
-     * Render forge events are only invoked on the forge side.
+     * @see RenderForge#renderTooltip(PoseStack, List, int, int)
      */
     Event<RenderForge> RENDER_FORGE_PRE = EventFactory.createInteractionResult();
+    /**
+     * @see RenderModifyPosition#renderTooltip(PoseStack, PositionContext)
+     */
     Event<RenderModifyPosition> RENDER_MODIFY_POSITION = EventFactory.createLoop();
+    /**
+     * @see RenderModifyColor#renderTooltip(PoseStack, int, int, ColorContext)
+     */
     Event<RenderModifyColor> RENDER_MODIFY_COLOR = EventFactory.createLoop();
     
     @Environment(EnvType.CLIENT)
     interface Item {
+        /**
+         * Invoked whenever an item tooltip is rendered.
+         * Equivalent to Forge's {@code ItemTooltipEvent} event and
+         * Fabric's {@code ItemTooltipCallback}.
+         *
+         * @param stack The rendered stack.
+         * @param lines The mutable list of tooltip components.
+         * @param flag  A flag indicating if advanced mode is active.
+         */
         void append(ItemStack stack, List<Component> lines, TooltipFlag flag);
     }
     
     @Environment(EnvType.CLIENT)
     interface RenderVanilla {
+        /**
+         * Invoked before the tooltip for a tooltip is rendered.
+         *
+         * <p> This is <b>not</b> invoked on Forge due to
+         * {@link RenderForge#renderTooltip(PoseStack, List, int, int) fundamental differences}
+         * in Forge and vanilla tooltip logic.
+         *
+         * @param matrices The pose stack.
+         * @param texts    The mutable list of components that are rendered.
+         * @param x        The x-coordinate of the tooltip.
+         * @param y        The y-coordinate of the tooltip.
+         * @return Returning {@link InteractionResult#FAIL} cancels the rendering.
+         */
         InteractionResult renderTooltip(PoseStack matrices, List<? extends FormattedCharSequence> texts, int x, int y);
     }
     
     @Environment(EnvType.CLIENT)
     interface RenderForge {
+        /**
+         * Invoked before the tooltip for a tooltip is rendered.
+         *
+         * <p> This is <b>only</b> invoked on Forge due to
+         * {@link RenderVanilla#renderTooltip(PoseStack, List, int, int) fundamental differences}
+         * in Forge and vanilla tooltip logic.
+         *
+         * @param matrices The pose stack.
+         * @param texts    The mutable list of components that are rendered.
+         * @param x        The x-coordinate of the tooltip.
+         * @param y        The y-coordinate of the tooltip.
+         * @return Returning {@link InteractionResult#FAIL} cancels the rendering.
+         */
         InteractionResult renderTooltip(PoseStack matrices, List<? extends FormattedText> texts, int x, int y);
     }
     
     @Environment(EnvType.CLIENT)
     interface RenderModifyPosition {
+        /**
+         * Event to manipulate the position of the tooltip.
+         *
+         * @param matrices The pose stack.
+         * @param context  The current position context.
+         */
         void renderTooltip(PoseStack matrices, PositionContext context);
     }
     
     @Environment(EnvType.CLIENT)
     interface RenderModifyColor {
+        /**
+         * Event to manipulate the color of the tooltip.
+         *
+         * @param matrices The pose stack.
+         * @param x        The x-coordinate of the tooltip.
+         * @param y        The y-coordinate of the tooltip.
+         * @param context  The current color context.
+         */
         void renderTooltip(PoseStack matrices, int x, int y, ColorContext context);
     }
     

@@ -24,6 +24,7 @@ import me.shedaniel.architectury.event.EventFactory;
 import me.shedaniel.architectury.event.EventResult;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -37,23 +38,23 @@ import org.jetbrains.annotations.Nullable;
 
 public interface EntityEvent {
     /**
-     * Invoked before LivingEntity#die, equivalent to forge's {@code LivingDeathEvent}.
+     * @see LivingDeath#die(LivingEntity, DamageSource)
      */
     Event<LivingDeath> LIVING_DEATH = EventFactory.createInteractionResult();
     /**
-     * Invoked before LivingEntity#hurt, equivalent to forge's {@code LivingAttackEvent}.
+     * @see LivingAttack#attack(LivingEntity, DamageSource, float)
      */
     Event<LivingAttack> LIVING_ATTACK = EventFactory.createInteractionResult();
     /**
-     * Invoked when an entity is about to be spawned, equivalent to forge's {@code LivingSpawnEvent.CheckSpawn}
+     * @see LivingCheckSpawn#canSpawn(LivingEntity, LevelAccessor, double, double, double, MobSpawnType, BaseSpawner)
      */
     Event<LivingCheckSpawn> LIVING_CHECK_SPAWN = EventFactory.createEventResult();
     /**
-     * Invoked before entity is added to a world, equivalent to forge's {@code EntityJoinWorldEvent}.
+     * @see Add#add(Entity, Level)
      */
     Event<Add> ADD = EventFactory.createInteractionResult();
     /**
-     * Invoked when an entity enters a chunk,  equivalent to forge's {@code EnteringChunk}
+     * @see EnterChunk#enterChunk(Entity, int, int, int, int)
      */
     Event<EnterChunk> ENTER_CHUNK = EventFactory.createLoop();
     
@@ -65,26 +66,79 @@ public interface EntityEvent {
     Event<PlaceBlock> PLACE_BLOCK = EventFactory.createInteractionResult();
     
     interface LivingDeath {
+        /**
+         * Invoked before a living entity dies.
+         * Equivalent to Forge's {@code LivingDeathEvent} event.
+         *
+         * @param entity The entity that is about to die.
+         * @param source The source of damage triggering the death.
+         * @return Returning {@link InteractionResult#FAIL} prevents the entity from dying.
+         */
         InteractionResult die(LivingEntity entity, DamageSource source);
     }
     
     interface LivingAttack {
+        /**
+         * Invoked before an entity is hurt by a damage source.
+         * Equivalent to Forge's {@code LivingAttackEvent} event.
+         *
+         * <p>You currently cannot override the amount of damage the entity receives.
+         *
+         * @param entity The entity that is attacked.
+         * @param source The reason why the entity takes damage.
+         * @param amount The amount of damage the entity takes.
+         * @return Returning {@link InteractionResult#FAIL} prevents the entity from taking damage.
+         */
         InteractionResult attack(LivingEntity entity, DamageSource source, float amount);
     }
     
     interface LivingCheckSpawn {
+        /**
+         * Invoked before an entity is spawned into the world.
+         * This specifically concerns <i>spawning</i> through either a {@link BaseSpawner} or during world generation.
+         * Equivalent to Forge's {@code LivingSpawnEvent.CheckSpawn} event.
+         *
+         * @param entity  The entity that is about to spawn.
+         * @param world   The level the entity wants to spawn in.
+         * @param x       The x-coordinate of the spawn position.
+         * @param y       The y-coordinate of the spawn position.
+         * @param z       The z-coordinate the spawn position.
+         * @param type    The source of spawning.
+         * @param spawner The spawner. Can be {@code null}.
+         * @return A {@link InteractionResultHolder} determining the outcome of the event,
+         * if an outcome is set, the vanilla result is overridden.
+         */
         EventResult canSpawn(LivingEntity entity, LevelAccessor world, double x, double y, double z, MobSpawnType type, @Nullable BaseSpawner spawner);
     }
     
     interface Add {
+        /**
+         * Invoked when an entity is about to be added to the world.
+         * Equivalent to Forge's {@code EntityJoinWorldEvent} event.
+         *
+         * @param entity The entity to add to the level.
+         * @param world  The level the entity is added to.
+         * @return Returning {@link InteractionResult#FAIL} prevents the addition of the entity to the world.
+         */
         InteractionResult add(Entity entity, Level world);
     }
     
+    @Deprecated
     interface PlaceBlock {
         InteractionResult placeBlock(Level world, BlockPos pos, BlockState state, @Nullable Entity placer);
     }
     
     interface EnterChunk {
+        /**
+         * Invoked whenever an entity enters a chunk.
+         * Equivalent to Forge's {@code EnteringChunk} event.
+         *
+         * @param entity The entity moving to a different chunk.
+         * @param chunkX The chunk x-coordinate.
+         * @param chunkZ The chunk z-coordinate.
+         * @param prevX  The previous chunk x-coordinate.
+         * @param prevZ  The previous chunk z-coordinate.
+         */
         void enterChunk(Entity entity, int chunkX, int chunkZ, int prevX, int prevZ);
     }
     

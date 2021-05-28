@@ -27,7 +27,16 @@ import net.minecraft.world.item.crafting.RecipeManager;
 
 @Environment(EnvType.CLIENT)
 public interface RecipeUpdateEvent {
+    /**
+     * @see RecipeUpdateEvent#update(RecipeManager)
+     */
     Event<RecipeUpdateEvent> EVENT = EventFactory.createLoop();
     
+    /**
+     * Invoked when the client has received an updated list of recipes from the server.
+     * Equivalent to Forge's {@code RecipesUpdatedEvent} event.
+     *
+     * @param recipeManager The recipe manager.
+     */
     void update(RecipeManager recipeManager);
 }
