@@ -17,16 +17,28 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package me.shedaniel.architectury.init.fabric;
+package me.shedaniel.architectury.mixin.forge;
 
-import me.shedaniel.architectury.event.events.client.ClientLifecycleEvent;
-import me.shedaniel.architectury.networking.fabric.SpawnEntityPacket;
-import net.minecraft.client.Minecraft;
+import me.shedaniel.architectury.event.forge.EventHandlerImplCommon;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraftforge.event.world.WorldEvent;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 
-public class ArchitecturyClient {
-    public static void init() {
-        ClientLifecycleEvent.CLIENT_SETUP.invoker().stateChanged(Minecraft.getInstance());
+import java.lang.ref.WeakReference;
+
+@Mixin(WorldEvent.class)
+public class MixinWorldEvent implements EventHandlerImplCommon.WorldEventAttachment {
+    @Unique
+    private WeakReference<LevelAccessor> level;
     
-        SpawnEntityPacket.register();
+    @Override
+    public LevelAccessor architectury$getAttachedLevel() {
+        return level == null ? null : level.get();
+    }
+    
+    @Override
+    public void architectury$attachLevel(LevelAccessor level) {
+        this.level = new WeakReference<>(level);
     }
 }

@@ -31,6 +31,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
 public class NetworkManagerImpl {
@@ -86,6 +87,10 @@ public class NetworkManagerImpl {
     
     public static boolean canPlayerReceive(ServerPlayer player, ResourceLocation id) {
         return ServerSidePacketRegistry.INSTANCE.canPlayerReceive(player, id);
+    }
+    
+    public static Packet<?> createAddEntityPacket(Entity entity) {
+        return SpawnEntityPacket.create(entity);
     }
     
     @Environment(EnvType.CLIENT)

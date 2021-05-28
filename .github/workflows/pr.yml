@@ -20,8 +20,6 @@ jobs:
   license:
     name: "Verify License integrity"
     runs-on: ubuntu-20.04
-    if: |
-      !contains(github.event.head_commit.message, '[ci skip]')
     steps:
       - uses: actions/checkout@v2
       
@@ -71,7 +69,7 @@ jobs:
         java: [ 8, 15 ] # Build on Java 8 (version shipped with MC 1.16) and Java 15 (iirc the latest version supported by both loaders on 1.16)
     runs-on: ubuntu-20.04
     if: |
-      !contains(github.event.head_commit.message, '[ci skip]')
+      !contains(github.event.pull_request.title, '[ci skip]')
     steps:
       - uses: actions/checkout@v2
       
@@ -123,7 +121,7 @@ jobs:
           cat $GITHUB_WORKSPACE/gradle.properties | grep ^base_version= >> $GITHUB_ENV
       - name: Create package name
         if: ${{ matrix.java == '8' }} # Only upload Java 8 artifacts for MC 1.16
-        run: echo "package_name=[$minecraft_version] $archives_base_name-$base_version.${{ github.run_number }}" >> $GITHUB_ENV
+        run: echo "package_name=[$minecraft_version] $archives_base_name-$base_version-SNAPSHOT.PR${{ github.event.number }}" >> $GITHUB_ENV
       - uses: actions/upload-artifact@v2
         if: ${{ matrix.java == '8' }} # Only upload Java 8 artifacts for MC 1.16
         with:

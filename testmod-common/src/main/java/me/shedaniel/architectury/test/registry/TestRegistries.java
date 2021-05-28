@@ -24,10 +24,12 @@ import me.shedaniel.architectury.registry.BlockProperties;
 import me.shedaniel.architectury.registry.DeferredRegister;
 import me.shedaniel.architectury.registry.RegistrySupplier;
 import me.shedaniel.architectury.test.TestMod;
+import me.shedaniel.architectury.test.entity.TestEntity;
 import me.shedaniel.architectury.test.registry.objects.EquippableTickingItem;
 import me.shedaniel.architectury.test.tab.TestCreativeTabs;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockGetter;
@@ -42,6 +44,7 @@ import static me.shedaniel.architectury.test.TestMod.SINK;
 public class TestRegistries {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(TestMod.MOD_ID, Registry.ITEM_REGISTRY);
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(TestMod.MOD_ID, Registry.BLOCK_REGISTRY);
+    public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(TestMod.MOD_ID, Registry.ENTITY_TYPE_REGISTRY);
     
     public static final RegistrySupplier<Item> TEST_ITEM = ITEMS.register("test_item", () ->
             new Item(new Item.Properties().tab(TestCreativeTabs.TEST_TAB)));
@@ -64,8 +67,11 @@ public class TestRegistries {
     public static final RegistrySupplier<Item> COLLISION_BLOCK_ITEM = ITEMS.register("collision_block", () ->
             new BlockItem(COLLISION_BLOCK.get(), new Item.Properties().tab(TestCreativeTabs.TEST_TAB)));
     
+    public static final RegistrySupplier<EntityType<TestEntity>> TEST_ENTITY = ENTITY_TYPES.register("test_entity", () -> TestEntity.TYPE);
+    
     public static void initialize() {
         BLOCKS.register();
         ITEMS.register();
+        ENTITY_TYPES.register();
     }
 }
