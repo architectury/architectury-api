@@ -248,8 +248,6 @@ public interface PlayerEvent {
          * Invoked when a player opens a menu.
          * Equivalent to Forge's {@code PlayerContainerEvent.Open} event.
          *
-         * <p>If you want to prevent a certain menu to be opened, you have to catch the {@link me.shedaniel.architectury.event.events.GuiEvent#SET_SCREEN} event and open your own.
-         *
          * @param player The player opening the menu.
          * @param menu   The menu that is opened.
          */
