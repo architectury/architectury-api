@@ -166,7 +166,7 @@ public interface ClientScreenInputEvent {
          * @param screen  The screen this keystroke was performed in.
          * @param mouseX1 The initial scaled x-coordinate of the mouse cursor.
          * @param mouseY1 The initial scaled y-coordinate of the mouse cursor.
-         * @param button  The released mouse button.
+         * @param button  The dragged mouse button.
          * @param mouseX2 The final scaled x-coordinate of the mouse cursor.
          * @param mouseY2 The final scaled y-coordinate of the mouse cursor.
          * @return Any other result than {@link InteractionResult#PASS} leads to the cancellation of the key release.
@@ -186,7 +186,7 @@ public interface ClientScreenInputEvent {
          * @param screen The screen this keystroke was performed in.
          * @param mouseX The scaled x-coordinate of the mouse cursor.
          * @param mouseY The scaled y-coordinate of the mouse cursor.
-         * @param button The released mouse button.
+         * @param button The clicked mouse button.
          * @return Any other result than {@link InteractionResult#PASS} leads to the cancellation of the key release.
          */
         InteractionResult mouseClicked(Minecraft client, Screen screen, double mouseX, double mouseY, int button);

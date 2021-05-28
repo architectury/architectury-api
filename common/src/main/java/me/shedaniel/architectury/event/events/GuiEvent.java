@@ -153,8 +153,8 @@ public interface GuiEvent {
          * Equivalent to Forge's {@code GuiOpenEvent} event.
          *
          * @param screen The screen that is going to be opened.
-         * @return Returning {@link InteractionResultHolder#fail(Object)} leads to the screen not being opened.
-         * {@link InteractionResultHolder#success(Object)} leads to the passed new screen being used instead of the old one.
+         * @return A {@link InteractionResultHolder} determining the outcome of the event,
+         * if an outcome is set, the vanilla screen is overridden.
          */
         InteractionResultHolder<Screen> modifyScreen(Screen screen);
     }

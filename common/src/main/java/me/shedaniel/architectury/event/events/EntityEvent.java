@@ -24,6 +24,7 @@ import me.shedaniel.architectury.event.EventFactory;
 import me.shedaniel.architectury.event.EventResult;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -104,7 +105,8 @@ public interface EntityEvent {
          * @param z       The z-coordinate the spawn position.
          * @param type    The source of spawning.
          * @param spawner The spawner. Can be {@code null}.
-         * @return Return {@link EventResult#interrupt(Boolean)} with true or false to let the entity spawn or prevent it.
+         * @return A {@link InteractionResultHolder} determining the outcome of the event,
+         * if an outcome is set, the vanilla result is overridden.
          */
         EventResult canSpawn(LivingEntity entity, LevelAccessor world, double x, double y, double z, MobSpawnType type, @Nullable BaseSpawner spawner);
     }

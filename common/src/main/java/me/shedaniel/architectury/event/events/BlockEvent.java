@@ -53,7 +53,7 @@ public interface BlockEvent {
          * @param pos    The position of the block.
          * @param state  The current state of the block.
          * @param player The player who is breaking the block.
-         * @param xp     The experience that are dropped when the block was destroyed. Always {@code null} on fabric!
+         * @param xp     The experience that are dropped when the block was destroyed. Always {@code null} on fabric.
          * @return Return {@link InteractionResult#FAIL} to cancel the block breaking.
          */
         InteractionResult breakBlock(Level world, BlockPos pos, BlockState state, ServerPlayer player, @Nullable IntValue xp);
