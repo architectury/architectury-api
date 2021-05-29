@@ -20,9 +20,7 @@
 package me.shedaniel.architectury.event.forge;
 
 import me.shedaniel.architectury.event.events.TextureStitchEvent;
-import me.shedaniel.architectury.event.events.*;
 import me.shedaniel.architectury.event.events.client.ClientChatEvent;
-import me.shedaniel.architectury.event.events.client.*;
 import me.shedaniel.architectury.hooks.ScreenHooks;
 import me.shedaniel.architectury.impl.TooltipEventColorContextImpl;
 import me.shedaniel.architectury.impl.TooltipEventPositionContextImpl;

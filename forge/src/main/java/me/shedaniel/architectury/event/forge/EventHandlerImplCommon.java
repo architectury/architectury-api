@@ -22,7 +22,6 @@ package me.shedaniel.architectury.event.forge;
 import me.shedaniel.architectury.event.CompoundEventResult;
 import me.shedaniel.architectury.event.EventResult;
 import me.shedaniel.architectury.event.events.PlayerEvent;
-import me.shedaniel.architectury.event.events.*;
 import me.shedaniel.architectury.utils.IntValue;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;

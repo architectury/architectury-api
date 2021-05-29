@@ -1,7 +1,7 @@
 {
   "required": true,
-  "package": "me.shedaniel.architectury.mixin.fabric",
-  "plugin": "me.shedaniel.architectury.plugin.fabric.ArchitecturyMixinPlugin",
+  "package": "dev.architectury.mixin.fabric",
+  "plugin": "dev.architectury.plugin.fabric.ArchitecturyMixinPlugin",
   "compatibilityLevel": "JAVA_8",
   "minVersion": "0.7.11",
   "client": [
