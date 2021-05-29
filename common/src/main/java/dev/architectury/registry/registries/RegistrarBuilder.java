@@ -19,20 +19,19 @@
 
 package dev.architectury.registry.registries;
 
-import dev.architectury.core.RegistryEntry;
-import dev.architectury.registry.registries.options.RegistryOption;
-import dev.architectury.registry.registries.options.StandardRegistryOption;
+import dev.architectury.registry.registries.options.RegistrarOption;
+import dev.architectury.registry.registries.options.StandardRegistrarOption;
 
-public interface RegistryBuilder<T extends RegistryEntry<T>> {
+public interface RegistrarBuilder<T> {
     Registrar<T> build();
     
-    RegistryBuilder<T> option(RegistryOption option);
+    RegistrarBuilder<T> option(RegistrarOption option);
     
-    default RegistryBuilder<T> saveToDisc() {
-        return option(StandardRegistryOption.SAVE_TO_DISC);
+    default RegistrarBuilder<T> saveToDisc() {
+        return option(StandardRegistrarOption.SAVE_TO_DISC);
     }
     
-    default RegistryBuilder<T> syncToClients() {
-        return option(StandardRegistryOption.SYNC_TO_CLIENTS);
+    default RegistrarBuilder<T> syncToClients() {
+        return option(StandardRegistrarOption.SYNC_TO_CLIENTS);
     }
 }

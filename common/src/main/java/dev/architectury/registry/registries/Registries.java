@@ -19,7 +19,6 @@
 
 package dev.architectury.registry.registries;
 
-import dev.architectury.core.RegistryEntry;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -57,7 +56,7 @@ public final class Registries {
     }
     
     @SafeVarargs
-    public final <T extends RegistryEntry<T>> RegistryBuilder<T> builder(ResourceLocation registryId, T... typeGetter) {
+    public final <T> RegistrarBuilder<T> builder(ResourceLocation registryId, T... typeGetter) {
         if (typeGetter.length != 0) throw new IllegalStateException("array must be empty!");
         return this.provider.builder((Class<T>) typeGetter.getClass().getComponentType(), registryId);
     }
@@ -109,6 +108,6 @@ public final class Registries {
         @Deprecated
         <T> Registrar<T> get(Registry<T> registry);
         
-        <T extends RegistryEntry<T>> RegistryBuilder<T> builder(Class<T> type, ResourceLocation registryId);
+        <T> RegistrarBuilder<T> builder(Class<T> type, ResourceLocation registryId);
     }
 }

@@ -19,5 +19,13 @@
 
 package dev.architectury.registry.registries.options;
 
-public interface RegistryOption {
+public enum StandardRegistrarOption implements RegistrarOption {
+    /**
+     * Denote that the registry should save to disc and persist. Defaulted false.
+     */
+    SAVE_TO_DISC,
+    /**
+     * Denote that the registry should sync its contents to clients. Defaulted false.
+     */
+    SYNC_TO_CLIENTS,
 }

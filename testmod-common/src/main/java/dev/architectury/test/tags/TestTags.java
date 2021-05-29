@@ -32,9 +32,9 @@ import net.minecraft.world.level.block.Block;
 public class TestTags {
     public static void initialize() {
         // This will not be present, but it should return an empty tag
-        Tag.Named<Block> heartParticles = TagHooks.blockOptional(new ResourceLocation(TestMod.MOD_ID, "heart_particles"));
+        Tag.Named<Block> heartParticles = TagHooks.optionalBlock(new ResourceLocation(TestMod.MOD_ID, "heart_particles"));
         // This will act like a normal tag, we have emerald block here
-        Tag.Named<Block> heartParticles2 = TagHooks.blockOptional(new ResourceLocation(TestMod.MOD_ID, "heart_particles2"));
+        Tag.Named<Block> heartParticles2 = TagHooks.optionalBlock(new ResourceLocation(TestMod.MOD_ID, "heart_particles2"));
         
         BlockEvent.BREAK.register((world, pos, state, player, xp) -> {
             if (player != null && !world.isClientSide() && (state.is(heartParticles) || state.is(heartParticles2))) {

@@ -21,13 +21,12 @@ package dev.architectury.registry.registries.fabric;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Suppliers;
-import dev.architectury.core.RegistryEntry;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.Registries;
-import dev.architectury.registry.registries.RegistryBuilder;
+import dev.architectury.registry.registries.RegistrarBuilder;
 import dev.architectury.registry.registries.RegistrySupplier;
-import dev.architectury.registry.registries.options.RegistryOption;
-import dev.architectury.registry.registries.options.StandardRegistryOption;
+import dev.architectury.registry.registries.options.RegistrarOption;
+import dev.architectury.registry.registries.options.StandardRegistrarOption;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.minecraft.core.MappedRegistry;
@@ -75,16 +74,16 @@ public class RegistriesImpl {
         
         @Override
         @NotNull
-        public <T extends RegistryEntry<T>> RegistryBuilder<T> builder(Class<T> type, ResourceLocation registryId) {
-            return new RegistryBuilderWrapper<>(FabricRegistryBuilder.createSimple(type, registryId));
+        public <T> RegistrarBuilder<T> builder(Class<T> type, ResourceLocation registryId) {
+            return new RegistrarBuilderWrapper<>(FabricRegistryBuilder.createSimple(type, registryId));
         }
     }
     
-    public static class RegistryBuilderWrapper<T extends RegistryEntry<T>> implements RegistryBuilder<T> {
+    public static class RegistrarBuilderWrapper<T> implements RegistrarBuilder<T> {
         @NotNull
         private FabricRegistryBuilder<T, MappedRegistry<T>> builder;
         
-        public RegistryBuilderWrapper(@NotNull FabricRegistryBuilder<T, MappedRegistry<T>> builder) {
+        public RegistrarBuilderWrapper(@NotNull FabricRegistryBuilder<T, MappedRegistry<T>> builder) {
             this.builder = builder;
         }
         
@@ -94,10 +93,10 @@ public class RegistriesImpl {
         }
         
         @Override
-        public @NotNull RegistryBuilder<T> option(@NotNull RegistryOption option) {
-            if (option == StandardRegistryOption.SAVE_TO_DISC) {
+        public @NotNull RegistrarBuilder<T> option(@NotNull RegistrarOption option) {
+            if (option == StandardRegistrarOption.SAVE_TO_DISC) {
                 this.builder.attribute(RegistryAttribute.PERSISTED);
-            } else if (option == StandardRegistryOption.SYNC_TO_CLIENTS) {
+            } else if (option == StandardRegistrarOption.SYNC_TO_CLIENTS) {
                 this.builder.attribute(RegistryAttribute.SYNCED);
             }
             return this;

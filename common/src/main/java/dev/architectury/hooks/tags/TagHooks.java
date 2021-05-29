@@ -39,19 +39,19 @@ public final class TagHooks {
         throw new AssertionError();
     }
     
-    public static Tag.Named<Item> itemOptional(ResourceLocation id) {
+    public static Tag.Named<Item> optionalItem(ResourceLocation id) {
         return optional(id, ItemTags::getAllTags);
     }
     
-    public static Tag.Named<Block> blockOptional(ResourceLocation id) {
+    public static Tag.Named<Block> optionalBlock(ResourceLocation id) {
         return optional(id, BlockTags::getAllTags);
     }
     
-    public static Tag.Named<Fluid> fluidOptional(ResourceLocation id) {
+    public static Tag.Named<Fluid> optionalFluid(ResourceLocation id) {
         return optional(id, FluidTagsAccessor.getHelper()::getAllTags);
     }
     
-    public static Tag.Named<EntityType<?>> entityTypeOptional(ResourceLocation id) {
+    public static Tag.Named<EntityType<?>> optionalEntityType(ResourceLocation id) {
         return optional(id, EntityTypeTags::getAllTags);
     }
 }
