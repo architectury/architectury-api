@@ -20,6 +20,7 @@
 package dev.architectury.registry.registries;
 
 import com.google.common.base.Suppliers;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
@@ -31,19 +32,19 @@ import java.util.function.Supplier;
 
 public class DeferredRegister<T> {
     private final Supplier<Registries> registriesSupplier;
-    private final ResourceKey<net.minecraft.core.Registry<T>> key;
+    private final ResourceKey<Registry<T>> key;
     private final List<Entry<T>> entries = new ArrayList<>();
     private boolean registered = false;
     @Nullable
     private String modId;
     
-    private DeferredRegister(Supplier<Registries> registriesSupplier, ResourceKey<net.minecraft.core.Registry<T>> key, @Nullable String modId) {
+    private DeferredRegister(Supplier<Registries> registriesSupplier, ResourceKey<Registry<T>> key, @Nullable String modId) {
         this.registriesSupplier = Objects.requireNonNull(registriesSupplier);
         this.key = Objects.requireNonNull(key);
         this.modId = modId;
     }
     
-    public static <T> DeferredRegister<T> create(String modId, ResourceKey<net.minecraft.core.Registry<T>> key) {
+    public static <T> DeferredRegister<T> create(String modId, ResourceKey<Registry<T>> key) {
         Supplier<Registries> value = Suppliers.memoize(() -> Registries.get(modId));
         return new DeferredRegister<>(value, key, Objects.requireNonNull(modId));
     }
@@ -60,8 +61,8 @@ public class DeferredRegister<T> {
         Entry<T> entry = new Entry<>(id, (Supplier<T>) supplier);
         this.entries.add(entry);
         if (registered) {
-            Registry<T> registry = registriesSupplier.get().get(key);
-            entry.value = registry.register(entry.id, entry.supplier);
+            Registrar<T> registrar = registriesSupplier.get().get(key);
+            entry.value = registrar.register(entry.id, entry.supplier);
         }
         return (RegistrySupplier<R>) entry;
     }
@@ -71,9 +72,9 @@ public class DeferredRegister<T> {
             throw new IllegalStateException("Cannot register a deferred register twice!");
         }
         registered = true;
-        Registry<T> registry = registriesSupplier.get().get(key);
+        Registrar<T> registrar = registriesSupplier.get().get(key);
         for (Entry<T> entry : entries) {
-            entry.value = registry.register(entry.id, entry.supplier);
+            entry.value = registrar.register(entry.id, entry.supplier);
         }
     }
     
@@ -118,8 +119,7 @@ public class DeferredRegister<T> {
         @Override
         public boolean equals(Object obj) {
             if (this == obj) return true;
-            if (!(obj instanceof RegistrySupplier)) return false;
-            RegistrySupplier<?> other = (RegistrySupplier<?>) obj;
+            if (!(obj instanceof RegistrySupplier<?> other)) return false;
             return other.getRegistryId().equals(getRegistryId()) && other.getId().equals(getId());
         }
         

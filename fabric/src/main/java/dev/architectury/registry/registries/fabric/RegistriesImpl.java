@@ -22,8 +22,8 @@ package dev.architectury.registry.registries.fabric;
 import com.google.common.base.Objects;
 import com.google.common.base.Suppliers;
 import dev.architectury.core.RegistryEntry;
+import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.Registries;
-import dev.architectury.registry.registries.Registry;
 import dev.architectury.registry.registries.RegistryBuilder;
 import dev.architectury.registry.registries.RegistrySupplier;
 import dev.architectury.registry.registries.options.RegistryOption;
@@ -31,6 +31,7 @@ import dev.architectury.registry.registries.options.StandardRegistryOption;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -47,13 +48,13 @@ public class RegistriesImpl {
         return RegistryProviderImpl.INSTANCE;
     }
     
-    public static <T> ResourceLocation getId(T object, ResourceKey<net.minecraft.core.Registry<T>> fallback) {
+    public static <T> ResourceLocation getId(T object, ResourceKey<Registry<T>> fallback) {
         if (fallback == null)
             return null;
         return RegistryProviderImpl.INSTANCE.get(fallback).getId(object);
     }
     
-    public static <T> ResourceLocation getId(T object, net.minecraft.core.Registry<T> fallback) {
+    public static <T> ResourceLocation getId(T object, Registry<T> fallback) {
         if (fallback == null)
             return null;
         return RegistryProviderImpl.INSTANCE.get(fallback).getId(object);
@@ -63,13 +64,13 @@ public class RegistriesImpl {
         INSTANCE;
         
         @Override
-        public <T> Registry<T> get(ResourceKey<net.minecraft.core.Registry<T>> key) {
-            return new RegistryImpl<>((net.minecraft.core.Registry<T>) net.minecraft.core.Registry.REGISTRY.get(key.location()));
+        public <T> Registrar<T> get(ResourceKey<Registry<T>> key) {
+            return new RegistrarImpl<>((Registry<T>) Registry.REGISTRY.get(key.location()));
         }
         
         @Override
-        public <T> Registry<T> get(net.minecraft.core.Registry<T> registry) {
-            return new RegistryImpl<>(registry);
+        public <T> Registrar<T> get(Registry<T> registry) {
+            return new RegistrarImpl<>(registry);
         }
         
         @Override
@@ -88,7 +89,7 @@ public class RegistriesImpl {
         }
         
         @Override
-        public @NotNull Registry<T> build() {
+        public @NotNull Registrar<T> build() {
             return RegistryProviderImpl.INSTANCE.get(builder.buildAndRegister());
         }
         
@@ -103,17 +104,17 @@ public class RegistriesImpl {
         }
     }
     
-    public static class RegistryImpl<T> implements Registry<T> {
-        private net.minecraft.core.Registry<T> delegate;
+    public static class RegistrarImpl<T> implements Registrar<T> {
+        private Registry<T> delegate;
         
-        public RegistryImpl(net.minecraft.core.Registry<T> delegate) {
+        public RegistrarImpl(Registry<T> delegate) {
             this.delegate = delegate;
         }
         
         @Override
-        public @NotNull RegistrySupplier<T> delegateSupplied(ResourceLocation id) {
+        public @NotNull RegistrySupplier<T> delegate(ResourceLocation id) {
             Supplier<T> value = Suppliers.memoize(() -> get(id));
-            return new RegistrySupplier<T>() {
+            return new RegistrySupplier<>() {
                 @Override
                 public @NotNull ResourceLocation getRegistryId() {
                     return delegate.key().location();
@@ -156,8 +157,8 @@ public class RegistriesImpl {
         
         @Override
         public @NotNull <E extends T> RegistrySupplier<E> register(ResourceLocation id, Supplier<E> supplier) {
-            net.minecraft.core.Registry.register(delegate, id, supplier.get());
-            return (RegistrySupplier<E>) delegateSupplied(id);
+            Registry.register(delegate, id, supplier.get());
+            return (RegistrySupplier<E>) delegate(id);
         }
         
         @Override
@@ -206,7 +207,7 @@ public class RegistriesImpl {
         }
         
         @Override
-        public ResourceKey<? extends net.minecraft.core.Registry<T>> key() {
+        public ResourceKey<? extends Registry<T>> key() {
             return delegate.key();
         }
         

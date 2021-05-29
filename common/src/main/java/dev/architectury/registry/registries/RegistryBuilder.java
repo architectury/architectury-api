@@ -24,7 +24,7 @@ import dev.architectury.registry.registries.options.RegistryOption;
 import dev.architectury.registry.registries.options.StandardRegistryOption;
 
 public interface RegistryBuilder<T extends RegistryEntry<T>> {
-    Registry<T> build();
+    Registrar<T> build();
     
     RegistryBuilder<T> option(RegistryOption option);
     

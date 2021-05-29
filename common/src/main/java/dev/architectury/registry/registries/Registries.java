@@ -21,6 +21,7 @@ package dev.architectury.registry.registries;
 
 import dev.architectury.core.RegistryEntry;
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus;
@@ -46,12 +47,12 @@ public final class Registries {
         this.modId = modId;
     }
     
-    public <T> Registry<T> get(ResourceKey<net.minecraft.core.Registry<T>> key) {
+    public <T> Registrar<T> get(ResourceKey<Registry<T>> key) {
         return this.provider.get(key);
     }
     
     @Deprecated
-    public <T> Registry<T> get(net.minecraft.core.Registry<T> registry) {
+    public <T> Registrar<T> get(Registry<T> registry) {
         return this.provider.get(registry);
     }
     
@@ -67,7 +68,7 @@ public final class Registries {
      */
     @Nullable
     @ExpectPlatform
-    public static <T> ResourceLocation getId(T object, @Nullable ResourceKey<net.minecraft.core.Registry<T>> fallback) {
+    public static <T> ResourceLocation getId(T object, @Nullable ResourceKey<Registry<T>> fallback) {
         throw new AssertionError();
     }
     
@@ -78,7 +79,7 @@ public final class Registries {
     @Nullable
     @Deprecated
     @ExpectPlatform
-    public static <T> ResourceLocation getId(T object, @Nullable net.minecraft.core.Registry<T> fallback) {
+    public static <T> ResourceLocation getId(T object, @Nullable Registry<T> fallback) {
         throw new AssertionError();
     }
     
@@ -89,7 +90,7 @@ public final class Registries {
     @Nullable
     @Deprecated
     public static <T> ResourceLocation getRegistryName(T object) {
-        return getId(object, (ResourceKey<net.minecraft.core.Registry<T>>) null);
+        return getId(object, (ResourceKey<Registry<T>>) null);
     }
     
     @ExpectPlatform
@@ -103,10 +104,10 @@ public final class Registries {
     
     @ApiStatus.Internal
     public interface RegistryProvider {
-        <T> Registry<T> get(ResourceKey<net.minecraft.core.Registry<T>> key);
+        <T> Registrar<T> get(ResourceKey<Registry<T>> key);
         
         @Deprecated
-        <T> Registry<T> get(net.minecraft.core.Registry<T> registry);
+        <T> Registrar<T> get(Registry<T> registry);
         
         <T extends RegistryEntry<T>> RegistryBuilder<T> builder(Class<T> type, ResourceLocation registryId);
     }

@@ -27,7 +27,7 @@ import net.minecraft.tags.TagCollection;
 import java.util.function.Supplier;
 
 public class TagHooksImpl {
-    public static <T> Tag.Named<T> getOptional(ResourceLocation id, Supplier<TagCollection<T>> collection) {
+    public static <T> Tag.Named<T> optional(ResourceLocation id, Supplier<TagCollection<T>> collection) {
         return TagRegistry.create(id, collection);
     }
 }

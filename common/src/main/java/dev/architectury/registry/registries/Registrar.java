@@ -19,6 +19,7 @@
 
 package dev.architectury.registry.registries;
 
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
@@ -28,12 +29,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 
-public interface Registry<T> extends Iterable<T> {
-    default Supplier<T> delegate(ResourceLocation id) {
-        return delegateSupplied(id);
-    }
-    
-    RegistrySupplier<T> delegateSupplied(ResourceLocation id);
+public interface Registrar<T> extends Iterable<T> {
+    RegistrySupplier<T> delegate(ResourceLocation id);
     
     <E extends T> RegistrySupplier<E> register(ResourceLocation id, Supplier<E> supplier);
     
@@ -58,5 +55,5 @@ public interface Registry<T> extends Iterable<T> {
     
     Set<Map.Entry<ResourceKey<T>, T>> entrySet();
     
-    ResourceKey<? extends net.minecraft.core.Registry<T>> key();
+    ResourceKey<? extends Registry<T>> key();
 }

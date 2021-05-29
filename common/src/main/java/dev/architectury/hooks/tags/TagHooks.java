@@ -35,23 +35,23 @@ public final class TagHooks {
     }
     
     @ExpectPlatform
-    public static <T> Tag.Named<T> getOptional(ResourceLocation id, Supplier<TagCollection<T>> collection) {
+    public static <T> Tag.Named<T> optional(ResourceLocation id, Supplier<TagCollection<T>> collection) {
         throw new AssertionError();
     }
     
-    public static Tag.Named<Item> getItemOptional(ResourceLocation id) {
-        return getOptional(id, ItemTags::getAllTags);
+    public static Tag.Named<Item> itemOptional(ResourceLocation id) {
+        return optional(id, ItemTags::getAllTags);
     }
     
-    public static Tag.Named<Block> getBlockOptional(ResourceLocation id) {
-        return getOptional(id, BlockTags::getAllTags);
+    public static Tag.Named<Block> blockOptional(ResourceLocation id) {
+        return optional(id, BlockTags::getAllTags);
     }
     
-    public static Tag.Named<Fluid> getFluidOptional(ResourceLocation id) {
-        return getOptional(id, FluidTagsAccessor.getHelper()::getAllTags);
+    public static Tag.Named<Fluid> fluidOptional(ResourceLocation id) {
+        return optional(id, FluidTagsAccessor.getHelper()::getAllTags);
     }
     
-    public static Tag.Named<EntityType<?>> getEntityTypeOptional(ResourceLocation id) {
-        return getOptional(id, EntityTypeTags::getAllTags);
+    public static Tag.Named<EntityType<?>> entityTypeOptional(ResourceLocation id) {
+        return optional(id, EntityTypeTags::getAllTags);
     }
 }
