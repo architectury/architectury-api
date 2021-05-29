@@ -153,7 +153,8 @@ public interface InteractionEvent {
          * @param state    The state of the block.
          * @param distance The distance of the player to the block.
          * @param entity   The entity trampling.
-         * @return The event callback result.
+         * @return A {@link EventResult} determining the outcome of the event,
+         * the action may be cancelled by the result.
          */
         EventResult trample(Level world, BlockPos pos, BlockState state, float distance, Entity entity);
     }
