@@ -21,7 +21,7 @@ package dev.architectury.test.tags;
 
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.BlockEvent;
-import dev.architectury.hooks.TagHooks;
+import dev.architectury.hooks.tags.TagHooks;
 import dev.architectury.test.TestMod;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;

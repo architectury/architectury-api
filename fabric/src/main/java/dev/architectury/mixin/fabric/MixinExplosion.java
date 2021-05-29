@@ -20,7 +20,7 @@
 package dev.architectury.mixin.fabric;
 
 import dev.architectury.event.events.common.ExplosionEvent;
-import dev.architectury.hooks.fabric.ExplosionHooksImpl;
+import dev.architectury.hooks.level.fabric.ExplosionHooksImpl;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Explosion;

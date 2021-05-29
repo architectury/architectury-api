@@ -19,7 +19,7 @@
 
 package dev.architectury.extensions;
 
-import dev.architectury.hooks.BlockEntityHooks;
+import dev.architectury.hooks.block.BlockEntityHooks;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.nbt.CompoundTag;

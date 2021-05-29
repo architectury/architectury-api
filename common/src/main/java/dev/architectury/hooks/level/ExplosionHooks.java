@@ -17,19 +17,36 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.mixin.fabric;
+package dev.architectury.hooks.level;
 
-import dev.architectury.hooks.level.entity.fabric.EntityHooksImpl;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.entity.EntityInLevelCallback;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
-@Mixin(Entity.class)
-public class MixinEntity {
-    @ModifyVariable(method = "setLevelCallback", argsOnly = true, ordinal = 0, at = @At("HEAD"))
-    public EntityInLevelCallback modifyLevelCallback_setLevelCallback(EntityInLevelCallback callback) {
-        return EntityHooksImpl.wrapEntityInLevelCallback((Entity) (Object) this, callback);
+public final class ExplosionHooks {
+    private ExplosionHooks() {
+    }
+    
+    @ExpectPlatform
+    public static Vec3 getPosition(Explosion explosion) {
+        throw new AssertionError();
+    }
+    
+    @Nullable
+    @ExpectPlatform
+    public static Entity getSource(Explosion explosion) {
+        throw new AssertionError();
+    }
+    
+    @ExpectPlatform
+    public static float getRadius(Explosion explosion) {
+        throw new AssertionError();
+    }
+    
+    @ExpectPlatform
+    public static void setRadius(Explosion explosion, float radius) {
+        throw new AssertionError();
     }
 }

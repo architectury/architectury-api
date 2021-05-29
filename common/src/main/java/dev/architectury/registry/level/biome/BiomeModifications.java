@@ -20,7 +20,7 @@
 package dev.architectury.registry.level.biome;
 
 import com.google.common.base.Predicates;
-import dev.architectury.hooks.biome.BiomeProperties;
+import dev.architectury.hooks.level.biome.BiomeProperties;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.resources.ResourceLocation;
 

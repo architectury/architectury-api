@@ -65,8 +65,8 @@ public class EventHandlerImpl {
         
         ServerTickEvents.START_SERVER_TICK.register(instance -> TickEvent.SERVER_PRE.invoker().tick(instance));
         ServerTickEvents.END_SERVER_TICK.register(instance -> TickEvent.SERVER_POST.invoker().tick(instance));
-        ServerTickEvents.START_WORLD_TICK.register(instance -> TickEvent.SERVER_WORLD_PRE.invoker().tick(instance));
-        ServerTickEvents.END_WORLD_TICK.register(instance -> TickEvent.SERVER_WORLD_POST.invoker().tick(instance));
+        ServerTickEvents.START_WORLD_TICK.register(instance -> TickEvent.SERVER_LEVEL_PRE.invoker().tick(instance));
+        ServerTickEvents.END_WORLD_TICK.register(instance -> TickEvent.SERVER_LEVEL_POST.invoker().tick(instance));
         
         ServerWorldEvents.LOAD.register((server, world) -> LifecycleEvent.SERVER_LEVEL_LOAD.invoker().act(world));
         ServerWorldEvents.UNLOAD.register((server, world) -> LifecycleEvent.SERVER_LEVEL_UNLOAD.invoker().act(world));

@@ -61,7 +61,7 @@ public class DeferredRegister<T> {
         this.entries.add(entry);
         if (registered) {
             Registry<T> registry = registriesSupplier.get().get(key);
-            entry.value = registry.registerSupplied(entry.id, entry.supplier);
+            entry.value = registry.register(entry.id, entry.supplier);
         }
         return (RegistrySupplier<R>) entry;
     }
@@ -73,7 +73,7 @@ public class DeferredRegister<T> {
         registered = true;
         Registry<T> registry = registriesSupplier.get().get(key);
         for (Entry<T> entry : entries) {
-            entry.value = registry.registerSupplied(entry.id, entry.supplier);
+            entry.value = registry.register(entry.id, entry.supplier);
         }
     }
     

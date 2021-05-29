@@ -17,19 +17,26 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.mixin.fabric;
+package dev.architectury.hooks.client.screen;
 
-import dev.architectury.hooks.level.entity.fabric.EntityHooksImpl;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.entity.EntityInLevelCallback;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Widget;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.screens.Screen;
 
-@Mixin(Entity.class)
-public class MixinEntity {
-    @ModifyVariable(method = "setLevelCallback", argsOnly = true, ordinal = 0, at = @At("HEAD"))
-    public EntityInLevelCallback modifyLevelCallback_setLevelCallback(EntityInLevelCallback callback) {
-        return EntityHooksImpl.wrapEntityInLevelCallback((Entity) (Object) this, callback);
-    }
+import java.util.List;
+
+public interface ScreenAccess {
+    Screen getScreen();
+    
+    List<NarratableEntry> getNarratables();
+    
+    List<Widget> getRenderables();
+    
+    <T extends AbstractWidget & Widget & NarratableEntry> T addRenderableWidget(T widget);
+    
+    <T extends Widget> T addRenderableOnly(T listener);
+    
+    <T extends GuiEventListener & NarratableEntry> T addWidget(T listener);
 }

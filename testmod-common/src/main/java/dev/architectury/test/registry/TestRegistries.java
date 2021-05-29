@@ -19,7 +19,7 @@
 
 package dev.architectury.test.registry;
 
-import dev.architectury.hooks.EntityHooks;
+import dev.architectury.hooks.level.entity.EntityHooks;
 import dev.architectury.registry.block.BlockProperties;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;

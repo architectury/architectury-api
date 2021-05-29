@@ -21,7 +21,7 @@ package dev.architectury.registry.level.biome.fabric;
 
 import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
-import dev.architectury.hooks.biome.*;
+import dev.architectury.hooks.level.biome.*;
 import dev.architectury.registry.level.biome.BiomeModifications.BiomeContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeModification;
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;

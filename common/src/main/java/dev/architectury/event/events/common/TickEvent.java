@@ -19,8 +19,8 @@
 
 package dev.architectury.event.events.common;
 
-import dev.architectury.event.EventFactory;
 import dev.architectury.event.Event;
+import dev.architectury.event.EventFactory;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
@@ -46,14 +46,14 @@ public interface TickEvent<T> {
      *
      * @see #tick(Object)
      */
-    Event<ServerWorld> SERVER_WORLD_PRE = EventFactory.createLoop();
+    Event<ServerLevelTick> SERVER_LEVEL_PRE = EventFactory.createLoop();
     /**
      * Invoked after a server level tick has been processed.
      * Equivalent to Forge's {@code WorldTickEvent} event in the END Phase.
      *
      * @see #tick(Object)
      */
-    Event<ServerWorld> SERVER_WORLD_POST = EventFactory.createLoop();
+    Event<ServerLevelTick> SERVER_LEVEL_POST = EventFactory.createLoop();
     /**
      * Invoked before a player tick is processed.
      * Equivalent to Forge's {@code PlayerTickEvent} event in the START Phase.
@@ -79,10 +79,10 @@ public interface TickEvent<T> {
     interface Server extends TickEvent<MinecraftServer> {
     }
     
-    interface WorldTick<T extends Level> extends TickEvent<T> {
+    interface LevelTick<T extends Level> extends TickEvent<T> {
     }
     
-    interface ServerWorld extends WorldTick<ServerLevel> {
+    interface ServerLevelTick extends LevelTick<ServerLevel> {
     }
     
     interface Player extends TickEvent<net.minecraft.world.entity.player.Player> {

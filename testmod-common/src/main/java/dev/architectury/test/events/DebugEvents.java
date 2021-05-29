@@ -24,7 +24,7 @@ import dev.architectury.event.CompoundEventResult;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.*;
 import dev.architectury.event.events.common.*;
-import dev.architectury.hooks.ExplosionHooks;
+import dev.architectury.hooks.level.ExplosionHooks;
 import dev.architectury.platform.Platform;
 import dev.architectury.test.TestMod;
 import dev.architectury.utils.Env;

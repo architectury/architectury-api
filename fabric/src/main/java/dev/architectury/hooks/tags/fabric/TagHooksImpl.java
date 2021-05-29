@@ -17,19 +17,17 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.mixin.fabric;
+package dev.architectury.hooks.tags.fabric;
 
-import dev.architectury.hooks.level.entity.fabric.EntityHooksImpl;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.entity.EntityInLevelCallback;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import net.fabricmc.fabric.api.tag.TagRegistry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagCollection;
 
-@Mixin(Entity.class)
-public class MixinEntity {
-    @ModifyVariable(method = "setLevelCallback", argsOnly = true, ordinal = 0, at = @At("HEAD"))
-    public EntityInLevelCallback modifyLevelCallback_setLevelCallback(EntityInLevelCallback callback) {
-        return EntityHooksImpl.wrapEntityInLevelCallback((Entity) (Object) this, callback);
+import java.util.function.Supplier;
+
+public class TagHooksImpl {
+    public static <T> Tag.Named<T> getOptional(ResourceLocation id, Supplier<TagCollection<T>> collection) {
+        return TagRegistry.create(id, collection);
     }
 }

@@ -24,12 +24,10 @@ import dev.architectury.event.CompoundEventResult;
 import dev.architectury.event.EventFactory;
 import dev.architectury.event.Event;
 import dev.architectury.event.EventResult;
-import dev.architectury.hooks.screen.ScreenAccess;
+import dev.architectury.hooks.client.screen.ScreenAccess;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 
 import java.util.List;
 

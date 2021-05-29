@@ -17,19 +17,16 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.mixin.fabric;
+package dev.architectury.hooks.level.entity.fabric;
 
-import dev.architectury.hooks.level.entity.fabric.EntityHooksImpl;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.entity.EntityInLevelCallback;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import net.minecraft.world.entity.player.Player;
 
-@Mixin(Entity.class)
-public class MixinEntity {
-    @ModifyVariable(method = "setLevelCallback", argsOnly = true, ordinal = 0, at = @At("HEAD"))
-    public EntityInLevelCallback modifyLevelCallback_setLevelCallback(EntityInLevelCallback callback) {
-        return EntityHooksImpl.wrapEntityInLevelCallback((Entity) (Object) this, callback);
+public class PlayerHooksImpl {
+    public static boolean isFake(Player player) {
+        return false;
+    }
+    
+    public static void closeContainer(Player player) {
+        player.closeContainer();
     }
 }

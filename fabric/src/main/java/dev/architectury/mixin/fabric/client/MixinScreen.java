@@ -24,7 +24,7 @@ import dev.architectury.event.CompoundEventResult;
 import dev.architectury.event.events.client.ClientChatEvent;
 import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.event.events.client.ClientTooltipEvent;
-import dev.architectury.hooks.screen.ScreenAccess;
+import dev.architectury.hooks.client.screen.ScreenAccess;
 import dev.architectury.impl.ScreenAccessImpl;
 import dev.architectury.impl.TooltipEventColorContextImpl;
 import dev.architectury.impl.TooltipEventPositionContextImpl;

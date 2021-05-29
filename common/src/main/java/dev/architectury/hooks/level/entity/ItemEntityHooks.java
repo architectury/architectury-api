@@ -17,19 +17,23 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.mixin.fabric;
+package dev.architectury.hooks.level.entity;
 
-import dev.architectury.hooks.level.entity.fabric.EntityHooksImpl;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.entity.EntityInLevelCallback;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import dev.architectury.utils.value.IntValue;
+import dev.architectury.injectables.annotations.ExpectPlatform;
+import net.minecraft.world.entity.item.ItemEntity;
 
-@Mixin(Entity.class)
-public class MixinEntity {
-    @ModifyVariable(method = "setLevelCallback", argsOnly = true, ordinal = 0, at = @At("HEAD"))
-    public EntityInLevelCallback modifyLevelCallback_setLevelCallback(EntityInLevelCallback callback) {
-        return EntityHooksImpl.wrapEntityInLevelCallback((Entity) (Object) this, callback);
+public final class ItemEntityHooks {
+    private ItemEntityHooks() {
+    }
+    
+    /**
+     * The lifespan of an {@link ItemEntity}.
+     * Fabric: Since it doesn't have this, the value will be a readable-only value of 6000.
+     * Forge: Value of lifespan of the forge hook.
+     */
+    @ExpectPlatform
+    public static IntValue lifespan(ItemEntity entity) {
+        throw new AssertionError();
     }
 }

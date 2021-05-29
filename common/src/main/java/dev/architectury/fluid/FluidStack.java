@@ -19,7 +19,7 @@
 
 package dev.architectury.fluid;
 
-import dev.architectury.hooks.FluidStackHooks;
+import dev.architectury.hooks.fluid.FluidStackHooks;
 import dev.architectury.utils.NbtType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;

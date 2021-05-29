@@ -17,19 +17,20 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.mixin.fabric;
+package dev.architectury.hooks.block;
 
-import dev.architectury.hooks.level.entity.fabric.EntityHooksImpl;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.entity.EntityInLevelCallback;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import dev.architectury.injectables.annotations.ExpectPlatform;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
-@Mixin(Entity.class)
-public class MixinEntity {
-    @ModifyVariable(method = "setLevelCallback", argsOnly = true, ordinal = 0, at = @At("HEAD"))
-    public EntityInLevelCallback modifyLevelCallback_setLevelCallback(EntityInLevelCallback callback) {
-        return EntityHooksImpl.wrapEntityInLevelCallback((Entity) (Object) this, callback);
+public class BlockEntityHooks {
+    private BlockEntityHooks() {
+    }
+    
+    /**
+     * Sync data to the clients.
+     */
+    @ExpectPlatform
+    public static void syncData(BlockEntity entity) {
+        throw new AssertionError();
     }
 }

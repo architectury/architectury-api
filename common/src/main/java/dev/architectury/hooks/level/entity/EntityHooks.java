@@ -17,19 +17,25 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.mixin.fabric;
+package dev.architectury.hooks.level.entity;
 
-import dev.architectury.hooks.level.entity.fabric.EntityHooksImpl;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.entity.EntityInLevelCallback;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import org.jetbrains.annotations.Nullable;
 
-@Mixin(Entity.class)
-public class MixinEntity {
-    @ModifyVariable(method = "setLevelCallback", argsOnly = true, ordinal = 0, at = @At("HEAD"))
-    public EntityInLevelCallback modifyLevelCallback_setLevelCallback(EntityInLevelCallback callback) {
-        return EntityHooksImpl.wrapEntityInLevelCallback((Entity) (Object) this, callback);
+public final class EntityHooks {
+    private EntityHooks() {
+    }
+    
+    @ExpectPlatform
+    public static String getEncodeId(Entity entity) {
+        throw new AssertionError();
+    }
+    
+    @Nullable
+    @ExpectPlatform
+    public static Entity fromCollision(CollisionContext ctx) {
+        throw new AssertionError();
     }
 }

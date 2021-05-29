@@ -17,10 +17,10 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.impl;
+package dev.architectury.hooks.client.screen.fabric;
 
-import dev.architectury.hooks.client.screen.ScreenAccess;
-import dev.architectury.hooks.client.screen.ScreenHooks;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -29,44 +29,25 @@ import net.minecraft.client.gui.screens.Screen;
 
 import java.util.List;
 
-public class ScreenAccessImpl implements ScreenAccess {
-    private Screen screen;
-    
-    public ScreenAccessImpl(Screen screen) {
-        this.screen = screen;
+@Environment(EnvType.CLIENT)
+public class ScreenHooksImpl {
+    public static List<NarratableEntry> getNarratables(Screen screen) {
+        return screen.narratables;
     }
     
-    public void setScreen(Screen screen) {
-        this.screen = screen;
+    public static List<Widget> getRenderables(Screen screen) {
+        return screen.renderables;
     }
     
-    @Override
-    public Screen getScreen() {
-        return screen;
+    public static <T extends AbstractWidget & Widget & NarratableEntry> T addRenderableWidget(Screen screen, T widget) {
+        return screen.addRenderableWidget(widget);
     }
     
-    @Override
-    public List<NarratableEntry> getNarratables() {
-        return ScreenHooks.getNarratables(screen);
+    public static <T extends Widget> T addRenderableOnly(Screen screen, T listener) {
+        return screen.addRenderableOnly(listener);
     }
     
-    @Override
-    public List<Widget> getRenderables() {
-        return ScreenHooks.getRenderables(screen);
-    }
-    
-    @Override
-    public <T extends AbstractWidget & Widget & NarratableEntry> T addRenderableWidget(T widget) {
-        return ScreenHooks.addRenderableWidget(screen, widget);
-    }
-    
-    @Override
-    public <T extends Widget> T addRenderableOnly(T listener) {
-        return ScreenHooks.addRenderableOnly(screen, listener);
-    }
-    
-    @Override
-    public <T extends GuiEventListener & NarratableEntry> T addWidget(T listener) {
-        return ScreenHooks.addWidget(screen, listener);
+    public static <T extends GuiEventListener & NarratableEntry> T addWidget(Screen screen, T listener) {
+        return screen.addWidget(listener);
     }
 }
