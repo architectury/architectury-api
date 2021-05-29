@@ -37,7 +37,7 @@ public class ModMenuCompatibility implements ModMenuApi {
     }
     
     private void validateMap() {
-        for (Map.Entry<String, Mod.ConfigurationScreenProvider> entry : PlatformImpl.CONFIG_SCREENS.entrySet()) {
+        for (var entry : PlatformImpl.CONFIG_SCREENS.entrySet()) {
             if (!FACTORIES.containsKey(entry.getKey())) {
                 FACTORIES.put(entry.getKey(), entry.getValue()::provide);
             }

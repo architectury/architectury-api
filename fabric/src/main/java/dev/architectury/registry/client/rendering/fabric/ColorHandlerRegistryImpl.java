@@ -42,16 +42,16 @@ public class ColorHandlerRegistryImpl {
     }
     
     private static ItemLike[] unpackItems(Supplier<ItemLike>[] items) {
-        ItemLike[] array = new ItemLike[items.length];
-        for (int i = 0; i < items.length; i++) {
+        var array = new ItemLike[items.length];
+        for (var i = 0; i < items.length; i++) {
             array[i] = Objects.requireNonNull(items[i].get());
         }
         return array;
     }
     
     private static Block[] unpackBlocks(Supplier<Block>[] blocks) {
-        Block[] array = new Block[blocks.length];
-        for (int i = 0; i < blocks.length; i++) {
+        var array = new Block[blocks.length];
+        for (var i = 0; i < blocks.length; i++) {
             array[i] = Objects.requireNonNull(blocks[i].get());
         }
         return array;

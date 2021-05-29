@@ -44,7 +44,7 @@ public class BlockPropertiesImpl {
     }
     
     public static BlockProperties copy(BlockBehaviour.Properties old) {
-        BlockProperties properties = of(old.material, old.materialColor);
+        var properties = of(old.material, old.materialColor);
         properties.material = old.material;
         properties.destroyTime = old.destroyTime;
         properties.explosionResistance = old.explosionResistance;
@@ -59,8 +59,8 @@ public class BlockPropertiesImpl {
         properties.canOcclude = old.canOcclude;
         properties.isAir = old.isAir;
         properties.requiresCorrectToolForDrops = old.requiresCorrectToolForDrops;
-        BlockSettingsInternals otherInternals = (BlockSettingsInternals) old;
-        FabricBlockInternals.ExtraData extraData = otherInternals.getExtraData();
+        var otherInternals = (BlockSettingsInternals) old;
+        var extraData = otherInternals.getExtraData();
         if (extraData != null) {
             ((BlockSettingsInternals) properties).setExtraData(extraData);
         }

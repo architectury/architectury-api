@@ -30,16 +30,16 @@ public final class ItemStackHooks {
     }
     
     public static ItemStack copyWithCount(ItemStack stack, int count) {
-        ItemStack copy = stack.copy();
+        var copy = stack.copy();
         copy.setCount(count);
         return copy;
     }
     
     public static void giveItem(ServerPlayer player, ItemStack stack) {
-        boolean bl = player.getInventory().add(stack);
+        var bl = player.getInventory().add(stack);
         if (bl && stack.isEmpty()) {
             stack.setCount(1);
-            ItemEntity entity = player.drop(stack, false);
+            var entity = player.drop(stack, false);
             if (entity != null) {
                 entity.makeFakeItem();
             }
@@ -47,7 +47,7 @@ public final class ItemStackHooks {
             player.level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, ((player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F);
             player.inventoryMenu.broadcastChanges();
         } else {
-            ItemEntity entity = player.drop(stack, false);
+            var entity = player.drop(stack, false);
             if (entity != null) {
                 entity.setNoPickUpDelay();
                 entity.setOwner(player.getUUID());

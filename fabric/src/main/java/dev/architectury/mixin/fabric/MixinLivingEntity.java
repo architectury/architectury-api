@@ -44,9 +44,9 @@ public class MixinLivingEntity {
     
     @Inject(method = "getEquipmentSlotForItem", at = @At("HEAD"), cancellable = true)
     private static void getEquipmentSlotForItem(ItemStack stack, CallbackInfoReturnable<EquipmentSlot> cir) {
-        Item item = stack.getItem();
-        if (item instanceof ItemExtension) {
-            EquipmentSlot slot = ((ItemExtension) item).getCustomEquipmentSlot(stack);
+        var item = stack.getItem();
+        if (item instanceof ItemExtension extension) {
+            var slot = extension.getCustomEquipmentSlot(stack);
             if (slot != null) {
                 cir.setReturnValue(slot);
             }

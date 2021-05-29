@@ -47,7 +47,7 @@ public abstract class MixinNaturalSpawner {
             )
     )
     private static boolean overrideNaturalSpawnCondition(ServerLevel level, Mob entity, double f) {
-        EventResult result = EntityEvent.LIVING_CHECK_SPAWN.invoker().canSpawn(entity, level, entity.xOld, entity.yOld, entity.zOld, MobSpawnType.NATURAL, null);
+        var result = EntityEvent.LIVING_CHECK_SPAWN.invoker().canSpawn(entity, level, entity.xOld, entity.yOld, entity.zOld, MobSpawnType.NATURAL, null);
         if (result.value() != null) {
             return result.value();
         } else {
@@ -64,7 +64,7 @@ public abstract class MixinNaturalSpawner {
             )
     )
     private static boolean overrideChunkGenSpawnCondition(Mob mob, LevelAccessor level, MobSpawnType type) {
-        EventResult result = EntityEvent.LIVING_CHECK_SPAWN.invoker().canSpawn(mob, level, mob.xOld, mob.yOld, mob.zOld, MobSpawnType.CHUNK_GENERATION, null);
+        var result = EntityEvent.LIVING_CHECK_SPAWN.invoker().canSpawn(mob, level, mob.xOld, mob.yOld, mob.zOld, MobSpawnType.CHUNK_GENERATION, null);
         if (result.value() != null) {
             return result.value();
         } else {

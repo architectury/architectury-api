@@ -133,7 +133,7 @@ public final class FluidStack {
     
     public CompoundTag getOrCreateChildTag(String childName) {
         getOrCreateTag();
-        CompoundTag child = tag.getCompound(childName);
+        var child = tag.getCompound(childName);
         if (!tag.contains(childName, NbtType.COMPOUND)) {
             tag.put(childName, child);
         }
@@ -159,7 +159,7 @@ public final class FluidStack {
     
     @Override
     public final int hashCode() {
-        int code = 1;
+        var code = 1;
         code = 31 * code + getFluid().hashCode();
         code = 31 * code + Long.hashCode(amount);
         if (tag != null)

@@ -46,7 +46,7 @@ public class BlockEntityHooksImpl {
         if (entity instanceof BlockEntityClientSerializable) {
             ((BlockEntityClientSerializable) entity).sync();
         } else {
-            Level world = Objects.requireNonNull(entity.getLevel());
+            var world = Objects.requireNonNull(entity.getLevel());
             if (!(world instanceof ServerLevel)) {
                 throw new IllegalStateException("Cannot call sync() on the logical client! Did you check world.isClient first?");
             } else {

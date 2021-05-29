@@ -50,7 +50,7 @@ public abstract class MixinFarmBlock {
     
     @Inject(method = "turnToDirt", at = @At("HEAD"), cancellable = true)
     private static void turnToDirt(BlockState state, Level level, BlockPos pos, CallbackInfo ci) {
-        Triple<Long, Float, Entity> triple = turnToDirtLocal.get();
+        var triple = turnToDirtLocal.get();
         turnToDirtLocal.remove();
         if (triple != null && triple.getLeft() == pos.asLong()) {
             if (InteractionEvent.FARMLAND_TRAMPLE.invoker().trample(level, pos, state, triple.getMiddle(), triple.getRight()).value() != null) {

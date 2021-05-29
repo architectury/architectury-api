@@ -29,14 +29,14 @@ import net.minecraft.world.item.Items;
 
 public class TestTrades {
     public static void init() {
-        for (VillagerProfession villagerProfession : Registry.VILLAGER_PROFESSION) {
+        for (var villagerProfession : Registry.VILLAGER_PROFESSION) {
             TradeRegistry.registerVillagerTrade(villagerProfession, 1, TestTrades.createTrades());
         }
         TradeRegistry.registerTradeForWanderingTrader(false, TestTrades.createTrades());
     }
     
     private static VillagerTrades.ItemListing[] createTrades() {
-        SimpleTrade trade = new SimpleTrade(Items.APPLE.getDefaultInstance(), ItemStack.EMPTY, Items.ACACIA_BOAT.getDefaultInstance(), 1, 0, 1.0F);
+        var trade = new SimpleTrade(Items.APPLE.getDefaultInstance(), ItemStack.EMPTY, Items.ACACIA_BOAT.getDefaultInstance(), 1, 0, 1.0F);
         return new VillagerTrades.ItemListing[]{trade};
     }
 }

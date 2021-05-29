@@ -57,8 +57,8 @@ public final class NetworkChannel {
     
     public <T> void register(Class<T> type, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<PacketContext>> messageConsumer) {
         // TODO: this is pretty wasteful; add a way to specify custom or numeric ids
-        String s = UUID.nameUUIDFromBytes(type.getName().getBytes(StandardCharsets.UTF_8)).toString().replace("-", "");
-        MessageInfo<T> info = new MessageInfo<>(new ResourceLocation(id + "/" + s), encoder, decoder, messageConsumer);
+        var s = UUID.nameUUIDFromBytes(type.getName().getBytes(StandardCharsets.UTF_8)).toString().replace("-", "");
+        var info = new MessageInfo<T>(new ResourceLocation(id + "/" + s), encoder, decoder, messageConsumer);
         encoders.put(type, info);
         NetworkManager.NetworkReceiver receiver = (buf, context) -> {
             info.messageConsumer.accept(info.decoder.apply(buf), () -> context);
@@ -71,16 +71,16 @@ public final class NetworkChannel {
     
     public static long hashCodeString(String str) {
         long h = 0;
-        int length = str.length();
-        for (int i = 0; i < length; i++) {
+        var length = str.length();
+        for (var i = 0; i < length; i++) {
             h = 31 * h + str.charAt(i);
         }
         return h;
     }
     
     public <T> Packet<?> toPacket(NetworkManager.Side side, T message) {
-        MessageInfo<T> messageInfo = (MessageInfo<T>) Objects.requireNonNull(encoders.get(message.getClass()), "Unknown message type! " + message);
-        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+        var messageInfo = (MessageInfo<T>) Objects.requireNonNull(encoders.get(message.getClass()), "Unknown message type! " + message);
+        var buf = new FriendlyByteBuf(Unpooled.buffer());
         messageInfo.encoder.accept(message, buf);
         return NetworkManager.toPacket(side, messageInfo.packetId, buf);
     }
@@ -90,8 +90,8 @@ public final class NetworkChannel {
     }
     
     public <T> void sendToPlayers(Iterable<ServerPlayer> players, T message) {
-        Packet<?> packet = toPacket(NetworkManager.s2c(), message);
-        for (ServerPlayer player : players) {
+        var packet = toPacket(NetworkManager.s2c(), message);
+        for (var player : players) {
             Objects.requireNonNull(player, "Unable to send packet to a 'null' player!").connection.send(packet);
         }
     }

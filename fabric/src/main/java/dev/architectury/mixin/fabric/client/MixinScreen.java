@@ -89,7 +89,7 @@ public abstract class MixinScreen implements ScreenInputDelegate {
     
     @ModifyVariable(method = "sendMessage(Ljava/lang/String;Z)V", at = @At("HEAD"), argsOnly = true, ordinal = 0)
     private String modifyMessage(String message) {
-        CompoundEventResult<String> process = ClientChatEvent.PROCESS.invoker().process(message);
+        var process = ClientChatEvent.PROCESS.invoker().process(message);
         if (process.isPresent()) {
             if (process.isFalse())
                 return "";
@@ -102,9 +102,9 @@ public abstract class MixinScreen implements ScreenInputDelegate {
     @Inject(method = "renderTooltipInternal", at = @At("HEAD"), cancellable = true)
     private void renderTooltip(PoseStack poseStack, List<? extends FormattedCharSequence> list, int x, int y, CallbackInfo ci) {
         if (!list.isEmpty()) {
-            TooltipEventColorContextImpl colorContext = tooltipColorContext.get();
+            var colorContext = tooltipColorContext.get();
             colorContext.reset();
-            TooltipEventPositionContextImpl positionContext = tooltipPositionContext.get();
+            var positionContext = tooltipPositionContext.get();
             positionContext.reset(x, y);
             if (ClientTooltipEvent.RENDER_VANILLA_PRE.invoker().renderTooltip(poseStack, list, x, y).isFalse()) {
                 ci.cancel();

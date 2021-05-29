@@ -91,14 +91,13 @@ public class DebugEvents {
             return EventResult.pass();
         });
         EntityEvent.ENTER_SECTION.register(((entity, nx, ny, nz, ox, oy, oz) -> {
-            if (entity instanceof Player) {
-                Player player = (Player) entity;
+            if (entity instanceof Player player) {
                 TestMod.SINK.accept("%s switched section: %s => %s", entity.getScoreboardName(), sectionPos(ox, oy, oz), sectionPos(nx, oy, nz));
                 player.displayClientMessage(new TextComponent("Entering chunk: " + sectionPos(nx, ny, nz)), true);
             }
         }));
         EntityEvent.LIVING_CHECK_SPAWN.register(((entity, level, x, y, z, type, spawner) -> {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             sb.append(entity.getType());
             sb.append(" is trying to spawn");
             sb.append(" at ");

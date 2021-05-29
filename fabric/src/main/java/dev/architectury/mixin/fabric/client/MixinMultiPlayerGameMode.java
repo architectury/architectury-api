@@ -38,7 +38,7 @@ public class MixinMultiPlayerGameMode {
                     shift = At.Shift.AFTER),
             cancellable = true)
     private void entityInteract(Player player, Entity entity, InteractionHand interactionHand, CallbackInfoReturnable<InteractionResult> cir) {
-        EventResult result = InteractionEvent.INTERACT_ENTITY.invoker().interact(player, entity, interactionHand);
+        var result = InteractionEvent.INTERACT_ENTITY.invoker().interact(player, entity, interactionHand);
         if (result.isPresent()) {
             cir.setReturnValue(result.asMinecraft());
         }

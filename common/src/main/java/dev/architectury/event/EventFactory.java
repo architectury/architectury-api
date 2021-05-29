@@ -53,7 +53,7 @@ public final class EventFactory {
         return of(listeners -> (T) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{clazz}, new AbstractInvocationHandler() {
             @Override
             protected Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {
-                for (T listener : listeners) {
+                for (var listener : listeners) {
                     method.invoke(listener, args);
                 }
                 return null;
@@ -72,8 +72,8 @@ public final class EventFactory {
         return of(listeners -> (T) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{clazz}, new AbstractInvocationHandler() {
             @Override
             protected Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {
-                for (T listener : listeners) {
-                    EventResult result = (EventResult) Objects.requireNonNull(method.invoke(listener, args));
+                for (var listener : listeners) {
+                    var result = (EventResult) Objects.requireNonNull(method.invoke(listener, args));
                     if (result.interruptsFurtherEvaluation()) {
                         return result;
                     }
@@ -94,8 +94,8 @@ public final class EventFactory {
         return of(listeners -> (T) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{clazz}, new AbstractInvocationHandler() {
             @Override
             protected Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {
-                for (T listener : listeners) {
-                    CompoundEventResult result = (CompoundEventResult) Objects.requireNonNull(method.invoke(listener, args));
+                for (var listener : listeners) {
+                    var result = (CompoundEventResult) Objects.requireNonNull(method.invoke(listener, args));
                     if (result.interruptsFurtherEvaluation()) {
                         return result;
                     }
@@ -116,7 +116,7 @@ public final class EventFactory {
         Event<Consumer<T>> event = of(listeners -> (Consumer<T>) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{Consumer.class}, new AbstractInvocationHandler() {
             @Override
             protected Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {
-                for (Consumer<T> listener : listeners) {
+                for (var listener : listeners) {
                     method.invoke(listener, args);
                 }
                 return null;
@@ -143,8 +143,8 @@ public final class EventFactory {
         Event<EventActor<T>> event = of(listeners -> (EventActor<T>) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{EventActor.class}, new AbstractInvocationHandler() {
             @Override
             protected Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {
-                for (EventActor<T> listener : listeners) {
-                    EventResult result = (EventResult) method.invoke(listener, args);
+                for (var listener : listeners) {
+                    var result = (EventResult) method.invoke(listener, args);
                     if (result.interruptsFurtherEvaluation()) {
                         return result;
                     }

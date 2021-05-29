@@ -48,7 +48,7 @@ public class MixinBucketItem {
             cancellable = true
     )
     public void fillBucket(Level level, Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir, ItemStack stack, BlockHitResult target) {
-        CompoundEventResult<ItemStack> result = PlayerEvent.FILL_BUCKET.invoker().fill(player, level, stack, target);
+        var result = PlayerEvent.FILL_BUCKET.invoker().fill(player, level, stack, target);
         if (result.interruptsFurtherEvaluation() && result.value() != null) {
             cir.setReturnValue(result.asMinecraft());
             cir.cancel();

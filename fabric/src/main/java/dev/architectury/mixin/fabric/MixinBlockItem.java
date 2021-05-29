@@ -36,7 +36,7 @@ public abstract class MixinBlockItem {
                     target = "Lnet/minecraft/world/item/context/BlockPlaceContext;getClickedPos()Lnet/minecraft/core/BlockPos;"),
             cancellable = true)
     private void place(BlockPlaceContext context, CallbackInfoReturnable<InteractionResult> cir) {
-        EventResult result = BlockEvent.PLACE.invoker().placeBlock(context.getLevel(), context.getClickedPos(), context.getLevel().getBlockState(context.getClickedPos()), context.getPlayer());
+        var result = BlockEvent.PLACE.invoker().placeBlock(context.getLevel(), context.getClickedPos(), context.getLevel().getBlockState(context.getClickedPos()), context.getPlayer());
         if (result.isPresent()) {
             cir.setReturnValue(result.isTrue() ? InteractionResult.SUCCESS : InteractionResult.FAIL);
         }

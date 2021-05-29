@@ -37,8 +37,8 @@ public final class ColorHandlerRegistry {
     
     public static void registerItemColors(ItemColor color, ItemLike... items) {
         Supplier<ItemLike>[] array = new Supplier[items.length];
-        for (int i = 0; i < items.length; i++) {
-            ItemLike item = Objects.requireNonNull(items[i], "items[i] is null!");
+        for (var i = 0; i < items.length; i++) {
+            var item = Objects.requireNonNull(items[i], "items[i] is null!");
             array[i] = () -> item;
         }
         registerItemColors(color, array);
@@ -46,8 +46,8 @@ public final class ColorHandlerRegistry {
     
     public static void registerBlockColors(BlockColor color, Block... blocks) {
         Supplier<Block>[] array = new Supplier[blocks.length];
-        for (int i = 0; i < blocks.length; i++) {
-            Block block = Objects.requireNonNull(blocks[i], "blocks[i] is null!");
+        for (var i = 0; i < blocks.length; i++) {
+            var block = Objects.requireNonNull(blocks[i], "blocks[i] is null!");
             array[i] = () -> block;
         }
         registerBlockColors(color, array);

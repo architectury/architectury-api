@@ -47,16 +47,16 @@ public class MixinKeyboardHandler {
     
     @ModifyVariable(method = {"method_1458", "lambda$charTyped$5"}, at = @At("HEAD"), ordinal = 0, argsOnly = true)
     private static GuiEventListener wrapCharTypedFirst(GuiEventListener screen) {
-        if (screen instanceof ScreenInputDelegate) {
-            return ((ScreenInputDelegate) screen).architectury_delegateInputs();
+        if (screen instanceof ScreenInputDelegate delegate) {
+            return delegate.architectury_delegateInputs();
         }
         return screen;
     }
     
     @ModifyVariable(method = {"method_1473", "lambda$charTyped$6"}, at = @At("HEAD"), ordinal = 0, argsOnly = true)
     private static GuiEventListener wrapCharTypedSecond(GuiEventListener screen) {
-        if (screen instanceof ScreenInputDelegate) {
-            return ((ScreenInputDelegate) screen).architectury_delegateInputs();
+        if (screen instanceof ScreenInputDelegate delegate) {
+            return delegate.architectury_delegateInputs();
         }
         return screen;
     }
@@ -68,12 +68,12 @@ public class MixinKeyboardHandler {
         if (!info.isCancelled()) {
             if (int_3 != 1 && (int_3 != 2 || !this.sendRepeatsToGui)) {
                 if (int_3 == 0) {
-                    EventResult result = ClientScreenInputEvent.KEY_RELEASED_PRE.invoker().keyReleased(minecraft, minecraft.screen, int_1, int_2, int_4);
+                    var result = ClientScreenInputEvent.KEY_RELEASED_PRE.invoker().keyReleased(minecraft, minecraft.screen, int_1, int_2, int_4);
                     if (result.isPresent())
                         info.cancel();
                 }
             } else {
-                EventResult result = ClientScreenInputEvent.KEY_PRESSED_PRE.invoker().keyPressed(minecraft, minecraft.screen, int_1, int_2, int_4);
+                var result = ClientScreenInputEvent.KEY_PRESSED_PRE.invoker().keyPressed(minecraft, minecraft.screen, int_1, int_2, int_4);
                 if (result.isPresent())
                     info.cancel();
             }
@@ -100,7 +100,7 @@ public class MixinKeyboardHandler {
     @Inject(method = "keyPress", at = @At("RETURN"), cancellable = true)
     public void onRawKey(long handle, int key, int scanCode, int action, int modifiers, CallbackInfo info) {
         if (handle == this.minecraft.getWindow().getWindow()) {
-            EventResult result = ClientRawInputEvent.KEY_PRESSED.invoker().keyPressed(minecraft, key, scanCode, action, modifiers);
+            var result = ClientRawInputEvent.KEY_PRESSED.invoker().keyPressed(minecraft, key, scanCode, action, modifiers);
             if (result.isPresent())
                 info.cancel();
         }

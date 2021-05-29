@@ -58,10 +58,10 @@ public class DeferredRegister<T> {
     }
     
     public <R extends T> RegistrySupplier<R> register(ResourceLocation id, Supplier<? extends R> supplier) {
-        Entry<T> entry = new Entry<>(id, (Supplier<T>) supplier);
+        var entry = new Entry<T>(id, (Supplier<T>) supplier);
         this.entries.add(entry);
         if (registered) {
-            Registrar<T> registrar = registriesSupplier.get().get(key);
+            var registrar = registriesSupplier.get().get(key);
             entry.value = registrar.register(entry.id, entry.supplier);
         }
         return (RegistrySupplier<R>) entry;
@@ -72,8 +72,8 @@ public class DeferredRegister<T> {
             throw new IllegalStateException("Cannot register a deferred register twice!");
         }
         registered = true;
-        Registrar<T> registrar = registriesSupplier.get().get(key);
-        for (Entry<T> entry : entries) {
+        var registrar = registriesSupplier.get().get(key);
+        for (var entry : entries) {
             entry.value = registrar.register(entry.id, entry.supplier);
         }
     }

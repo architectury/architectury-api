@@ -55,7 +55,7 @@ public class MixinMouseHandler {
                     ordinal = 0), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
     public void onMouseScrolled(long handle, double xOffset, double yOffset, CallbackInfo info, double amount, double x, double y) {
         if (!info.isCancelled()) {
-            EventResult result = ClientScreenInputEvent.MOUSE_SCROLLED_PRE.invoker().mouseScrolled(minecraft, minecraft.screen, x, y, amount);
+            var result = ClientScreenInputEvent.MOUSE_SCROLLED_PRE.invoker().mouseScrolled(minecraft, minecraft.screen, x, y, amount);
             if (result.isPresent())
                 info.cancel();
         }
@@ -66,7 +66,7 @@ public class MixinMouseHandler {
                     ordinal = 0, shift = At.Shift.AFTER), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
     public void onMouseScrolledPost(long handle, double xOffset, double yOffset, CallbackInfo info, double amount, double x, double y) {
         if (!info.isCancelled()) {
-            EventResult result = ClientScreenInputEvent.MOUSE_SCROLLED_POST.invoker().mouseScrolled(minecraft, minecraft.screen, x, y, amount);
+            var result = ClientScreenInputEvent.MOUSE_SCROLLED_POST.invoker().mouseScrolled(minecraft, minecraft.screen, x, y, amount);
         }
     }
     
@@ -75,7 +75,7 @@ public class MixinMouseHandler {
                     ordinal = 0), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
     public void onRawMouseScrolled(long handle, double xOffset, double yOffset, CallbackInfo info, double amount) {
         if (!info.isCancelled()) {
-            EventResult result = ClientRawInputEvent.MOUSE_SCROLLED.invoker().mouseScrolled(minecraft, amount);
+            var result = ClientRawInputEvent.MOUSE_SCROLLED.invoker().mouseScrolled(minecraft, amount);
             if (result.isPresent())
                 info.cancel();
         }
@@ -86,7 +86,7 @@ public class MixinMouseHandler {
     private static void onGuiMouseClicked(boolean[] bls, Screen screen, double d, double e, int button, CallbackInfo info) {
         var minecraft = Minecraft.getInstance();
         if (!info.isCancelled()) {
-            EventResult result = ClientScreenInputEvent.MOUSE_CLICKED_PRE.invoker().mouseClicked(minecraft, screen, d, e, button);
+            var result = ClientScreenInputEvent.MOUSE_CLICKED_PRE.invoker().mouseClicked(minecraft, screen, d, e, button);
             if (result.isPresent()) {
                 bls[0] = true;
                 info.cancel();
@@ -99,7 +99,7 @@ public class MixinMouseHandler {
     private static void onGuiMouseClickedPost(boolean[] bls, Screen screen, double d, double e, int button, CallbackInfo info) {
         var minecraft = Minecraft.getInstance();
         if (!info.isCancelled() && !bls[0]) {
-            EventResult result = ClientScreenInputEvent.MOUSE_CLICKED_POST.invoker().mouseClicked(minecraft, screen, d, e, button);
+            var result = ClientScreenInputEvent.MOUSE_CLICKED_POST.invoker().mouseClicked(minecraft, screen, d, e, button);
             if (result.isPresent()) {
                 bls[0] = true;
                 info.cancel();
@@ -112,7 +112,7 @@ public class MixinMouseHandler {
             ordinal = 0), cancellable = true)
     public void onRawMouseClicked(long handle, int button, int action, int mods, CallbackInfo info) {
         if (!info.isCancelled()) {
-            EventResult result = ClientRawInputEvent.MOUSE_CLICKED_PRE.invoker().mouseClicked(minecraft, button, action, mods);
+            var result = ClientRawInputEvent.MOUSE_CLICKED_PRE.invoker().mouseClicked(minecraft, button, action, mods);
             if (result.isPresent())
                 info.cancel();
         }
@@ -121,7 +121,7 @@ public class MixinMouseHandler {
     @Inject(method = "onPress", at = @At("RETURN"), cancellable = true)
     public void onRawMouseClickedPost(long handle, int button, int action, int mods, CallbackInfo info) {
         if (handle == this.minecraft.getWindow().getWindow()) {
-            EventResult result = ClientRawInputEvent.MOUSE_CLICKED_POST.invoker().mouseClicked(minecraft, button, action, mods);
+            var result = ClientRawInputEvent.MOUSE_CLICKED_POST.invoker().mouseClicked(minecraft, button, action, mods);
             if (result.isPresent())
                 info.cancel();
         }
@@ -132,7 +132,7 @@ public class MixinMouseHandler {
     private static void onGuiMouseReleased(boolean[] bls, Screen screen, double d, double e, int button, CallbackInfo info) {
         var minecraft = Minecraft.getInstance();
         if (!info.isCancelled()) {
-            EventResult result = ClientScreenInputEvent.MOUSE_RELEASED_PRE.invoker().mouseReleased(minecraft, screen, d, e, button);
+            var result = ClientScreenInputEvent.MOUSE_RELEASED_PRE.invoker().mouseReleased(minecraft, screen, d, e, button);
             if (result.isPresent()) {
                 bls[0] = true;
                 info.cancel();
@@ -145,7 +145,7 @@ public class MixinMouseHandler {
     private static void onGuiMouseReleasedPost(boolean[] bls, Screen screen, double d, double e, int button, CallbackInfo info) {
         var minecraft = Minecraft.getInstance();
         if (!info.isCancelled() && !bls[0]) {
-            EventResult result = ClientScreenInputEvent.MOUSE_RELEASED_POST.invoker().mouseReleased(minecraft, screen, d, e, button);
+            var result = ClientScreenInputEvent.MOUSE_RELEASED_POST.invoker().mouseReleased(minecraft, screen, d, e, button);
             if (result.isPresent()) {
                 bls[0] = true;
                 info.cancel();
@@ -156,8 +156,8 @@ public class MixinMouseHandler {
     @SuppressWarnings("UnresolvedMixinReference")
     @ModifyVariable(method = {"method_1602", "lambda$onMove$11"}, at = @At("HEAD"), ordinal = 0, argsOnly = true)
     private Screen wrapMouseDragged(Screen screen) {
-        if (screen instanceof ScreenInputDelegate) {
-            return ((ScreenInputDelegate) screen).architectury_delegateInputs();
+        if (screen instanceof ScreenInputDelegate delegate) {
+            return delegate.architectury_delegateInputs();
         }
         return screen;
     }

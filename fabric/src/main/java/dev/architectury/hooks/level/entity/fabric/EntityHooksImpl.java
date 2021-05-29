@@ -46,7 +46,7 @@ public class EntityHooksImpl {
             @Override
             public void onMove() {
                 callback.onMove();
-                long currentSectionKey = SectionPos.asLong(entity.blockPosition());
+                var currentSectionKey = SectionPos.asLong(entity.blockPosition());
                 if (currentSectionKey != lastSectionKey) {
                     EntityEvent.ENTER_SECTION.invoker().enterSection(entity, SectionPos.x(lastSectionKey), SectionPos.y(lastSectionKey),
                             SectionPos.z(lastSectionKey), SectionPos.x(currentSectionKey), SectionPos.y(currentSectionKey),

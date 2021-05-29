@@ -29,7 +29,7 @@ import org.spongepowered.asm.mixin.Mixin;
 public interface MixinBlockEntityExtension extends BlockEntityClientSerializable {
     @Override
     default void fromClientTag(CompoundTag tag) {
-        BlockEntity entity = (BlockEntity) this;
+        var entity = (BlockEntity) this;
         if (entity.hasLevel()) {
             ((BlockEntityExtension) this).loadClientData(entity.getBlockState(), tag);
         }

@@ -23,6 +23,7 @@ import dev.architectury.extensions.ItemExtension;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -43,9 +44,10 @@ public class MixinInventory {
     
     @Inject(method = "tick", at = @At("RETURN"))
     private void updateItems(CallbackInfo ci) {
-        for (ItemStack stack : armor) {
-            if (stack.getItem() instanceof ItemExtension) {
-                ((ItemExtension) stack.getItem()).tickArmor(stack, player);
+        for (var stack : armor) {
+            Item item = stack.getItem();
+            if (item instanceof ItemExtension extension) {
+                extension.tickArmor(stack, player);
             }
         }
     }

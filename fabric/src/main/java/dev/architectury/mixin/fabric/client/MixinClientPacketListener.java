@@ -72,7 +72,7 @@ public class MixinClientPacketListener {
             target = "Lnet/minecraft/client/gui/Gui;handleChat(Lnet/minecraft/network/chat/ChatType;Lnet/minecraft/network/chat/Component;Ljava/util/UUID;)V"),
             cancellable = true)
     private void handleChat(ClientboundChatPacket packet, CallbackInfo ci) {
-        CompoundEventResult<Component> process = ClientChatEvent.RECEIVED.invoker().process(packet.getType(), packet.getMessage(), packet.getSender());
+        var process = ClientChatEvent.RECEIVED.invoker().process(packet.getType(), packet.getMessage(), packet.getSender());
         if (process.isEmpty()) return;
         if (process.isFalse()) {
             ci.cancel();

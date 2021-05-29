@@ -49,8 +49,8 @@ public final class NetworkManager {
     }
     
     public static void sendToPlayers(Iterable<ServerPlayer> players, ResourceLocation id, FriendlyByteBuf buf) {
-        Packet<?> packet = toPacket(serverToClient(), id, buf);
-        for (ServerPlayer player : players) {
+        var packet = toPacket(serverToClient(), id, buf);
+        for (var player : players) {
             Objects.requireNonNull(player, "Unable to send packet to a 'null' player!").connection.send(packet);
         }
     }

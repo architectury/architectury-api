@@ -86,8 +86,8 @@ public abstract class MixinMinecraft {
             argsOnly = true
     )
     public Screen modifyScreen(Screen screen) {
-        Screen old = screen;
-        CompoundEventResult<Screen> event = ClientGuiEvent.SET_SCREEN.invoker().modifyScreen(screen);
+        var old = screen;
+        var event = ClientGuiEvent.SET_SCREEN.invoker().modifyScreen(screen);
         if (event.isPresent()) {
             if (event.isFalse()) {
                 setScreenCancelled.set(true);

@@ -32,7 +32,7 @@ import org.lwjgl.glfw.GLFW;
 public class TestKeybinds {
     @Environment(EnvType.CLIENT)
     public static void initialize() {
-        KeyMapping mapping = new KeyMapping("key.architectury-test.test", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_O, "category.architectury-test");
+        var mapping = new KeyMapping("key.architectury-test.test", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_O, "category.architectury-test");
         KeyMappingRegistry.register(mapping);
         ClientTickEvent.CLIENT_POST.register(instance -> {
             while (mapping.consumeClick()) {

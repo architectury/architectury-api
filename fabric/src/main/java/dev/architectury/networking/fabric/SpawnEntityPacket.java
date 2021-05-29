@@ -49,18 +49,18 @@ public class SpawnEntityPacket {
         if (entity.level.isClientSide()) {
             throw new IllegalStateException("SpawnPacketUtil.create called on the logical client!");
         }
-        FriendlyByteBuf buffer = PacketByteBufs.create();
+        var buffer = PacketByteBufs.create();
         buffer.writeVarInt(Registry.ENTITY_TYPE.getId(entity.getType()));
         buffer.writeUUID(entity.getUUID());
         buffer.writeVarInt(entity.getId());
-        Vec3 position = entity.position();
+        var position = entity.position();
         buffer.writeDouble(position.x);
         buffer.writeDouble(position.y);
         buffer.writeDouble(position.z);
         buffer.writeFloat(entity.getXRot());
         buffer.writeFloat(entity.getYRot());
         buffer.writeFloat(entity.getYHeadRot());
-        Vec3 deltaMovement = entity.getDeltaMovement();
+        var deltaMovement = entity.getDeltaMovement();
         buffer.writeDouble(deltaMovement.x);
         buffer.writeDouble(deltaMovement.y);
         buffer.writeDouble(deltaMovement.z);
@@ -69,27 +69,27 @@ public class SpawnEntityPacket {
     
     @Environment(EnvType.CLIENT)
     public static void receive(FriendlyByteBuf buf, NetworkManager.PacketContext context) {
-        int entityTypeId = buf.readVarInt();
-        UUID uuid = buf.readUUID();
-        int id = buf.readVarInt();
-        double x = buf.readDouble();
-        double y = buf.readDouble();
-        double z = buf.readDouble();
-        float xRot = buf.readFloat();
-        float yRot = buf.readFloat();
-        float yHeadRot = buf.readFloat();
-        double deltaX = buf.readDouble();
-        double deltaY = buf.readDouble();
-        double deltaZ = buf.readDouble();
+        var entityTypeId = buf.readVarInt();
+        var uuid = buf.readUUID();
+        var id = buf.readVarInt();
+        var x = buf.readDouble();
+        var y = buf.readDouble();
+        var z = buf.readDouble();
+        var xRot = buf.readFloat();
+        var yRot = buf.readFloat();
+        var yHeadRot = buf.readFloat();
+        var deltaX = buf.readDouble();
+        var deltaY = buf.readDouble();
+        var deltaZ = buf.readDouble();
         context.queue(() -> {
-            EntityType<?> entityType = Registry.ENTITY_TYPE.byId(entityTypeId);
+            var entityType = Registry.ENTITY_TYPE.byId(entityTypeId);
             if (entityType == null) {
                 throw new IllegalStateException("Entity type (" + entityTypeId + ") is unknown, spawning at (" + x + ", " + y + ", " + z + ")");
             }
             if (Minecraft.getInstance().level == null) {
                 throw new IllegalStateException("Client world is null!");
             }
-            Entity entity = entityType.create(Minecraft.getInstance().level);
+            var entity = entityType.create(Minecraft.getInstance().level);
             if (entity == null) {
                 throw new IllegalStateException("Created entity is null!");
             }

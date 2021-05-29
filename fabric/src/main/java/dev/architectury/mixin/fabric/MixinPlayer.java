@@ -59,7 +59,7 @@ public class MixinPlayer {
             ordinal = 0),
             cancellable = true)
     private void entityInteract(Entity entity, InteractionHand interactionHand, CallbackInfoReturnable<InteractionResult> cir) {
-        EventResult result = InteractionEvent.INTERACT_ENTITY.invoker().interact((Player) (Object) this, entity, interactionHand);
+        var result = InteractionEvent.INTERACT_ENTITY.invoker().interact((Player) (Object) this, entity, interactionHand);
         if (result.isPresent()) {
             cir.setReturnValue(result.asMinecraft());
         }

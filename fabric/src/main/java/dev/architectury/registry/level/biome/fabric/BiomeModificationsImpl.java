@@ -78,7 +78,7 @@ public class BiomeModificationsImpl {
     }
     
     static {
-        BiomeModification modification = net.fabricmc.fabric.api.biome.v1.BiomeModifications.create(FABRIC_MODIFICATION);
+        var modification = net.fabricmc.fabric.api.biome.v1.BiomeModifications.create(FABRIC_MODIFICATION);
         registerModification(modification, ModificationPhase.ADDITIONS, ADDITIONS);
         registerModification(modification, ModificationPhase.POST_PROCESSING, POST_PROCESSING);
         registerModification(modification, ModificationPhase.REMOVALS, REMOVALS);
@@ -87,9 +87,9 @@ public class BiomeModificationsImpl {
     
     private static void registerModification(BiomeModification modification, ModificationPhase phase, List<Pair<Predicate<BiomeContext>, BiConsumer<BiomeContext, BiomeProperties.Mutable>>> list) {
         modification.add(phase, Predicates.alwaysTrue(), (biomeSelectionContext, biomeModificationContext) -> {
-            BiomeContext biomeContext = wrapSelectionContext(biomeSelectionContext);
-            BiomeProperties.Mutable mutableBiome = wrapMutableBiome(biomeSelectionContext.getBiome(), biomeModificationContext);
-            for (Pair<Predicate<BiomeContext>, BiConsumer<BiomeContext, BiomeProperties.Mutable>> pair : list) {
+            var biomeContext = wrapSelectionContext(biomeSelectionContext);
+            var mutableBiome = wrapMutableBiome(biomeSelectionContext.getBiome(), biomeModificationContext);
+            for (var pair : list) {
                 if (pair.getLeft().test(biomeContext)) {
                     pair.getRight().accept(biomeContext, mutableBiome);
                 }

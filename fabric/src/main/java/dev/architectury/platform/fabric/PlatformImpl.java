@@ -69,7 +69,7 @@ public class PlatformImpl {
     }
     
     public static Collection<Mod> getMods() {
-        for (ModContainer mod : FabricLoader.getInstance().getAllMods()) {
+        for (var mod : FabricLoader.getInstance().getAllMods()) {
             getMod(mod.getMetadata().getId());
         }
         return mods.values();

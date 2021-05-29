@@ -59,26 +59,26 @@ public class ClientOverlayMessageSink extends ConsoleMessageSink {
     public void render(PoseStack matrices, float delta) {
         matrices.pushPose();
         matrices.scale(0.5f, 0.5f, 1f);
-        Minecraft minecraft = Minecraft.getInstance();
-        long currentMills = Util.getMillis();
-        int lineHeight = minecraft.font.lineHeight;
+        var minecraft = Minecraft.getInstance();
+        var currentMills = Util.getMillis();
+        var lineHeight = minecraft.font.lineHeight;
         
         synchronized (messages) {
-            Iterator<Message> messageIterator = messages.iterator();
-            int y = 1;
+            var messageIterator = messages.iterator();
+            var y = 1;
             
             RenderSystem.enableBlend();
             
             while (messageIterator.hasNext()) {
-                Message message = messageIterator.next();
-                int timeExisted = (int) (currentMills - message.created);
+                var message = messageIterator.next();
+                var timeExisted = (int) (currentMills - message.created);
                 
                 if (timeExisted >= 5000) {
                     messageIterator.remove();
                 } else {
                     if (y - 1 < minecraft.getWindow().getGuiScaledHeight()) {
-                        int textWidth = minecraft.font.width(message.text);
-                        int alpha = (int) Mth.clamp((5000 - timeExisted) / 5000f * 400f + 8, 0, 255);
+                        var textWidth = minecraft.font.width(message.text);
+                        var alpha = (int) Mth.clamp((5000 - timeExisted) / 5000f * 400f + 8, 0, 255);
                         GuiComponent.fill(matrices, 0, y - 1, 2 + textWidth + 1, y + lineHeight - 1, 0x505050 + ((alpha * 144 / 255) << 24));
                         minecraft.font.draw(matrices, message.text, 1, y, 0xE0E0E0 + (alpha << 24));
                     }

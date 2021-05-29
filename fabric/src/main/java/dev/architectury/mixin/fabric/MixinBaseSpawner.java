@@ -41,7 +41,7 @@ public abstract class MixinBaseSpawner {
             )
     )
     private boolean checkSpawnerSpawn(Mob mob, LevelAccessor level, MobSpawnType type) {
-        EventResult result = EntityEvent.LIVING_CHECK_SPAWN.invoker()
+        var result = EntityEvent.LIVING_CHECK_SPAWN.invoker()
                 .canSpawn(mob, level, mob.getX(), mob.getY(), mob.getZ(), type, (BaseSpawner) (Object) this);
         if (result.value() != null) {
             return result.value();

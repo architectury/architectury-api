@@ -142,8 +142,7 @@ public class RegistriesImpl {
                 @Override
                 public boolean equals(Object obj) {
                     if (this == obj) return true;
-                    if (!(obj instanceof RegistrySupplier)) return false;
-                    RegistrySupplier<?> other = (RegistrySupplier<?>) obj;
+                    if (!(obj instanceof RegistrySupplier<?> other)) return false;
                     return other.getRegistryId().equals(getRegistryId()) && other.getId().equals(getId());
                 }
                 

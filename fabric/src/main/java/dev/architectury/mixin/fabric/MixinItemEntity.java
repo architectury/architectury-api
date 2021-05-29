@@ -43,7 +43,7 @@ public abstract class MixinItemEntity {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getCount()I"), cancellable = true)
     private void prePickup(Player player, CallbackInfo ci) {
         cache = getItem().copy();
-        EventResult canPickUp = PlayerEvent.PICKUP_ITEM_PRE.invoker().canPickup(player, (ItemEntity) (Object) this, getItem());
+        var canPickUp = PlayerEvent.PICKUP_ITEM_PRE.invoker().canPickup(player, (ItemEntity) (Object) this, getItem());
         if (canPickUp.isFalse()) {
             ci.cancel();
         }

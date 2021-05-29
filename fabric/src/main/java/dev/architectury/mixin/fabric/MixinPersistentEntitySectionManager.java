@@ -48,12 +48,12 @@ public class MixinPersistentEntitySectionManager<T extends EntityAccess> impleme
             cancellable = true)
     private void addEntity(T entityAccess, boolean bl, CallbackInfoReturnable<Boolean> cir) {
         // TODO: Check if other classes implements EntityAccess as well
-        if (entityAccess instanceof Entity && levelRef != null) {
-            ServerLevel level = levelRef.get();
+        if (entityAccess instanceof Entity entity && levelRef != null) {
+            var level = levelRef.get();
             levelRef = null;
             
             if (level != null) {
-                if (EntityEvent.ADD.invoker().add((Entity) entityAccess, level).isFalse()) {
+                if (EntityEvent.ADD.invoker().add(entity, level).isFalse()) {
                     cir.setReturnValue(false);
                 }
             }

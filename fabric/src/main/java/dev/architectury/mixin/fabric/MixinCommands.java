@@ -36,9 +36,9 @@ public class MixinCommands {
     @Redirect(method = "performCommand",
             at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/CommandDispatcher;execute(Lcom/mojang/brigadier/StringReader;Ljava/lang/Object;)I", remap = false))
     private int performCommand(CommandDispatcher<CommandSourceStack> dispatcher, StringReader input, Object source) throws CommandSyntaxException {
-        CommandSourceStack stack = (CommandSourceStack) source;
-        ParseResults<CommandSourceStack> parse = dispatcher.parse(input, stack);
-        CommandPerformEvent event = new CommandPerformEvent(parse, null);
+        var stack = (CommandSourceStack) source;
+        var parse = dispatcher.parse(input, stack);
+        var event = new CommandPerformEvent(parse, null);
         if (CommandPerformEvent.EVENT.invoker().act(event).isPresent()) {
             if (event.getThrowable() != null) {
                 Throwables.throwIfUnchecked(event.getThrowable());
