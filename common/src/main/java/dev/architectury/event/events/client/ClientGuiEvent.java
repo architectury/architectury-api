@@ -21,8 +21,8 @@ package dev.architectury.event.events.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.architectury.event.CompoundEventResult;
-import dev.architectury.event.EventFactory;
 import dev.architectury.event.Event;
+import dev.architectury.event.EventFactory;
 import dev.architectury.event.EventResult;
 import dev.architectury.hooks.client.screen.ScreenAccess;
 import net.fabricmc.api.EnvType;

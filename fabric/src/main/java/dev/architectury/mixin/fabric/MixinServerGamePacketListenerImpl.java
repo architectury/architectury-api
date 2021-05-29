@@ -20,8 +20,8 @@
 package dev.architectury.mixin.fabric;
 
 import dev.architectury.event.EventResult;
-import dev.architectury.impl.fabric.ChatComponentImpl;
 import dev.architectury.event.events.common.ChatEvent;
+import dev.architectury.impl.fabric.ChatComponentImpl;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -29,7 +29,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.server.network.TextFilter;
-import net.minecraft.world.InteractionResult;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -57,7 +56,7 @@ public abstract class MixinServerGamePacketListenerImpl {
     
     @Inject(method = "handleChat(Lnet/minecraft/server/network/TextFilter$FilteredText;)V",
             at = @At(value = "INVOKE",
-                     target = "Lnet/minecraft/server/players/PlayerList;broadcastMessage(Lnet/minecraft/network/chat/Component;Ljava/util/function/Function;Lnet/minecraft/network/chat/ChatType;Ljava/util/UUID;)V"),
+                    target = "Lnet/minecraft/server/players/PlayerList;broadcastMessage(Lnet/minecraft/network/chat/Component;Ljava/util/function/Function;Lnet/minecraft/network/chat/ChatType;Ljava/util/UUID;)V"),
             cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
     private void handleChat(TextFilter.FilteredText message, CallbackInfo ci, String string, Component component, Component component2) {
         ChatComponentImpl chatComponent = new ChatComponentImpl(component2, component);

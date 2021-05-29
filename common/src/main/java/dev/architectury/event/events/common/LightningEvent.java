@@ -19,8 +19,8 @@
 
 package dev.architectury.event.events.common;
 
-import dev.architectury.event.EventFactory;
 import dev.architectury.event.Event;
+import dev.architectury.event.EventFactory;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.level.Level;

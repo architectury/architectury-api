@@ -20,7 +20,6 @@
 package dev.architectury.event;
 
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import org.apache.commons.lang3.BooleanUtils;
 
 /**

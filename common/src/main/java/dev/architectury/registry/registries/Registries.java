@@ -19,8 +19,8 @@
 
 package dev.architectury.registry.registries;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.core.RegistryEntry;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus;

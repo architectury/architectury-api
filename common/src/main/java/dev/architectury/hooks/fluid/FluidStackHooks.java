@@ -19,8 +19,8 @@
 
 package dev.architectury.hooks.fluid;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.fluid.FluidStack;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;

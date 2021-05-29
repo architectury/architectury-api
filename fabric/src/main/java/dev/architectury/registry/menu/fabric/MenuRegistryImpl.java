@@ -19,10 +19,10 @@
 
 package dev.architectury.registry.menu.fabric;
 
+import dev.architectury.registry.menu.ExtendedMenuProvider;
 import dev.architectury.registry.menu.MenuRegistry.ExtendedMenuTypeFactory;
 import dev.architectury.registry.menu.MenuRegistry.ScreenFactory;
 import dev.architectury.registry.menu.MenuRegistry.SimpleMenuTypeFactory;
-import dev.architectury.registry.menu.ExtendedMenuProvider;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;

@@ -19,14 +19,13 @@
 
 package dev.architectury.event.events.client;
 
-import dev.architectury.event.EventFactory;
 import dev.architectury.event.Event;
+import dev.architectury.event.EventFactory;
 import dev.architectury.event.EventResult;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.world.InteractionResult;
 
 @Environment(EnvType.CLIENT)
 public interface ClientScreenInputEvent {

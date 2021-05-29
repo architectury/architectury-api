@@ -20,10 +20,10 @@
 package dev.architectury.networking;
 
 import com.google.common.collect.Maps;
-import dev.architectury.utils.Env;
-import io.netty.buffer.Unpooled;
 import dev.architectury.networking.NetworkManager.PacketContext;
 import dev.architectury.platform.Platform;
+import dev.architectury.utils.Env;
+import io.netty.buffer.Unpooled;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;

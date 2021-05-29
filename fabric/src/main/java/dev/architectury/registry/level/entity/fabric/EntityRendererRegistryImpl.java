@@ -20,13 +20,9 @@
 package dev.architectury.registry.level.entity.fabric;
 
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-
-import java.util.function.Function;
 
 public class EntityRendererRegistryImpl {
     public static <T extends Entity> void register(EntityType<? extends T> type, EntityRendererProvider<T> provider) {

@@ -26,7 +26,6 @@ import dev.architectury.impl.fabric.ScreenInputDelegate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.world.InteractionResult;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -109,7 +108,7 @@ public class MixinMouseHandler {
     }
     
     @Inject(method = "onPress", at = @At(value = "INVOKE",
-                                         target = "Lnet/minecraft/client/Minecraft;getOverlay()Lnet/minecraft/client/gui/screens/Overlay;",
+            target = "Lnet/minecraft/client/Minecraft;getOverlay()Lnet/minecraft/client/gui/screens/Overlay;",
             ordinal = 0), cancellable = true)
     public void onRawMouseClicked(long handle, int button, int action, int mods, CallbackInfo info) {
         if (!info.isCancelled()) {

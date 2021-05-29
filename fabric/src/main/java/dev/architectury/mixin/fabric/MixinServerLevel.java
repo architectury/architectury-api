@@ -19,8 +19,8 @@
 
 package dev.architectury.mixin.fabric;
 
-import dev.architectury.hooks.fabric.PersistentEntitySectionManagerHooks;
 import dev.architectury.event.events.common.LifecycleEvent;
+import dev.architectury.hooks.fabric.PersistentEntitySectionManagerHooks;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ProgressListener;
 import net.minecraft.world.entity.Entity;
@@ -35,7 +35,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ServerLevel.class)
 public class MixinServerLevel {
-    @Shadow @Final private PersistentEntitySectionManager<Entity> entityManager;
+    @Shadow
+    @Final
+    private PersistentEntitySectionManager<Entity> entityManager;
     
     @Inject(method = "save", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerChunkCache;save(Z)V"))
     private void save(ProgressListener progressListener, boolean bl, boolean bl2, CallbackInfo ci) {
@@ -43,7 +45,7 @@ public class MixinServerLevel {
     }
     
     @Inject(method = "addEntity", at = @At(value = "INVOKE",
-                                           target = "Lnet/minecraft/world/level/entity/PersistentEntitySectionManager;addNewEntity(Lnet/minecraft/world/level/entity/EntityAccess;)Z"),
+            target = "Lnet/minecraft/world/level/entity/PersistentEntitySectionManager;addNewEntity(Lnet/minecraft/world/level/entity/EntityAccess;)Z"),
             cancellable = true)
     private void addEntity(Entity entity, CallbackInfoReturnable<Boolean> cir) {
         ((PersistentEntitySectionManagerHooks) this.entityManager).architectury_attachLevel((ServerLevel) (Object) this);

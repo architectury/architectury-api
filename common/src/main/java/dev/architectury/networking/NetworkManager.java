@@ -19,8 +19,8 @@
 
 package dev.architectury.networking;
 
-import dev.architectury.utils.Env;
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import dev.architectury.utils.Env;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;

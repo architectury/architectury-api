@@ -26,7 +26,7 @@ import net.minecraft.client.Minecraft;
 public class ArchitecturyClient {
     public static void init() {
         ClientLifecycleEvent.CLIENT_SETUP.invoker().stateChanged(Minecraft.getInstance());
-    
+        
         SpawnEntityPacket.register();
     }
 }
