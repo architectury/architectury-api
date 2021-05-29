@@ -66,28 +66,28 @@ public interface LifecycleEvent {
      */
     Event<ServerState> SERVER_STOPPED = EventFactory.createLoop();
     /**
-     * Invoked when a world is loaded on the server-side.
+     * Invoked when a level is loaded on the server-side.
      * Equivalent to Forge's {@code WorldEvent.Load} event (on server)
      * and Fabric's {@code ServerWorldEvents#LOAD}.
      *
-     * @see ServerWorldState#act(Level)
+     * @see ServerLevelState#act(Level)
      */
-    Event<ServerWorldState> SERVER_WORLD_LOAD = EventFactory.createLoop();
+    Event<ServerLevelState> SERVER_LEVEL_LOAD = EventFactory.createLoop();
     /**
-     * Invoked when a world is unloaded on the server-side.
+     * Invoked when a level is unloaded on the server-side.
      * Equivalent to Forge's {@code WorldEvent.Unload} event (on server)
      * and Fabric's {@code ServerWorldEvents#UNLOAD}.
      *
-     * @see ServerWorldState#act(Level)
+     * @see ServerLevelState#act(Level)
      */
-    Event<ServerWorldState> SERVER_WORLD_UNLOAD = EventFactory.createLoop();
+    Event<ServerLevelState> SERVER_LEVEL_UNLOAD = EventFactory.createLoop();
     /**
-     * Invoked when the world is being saved.
+     * Invoked when the level is being saved.
      * Equivalent to Forge's {@code WorldEvent.Save} event.
      *
-     * @see ServerWorldState#act(Level)
+     * @see ServerLevelState#act(Level)
      */
-    Event<ServerWorldState> SERVER_WORLD_SAVE = EventFactory.createLoop();
+    Event<ServerLevelState> SERVER_LEVEL_SAVE = EventFactory.createLoop();
     
     interface InstanceState<T> {
         /**
@@ -101,7 +101,7 @@ public interface LifecycleEvent {
     interface ServerState extends InstanceState<MinecraftServer> {
     }
     
-    interface WorldState<T extends Level> {
+    interface LevelState<T extends Level> {
         /**
          * Parent event type for any events that are invoked on world state change.
          *
@@ -110,6 +110,6 @@ public interface LifecycleEvent {
         void act(T world);
     }
     
-    interface ServerWorldState extends WorldState<ServerLevel> {
+    interface ServerLevelState extends LevelState<ServerLevel> {
     }
 }

@@ -50,8 +50,8 @@ public class EventHandlerImpl {
         
         ClientTickEvents.START_CLIENT_TICK.register(instance -> ClientTickEvent.CLIENT_PRE.invoker().tick(instance));
         ClientTickEvents.END_CLIENT_TICK.register(instance -> ClientTickEvent.CLIENT_POST.invoker().tick(instance));
-        ClientTickEvents.START_WORLD_TICK.register(instance -> ClientTickEvent.CLIENT_WORLD_PRE.invoker().tick(instance));
-        ClientTickEvents.END_WORLD_TICK.register(instance -> ClientTickEvent.CLIENT_WORLD_POST.invoker().tick(instance));
+        ClientTickEvents.START_WORLD_TICK.register(instance -> ClientTickEvent.CLIENT_LEVEL_PRE.invoker().tick(instance));
+        ClientTickEvents.END_WORLD_TICK.register(instance -> ClientTickEvent.CLIENT_LEVEL_POST.invoker().tick(instance));
         
         ItemTooltipCallback.EVENT.register((itemStack, tooltipFlag, list) -> ClientTooltipEvent.ITEM.invoker().append(itemStack, list, tooltipFlag));
         HudRenderCallback.EVENT.register((matrices, tickDelta) -> ClientGuiEvent.RENDER_HUD.invoker().renderHud(matrices, tickDelta));
@@ -68,8 +68,8 @@ public class EventHandlerImpl {
         ServerTickEvents.START_WORLD_TICK.register(instance -> TickEvent.SERVER_WORLD_PRE.invoker().tick(instance));
         ServerTickEvents.END_WORLD_TICK.register(instance -> TickEvent.SERVER_WORLD_POST.invoker().tick(instance));
         
-        ServerWorldEvents.LOAD.register((server, world) -> LifecycleEvent.SERVER_WORLD_LOAD.invoker().act(world));
-        ServerWorldEvents.UNLOAD.register((server, world) -> LifecycleEvent.SERVER_WORLD_UNLOAD.invoker().act(world));
+        ServerWorldEvents.LOAD.register((server, world) -> LifecycleEvent.SERVER_LEVEL_LOAD.invoker().act(world));
+        ServerWorldEvents.UNLOAD.register((server, world) -> LifecycleEvent.SERVER_LEVEL_UNLOAD.invoker().act(world));
         
         CommandRegistrationCallback.EVENT.register((commandDispatcher, b) -> CommandRegistrationEvent.EVENT.invoker().register(commandDispatcher, b ? Commands.CommandSelection.DEDICATED : Commands.CommandSelection.INTEGRATED));
         

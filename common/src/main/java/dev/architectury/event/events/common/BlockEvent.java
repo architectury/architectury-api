@@ -49,7 +49,7 @@ public interface BlockEvent {
         /**
          * Invoked when a block is destroyed by a player.
          *
-         * @param world  The level the block is in.
+         * @param level  The level the block is in.
          * @param pos    The position of the block.
          * @param state  The current state of the block.
          * @param player The player who is breaking the block.
@@ -57,21 +57,21 @@ public interface BlockEvent {
          * @return A {@link EventResult} determining the outcome of the event,
          * the execution of the vanilla block breaking may be cancelled by the result.
          */
-        EventResult breakBlock(Level world, BlockPos pos, BlockState state, ServerPlayer player, @Nullable IntValue xp);
+        EventResult breakBlock(Level level, BlockPos pos, BlockState state, ServerPlayer player, @Nullable IntValue xp);
     }
     
     interface Place {
         /**
          * Invoked when a block is placed.
          *
-         * @param world  The level the block is in.
+         * @param level  The level the block is in.
          * @param pos    The position of the block.
          * @param state  The future state of the block.
          * @param placer The entity who is placing it. Can be {@code null}, e.g. when a dispenser places something.
          * @return A {@link EventResult} determining the outcome of the event,
          * the execution of the vanilla block placing may be cancelled by the result.
          */
-        EventResult placeBlock(Level world, BlockPos pos, BlockState state, @Nullable Entity placer);
+        EventResult placeBlock(Level level, BlockPos pos, BlockState state, @Nullable Entity placer);
     }
     
     interface FallingLand {

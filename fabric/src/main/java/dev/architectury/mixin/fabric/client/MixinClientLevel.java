@@ -40,7 +40,7 @@ import java.util.function.Supplier;
 public class MixinClientLevel {
     @Inject(method = "<init>", at = @At("RETURN"))
     private void construct(ClientPacketListener clientPacketListener, ClientLevel.ClientLevelData clientLevelData, ResourceKey<Level> resourceKey, DimensionType dimensionType, int i, Supplier<ProfilerFiller> supplier, LevelRenderer levelRenderer, boolean bl, long l, CallbackInfo ci) {
-        ClientLifecycleEvent.CLIENT_WORLD_LOAD.invoker().act((ClientLevel) (Object) this);
+        ClientLifecycleEvent.CLIENT_LEVEL_LOAD.invoker().act((ClientLevel) (Object) this);
     }
     
     @Inject(method = "addEntity", at = @At("HEAD"), cancellable = true)

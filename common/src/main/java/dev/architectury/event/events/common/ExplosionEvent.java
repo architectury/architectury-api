@@ -44,12 +44,12 @@ public interface ExplosionEvent {
          * Invoked before an explosion happens.
          * Equivalent to Forge's {@code ExplosionEvent.Start} event.
          *
-         * @param world     The level the explosion is happening in.
+         * @param level     The level the explosion is happening in.
          * @param explosion The explosion.
          * @return A {@link EventResult} determining the outcome of the event,
          * the execution of the vanilla explosion may be cancelled by the result.
          */
-        EventResult explode(Level world, Explosion explosion);
+        EventResult explode(Level level, Explosion explosion);
     }
     
     interface Detonate {
@@ -57,10 +57,10 @@ public interface ExplosionEvent {
          * Invoked when an explosion is detonating.
          * Equivalent to Forge's {@code ExplosionEvent.Detonate} event.
          *
-         * @param world            The level the explosion happens in.
+         * @param level            The level the explosion happens in.
          * @param explosion        The explosion happening.
          * @param affectedEntities The entities affected by the explosion.
          */
-        void explode(Level world, Explosion explosion, List<Entity> affectedEntities);
+        void explode(Level level, Explosion explosion, List<Entity> affectedEntities);
     }
 }

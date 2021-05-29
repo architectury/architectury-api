@@ -159,13 +159,13 @@ public class DebugEvents {
         LifecycleEvent.SERVER_STOPPED.register(instance -> {
             TestMod.SINK.accept("Server stopped");
         });
-        LifecycleEvent.SERVER_WORLD_LOAD.register(instance -> {
+        LifecycleEvent.SERVER_LEVEL_LOAD.register(instance -> {
             TestMod.SINK.accept("Server world loaded: " + instance.dimension().location());
         });
-        LifecycleEvent.SERVER_WORLD_UNLOAD.register(instance -> {
+        LifecycleEvent.SERVER_LEVEL_UNLOAD.register(instance -> {
             TestMod.SINK.accept("Server world unloaded: " + instance.dimension().location());
         });
-        LifecycleEvent.SERVER_WORLD_SAVE.register(instance -> {
+        LifecycleEvent.SERVER_LEVEL_SAVE.register(instance -> {
             TestMod.SINK.accept("Server world saved: " + instance.dimension().location());
         });
         PlayerEvent.PLAYER_JOIN.register(player -> {
@@ -238,7 +238,7 @@ public class DebugEvents {
     
     @Environment(EnvType.CLIENT)
     public static void debugEventsClient() {
-        ClientTickEvent.CLIENT_WORLD_PRE.register(instance -> {
+        ClientTickEvent.CLIENT_LEVEL_PRE.register(instance -> {
             try {
                 // Uncomment the following line to see the profiler spike for root.tick.level.architecturyClientLevelPreTick
                 //Thread.sleep(10);
@@ -254,7 +254,7 @@ public class DebugEvents {
             TestMod.SINK.accept("Client chat received: " + message.getString());
             return CompoundEventResult.pass();
         });
-        ClientLifecycleEvent.CLIENT_WORLD_LOAD.register(world -> {
+        ClientLifecycleEvent.CLIENT_LEVEL_LOAD.register(world -> {
             TestMod.SINK.accept("Client world loaded: " + world.dimension().location().toString());
         });
         ClientPlayerEvent.CLIENT_PLAYER_JOIN.register(player -> {

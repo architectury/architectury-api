@@ -39,7 +39,7 @@ public class MixinServerLevel {
     
     @Inject(method = "save", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerChunkCache;save(Z)V"))
     private void save(ProgressListener progressListener, boolean bl, boolean bl2, CallbackInfo ci) {
-        LifecycleEvent.SERVER_WORLD_SAVE.invoker().act((ServerLevel) (Object) this);
+        LifecycleEvent.SERVER_LEVEL_SAVE.invoker().act((ServerLevel) (Object) this);
     }
     
     @Inject(method = "addEntity", at = @At(value = "INVOKE",
