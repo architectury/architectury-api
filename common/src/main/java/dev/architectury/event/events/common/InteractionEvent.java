@@ -72,7 +72,7 @@ public interface InteractionEvent {
          * @param pos    The position of the block in the level.
          * @param face   The face of the block clicked.
          * @return A {@link EventResult} determining the outcome of the event,
-         * the execution of the vanilla click may be cancelled by the result.
+         * the action may be cancelled by the result.
          */
         EventResult click(Player player, InteractionHand hand, BlockPos pos, Direction face);
     }
@@ -87,7 +87,7 @@ public interface InteractionEvent {
          * @param pos    The position of the block in the level. Use {@link Player#getCommandSenderWorld()} to get the level.
          * @param face   The face of the block clicked.
          * @return A {@link EventResult} determining the outcome of the event,
-         * the execution of the vanilla click may be cancelled by the result.
+         * the action may be cancelled by the result.
          */
         EventResult click(Player player, InteractionHand hand, BlockPos pos, Direction face);
     }
@@ -100,7 +100,7 @@ public interface InteractionEvent {
          * @param player The player right clicking the block.
          * @param hand   The hand that is used.
          * @return A {@link EventResult} determining the outcome of the event,
-         * the execution of the vanilla click may be cancelled by the result.
+         * the action may be cancelled by the result.
          */
         CompoundEventResult<ItemStack> click(Player player, InteractionHand hand);
     }
