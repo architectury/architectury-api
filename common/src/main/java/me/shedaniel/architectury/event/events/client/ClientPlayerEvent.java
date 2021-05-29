@@ -28,22 +28,47 @@ import org.jetbrains.annotations.Nullable;
 
 @Environment(EnvType.CLIENT)
 public interface ClientPlayerEvent {
+    /**
+     * @see ClientPlayerJoin#join(LocalPlayer)
+     */
     Event<ClientPlayerJoin> CLIENT_PLAYER_JOIN = EventFactory.createLoop();
+    /**
+     * @see ClientPlayerQuit#quit(LocalPlayer)
+     */
     Event<ClientPlayerQuit> CLIENT_PLAYER_QUIT = EventFactory.createLoop();
+    /**
+     * @see ClientPlayerRespawn#respawn(LocalPlayer, LocalPlayer)
+     */
     Event<ClientPlayerRespawn> CLIENT_PLAYER_RESPAWN = EventFactory.createLoop();
     
     @Environment(EnvType.CLIENT)
     interface ClientPlayerJoin {
+        /**
+         * Invoked whenever a client player joins a level
+         *
+         * @param player The player joining.
+         */
         void join(LocalPlayer player);
     }
     
     @Environment(EnvType.CLIENT)
     interface ClientPlayerQuit {
+        /**
+         * Invoked whenever a client player leaves a level and is cleared on the client side.
+         *
+         * @param player The player leaving.
+         */
         void quit(@Nullable LocalPlayer player);
     }
     
     @Environment(EnvType.CLIENT)
     interface ClientPlayerRespawn {
+        /**
+         * Invoked whenever the player respawn packet is received by the client.
+         *
+         * @param oldPlayer The player before the respawn.
+         * @param newPlayer The player after the respawn.
+         */
         void respawn(LocalPlayer oldPlayer, LocalPlayer newPlayer);
     }
 }

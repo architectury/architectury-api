@@ -29,31 +29,58 @@ import net.minecraft.world.InteractionResult;
 @Environment(EnvType.CLIENT)
 public interface ClientRawInputEvent {
     /**
-     * Invoked after the mouse has scrolled, but doesn't have a screen opened, and in a world, equivalent to forge's {@code InputEvent.MouseScrollEvent}.
+     * @see MouseScrolled#mouseScrolled(Minecraft, double)
      */
     Event<MouseScrolled> MOUSE_SCROLLED = EventFactory.createInteractionResult();
     /**
-     * Invoked after the mouse has clicked, before the screen intercepts, equivalent to forge's {@code InputEvent.RawMouseEvent}.
+     * @see MouseClicked#mouseClicked(Minecraft, int, int, int)
      */
     Event<MouseClicked> MOUSE_CLICKED_PRE = EventFactory.createInteractionResult();
-    /**
-     * Invoked after the mouse has clicked, after the screen intercepts, equivalent to forge's {@code InputEvent.MouseInputEvent}.
-     */
     Event<MouseClicked> MOUSE_CLICKED_POST = EventFactory.createInteractionResult();
     /**
-     * Invoked after a key was pressed, after the screen intercepts, equivalent to forge's {@code InputEvent.KeyInputEvent}.
+     * @see KeyPressed#keyPressed(Minecraft, int, int, int, int)
      */
     Event<KeyPressed> KEY_PRESSED = EventFactory.createInteractionResult();
     
     interface KeyPressed {
+        /**
+         * Invoked whenever a key input is performed.
+         * Equivalent to Forge's {@code InputEvent.KeyInputEvent} event.
+         *
+         * @param client    The Minecraft instance performing it.
+         * @param keyCode   The key code.
+         * @param scanCode  The raw keyboard scan code.
+         * @param action    The action that should be performed.
+         * @param modifiers Additional modifiers.
+         * @return Any other result than {@link InteractionResult#PASS} leads to the cancellation of the key press.
+         */
         InteractionResult keyPressed(Minecraft client, int keyCode, int scanCode, int action, int modifiers);
     }
     
     interface MouseScrolled {
+        /**
+         * Invoked whenever the mouse scroll wheel is used.
+         * Equivalent to Forge's {@code InputEvent.MouseScrollEvent} event.
+         *
+         * @param client The Minecraft instance performing it.
+         * @param amount The amount of movement.
+         * @return Any other result than {@link InteractionResult#PASS} leads to the cancellation of the mouse scroll functions.
+         * At the time this is actually called, any open screen already has processed the scroll movement and so it can't be undone.
+         */
         InteractionResult mouseScrolled(Minecraft client, double amount);
     }
     
     interface MouseClicked {
+        /**
+         * Invoked whenever a mouse button is pressed.
+         * There are two variants, either a raw mouse input or the input after it is processed by the game.
+         *
+         * @param client The Minecraft instance performing it.
+         * @param button The pressed mouse button.
+         * @param action The action that should be performed.
+         * @param mods   Additional modifiers.
+         * @return Any other result than {@link InteractionResult#PASS} leads to the cancellation of the mouse click.
+         */
         InteractionResult mouseClicked(Minecraft client, int button, int action, int mods);
     }
 }

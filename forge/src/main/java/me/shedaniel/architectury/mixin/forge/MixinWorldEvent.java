@@ -17,26 +17,28 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package me.shedaniel.architectury.event.events;
+package me.shedaniel.architectury.mixin.forge;
 
-import me.shedaniel.architectury.event.Event;
-import me.shedaniel.architectury.event.EventFactory;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.world.item.crafting.RecipeManager;
+import me.shedaniel.architectury.event.forge.EventHandlerImplCommon;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraftforge.event.world.WorldEvent;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 
-@Environment(EnvType.CLIENT)
-public interface RecipeUpdateEvent {
-    /**
-     * @see RecipeUpdateEvent#update(RecipeManager)
-     */
-    Event<RecipeUpdateEvent> EVENT = EventFactory.createLoop();
+import java.lang.ref.WeakReference;
+
+@Mixin(WorldEvent.class)
+public class MixinWorldEvent implements EventHandlerImplCommon.WorldEventAttachment {
+    @Unique
+    private WeakReference<LevelAccessor> level;
     
-    /**
-     * Invoked when the client has received an updated list of recipes from the server.
-     * Equivalent to Forge's {@code RecipesUpdatedEvent} event.
-     *
-     * @param recipeManager The recipe manager.
-     */
-    void update(RecipeManager recipeManager);
+    @Override
+    public LevelAccessor architectury$getAttachedLevel() {
+        return level == null ? null : level.get();
+    }
+    
+    @Override
+    public void architectury$attachLevel(LevelAccessor level) {
+        this.level = new WeakReference<>(level);
+    }
 }

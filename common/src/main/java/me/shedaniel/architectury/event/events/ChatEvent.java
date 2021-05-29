@@ -25,15 +25,24 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.TextFilter;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 
 public interface ChatEvent {
     /**
-     * Invoked when server receives a message, equivalent to forge's {@code ServerChatEvent}.
+     * @see Server#process(ServerPlayer, TextFilter.FilteredText, ChatComponent) 
      */
     Event<Server> SERVER = EventFactory.createInteractionResultHolder();
     
     interface Server {
+        /**
+         * Invoked when the server receives a message from a client.
+         * Equivalent to Forge's {@code ServerChatEvent} event.
+         *
+         * @param player    The player who has sent the message.
+         * @param message   The raw message itself.
+         * @param component The message as component.
+         * @return A {@link InteractionResult} determining the outcome of the event,
+         * if an outcome is set, the vanilla message is overridden.
+         */
         InteractionResult process(ServerPlayer player, TextFilter.FilteredText message, ChatComponent component);
     }
     

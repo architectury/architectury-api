@@ -25,8 +25,6 @@ import me.shedaniel.architectury.event.EventFactory;
 import me.shedaniel.architectury.hooks.screen.ScreenAccess;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -36,59 +34,125 @@ import java.util.List;
 @Environment(EnvType.CLIENT)
 public interface GuiEvent {
     /**
-     * Invoked after in-game hud is rendered, equivalent to forge's {@code RenderGameOverlayEvent.Post@ElementType#ALL} and fabric's {@code HudRenderCallback}.
+     * @see RenderHud#renderHud(PoseStack, float)
      */
     Event<RenderHud> RENDER_HUD = EventFactory.createLoop();
+    /**
+     * @see DebugText#gatherText(List)
+     */
     Event<DebugText> DEBUG_TEXT_LEFT = EventFactory.createLoop();
     Event<DebugText> DEBUG_TEXT_RIGHT = EventFactory.createLoop();
     /**
-     * Invoked during Screen#init after previous widgets are cleared, equivalent to forge's {@code GuiScreenEvent.InitGuiEvent.Pre}.
+     * @see ScreenInitPre#init(Screen, ScreenAccess)
      */
     Event<ScreenInitPre> INIT_PRE = EventFactory.createInteractionResult();
     /**
-     * Invoked after Screen#init, equivalent to forge's {@code GuiScreenEvent.InitGuiEvent.Post}.
+     * @see ScreenInitPost#init(Screen, ScreenAccess)
      */
     Event<ScreenInitPost> INIT_POST = EventFactory.createLoop();
-    Event<ScreenRenderPre> RENDER_PRE = EventFactory.createInteractionResult();
-    Event<ScreenRenderPost> RENDER_POST = EventFactory.createLoop();
-    
     /**
-     * Invoked during Minecraft#setScreen, equivalent to forge's {@code GuiOpenEvent}.
+     * @see ScreenRenderPre#render(Screen, PoseStack, int, int, float)
+     */
+    Event<ScreenRenderPre> RENDER_PRE = EventFactory.createInteractionResult();
+    /**
+     * @see ScreenRenderPost#render(Screen, PoseStack, int, int, float)
+     */
+    Event<ScreenRenderPost> RENDER_POST = EventFactory.createLoop();
+    /**
+     * @see SetScreen#modifyScreen(Screen)
      */
     Event<SetScreen> SET_SCREEN = EventFactory.createInteractionResultHolder();
     
     @Environment(EnvType.CLIENT)
     interface RenderHud {
+        /**
+         * Invoked after the in-game hud has been rendered.
+         * Equivalent to Forge's {@code RenderGameOverlayEvent.Post@ElementType#ALL} and Fabric's {@code HudRenderCallback}.
+         *
+         * @param matrices  The pose stack.
+         * @param tickDelta The tick delta.
+         */
         void renderHud(PoseStack matrices, float tickDelta);
     }
     
     @Environment(EnvType.CLIENT)
     interface DebugText {
+        /**
+         * Invoked when the debug text is being gathered for rendering.
+         * There are two different versions of this event, one for the left and one for the right side.
+         * Equivalent to Forge's {@code RenderGameOverlayEvent.Text}, when {@code Minecraft.getInstance().options.renderDebug} is true.
+         *
+         * @param strings The current debug text strings.
+         */
         void gatherText(List<String> strings);
     }
     
     @Environment(EnvType.CLIENT)
     interface ScreenInitPre {
+        /**
+         * Invoked when a screen is being initialized and after the previous widgets have been cleared.
+         * Equivalent to Forge's {@code GuiScreenEvent.InitGuiEvent.Pre} event.
+         *
+         * @param screen The screen.
+         * @param access The accessor of the screen.
+         * @return Returning {@link InteractionResult#FAIL} results in the rest of the init method being ignored.
+         */
         InteractionResult init(Screen screen, ScreenAccess access);
     }
     
     @Environment(EnvType.CLIENT)
     interface ScreenInitPost {
+        /**
+         * Invoked after a screen has been initialized and all the vanilla initialization logic has happened.
+         * Equivalent to Forge's {@code GuiScreenEvent.InitGuiEvent.Post} event.
+         *
+         * @param screen The screen.
+         * @param access The accessor of the screen.
+         */
         void init(Screen screen, ScreenAccess access);
     }
     
     @Environment(EnvType.CLIENT)
     interface ScreenRenderPre {
+        /**
+         * Invoked before any screen is rendered.
+         * Equivalent to Forge's {@code GuiScreenEvent.DrawScreenEvent.Pre} event.
+         *
+         * @param screen   The screen.
+         * @param matrices The pose stack.
+         * @param mouseX   The scaled x-coordinate of the mouse cursor.
+         * @param mouseY   The scaled y-coordinate of the mouse cursor.
+         * @param delta    The current tick delta.
+         * @return Returning {@link InteractionResult#FAIL} prevents any other rendering.
+         */
         InteractionResult render(Screen screen, PoseStack matrices, int mouseX, int mouseY, float delta);
     }
     
     @Environment(EnvType.CLIENT)
     interface ScreenRenderPost {
+        /**
+         * Invoked after a screen has finished rendering using the vanilla logic.
+         * Equivalent to Forge's {@code GuiScreenEvent.DrawScreenEvent.Post} event.
+         *
+         * @param screen   The screen.
+         * @param matrices The pose stack.
+         * @param mouseX   The scaled x-coordinate of the mouse cursor.
+         * @param mouseY   The scaled y-coordinate of the mouse cursor.
+         * @param delta    The current tick delta.
+         */
         void render(Screen screen, PoseStack matrices, int mouseX, int mouseY, float delta);
     }
     
     @Environment(EnvType.CLIENT)
     interface SetScreen {
+        /**
+         * Invoked before a new screen is set to open.
+         * Equivalent to Forge's {@code GuiOpenEvent} event.
+         *
+         * @param screen The screen that is going to be opened.
+         * @return A {@link InteractionResultHolder} determining the outcome of the event,
+         * if an outcome is set, the vanilla screen is overridden.
+         */
         InteractionResultHolder<Screen> modifyScreen(Screen screen);
     }
 }

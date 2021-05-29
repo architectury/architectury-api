@@ -71,7 +71,7 @@ jobs:
         java: [ 16 ] # Build on Java 16 (version shipped with MC 1.17)
     runs-on: ubuntu-20.04
     if: |
-      contains(github.event.pull_request.labels.*.name, 'api') && !contains(github.event.pull_request.title, '[ci skip]')
+      !contains(github.event.pull_request.title, '[ci skip]')
     steps:
       - uses: actions/checkout@v2
       

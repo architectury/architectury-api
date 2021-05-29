@@ -26,34 +26,56 @@ import me.shedaniel.architectury.event.EventFactory;
 import net.minecraft.commands.CommandSourceStack;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * This event is invoked whenever a command is issued.
+ * The {@link ParseResults} can be modified and even a custom {@link Throwable} can be used to tell the source of failure.
+ *
+ * <p>A command fails when any other result than {@link net.minecraft.world.InteractionResult#PASS} is returned.
+ * When PASS is used, the {@link CommandPerformEvent#getResults()} is used for execution.
+ *
+ * <p> Equivalent to Forge's {@code CommandEvent} event.
+ */
 public class CommandPerformEvent {
-    /**
-     * Invoked after server parses a command but before server executes it, equivalent to forge's {@code CommandEvent}.
-     */
     public static final Event<Actor<CommandPerformEvent>> EVENT = EventFactory.createActorLoop();
     
     private ParseResults<CommandSourceStack> results;
     @Nullable
     private Throwable throwable;
     
+    /**
+     * @param results   The initial used parsed results.
+     * @param throwable The initial used throwable.
+     */
     public CommandPerformEvent(ParseResults<CommandSourceStack> results, @Nullable Throwable throwable) {
         this.results = results;
         this.throwable = throwable;
     }
     
+    /**
+     * @return The parsed results for the issued command.
+     */
     public ParseResults<CommandSourceStack> getResults() {
         return results;
     }
     
+    /**
+     * @param results The new results the command should use.
+     */
     public void setResults(ParseResults<CommandSourceStack> results) {
         this.results = results;
     }
     
+    /**
+     * @return An throwable to be used as why the command has failed.
+     */
     @Nullable
     public Throwable getThrowable() {
         return throwable;
     }
     
+    /**
+     * @param throwable The throwable used when the command has failed.
+     */
     public void setThrowable(@Nullable Throwable throwable) {
         this.throwable = throwable;
     }
