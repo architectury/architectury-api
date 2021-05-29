@@ -138,7 +138,7 @@ public interface InteractionEvent {
          * @param entity Then entity the player clicks.
          * @param hand   The used hand.
          * @return A {@link EventResult} determining the outcome of the event,
-         * the execution of the vanilla interaction may be cancelled by the result.
+         * the action may be cancelled by the result.
          */
         EventResult interact(Player player, Entity entity, InteractionHand hand);
     }
