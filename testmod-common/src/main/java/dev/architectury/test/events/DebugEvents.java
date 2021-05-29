@@ -78,7 +78,7 @@ public class DebugEvents {
             }
             return EventResult.pass();
         });
-        EntityEvent.LIVING_ATTACK.register((entity, source, amount) -> {
+        EntityEvent.LIVING_HURT.register((entity, source, amount) -> {
             if (source.getDirectEntity() instanceof Player) {
                 TestMod.SINK.accept(source.getDirectEntity().getScoreboardName() + " deals %.2f damage" + logSide(entity.level), amount);
             }

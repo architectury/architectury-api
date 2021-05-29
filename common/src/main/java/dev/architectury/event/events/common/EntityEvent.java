@@ -38,9 +38,9 @@ public interface EntityEvent {
      */
     Event<LivingDeath> LIVING_DEATH = EventFactory.createEventResult();
     /**
-     * @see LivingAttack#attack(LivingEntity, DamageSource, float)
+     * @see LivingHurt#hurt(LivingEntity, DamageSource, float)
      */
-    Event<LivingAttack> LIVING_ATTACK = EventFactory.createEventResult();
+    Event<LivingHurt> LIVING_HURT = EventFactory.createEventResult();
     /**
      * @see LivingCheckSpawn#canSpawn(LivingEntity, LevelAccessor, double, double, double, MobSpawnType, BaseSpawner)
      */
@@ -67,7 +67,7 @@ public interface EntityEvent {
         EventResult die(LivingEntity entity, DamageSource source);
     }
     
-    interface LivingAttack {
+    interface LivingHurt {
         /**
          * Invoked before an entity is hurt by a damage source.
          * Equivalent to Forge's {@code LivingAttackEvent} event.
@@ -80,7 +80,7 @@ public interface EntityEvent {
          * @return A {@link EventResult} determining the outcome of the event,
          * the execution of the entity attack may be cancelled by the result.
          */
-        EventResult attack(LivingEntity entity, DamageSource source, float amount);
+        EventResult hurt(LivingEntity entity, DamageSource source, float amount);
     }
     
     interface LivingCheckSpawn {
