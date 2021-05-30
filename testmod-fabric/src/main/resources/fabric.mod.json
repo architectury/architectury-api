@@ -11,7 +11,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "me.shedaniel.architectury.test.TestMod::initialize"
+      "dev.architectury.test.TestMod::initialize"
     ]
   }
 }

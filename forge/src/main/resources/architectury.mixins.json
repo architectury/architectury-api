@@ -15,8 +15,11 @@
     "GameRulesAccessor$IntegerValueSimple",
     "MixinBlockEntity",
     "MixinBlockEntityExtension",
+    "MixinChunkSerializer",
+    "MixinClientLevel",
     "MixinItemExtension",
     "MixinRegistryEntry",
+    "MixinWorldEvent",
     "MobSpawnSettingsBuilderAccessor"
   ],
   "injectors": {

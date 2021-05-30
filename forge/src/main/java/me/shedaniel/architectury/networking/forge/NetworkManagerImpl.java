@@ -30,6 +30,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -40,6 +41,7 @@ import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.event.EventNetworkChannel;
 import org.apache.commons.lang3.tuple.Pair;
@@ -146,6 +148,10 @@ public class NetworkManagerImpl {
     
     public static boolean canPlayerReceive(ServerPlayer player, ResourceLocation id) {
         return clientReceivables.get(player).contains(id);
+    }
+    
+    public static Packet<?> createAddEntityPacket(Entity entity){
+        return NetworkHooks.getEntitySpawningPacket(entity);
     }
     
     static FriendlyByteBuf sendSyncPacket(Map<ResourceLocation, NetworkReceiver> map) {

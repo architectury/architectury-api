@@ -21,7 +21,6 @@ package me.shedaniel.architectury.registry.forge;
 
 import com.google.common.collect.Lists;
 import me.shedaniel.architectury.forge.ArchitecturyForge;
-import me.shedaniel.architectury.hooks.biome.*;
 import me.shedaniel.architectury.mixin.forge.BiomeGenerationSettingsBuilderAccessor;
 import me.shedaniel.architectury.mixin.forge.MobSpawnSettingsBuilderAccessor;
 import me.shedaniel.architectury.registry.BiomeModifications.BiomeContext;
