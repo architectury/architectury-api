@@ -25,6 +25,8 @@ import org.jetbrains.annotations.ApiStatus;
 
 import java.lang.invoke.*;
 
+@Deprecated
+@ApiStatus.ScheduledForRemoval(inVersion = "2.0")
 @ApiStatus.Internal
 public class PlatformMethods {
     public static CallSite platform(MethodHandles.Lookup lookup, String name, MethodType type) {

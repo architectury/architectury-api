@@ -43,7 +43,7 @@ public final class EventFactory {
     }
     
     @Deprecated
-    @ApiStatus.ScheduledForRemoval
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     public static <T> Event<T> create(Function<T[], T> function) {
         Class<?>[] arguments = TypeResolver.resolveRawArguments(Function.class, function.getClass());
         T[] array;
@@ -78,12 +78,16 @@ public final class EventFactory {
         }));
     }
     
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     @SafeVarargs
     public static <T> Event<T> createInteractionResult(T... typeGetter) {
         if (typeGetter.length != 0) throw new IllegalStateException("array must be empty!");
         return createInteractionResult((Class<T>) typeGetter.getClass().getComponentType());
     }
     
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     @SuppressWarnings("UnstableApiUsage")
     public static <T> Event<T> createInteractionResult(Class<T> clazz) {
         return of(listeners -> (T) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{clazz}, new AbstractInvocationHandler() {
@@ -122,12 +126,16 @@ public final class EventFactory {
         }));
     }
     
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     @SafeVarargs
     public static <T> Event<T> createInteractionResultHolder(T... typeGetter) {
         if (typeGetter.length != 0) throw new IllegalStateException("array must be empty!");
         return createInteractionResultHolder((Class<T>) typeGetter.getClass().getComponentType());
     }
     
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     @SuppressWarnings("UnstableApiUsage")
     public static <T> Event<T> createInteractionResultHolder(Class<T> clazz) {
         return of(listeners -> (T) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{clazz}, new AbstractInvocationHandler() {
@@ -193,12 +201,16 @@ public final class EventFactory {
         return event;
     }
     
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     @SafeVarargs
     public static <T> Event<Actor<T>> createActorLoop(T... typeGetter) {
         if (typeGetter.length != 0) throw new IllegalStateException("array must be empty!");
         return createActorLoop((Class<T>) typeGetter.getClass().getComponentType());
     }
     
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     @SuppressWarnings("UnstableApiUsage")
     public static <T> Event<Actor<T>> createActorLoop(Class<T> clazz) {
         Event<Actor<T>> event = of(listeners -> (Actor<T>) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{Actor.class}, new AbstractInvocationHandler() {
