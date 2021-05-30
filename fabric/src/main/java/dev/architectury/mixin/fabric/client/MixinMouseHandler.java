@@ -19,7 +19,6 @@
 
 package dev.architectury.mixin.fabric.client;
 
-import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientRawInputEvent;
 import dev.architectury.event.events.client.ClientScreenInputEvent;
 import dev.architectury.impl.fabric.ScreenInputDelegate;

@@ -19,7 +19,6 @@
 
 package dev.architectury.mixin.fabric;
 
-import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.ChatEvent;
 import dev.architectury.impl.fabric.ChatComponentImpl;
 import net.minecraft.network.chat.ChatType;

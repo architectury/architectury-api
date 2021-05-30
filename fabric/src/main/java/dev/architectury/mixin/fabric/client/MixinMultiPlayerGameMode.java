@@ -19,7 +19,6 @@
 
 package dev.architectury.mixin.fabric.client;
 
-import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.InteractionEvent;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.world.InteractionHand;

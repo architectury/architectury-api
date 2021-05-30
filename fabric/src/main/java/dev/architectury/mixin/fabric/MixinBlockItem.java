@@ -19,7 +19,6 @@
 
 package dev.architectury.mixin.fabric;
 
-import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.BlockEvent;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.BlockItem;

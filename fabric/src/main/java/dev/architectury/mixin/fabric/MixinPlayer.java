@@ -19,7 +19,6 @@
 
 package dev.architectury.mixin.fabric;
 
-import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.InteractionEvent;
 import dev.architectury.event.events.common.PlayerEvent;
 import dev.architectury.event.events.common.TickEvent;

@@ -19,7 +19,6 @@
 
 package dev.architectury.mixin.fabric;
 
-import dev.architectury.event.CompoundEventResult;
 import dev.architectury.event.events.common.PlayerEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;

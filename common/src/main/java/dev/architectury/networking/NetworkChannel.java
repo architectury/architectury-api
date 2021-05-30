@@ -114,17 +114,11 @@ public final class NetworkChannel {
         return NetworkManager.canPlayerReceive(player, encoders.get(type).packetId);
     }
     
-    private static final class MessageInfo<T> {
-        private final ResourceLocation packetId;
-        private final BiConsumer<T, FriendlyByteBuf> encoder;
-        private final Function<FriendlyByteBuf, T> decoder;
-        private final BiConsumer<T, Supplier<PacketContext>> messageConsumer;
-        
-        public MessageInfo(ResourceLocation packetId, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<PacketContext>> messageConsumer) {
-            this.packetId = packetId;
-            this.encoder = encoder;
-            this.decoder = decoder;
-            this.messageConsumer = messageConsumer;
-        }
+    private record MessageInfo<T>(
+            ResourceLocation packetId,
+            BiConsumer<T, FriendlyByteBuf> encoder,
+            Function<FriendlyByteBuf, T> decoder,
+            BiConsumer<T, Supplier<PacketContext>> messageConsumer
+    ) {
     }
 }

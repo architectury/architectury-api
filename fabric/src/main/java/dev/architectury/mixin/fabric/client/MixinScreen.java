@@ -20,7 +20,6 @@
 package dev.architectury.mixin.fabric.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import dev.architectury.event.CompoundEventResult;
 import dev.architectury.event.events.client.ClientChatEvent;
 import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.event.events.client.ClientTooltipEvent;

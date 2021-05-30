@@ -19,7 +19,6 @@
 
 package dev.architectury.mixin.fabric;
 
-import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.PlayerEvent;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;

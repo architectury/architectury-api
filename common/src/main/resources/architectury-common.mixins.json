@@ -5,11 +5,7 @@
   "minVersion": "0.7.11",
   "client": [
   ],
-  "mixins": [
-    "MixinFallingBlockEntity",
-    "FluidTagsAccessor",
-    "MixinLightningBolt"
-  ],
+  "mixins": ["FluidTagsAccessor", "MixinFallingBlockEntity", "MixinLightningBolt"],
   "injectors": {
     "maxShiftBy": 5,
     "defaultRequire": 1

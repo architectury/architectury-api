@@ -29,10 +29,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.phys.Vec3;
-
-import java.util.UUID;
 
 /**
  * @see net.minecraft.network.protocol.game.ClientboundAddEntityPacket

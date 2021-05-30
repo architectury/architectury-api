@@ -21,7 +21,6 @@ package dev.architectury.mixin.fabric;
 
 import com.google.common.base.Throwables;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.ParseResults;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import dev.architectury.event.events.common.CommandPerformEvent;

@@ -22,7 +22,6 @@ package dev.architectury.compat.fabric;
 import com.google.common.collect.Maps;
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
-import dev.architectury.platform.Mod;
 import dev.architectury.platform.fabric.PlatformImpl;
 
 import java.util.Map;

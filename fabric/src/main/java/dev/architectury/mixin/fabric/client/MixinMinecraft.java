@@ -19,7 +19,6 @@
 
 package dev.architectury.mixin.fabric.client;
 
-import dev.architectury.event.CompoundEventResult;
 import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.event.events.client.ClientPlayerEvent;
 import dev.architectury.event.events.common.InteractionEvent;
