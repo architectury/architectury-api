@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_8",
   "minVersion": "0.8",
   "client": [
+    "MixinClientLevel"
   ],
   "mixins": [
     "BiomeGenerationSettingsBuilderAccessor",
@@ -16,7 +17,6 @@
     "MixinBlockEntity",
     "MixinBlockEntityExtension",
     "MixinChunkSerializer",
-    "MixinClientLevel",
     "MixinItemExtension",
     "MixinRegistryEntry",
     "MixinWorldEvent",
