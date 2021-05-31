@@ -66,15 +66,15 @@ public class BiomeModificationsImpl {
     }
     
     public static void postProcessProperties(Predicate<BiomeContext> predicate, BiConsumer<BiomeContext, BiomeProperties.Mutable> modifier) {
-        ADDITIONS.add(Pair.of(predicate, modifier));
+        POST_PROCESSING.add(Pair.of(predicate, modifier));
     }
     
     public static void removeProperties(Predicate<BiomeContext> predicate, BiConsumer<BiomeContext, BiomeProperties.Mutable> modifier) {
-        ADDITIONS.add(Pair.of(predicate, modifier));
+        REMOVALS.add(Pair.of(predicate, modifier));
     }
     
     public static void replaceProperties(Predicate<BiomeContext> predicate, BiConsumer<BiomeContext, BiomeProperties.Mutable> modifier) {
-        ADDITIONS.add(Pair.of(predicate, modifier));
+        REPLACEMENTS.add(Pair.of(predicate, modifier));
     }
     
     static {
