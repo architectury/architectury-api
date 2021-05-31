@@ -33,6 +33,8 @@ import dev.architectury.test.tags.TestTags;
 import dev.architectury.test.trade.TestTrades;
 import dev.architectury.utils.Env;
 import dev.architectury.utils.EnvExecutor;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.MinecartRenderer;
 
@@ -51,6 +53,7 @@ public class TestMod {
         }
     }
     
+    @Environment(EnvType.CLIENT)
     public static void initializeClient() {
         TestKeybinds.initialize();
         EntityRendererRegistry.register(TestEntity.TYPE, context ->
