@@ -27,6 +27,26 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
+/**
+ * This class provides a cross-platform API to modify Biome features and properties.
+ *
+ * <p> Changes to the biomes are hereby done in four distinct "phases", akin to Fabric API's
+ * {@link net.fabricmc.fabric.api.biome.v1.ModificationPhase} enum.
+ *
+ * <p> The order in which these phases get processed is as follows,
+ * with the corresponding Forge EventPriority shown in brackets:
+ *
+ * <ol>
+ *     <li>{@link #addProperties(Predicate, BiConsumer) Adding} new features to biomes. [HIGH]</li>
+ *     <li>{@link #removeProperties(Predicate, BiConsumer)  Removing} existing features from biomes. [NORMAL]</li>
+ *     <li>{@link #replaceProperties(Predicate, BiConsumer) Replacing} existing features with new ones. [LOW]</li>
+ *     <li>Generic {@link #postProcessProperties(Predicate, BiConsumer) Post-Processing} of already modified biome features. [LOWEST]</li>
+ * </ol>
+ *
+ * Keep in mind that it isn't strictly <b>required</b> that you use these phases accordingly
+ * (i.e., you may also add features during Post-Processing, for example); they mostly serve to
+ * add a predictable order to biome modifications.
+ */
 public final class BiomeModifications {
     public static void addProperties(BiConsumer<BiomeContext, BiomeProperties.Mutable> modifier) {
         BiomeModifications.addProperties(Predicates.alwaysTrue(), modifier);
