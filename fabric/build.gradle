@@ -93,8 +93,9 @@ curseforge {
             releaseType = "$rootProject.cf_type"
             changelogType = "html"
             changelog = releaseChangelog()
+            addGameVersion "1.17"
             addGameVersion "1.17-Snapshot"
-            addGameVersion "Java 8"
+            addGameVersion "Java 16"
             addGameVersion "Fabric"
             relations {
                 requiredDependency "fabric-api"
