@@ -174,7 +174,12 @@ public class BiomeModificationsImpl {
         public @NotNull List<Supplier<ConfiguredWorldCarver<?>>> getCarvers(GenerationStep.Carving carving) {
             return generation.getCarvers(carving);
         }
-        
+    
+        @Override
+        public List<Supplier<ConfiguredFeature<?, ?>>> getFeatures(GenerationStep.Decoration decoration) {
+            return generation.getFeatures(decoration);
+        }
+    
         @Override
         public @NotNull List<List<Supplier<ConfiguredFeature<?, ?>>>> getFeatures() {
             return ((BiomeGenerationSettingsBuilderAccessor) generation).getFeatures();
