@@ -391,6 +391,11 @@ public final class BiomeHooks {
         }
         
         @Override
+        public List<Supplier<ConfiguredFeature<?, ?>>> getFeatures(GenerationStep.Decoration decoration) {
+            return settings.features().get(decoration.ordinal());
+        }
+        
+        @Override
         public List<List<Supplier<ConfiguredFeature<?, ?>>>> getFeatures() {
             return settings.features();
         }

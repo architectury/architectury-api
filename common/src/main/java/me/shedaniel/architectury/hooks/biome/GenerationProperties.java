@@ -19,6 +19,7 @@
 
 package me.shedaniel.architectury.hooks.biome;
 
+import net.minecraft.world.entity.animal.Panda;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
@@ -33,6 +34,8 @@ public interface GenerationProperties {
     Optional<Supplier<ConfiguredSurfaceBuilder<?>>> getSurfaceBuilder();
     
     List<Supplier<ConfiguredWorldCarver<?>>> getCarvers(GenerationStep.Carving carving);
+    
+    List<Supplier<ConfiguredFeature<?, ?>>> getFeatures(GenerationStep.Decoration decoration);
     
     List<List<Supplier<ConfiguredFeature<?, ?>>>> getFeatures();
     
