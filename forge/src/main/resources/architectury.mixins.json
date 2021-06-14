@@ -2,7 +2,7 @@
   "required": true,
   "package": "me.shedaniel.architectury.mixin.forge",
   "plugin": "me.shedaniel.architectury.plugin.forge.ArchitecturyMixinPlugin",
-  "compatibilityLevel": "JAVA_8",
+  "compatibilityLevel": "JAVA_16",
   "minVersion": "0.8",
   "client": [
     "MixinClientLevel"
