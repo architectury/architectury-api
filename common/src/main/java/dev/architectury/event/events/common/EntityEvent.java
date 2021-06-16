@@ -141,6 +141,7 @@ public interface EntityEvent {
     interface AnimalTame {
         /**
          * Invoked before an tamable animal is tamed.
+         * This event only works on vanilla mobs. If needed in a modded entity, the mod should register this event on tame.
          * Equivalent to Forge's {@code AnimalTameEvent} event.
          *
          * @param player The tamer.
