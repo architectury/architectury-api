@@ -22,6 +22,7 @@ package me.shedaniel.architectury.event.forge;
 import me.shedaniel.architectury.event.CompoundEventResult;
 import me.shedaniel.architectury.event.EventResult;
 import me.shedaniel.architectury.event.events.PlayerEvent;
+import me.shedaniel.architectury.event.events.*;
 import me.shedaniel.architectury.utils.IntValue;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -41,6 +42,7 @@ import net.minecraftforge.event.TickEvent.WorldTickEvent;
 import net.minecraftforge.event.entity.EntityEvent.EnteringChunk;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
+import net.minecraftforge.event.entity.living.AnimalTameEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
@@ -253,6 +255,12 @@ public class EventHandlerImplCommon {
             }
             event.setCanceled(true);
         }
+    }
+    
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(AnimalTameEvent event) {
+        InteractionResult result = EntityEvent.ANIMAL_TAMED.invoker().onTame(event.getAnimal(), event.getTamer());
+        event.setCanceled(result == InteractionResult.FAIL);
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
