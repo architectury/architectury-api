@@ -22,11 +22,14 @@ package dev.architectury.event.events.common;
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
 import dev.architectury.event.EventResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -53,6 +56,10 @@ public interface EntityEvent {
      * @see EnterSection#enterSection(Entity, int, int, int, int, int, int)
      */
     Event<EnterSection> ENTER_SECTION = EventFactory.createLoop();
+    /**
+     * @see EnterSection#enterSection(Entity, int, int, int, int, int, int)
+     */
+    Event<AnimalTame> ANIMAL_TAME = EventFactory.createEventResult();
     
     interface LivingDeath {
         /**
@@ -129,5 +136,18 @@ public interface EntityEvent {
          * @param prevZ    The previous chunk z-coordinate.
          */
         void enterSection(Entity entity, int sectionX, int sectionY, int sectionZ, int prevX, int prevY, int prevZ);
+    }
+    
+    interface AnimalTame {
+        /**
+         * Invoked before an tamable animal is tamed.
+         * Equivalent to Forge's {@code AnimalTameEvent} event.
+         *
+         * @param player The tamer.
+         * @param animal The animal being tamed.
+         * @return A {@link InteractionResult} determining the outcome of the event,
+         * if an outcome is InteractionResult::FAIL, the animal isn't tamed.
+         */
+        InteractionResult onTame(Animal animal, Player player);
     }
 }
