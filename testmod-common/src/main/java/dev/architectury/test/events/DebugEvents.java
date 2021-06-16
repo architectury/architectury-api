@@ -36,6 +36,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -116,6 +117,11 @@ public class DebugEvents {
             
             TestMod.SINK.accept(sb.toString());
             return EventResult.pass();
+        }));
+        EntityEvent.ANIMAL_TAME.register(((animal, player) -> {
+            TestMod.SINK.accept("%s tamed %s at %s", player.getScoreboardName(), animal.getDisplayName().getString(), animal.position());
+            player.displayClientMessage(new TextComponent(player.getScoreboardName() + " tamed " + animal.getDisplayName().getString() + " at " + animal.position()), true);
+            return InteractionResult.PASS;
         }));
         ExplosionEvent.DETONATE.register((world, explosion, affectedEntities) -> {
             TestMod.SINK.accept(world.dimension().location() + " explodes at " + toShortString(ExplosionHooks.getPosition(explosion)) + logSide(world));
