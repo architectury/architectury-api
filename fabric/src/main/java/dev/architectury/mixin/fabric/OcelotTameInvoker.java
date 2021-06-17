@@ -20,7 +20,7 @@ public class OcelotTameInvoker {
                     target = "Lnet/minecraft/world/entity/animal/Ocelot;setTrusting(Z)V"
             ), cancellable = true)
     private void mobInteract(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
-        if (EntityEvent.ANIMAL_TAME.invoker().onTame((Animal) (Object) this, player) == InteractionResult.FAIL) {
+        if (EntityEvent.ANIMAL_TAME.invoker().onTame((Animal) (Object) this, player).isFalse()) {
             cir.setReturnValue(InteractionResult.SUCCESS);
             cir.cancel();
         }

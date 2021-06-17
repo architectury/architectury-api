@@ -15,7 +15,7 @@ public class TamableAnimalInvoker {
     
     @Inject(method = "tame", at = @At(value = "HEAD"), cancellable = true)
     private void tame(Player player, CallbackInfo ci) {
-        if (EntityEvent.ANIMAL_TAME.invoker().onTame((Animal) (Object) this, player) == InteractionResult.FAIL) {
+        if (EntityEvent.ANIMAL_TAME.invoker().onTame((Animal) (Object) this, player).isFalse()) {
             ci.cancel();
         }
     }

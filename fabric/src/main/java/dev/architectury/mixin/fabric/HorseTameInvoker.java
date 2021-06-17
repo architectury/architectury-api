@@ -26,7 +26,7 @@ public class HorseTameInvoker {
             ), cancellable = true
     )
     private void tick(CallbackInfo ci) {
-        if (EntityEvent.ANIMAL_TAME.invoker().onTame(this.horse, (Player) this.horse.getPassengers().get(0)) == InteractionResult.FAIL) {
+        if (EntityEvent.ANIMAL_TAME.invoker().onTame(this.horse, (Player) this.horse.getPassengers().get(0)).isFalse()) {
             ci.cancel();
         }
     }
