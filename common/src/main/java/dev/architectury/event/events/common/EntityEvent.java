@@ -57,7 +57,7 @@ public interface EntityEvent {
      */
     Event<EnterSection> ENTER_SECTION = EventFactory.createLoop();
     /**
-     * @see EnterSection#enterSection(Entity, int, int, int, int, int, int)
+     * @see AnimalTame#onTame(Animal, Player)
      */
     Event<AnimalTame> ANIMAL_TAME = EventFactory.createEventResult();
     
@@ -140,15 +140,15 @@ public interface EntityEvent {
     
     interface AnimalTame {
         /**
-         * Invoked before an tamable animal is tamed.
-         * This event only works on vanilla mobs. If needed in a modded entity, the mod should register this event on tame.
+         * Invoked before a tamable animal is tamed.
+         * This event only works on vanilla mobs. Mods implementing their own entities may want to make their own events or invoke this.
          * Equivalent to Forge's {@code AnimalTameEvent} event.
          *
-         * @param player The tamer.
          * @param animal The animal being tamed.
-         * @return A {@link InteractionResult} determining the outcome of the event,
-         * if an outcome is InteractionResult::FAIL, the animal isn't tamed.
+         * @param player The tamer.
+         * @return A {@link EventResult} determining the outcome of the event,
+         * if the outcome is EventResult::interruptFalse, the animal isn't tamed.
          */
-        InteractionResult onTame(Animal animal, Player player);
+        EventResult onTame(Animal animal, Player player);
     }
 }
