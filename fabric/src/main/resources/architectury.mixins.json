@@ -39,6 +39,7 @@
     "MixinItemEntity",
     "MixinLivingEntity",
     "MixinNaturalSpawner",
+    "MixinOcelot",
     "MixinPatrolSpawner",
     "MixinPersistentEntitySectionManager",
     "MixinPhantomSpawner",
@@ -50,9 +51,8 @@
     "MixinServerLevel",
     "MixinServerPlayer",
     "MixinServerPlayerGameMode",
-    "OcelotTameInvoker",
-    "PlayerAttackInvoker",
-    "TamableAnimalInvoker"
+    "MixinTamableAnimal",
+    "PlayerAttackInvoker"
   ],
   "injectors": {
     "maxShiftBy": 5,
