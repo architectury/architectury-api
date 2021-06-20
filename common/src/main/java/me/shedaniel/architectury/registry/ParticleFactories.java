@@ -39,12 +39,12 @@ public final class ParticleFactories {
     }
 
     @ExpectPlatform
-    <T extends ParticleOptions> void register(ParticleType<T> type, ParticleProvider<T> provider) {
+    public static <T extends ParticleOptions> void register(ParticleType<T> type, ParticleProvider<T> provider) {
         throw new AssertionError();
     }
 
     @ExpectPlatform
-    <T extends ParticleOptions> void register(ParticleType<T> type, PendingParticleProvider<T> constructor) {
+    public static <T extends ParticleOptions> void register(ParticleType<T> type, PendingParticleProvider<T> constructor) {
         throw new AssertionError();
     }
 
