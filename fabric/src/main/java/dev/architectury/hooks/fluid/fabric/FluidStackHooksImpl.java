@@ -25,6 +25,7 @@ import dev.architectury.utils.Env;
 import dev.architectury.utils.NbtType;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
@@ -111,7 +112,9 @@ public class FluidStackHooksImpl {
     @Nullable
     public static TextureAtlasSprite getStillTexture(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, @NotNull FluidState state) {
         if (state.getType() == Fluids.EMPTY) return null;
-        var sprites = FluidRenderHandlerRegistry.INSTANCE.get(state.getType()).getFluidSprites(level, pos, state);
+        var handler = FluidRenderHandlerRegistry.INSTANCE.get(state.getType());
+        if (handler == null) return null;
+        var sprites = handler.getFluidSprites(level, pos, state);
         if (sprites == null) return null;
         return sprites[0];
     }
@@ -120,7 +123,9 @@ public class FluidStackHooksImpl {
     @Nullable
     public static TextureAtlasSprite getStillTexture(@NotNull FluidStack stack) {
         if (stack.getFluid() == Fluids.EMPTY) return null;
-        var sprites = FluidRenderHandlerRegistry.INSTANCE.get(stack.getFluid()).getFluidSprites(null, null, stack.getFluid().defaultFluidState());
+        var handler = FluidRenderHandlerRegistry.INSTANCE.get(stack.getFluid());
+        if (handler == null) return null;
+        var sprites = handler.getFluidSprites(null, null, stack.getFluid().defaultFluidState());
         if (sprites == null) return null;
         return sprites[0];
     }
@@ -129,7 +134,9 @@ public class FluidStackHooksImpl {
     @Nullable
     public static TextureAtlasSprite getStillTexture(@NotNull Fluid fluid) {
         if (fluid == Fluids.EMPTY) return null;
-        var sprites = FluidRenderHandlerRegistry.INSTANCE.get(fluid).getFluidSprites(null, null, fluid.defaultFluidState());
+        var handler = FluidRenderHandlerRegistry.INSTANCE.get(fluid);
+        if (handler == null) return null;
+        var sprites = handler.getFluidSprites(null, null, fluid.defaultFluidState());
         if (sprites == null) return null;
         return sprites[0];
     }
@@ -160,7 +167,9 @@ public class FluidStackHooksImpl {
     @Nullable
     public static TextureAtlasSprite getFlowingTexture(@NotNull Fluid fluid) {
         if (fluid == Fluids.EMPTY) return null;
-        var sprites = FluidRenderHandlerRegistry.INSTANCE.get(fluid).getFluidSprites(null, null, fluid.defaultFluidState());
+        var handler = FluidRenderHandlerRegistry.INSTANCE.get(fluid);
+        if (handler == null) return null;
+        var sprites = handler.getFluidSprites(null, null, fluid.defaultFluidState());
         if (sprites == null) return null;
         return sprites[1];
     }

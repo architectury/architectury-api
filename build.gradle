@@ -87,6 +87,10 @@ allprojects {
             return changes.toString()
         }
     }
+
+    java {
+        withSourcesJar()
+    }
 }
 
 task licenseFormatAll

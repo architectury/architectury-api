@@ -61,13 +61,28 @@ remapJar {
     archiveClassifier = "fabric"
 }
 
+sourcesJar {
+    afterEvaluate {
+        [":common"].forEach {
+            def depSources = project(it).sourcesJar
+            dependsOn depSources
+            from(depSources.archiveFile.map { zipTree(it) }) {
+                exclude "architectury.accessWidener"
+            }
+        }
+    }
+}
+
 publishing {
     publications {
         mavenFabric(MavenPublication) {
             artifactId = rootProject.archivesBaseName + "-fabric"
-            artifact(remapJar.archivePath) {
-                builtBy build
-                classifier null
+            artifact(remapJar) { classifier null }
+            afterEvaluate {
+                artifact(remapSourcesJar.output) {
+                    builtBy remapSourcesJar
+                    classifier "sources"
+                }
             }
         }
     }

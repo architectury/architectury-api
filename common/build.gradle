@@ -14,20 +14,22 @@ architectury {
     common(false)
 }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = "sources"
-    from sourceSets.main.allSource
+afterEvaluate {
+    remapJar {
+        remapAccessWidener.set false
+    }
 }
 
 publishing {
     publications {
         mavenCommon(MavenPublication) {
             artifactId = rootProject.archivesBaseName
-            artifact(file("${project.buildDir}/libs/${project.archivesBaseName}-${project.version}.jar")) {
-                builtBy build
-            }
-            artifact(sourcesJar) {
-                builtBy remapSourcesJar
+            artifact(remapJar)
+            afterEvaluate {
+                artifact(remapSourcesJar.output) {
+                    builtBy remapSourcesJar
+                    classifier "sources"
+                }
             }
         }
     }
