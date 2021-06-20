@@ -58,13 +58,28 @@ remapJar {
     archiveClassifier = "forge"
 }
 
+sourcesJar {
+    afterEvaluate {
+        [":common"].forEach {
+            def depSources = project(it).sourcesJar
+            dependsOn depSources
+            from(depSources.archiveFile.map { zipTree(it) }) {
+                exclude "architectury.accessWidener"
+            }
+        }
+    }
+}
+
 publishing {
     publications {
         mavenForge(MavenPublication) {
             artifactId = rootProject.archivesBaseName + "-forge"
-            artifact(remapJar.archivePath) {
-                builtBy build
-                classifier null
+            artifact(remapJar) { classifier null }
+            afterEvaluate {
+                artifact(remapSourcesJar.output) {
+                    builtBy remapSourcesJar
+                    classifier "sources"
+                }
             }
         }
     }
