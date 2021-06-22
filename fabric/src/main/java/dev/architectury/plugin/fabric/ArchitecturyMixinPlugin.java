@@ -40,7 +40,7 @@ public class ArchitecturyMixinPlugin implements IMixinConfigPlugin {
     
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        if ("me.shedaniel.architectury.mixin.fabric.client.MixinEffectInstance".equals(mixinClassName)) {
+        if ("dev.architectury.mixin.fabric.client.MixinEffectInstance".equals(mixinClassName)) {
             return !FabricLoader.getInstance().isModLoaded("satin");
         }
         return true;
