@@ -20,25 +20,18 @@
 package me.shedaniel.architectury.mixin.forge;
 
 import net.minecraft.client.particle.ParticleEngine;
-import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 import java.util.List;
-import java.util.Map;
 
 @Mixin(ParticleEngine.class)
 public interface ParticleEngineAccessor {
     @Accessor
     TextureAtlas getTextureAtlas();
-    
-    // this is actually a Map<ResourceLocation, ParticleEngine.MutableSpriteSet>, but luckily type erasure saves the day
-    @Accessor
-    Map<ResourceLocation, SpriteSet> getProviders();
-    
+
     @Mixin(targets = "net/minecraft/client/particle/ParticleEngine$MutableSpriteSet")
     interface MutableSpriteSetAccessor {
         @Accessor
