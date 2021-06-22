@@ -26,8 +26,6 @@ repositories {
 }
 
 dependencies {
-    minecraft "com.mojang:minecraft:${rootProject.architectury.minecraft}"
-    mappings minecraft.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
     modCompileOnly("com.terraformersmc:modmenu:${rootProject.mod_menu_version}") { transitive false }

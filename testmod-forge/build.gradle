@@ -17,8 +17,6 @@ architectury {
 }
 
 dependencies {
-    minecraft "com.mojang:minecraft:${gradle.rootProject.architectury.minecraft}"
-    mappings loom.officialMojangMappings()
     forge "net.minecraftforge:forge:${gradle.rootProject.architectury.minecraft}-${rootProject.forge_version}"
 
     implementation project(path: ":forge", configuration: "dev")
