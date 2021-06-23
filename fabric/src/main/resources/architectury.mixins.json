@@ -20,6 +20,7 @@
   ],
   "mixins": [
     "ExplosionPreInvoker",
+    "HorseTameInvoker",
     "LivingDeathInvoker",
     "MixinBaseSpawner",
     "MixinBlockEntityExtension",
@@ -38,6 +39,7 @@
     "MixinItemEntity",
     "MixinLivingEntity",
     "MixinNaturalSpawner",
+    "MixinOcelot",
     "MixinPatrolSpawner",
     "MixinPersistentEntitySectionManager",
     "MixinPhantomSpawner",
@@ -49,6 +51,7 @@
     "MixinServerLevel",
     "MixinServerPlayer",
     "MixinServerPlayerGameMode",
+    "MixinTamableAnimal",
     "PlayerAttackInvoker"
   ],
   "injectors": {

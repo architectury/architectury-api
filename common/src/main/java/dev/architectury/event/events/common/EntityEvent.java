@@ -27,6 +27,8 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -53,6 +55,10 @@ public interface EntityEvent {
      * @see EnterSection#enterSection(Entity, int, int, int, int, int, int)
      */
     Event<EnterSection> ENTER_SECTION = EventFactory.createLoop();
+    /**
+     * @see AnimalTame#tame(Animal, Player)
+     */
+    Event<AnimalTame> ANIMAL_TAME = EventFactory.createEventResult();
     
     interface LivingDeath {
         /**
@@ -129,5 +135,19 @@ public interface EntityEvent {
          * @param prevZ    The previous chunk z-coordinate.
          */
         void enterSection(Entity entity, int sectionX, int sectionY, int sectionZ, int prevX, int prevY, int prevZ);
+    }
+    
+    interface AnimalTame {
+        /**
+         * Invoked before a tamable animal is tamed.
+         * This event only works on vanilla mobs. Mods implementing their own entities may want to make their own events or invoke this.
+         * Equivalent to Forge's {@code AnimalTameEvent} event.
+         *
+         * @param animal The animal being tamed.
+         * @param player The tamer.
+         * @return A {@link EventResult} determining the outcome of the event,
+         * the action may be cancelled by the result.
+         */
+        EventResult tame(Animal animal, Player player);
     }
 }

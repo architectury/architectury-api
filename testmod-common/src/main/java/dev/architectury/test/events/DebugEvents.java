@@ -117,6 +117,10 @@ public class DebugEvents {
             TestMod.SINK.accept(sb.toString());
             return EventResult.pass();
         }));
+        EntityEvent.ANIMAL_TAME.register(((animal, player) -> {
+            TestMod.SINK.accept("%s tamed %s at %s", player.getScoreboardName(), animal.getDisplayName().getString(), toShortString(animal.position()));
+            return EventResult.pass();
+        }));
         ExplosionEvent.DETONATE.register((world, explosion, affectedEntities) -> {
             TestMod.SINK.accept(world.dimension().location() + " explodes at " + toShortString(ExplosionHooks.getPosition(explosion)) + logSide(world));
         });
