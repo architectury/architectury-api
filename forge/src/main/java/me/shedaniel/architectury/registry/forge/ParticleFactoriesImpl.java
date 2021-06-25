@@ -76,9 +76,9 @@ public class ParticleFactoriesImpl {
         Minecraft.getInstance().particleEngine.register(type, provider);
     }
 
-    private static <T extends ParticleOptions> void _register(ParticleType<T> type, ParticleFactories.PendingParticleProvider<T> constructor) {
-        Minecraft.getInstance().particleEngine.register(type, arg ->
-                constructor.create(new ExtendedSpriteSetImpl(Minecraft.getInstance().particleEngine, arg)));
+    private static <T extends ParticleOptions> void _register(ParticleType<T> type, ParticleFactories.DeferredParticleProvider<T> provider) {
+        Minecraft.getInstance().particleEngine.register(type, spriteSet ->
+                provider.create(new ExtendedSpriteSetImpl(Minecraft.getInstance().particleEngine, spriteSet)));
     }
 
     public static <T extends ParticleOptions> void register(ParticleType<T> type, ParticleProvider<T> provider) {
@@ -88,11 +88,11 @@ public class ParticleFactoriesImpl {
             deferred.add(() -> _register(type, provider));
     }
 
-    public static <T extends ParticleOptions> void register(ParticleType<T> type, ParticleFactories.PendingParticleProvider<T> constructor) {
+    public static <T extends ParticleOptions> void register(ParticleType<T> type, ParticleFactories.DeferredParticleProvider<T> provider) {
         if (deferred == null)
-            _register(type, constructor);
+            _register(type, provider);
         else
-            deferred.add(() -> _register(type, constructor));
+            deferred.add(() -> _register(type, provider));
     }
 
     @SubscribeEvent

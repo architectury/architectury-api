@@ -44,12 +44,12 @@ public final class ParticleFactories {
     }
 
     @ExpectPlatform
-    public static <T extends ParticleOptions> void register(ParticleType<T> type, PendingParticleProvider<T> constructor) {
+    public static <T extends ParticleOptions> void register(ParticleType<T> type, DeferredParticleProvider<T> provider) {
         throw new AssertionError();
     }
 
     @FunctionalInterface
-    public interface PendingParticleProvider<T extends ParticleOptions> {
+    public interface DeferredParticleProvider<T extends ParticleOptions> {
         ParticleProvider<T> create(ExtendedSpriteSet spriteSet);
     }
 }

@@ -64,7 +64,8 @@ public class ParticleFactoriesImpl {
         ParticleFactoryRegistry.getInstance().register(type, provider);
     }
 
-    public static <T extends ParticleOptions> void register(ParticleType<T> type, ParticleFactories.PendingParticleProvider<T> constructor) {
-        ParticleFactoryRegistry.getInstance().register(type, provider -> constructor.create(new ExtendedSpriteSetImpl(provider)));
+    public static <T extends ParticleOptions> void register(ParticleType<T> type, ParticleFactories.DeferredParticleProvider<T> provider) {
+        ParticleFactoryRegistry.getInstance().register(type, spriteProvider ->
+                provider.create(new ExtendedSpriteSetImpl(spriteProvider)));
     }
 }
