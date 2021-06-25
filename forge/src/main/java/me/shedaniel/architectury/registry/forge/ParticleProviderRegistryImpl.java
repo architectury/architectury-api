@@ -21,7 +21,7 @@ package me.shedaniel.architectury.registry.forge;
 
 import me.shedaniel.architectury.forge.ArchitecturyForge;
 import me.shedaniel.architectury.mixin.forge.ParticleEngineAccessor;
-import me.shedaniel.architectury.registry.ParticleFactories;
+import me.shedaniel.architectury.registry.ParticleProviderRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.ParticleProvider;
@@ -39,68 +39,71 @@ import java.util.List;
 import java.util.Random;
 
 @Mod.EventBusSubscriber(modid = ArchitecturyForge.MOD_ID)
-public class ParticleFactoriesImpl {
-    private static final class ExtendedSpriteSetImpl implements ParticleFactories.ExtendedSpriteSet {
+public class ParticleProviderRegistryImpl {
+    private static final class ExtendedSpriteSetImpl implements ParticleProviderRegistry.ExtendedSpriteSet {
         private final ParticleEngine engine;
         private final SpriteSet delegate;
-    
+        
         private ExtendedSpriteSetImpl(ParticleEngine engine, SpriteSet delegate) {
             this.engine = engine;
             this.delegate = delegate;
         }
-
+        
         @Override
         public TextureAtlas getAtlas() {
             return ((ParticleEngineAccessor) engine).getTextureAtlas();
         }
-
+        
         @Override
         public List<TextureAtlasSprite> getSprites() {
             return ((ParticleEngineAccessor.MutableSpriteSetAccessor) delegate).getSprites();
         }
-
+        
         @Override
         public TextureAtlasSprite get(int i, int j) {
             return delegate.get(i, j);
         }
-
+        
         @Override
         public TextureAtlasSprite get(Random random) {
             return delegate.get(random);
         }
     }
-
+    
     private static ArrayList<Runnable> deferred = new ArrayList<>();
-
+    
     private static <T extends ParticleOptions> void _register(ParticleType<T> type, ParticleProvider<T> provider) {
         Minecraft.getInstance().particleEngine.register(type, provider);
     }
-
-    private static <T extends ParticleOptions> void _register(ParticleType<T> type, ParticleFactories.DeferredParticleProvider<T> provider) {
-        Minecraft.getInstance().particleEngine.register(type, spriteSet ->
-                provider.create(new ExtendedSpriteSetImpl(Minecraft.getInstance().particleEngine, spriteSet)));
+    
+    private static <T extends ParticleOptions> void _register(ParticleType<T> type, ParticleProviderRegistry.DeferredParticleProvider<T> provider) {
+        Minecraft.getInstance().particleEngine.register(type, sprites ->
+                provider.create(new ExtendedSpriteSetImpl(Minecraft.getInstance().particleEngine, sprites)));
     }
-
+    
     public static <T extends ParticleOptions> void register(ParticleType<T> type, ParticleProvider<T> provider) {
-        if (deferred == null)
+        if (deferred == null) {
             _register(type, provider);
-        else
+        } else {
             deferred.add(() -> _register(type, provider));
+        }
     }
-
-    public static <T extends ParticleOptions> void register(ParticleType<T> type, ParticleFactories.DeferredParticleProvider<T> provider) {
-        if (deferred == null)
+    
+    public static <T extends ParticleOptions> void register(ParticleType<T> type, ParticleProviderRegistry.DeferredParticleProvider<T> provider) {
+        if (deferred == null) {
             _register(type, provider);
-        else
+        } else {
             deferred.add(() -> _register(type, provider));
+        }
     }
-
+    
     @SubscribeEvent
     public static void onParticleFactoryRegister(ParticleFactoryRegisterEvent unused) {
         if (deferred != null) {
             // run all deferred registrations
-            for (Runnable r : deferred)
-                r.run();
+            for (Runnable runnable : deferred) {
+                runnable.run();
+            }
             // yeet deferred list - register immediately from now on
             deferred = null;
         }

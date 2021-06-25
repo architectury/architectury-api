@@ -21,7 +21,7 @@ package me.shedaniel.architectury.test.particle;
 
 import me.shedaniel.architectury.platform.Platform;
 import me.shedaniel.architectury.registry.DeferredRegister;
-import me.shedaniel.architectury.registry.ParticleFactories;
+import me.shedaniel.architectury.registry.ParticleProviderRegistry;
 import me.shedaniel.architectury.registry.RegistrySupplier;
 import me.shedaniel.architectury.test.TestMod;
 import me.shedaniel.architectury.utils.Env;
@@ -39,6 +39,6 @@ public class TestParticles {
     public static void initialize() {
         PARTICLE_TYPES.register();
         if (Platform.getEnvironment() == Env.CLIENT)
-            ParticleFactories.register(TEST_PARTICLE.get(), HeartParticle.Provider::new);
+            ParticleProviderRegistry.register(TEST_PARTICLE.get(), HeartParticle.Provider::new);
     }
 }

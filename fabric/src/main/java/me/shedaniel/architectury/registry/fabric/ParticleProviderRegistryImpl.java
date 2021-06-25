@@ -19,7 +19,7 @@
 
 package me.shedaniel.architectury.registry.fabric;
 
-import me.shedaniel.architectury.registry.ParticleFactories;
+import me.shedaniel.architectury.registry.ParticleProviderRegistry;
 import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteProvider;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.minecraft.client.particle.ParticleProvider;
@@ -31,41 +31,41 @@ import net.minecraft.core.particles.ParticleType;
 import java.util.List;
 import java.util.Random;
 
-public class ParticleFactoriesImpl {
-    public static class ExtendedSpriteSetImpl implements ParticleFactories.ExtendedSpriteSet {
+public class ParticleProviderRegistryImpl {
+    public static class ExtendedSpriteSetImpl implements ParticleProviderRegistry.ExtendedSpriteSet {
         private final FabricSpriteProvider delegate;
-    
+        
         public ExtendedSpriteSetImpl(FabricSpriteProvider delegate) {
             this.delegate = delegate;
         }
-    
+        
         @Override
         public TextureAtlas getAtlas() {
             return delegate.getAtlas();
         }
-    
+        
         @Override
         public List<TextureAtlasSprite> getSprites() {
             return delegate.getSprites();
         }
-    
+        
         @Override
         public TextureAtlasSprite get(int i, int j) {
             return delegate.get(i, j);
         }
-    
+        
         @Override
         public TextureAtlasSprite get(Random random) {
             return delegate.get(random);
         }
     }
-
+    
     public static <T extends ParticleOptions> void register(ParticleType<T> type, ParticleProvider<T> provider) {
         ParticleFactoryRegistry.getInstance().register(type, provider);
     }
-
-    public static <T extends ParticleOptions> void register(ParticleType<T> type, ParticleFactories.DeferredParticleProvider<T> provider) {
-        ParticleFactoryRegistry.getInstance().register(type, spriteProvider ->
-                provider.create(new ExtendedSpriteSetImpl(spriteProvider)));
+    
+    public static <T extends ParticleOptions> void register(ParticleType<T> type, ParticleProviderRegistry.DeferredParticleProvider<T> provider) {
+        ParticleFactoryRegistry.getInstance().register(type, sprites ->
+                provider.create(new ExtendedSpriteSetImpl(sprites)));
     }
 }

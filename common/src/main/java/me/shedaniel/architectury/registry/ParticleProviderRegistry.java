@@ -32,22 +32,23 @@ import net.minecraft.core.particles.ParticleType;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
-public final class ParticleFactories {
+public final class ParticleProviderRegistry {
     public interface ExtendedSpriteSet extends SpriteSet {
         TextureAtlas getAtlas();
+        
         List<TextureAtlasSprite> getSprites();
     }
-
+    
     @ExpectPlatform
     public static <T extends ParticleOptions> void register(ParticleType<T> type, ParticleProvider<T> provider) {
         throw new AssertionError();
     }
-
+    
     @ExpectPlatform
     public static <T extends ParticleOptions> void register(ParticleType<T> type, DeferredParticleProvider<T> provider) {
         throw new AssertionError();
     }
-
+    
     @FunctionalInterface
     public interface DeferredParticleProvider<T extends ParticleOptions> {
         ParticleProvider<T> create(ExtendedSpriteSet spriteSet);
