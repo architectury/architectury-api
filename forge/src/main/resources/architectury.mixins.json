@@ -20,7 +20,9 @@
     "MixinItemExtension",
     "MixinRegistryEntry",
     "MixinWorldEvent",
-    "MobSpawnSettingsBuilderAccessor"
+    "MobSpawnSettingsBuilderAccessor",
+    "ParticleEngineAccessor",
+    "ParticleEngineAccessor$MutableSpriteSetAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
