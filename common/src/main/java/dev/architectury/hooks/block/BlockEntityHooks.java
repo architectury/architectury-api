@@ -27,6 +27,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
@@ -47,7 +48,7 @@ public class BlockEntityHooks {
             this.validBlocks = validBlocks;
         }
         
-        public BlockEntityType<T> build(Type<?> type) {
+        public BlockEntityType<T> build(@Nullable Type<?> type) {
             return new BlockEntityType<>(this.constructor::create, this.validBlocks, type);
         }
     }
