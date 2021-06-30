@@ -19,11 +19,37 @@
 
 package dev.architectury.hooks.block;
 
+import com.google.common.collect.ImmutableSet;
+import com.mojang.datafixers.types.Type;
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.Set;
 
 public class BlockEntityHooks {
     private BlockEntityHooks() {
+    }
+    
+    public static <T extends BlockEntity> TypeBuilder<T> builder(Constructor<? extends T> constructor, Block... blocks) {
+        return new TypeBuilder<>(constructor, ImmutableSet.copyOf(blocks));
+    }
+    
+    public static class TypeBuilder<T extends BlockEntity> {
+        private final Constructor<? extends T> constructor;
+        private final Set<Block> validBlocks;
+        
+        private TypeBuilder(Constructor<? extends T> constructor, Set<Block> validBlocks) {
+            this.constructor = constructor;
+            this.validBlocks = validBlocks;
+        }
+        
+        public BlockEntityType<T> build(Type<?> type) {
+            return new BlockEntityType<>(this.constructor::create, this.validBlocks, type);
+        }
     }
     
     /**
@@ -32,5 +58,10 @@ public class BlockEntityHooks {
     @ExpectPlatform
     public static void syncData(BlockEntity entity) {
         throw new AssertionError();
+    }
+    
+    @FunctionalInterface
+    public interface Constructor<T extends BlockEntity> {
+        T create(BlockPos pos, BlockState state);
     }
 }
