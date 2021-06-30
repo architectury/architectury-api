@@ -18,7 +18,6 @@
  */
 
 package me.shedaniel.architectury.registry.trade;
-
 import me.shedaniel.architectury.annotations.ExpectPlatform;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
@@ -46,6 +45,11 @@ public class TradeRegistry {
     private static void registerVillagerTrade0(VillagerProfession profession, int level, VillagerTrades.ItemListing... trades) {
         throw new AssertionError();
     }
+    
+    /**
+     * TODO: Just for testing currently
+     */
+    public static void registerModifier() {}
     
     /**
      * Register a trade ({@link VillagerTrades.ItemListing}) to a wandering trader by its rarity.
