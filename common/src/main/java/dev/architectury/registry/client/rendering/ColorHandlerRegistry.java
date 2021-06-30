@@ -55,13 +55,13 @@ public final class ColorHandlerRegistry {
     
     @SafeVarargs
     @ExpectPlatform
-    public static void registerItemColors(ItemColor color, Supplier<ItemLike>... items) {
+    public static void registerItemColors(ItemColor color, Supplier<? extends ItemLike>... items) {
         throw new AssertionError();
     }
     
     @SafeVarargs
     @ExpectPlatform
-    public static void registerBlockColors(BlockColor color, Supplier<Block>... blocks) {
+    public static void registerBlockColors(BlockColor color, Supplier<? extends Block>... blocks) {
         throw new AssertionError();
     }
 }

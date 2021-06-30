@@ -30,18 +30,18 @@ import java.util.function.Supplier;
 
 public class ColorHandlerRegistryImpl {
     @SafeVarargs
-    public static void registerItemColors(ItemColor itemColor, Supplier<ItemLike>... items) {
+    public static void registerItemColors(ItemColor itemColor, Supplier<? extends ItemLike>... items) {
         Objects.requireNonNull(itemColor, "color is null!");
         ColorProviderRegistry.ITEM.register(itemColor, unpackItems(items));
     }
     
     @SafeVarargs
-    public static void registerBlockColors(BlockColor blockColor, Supplier<Block>... blocks) {
+    public static void registerBlockColors(BlockColor blockColor, Supplier<? extends Block>... blocks) {
         Objects.requireNonNull(blockColor, "color is null!");
         ColorProviderRegistry.BLOCK.register(blockColor, unpackBlocks(blocks));
     }
     
-    private static ItemLike[] unpackItems(Supplier<ItemLike>[] items) {
+    private static ItemLike[] unpackItems(Supplier<? extends ItemLike>[] items) {
         var array = new ItemLike[items.length];
         for (var i = 0; i < items.length; i++) {
             array[i] = Objects.requireNonNull(items[i].get());
@@ -49,7 +49,7 @@ public class ColorHandlerRegistryImpl {
         return array;
     }
     
-    private static Block[] unpackBlocks(Supplier<Block>[] blocks) {
+    private static Block[] unpackBlocks(Supplier<? extends Block>[] blocks) {
         var array = new Block[blocks.length];
         for (var i = 0; i < blocks.length; i++) {
             array[i] = Objects.requireNonNull(blocks[i].get());

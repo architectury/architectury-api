@@ -36,8 +36,8 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 public class ColorHandlersImpl {
-    private static final List<Pair<ItemColor, Supplier<ItemLike>[]>> ITEM_COLORS = Lists.newArrayList();
-    private static final List<Pair<BlockColor, Supplier<Block>[]>> BLOCK_COLORS = Lists.newArrayList();
+    private static final List<Pair<ItemColor, Supplier<? extends ItemLike>[]>> ITEM_COLORS = Lists.newArrayList();
+    private static final List<Pair<BlockColor, Supplier<? extends Block>[]>> BLOCK_COLORS = Lists.newArrayList();
     
     static {
         EventBuses.onRegistered(ArchitecturyForge.MOD_ID, bus -> {
@@ -47,20 +47,20 @@ public class ColorHandlersImpl {
     
     @SubscribeEvent
     public static void onItemColorEvent(ColorHandlerEvent.Item event) {
-        for (Pair<ItemColor, Supplier<ItemLike>[]> pair : ITEM_COLORS) {
+        for (Pair<ItemColor, Supplier<? extends ItemLike>[]> pair : ITEM_COLORS) {
             event.getItemColors().register(pair.getLeft(), unpackItems(pair.getRight()));
         }
     }
     
     @SubscribeEvent
     public static void onBlockColorEvent(ColorHandlerEvent.Block event) {
-        for (Pair<BlockColor, Supplier<Block>[]> pair : BLOCK_COLORS) {
+        for (Pair<BlockColor, Supplier<? extends Block>[]> pair : BLOCK_COLORS) {
             event.getBlockColors().register(pair.getLeft(), unpackBlocks(pair.getRight()));
         }
     }
     
     @SafeVarargs
-    public static void registerItemColors(ItemColor itemColor, Supplier<ItemLike>... items) {
+    public static void registerItemColors(ItemColor itemColor, Supplier<? extends ItemLike>... items) {
         Objects.requireNonNull(itemColor, "color is null!");
         if (Minecraft.getInstance().getItemColors() == null) {
             ITEM_COLORS.add(Pair.of(itemColor, items));
@@ -70,7 +70,7 @@ public class ColorHandlersImpl {
     }
     
     @SafeVarargs
-    public static void registerBlockColors(BlockColor blockColor, Supplier<Block>... blocks) {
+    public static void registerBlockColors(BlockColor blockColor, Supplier<? extends Block>... blocks) {
         Objects.requireNonNull(blockColor, "color is null!");
         if (Minecraft.getInstance().getBlockColors() == null) {
             BLOCK_COLORS.add(Pair.of(blockColor, blocks));
@@ -79,7 +79,7 @@ public class ColorHandlersImpl {
         }
     }
     
-    private static ItemLike[] unpackItems(Supplier<ItemLike>[] items) {
+    private static ItemLike[] unpackItems(Supplier<? extends ItemLike>[] items) {
         ItemLike[] array = new ItemLike[items.length];
         for (int i = 0; i < items.length; i++) {
             array[i] = Objects.requireNonNull(items[i].get());
@@ -87,7 +87,7 @@ public class ColorHandlersImpl {
         return array;
     }
     
-    private static Block[] unpackBlocks(Supplier<Block>[] blocks) {
+    private static Block[] unpackBlocks(Supplier<? extends Block>[] blocks) {
         Block[] array = new Block[blocks.length];
         for (int i = 0; i < blocks.length; i++) {
             array[i] = Objects.requireNonNull(blocks[i].get());
