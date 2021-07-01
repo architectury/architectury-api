@@ -17,21 +17,16 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package me.shedaniel.architectury.hooks;
+package me.shedaniel.architectury.hooks.forge;
 
-import me.shedaniel.architectury.annotations.ExpectPlatform;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.food.FoodProperties;
 
 import java.util.function.Supplier;
 
-public final class FoodPropertiesHooks {
-    private FoodPropertiesHooks() {
-    }
-
-    @ExpectPlatform
+public class FoodPropertiesHooksImpl {
     public static void effect(FoodProperties.Builder builder,
                               Supplier<MobEffectInstance> effectSupplier, float chance) {
-        throw new AssertionError();
+        builder.effect(effectSupplier, chance);
     }
 }
