@@ -34,8 +34,6 @@
     "MixinEntityCollisionContext",
     "MixinExplosion",
     "MixinFarmBlock",
-    "MixinFoodProperties",
-    "MixinFoodPropertiesBuilder",
     "MixinFurnaceResultSlot",
     "MixinInventory",
     "MixinItemEntity",

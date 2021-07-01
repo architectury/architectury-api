@@ -19,18 +19,19 @@
 
 package dev.architectury.hooks.item;
 
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.food.FoodProperties;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
 public final class FoodPropertiesHooks {
     private FoodPropertiesHooks() {
     }
-    
-    public static void effect(@NotNull FoodProperties.Builder builder,
-                              @NotNull Supplier<? extends MobEffectInstance> effectSupplier, float chance) {
-        ((FoodPropertiesBuilderAccess) builder).effect(effectSupplier, chance);
+
+    @ExpectPlatform
+    public static void effect(FoodProperties.Builder builder,
+                              Supplier<? extends MobEffectInstance> effectSupplier, float chance) {
+        throw new AssertionError();
     }
 }
