@@ -26,7 +26,7 @@ import java.util.function.Supplier;
 
 public class FoodPropertiesHooksImpl {
     public static void effect(FoodProperties.Builder builder,
-                              Supplier<MobEffectInstance> effectSupplier, float chance) {
+                              Supplier<? extends MobEffectInstance> effectSupplier, float chance) {
         // Fabric doesn't have deferred registration, so the mob effect should always be available anyway
         builder.effect(effectSupplier.get(), chance);
     }

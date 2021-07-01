@@ -25,8 +25,9 @@ import net.minecraft.world.food.FoodProperties;
 import java.util.function.Supplier;
 
 public class FoodPropertiesHooksImpl {
+    @SuppressWarnings("unchecked")
     public static void effect(FoodProperties.Builder builder,
-                              Supplier<MobEffectInstance> effectSupplier, float chance) {
-        builder.effect(effectSupplier, chance);
+                              Supplier<? extends MobEffectInstance> effectSupplier, float chance) {
+        builder.effect((Supplier<MobEffectInstance>) effectSupplier, chance);
     }
 }

@@ -31,7 +31,7 @@ public final class FoodPropertiesHooks {
 
     @ExpectPlatform
     public static void effect(FoodProperties.Builder builder,
-                              Supplier<MobEffectInstance> effectSupplier, float chance) {
+                              Supplier<? extends MobEffectInstance> effectSupplier, float chance) {
         throw new AssertionError();
     }
 }
