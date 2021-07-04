@@ -19,17 +19,22 @@
 
 package dev.architectury.test.registry;
 
+import dev.architectury.hooks.item.food.FoodPropertiesHooks;
 import dev.architectury.hooks.level.entity.EntityHooks;
 import dev.architectury.registry.block.BlockProperties;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
+import dev.architectury.test.TestMod;
 import dev.architectury.test.entity.TestEntity;
 import dev.architectury.test.registry.objects.EquippableTickingItem;
 import dev.architectury.test.tab.TestCreativeTabs;
-import dev.architectury.test.TestMod;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockGetter;
@@ -45,11 +50,20 @@ public class TestRegistries {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(TestMod.MOD_ID, Registry.ITEM_REGISTRY);
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(TestMod.MOD_ID, Registry.BLOCK_REGISTRY);
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(TestMod.MOD_ID, Registry.ENTITY_TYPE_REGISTRY);
+    public static final DeferredRegister<MobEffect> MOB_EFFECTS = DeferredRegister.create(TestMod.MOD_ID, Registry.MOB_EFFECT_REGISTRY);
+    
+    public static final RegistrySupplier<MobEffect> TEST_EFFECT = MOB_EFFECTS.register("test_effect", () ->
+            new MobEffect(MobEffectCategory.NEUTRAL, 0x123456) {});
     
     public static final RegistrySupplier<Item> TEST_ITEM = ITEMS.register("test_item", () ->
             new Item(new Item.Properties().tab(TestCreativeTabs.TEST_TAB)));
     public static final RegistrySupplier<Item> TEST_EQUIPPABLE = ITEMS.register("test_eqippable", () ->
             new EquippableTickingItem(new Item.Properties().tab(TestCreativeTabs.TEST_TAB)));
+    public static final RegistrySupplier<Item> TEST_EDIBLE = ITEMS.register("test_edible", () -> {
+        FoodProperties.Builder fpBuilder = new FoodProperties.Builder().nutrition(8).saturationMod(0.8F).meat();
+        FoodPropertiesHooks.effect(fpBuilder, () -> new MobEffectInstance(TEST_EFFECT.get(), 100), 1);
+        return new Item(new Item.Properties().tab(TestCreativeTabs.TEST_TAB).food(fpBuilder.build()));
+    });
     
     public static final RegistrySupplier<Block> TEST_BLOCK = BLOCKS.register("test_block", () ->
             new Block(BlockProperties.copy(Blocks.STONE)));
@@ -70,6 +84,7 @@ public class TestRegistries {
     public static final RegistrySupplier<EntityType<TestEntity>> TEST_ENTITY = ENTITY_TYPES.register("test_entity", () -> TestEntity.TYPE);
     
     public static void initialize() {
+        MOB_EFFECTS.register();
         BLOCKS.register();
         ITEMS.register();
         ENTITY_TYPES.register();
