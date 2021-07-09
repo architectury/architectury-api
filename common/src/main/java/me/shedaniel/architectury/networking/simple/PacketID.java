@@ -6,6 +6,8 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.Objects;
 
 /**
+ * A unique ID for a packet in a {@link SimpleNetworkManager}.
+ *
  * @author LatvianModder
  */
 public final class PacketID {
@@ -33,6 +35,9 @@ public final class PacketID {
         return id;
     }
     
+    /**
+     * {@return the network side of this packet}
+     */
     public NetworkManager.Side getSide() {
         return side;
     }
