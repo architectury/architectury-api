@@ -52,6 +52,12 @@ allprojects {
         }
     }
 
+    javadoc {
+        // Architectury's common javadoc has references to platform code, which cannot be resolved normally.
+        // Let's just skip the errors!
+        failOnError = false
+    }
+
     license {
         header = rootProject.file("HEADER")
 
