@@ -19,10 +19,16 @@ public final class PacketID {
         side = s;
     }
     
+    /**
+     * {@return the network manager that manages this packet ID}
+     */
     public SimpleNetworkManager getManager() {
         return manager;
     }
     
+    /**
+     * {@return the ID of this packet}
+     */
     public ResourceLocation getId() {
         return id;
     }
