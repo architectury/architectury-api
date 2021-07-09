@@ -4,6 +4,9 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 
+/**
+ * @author LatvianModder
+ */
 public abstract class BaseC2SPacket extends BasePacket {
     @Environment(EnvType.CLIENT)
     public final <T> void sendToServer() {

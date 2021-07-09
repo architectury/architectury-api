@@ -6,15 +6,17 @@ import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.chunk.LevelChunk;
-import org.jetbrains.annotations.Nullable;
 
+/**
+ * @author LatvianModder
+ */
 public abstract class BaseS2CPacket extends BasePacket {
-    private void sendTo(@Nullable ServerPlayer player, Packet<?> packet) {
+    private void sendTo(ServerPlayer player, Packet<?> packet) {
         if (player == null) {
-            System.err.println("Unable to send packet '" + getId().getId() + "' to a 'null' player!");
-        } else {
-            player.connection.send(packet);
+            throw new NullPointerException("Unable to send packet '" + getId().getId() + "' to a 'null' player!");
         }
+        
+        player.connection.send(packet);
     }
     
     public final void sendTo(ServerPlayer player) {
@@ -33,7 +35,7 @@ public abstract class BaseS2CPacket extends BasePacket {
         sendTo(server.getPlayerList().getPlayers());
     }
     
-    public final void sendToDimension(ServerLevel dimension) {
+    public final void sendToLevel(ServerLevel dimension) {
         sendTo(dimension.players());
     }
     

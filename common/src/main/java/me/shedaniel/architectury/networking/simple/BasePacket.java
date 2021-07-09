@@ -5,6 +5,9 @@ import me.shedaniel.architectury.networking.NetworkManager;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 
+/**
+ * @author LatvianModder
+ */
 public abstract class BasePacket {
     BasePacket() {
     }
@@ -15,7 +18,7 @@ public abstract class BasePacket {
     
     public abstract void handle(NetworkManager.PacketContext context);
     
-    public final <T> Packet<?> toPacket() {
+    public final Packet<?> toPacket() {
         FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
         write(buf);
         return NetworkManager.toPacket(getId().getSide(), getId().getId(), buf);

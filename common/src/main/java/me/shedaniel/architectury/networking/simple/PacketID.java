@@ -3,6 +3,11 @@ package me.shedaniel.architectury.networking.simple;
 import me.shedaniel.architectury.networking.NetworkManager;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.Objects;
+
+/**
+ * @author LatvianModder
+ */
 public final class PacketID {
     private final SimpleNetworkManager manager;
     private final ResourceLocation id;
@@ -24,5 +29,27 @@ public final class PacketID {
     
     public NetworkManager.Side getSide() {
         return side;
+    }
+    
+    @Override
+    public String toString() {
+        return id.toString() + ":" + side.name().toLowerCase();
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        
+        PacketID packetID = (PacketID) o;
+        return id.equals(packetID.id) && side == packetID.side;
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, side);
     }
 }

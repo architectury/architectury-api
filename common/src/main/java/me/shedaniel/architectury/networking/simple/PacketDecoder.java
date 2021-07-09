@@ -3,6 +3,9 @@ package me.shedaniel.architectury.networking.simple;
 import me.shedaniel.architectury.networking.NetworkManager;
 import net.minecraft.network.FriendlyByteBuf;
 
+/**
+ * @author LatvianModder
+ */
 @FunctionalInterface
 public interface PacketDecoder<T extends BasePacket> {
     T decode(FriendlyByteBuf buf);

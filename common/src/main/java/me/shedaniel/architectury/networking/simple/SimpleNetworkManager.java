@@ -5,19 +5,24 @@ import me.shedaniel.architectury.platform.Platform;
 import me.shedaniel.architectury.utils.Env;
 import net.minecraft.resources.ResourceLocation;
 
+/**
+ * A simple wrapper for <{@link NetworkManager } to make it easier to register packets and send them to client/server
+ *
+ * @author LatvianModder
+ */
 public class SimpleNetworkManager {
-    public static SimpleNetworkManager create(String modid) {
-        return new SimpleNetworkManager(modid);
+    public static SimpleNetworkManager create(String namespace) {
+        return new SimpleNetworkManager(namespace);
     }
     
-    public final String modid;
+    public final String namespace;
     
-    private SimpleNetworkManager(String m) {
-        modid = m;
+    private SimpleNetworkManager(String n) {
+        namespace = n;
     }
     
     public PacketID registerS2C(String id, PacketDecoder<BaseS2CPacket> decoder) {
-        PacketID packetID = new PacketID(this, new ResourceLocation(modid, id), NetworkManager.s2c());
+        PacketID packetID = new PacketID(this, new ResourceLocation(namespace, id), NetworkManager.s2c());
         
         if (Platform.getEnvironment() == Env.CLIENT) {
             NetworkManager.NetworkReceiver receiver = decoder.createReceiver();
@@ -28,7 +33,7 @@ public class SimpleNetworkManager {
     }
     
     public PacketID registerC2S(String id, PacketDecoder<BaseC2SPacket> decoder) {
-        PacketID packetID = new PacketID(this, new ResourceLocation(modid, id), NetworkManager.c2s());
+        PacketID packetID = new PacketID(this, new ResourceLocation(namespace, id), NetworkManager.c2s());
         NetworkManager.NetworkReceiver receiver = decoder.createReceiver();
         NetworkManager.registerReceiver(NetworkManager.c2s(), packetID.getId(), receiver);
         return packetID;
