@@ -5,11 +5,16 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 
 /**
+ * The base class for client -&gt; server packets managed by a {@link SimpleNetworkManager}.
+ *
  * @author LatvianModder
  */
 public abstract class BaseC2SPacket extends BasePacket {
+    /**
+     * Sends this packet to the server.
+     */
     @Environment(EnvType.CLIENT)
-    public final <T> void sendToServer() {
+    public final void sendToServer() {
         if (Minecraft.getInstance().getConnection() != null) {
             Minecraft.getInstance().getConnection().send(toPacket());
         } else {
