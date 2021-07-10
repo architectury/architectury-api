@@ -34,10 +34,10 @@ public final class MessageType {
     private final ResourceLocation id;
     private final NetworkManager.Side side;
     
-    MessageType(SimpleNetworkManager h, ResourceLocation i, NetworkManager.Side s) {
-        manager = h;
-        id = i;
-        side = s;
+    MessageType(SimpleNetworkManager manager, ResourceLocation id, NetworkManager.Side side) {
+        this.manager = manager;
+        this.id = id;
+        this.side = side;
     }
     
     /**
@@ -73,7 +73,7 @@ public final class MessageType {
         } else if (o == null || getClass() != o.getClass()) {
             return false;
         }
-    
+        
         MessageType messageType = (MessageType) o;
         return id.equals(messageType.id) && side == messageType.side;
     }
