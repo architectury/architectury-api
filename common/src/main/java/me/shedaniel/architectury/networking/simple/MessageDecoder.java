@@ -29,7 +29,7 @@ import net.minecraft.network.FriendlyByteBuf;
  * @author LatvianModder
  */
 @FunctionalInterface
-public interface PacketDecoder<T extends Message> {
+public interface MessageDecoder<T extends Message> {
     /**
      * Decodes a {@code T} message from a byte buffer.
      *

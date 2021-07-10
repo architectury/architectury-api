@@ -38,8 +38,8 @@ public abstract class Message {
     /**
      * {@return the {@link MessageType } of this message}
      *
-     * @see SimpleNetworkManager#registerC2S(String, PacketDecoder)
-     * @see SimpleNetworkManager#registerS2C(String, PacketDecoder)
+     * @see SimpleNetworkManager#registerC2S(String, MessageDecoder)
+     * @see SimpleNetworkManager#registerS2C(String, MessageDecoder)
      */
     public abstract MessageType getType();
     

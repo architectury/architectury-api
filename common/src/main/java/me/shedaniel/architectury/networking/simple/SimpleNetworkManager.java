@@ -57,7 +57,7 @@ public class SimpleNetworkManager {
      * @param decoder the packet decoder for the message
      * @return a {@link MessageType} describing the registered message
      */
-    public MessageType registerS2C(String id, PacketDecoder<BaseS2CMessage> decoder) {
+    public MessageType registerS2C(String id, MessageDecoder<BaseS2CMessage> decoder) {
         MessageType messageType = new MessageType(this, new ResourceLocation(namespace, id), NetworkManager.s2c());
         
         if (Platform.getEnvironment() == Env.CLIENT) {
@@ -75,7 +75,7 @@ public class SimpleNetworkManager {
      * @param decoder the packet decoder for the message
      * @return a {@link MessageType} describing the registered message
      */
-    public MessageType registerC2S(String id, PacketDecoder<BaseC2SMessage> decoder) {
+    public MessageType registerC2S(String id, MessageDecoder<BaseC2SMessage> decoder) {
         MessageType messageType = new MessageType(this, new ResourceLocation(namespace, id), NetworkManager.c2s());
         NetworkManager.NetworkReceiver receiver = decoder.createReceiver();
         NetworkManager.registerReceiver(NetworkManager.c2s(), messageType.getId(), receiver);
