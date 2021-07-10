@@ -25,7 +25,7 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.Objects;
 
 /**
- * A unique ID for a message in a {@link SimpleNetworkManager}.
+ * A unique type for a message in a {@link SimpleNetworkManager}.
  *
  * @author LatvianModder
  */
@@ -55,7 +55,7 @@ public final class MessageType {
     }
     
     /**
-     * {@return the network side of this message}
+     * {@return the network side of this message type}
      */
     public NetworkManager.Side getSide() {
         return side;

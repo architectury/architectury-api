@@ -36,7 +36,7 @@ public abstract class Message {
     }
     
     /**
-     * {@return the {@link MessageType } of this message}
+     * {@return the {@link MessageType} of this message}
      *
      * @see SimpleNetworkManager#registerC2S(String, MessageDecoder)
      * @see SimpleNetworkManager#registerS2C(String, MessageDecoder)
