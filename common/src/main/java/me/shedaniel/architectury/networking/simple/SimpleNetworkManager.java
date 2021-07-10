@@ -25,7 +25,7 @@ import me.shedaniel.architectury.utils.Env;
 import net.minecraft.resources.ResourceLocation;
 
 /**
- * A simple wrapper for {@link NetworkManager} to make it easier to register packets and send them to clients/servers.
+ * A simple wrapper for {@link NetworkManager} to make it easier to register messages and send them to clients/servers.
  *
  * @author LatvianModder
  */
@@ -41,20 +41,20 @@ public class SimpleNetworkManager {
     }
     
     /**
-     * The unique namespace for the packets managed by this manager.
+     * The unique namespace for the messages managed by this manager.
      * This will typically be a mod ID.
      */
     public final String namespace;
     
-    private SimpleNetworkManager(String n) {
-        namespace = n;
+    private SimpleNetworkManager(String namespace) {
+        this.namespace = namespace;
     }
     
     /**
      * Registers a server -&gt; client message.
      *
      * @param id      a unique ID for the message, must be a valid value for {@link ResourceLocation#getPath}
-     * @param decoder the packet decoder for the message
+     * @param decoder the message decoder for the message
      * @return a {@link MessageType} describing the registered message
      */
     public MessageType registerS2C(String id, MessageDecoder<BaseS2CMessage> decoder) {
@@ -72,7 +72,7 @@ public class SimpleNetworkManager {
      * Registers a client -&gt; server message.
      *
      * @param id      a unique ID for the message, must be a valid value for {@link ResourceLocation#getPath}
-     * @param decoder the packet decoder for the message
+     * @param decoder the message decoder for the message
      * @return a {@link MessageType} describing the registered message
      */
     public MessageType registerC2S(String id, MessageDecoder<BaseC2SMessage> decoder) {

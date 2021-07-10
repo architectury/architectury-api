@@ -25,7 +25,7 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.Objects;
 
 /**
- * A unique ID for a packet in a {@link SimpleNetworkManager}.
+ * A unique ID for a message in a {@link SimpleNetworkManager}.
  *
  * @author LatvianModder
  */
