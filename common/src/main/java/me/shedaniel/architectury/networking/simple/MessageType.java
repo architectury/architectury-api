@@ -29,33 +29,33 @@ import java.util.Objects;
  *
  * @author LatvianModder
  */
-public final class PacketID {
+public final class MessageType {
     private final SimpleNetworkManager manager;
     private final ResourceLocation id;
     private final NetworkManager.Side side;
     
-    PacketID(SimpleNetworkManager h, ResourceLocation i, NetworkManager.Side s) {
+    MessageType(SimpleNetworkManager h, ResourceLocation i, NetworkManager.Side s) {
         manager = h;
         id = i;
         side = s;
     }
     
     /**
-     * {@return the network manager that manages this packet ID}
+     * {@return the network manager that manages this message type}
      */
     public SimpleNetworkManager getManager() {
         return manager;
     }
     
     /**
-     * {@return the ID of this packet}
+     * {@return the ID of this message type}
      */
     public ResourceLocation getId() {
         return id;
     }
     
     /**
-     * {@return the network side of this packet}
+     * {@return the network side of this message}
      */
     public NetworkManager.Side getSide() {
         return side;
@@ -73,9 +73,9 @@ public final class PacketID {
         } else if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        
-        PacketID packetID = (PacketID) o;
-        return id.equals(packetID.id) && side == packetID.side;
+    
+        MessageType messageType = (MessageType) o;
+        return id.equals(messageType.id) && side == messageType.side;
     }
     
     @Override

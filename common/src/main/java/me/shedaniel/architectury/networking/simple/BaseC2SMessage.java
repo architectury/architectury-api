@@ -24,13 +24,13 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 
 /**
- * The base class for client -&gt; server packets managed by a {@link SimpleNetworkManager}.
+ * The base class for client -&gt; server messages managed by a {@link SimpleNetworkManager}.
  *
  * @author LatvianModder
  */
-public abstract class BaseC2SPacket extends BasePacket {
+public abstract class BaseC2SMessage extends Message {
     /**
-     * Sends this packet to the server.
+     * Sends this message to the server.
      */
     @Environment(EnvType.CLIENT)
     public final void sendToServer() {

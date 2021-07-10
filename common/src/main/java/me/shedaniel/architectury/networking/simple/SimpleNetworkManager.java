@@ -33,7 +33,7 @@ public class SimpleNetworkManager {
     /**
      * Creates a new {@code SimpleNetworkManager}.
      *
-     * @param namespace a unique namespace for the packets ({@link #namespace})
+     * @param namespace a unique namespace for the messages ({@link #namespace})
      * @return the created network manager
      */
     public static SimpleNetworkManager create(String namespace) {
@@ -51,34 +51,34 @@ public class SimpleNetworkManager {
     }
     
     /**
-     * Registers a server -&gt; client packet.
+     * Registers a server -&gt; client message.
      *
-     * @param id a unique ID for the packet, must be a valid value for {@link ResourceLocation#getPath}
-     * @param decoder the packet decoder for the packet
-     * @return a {@link PacketID} describing the registered packet
+     * @param id      a unique ID for the message, must be a valid value for {@link ResourceLocation#getPath}
+     * @param decoder the packet decoder for the message
+     * @return a {@link MessageType} describing the registered message
      */
-    public PacketID registerS2C(String id, PacketDecoder<BaseS2CPacket> decoder) {
-        PacketID packetID = new PacketID(this, new ResourceLocation(namespace, id), NetworkManager.s2c());
+    public MessageType registerS2C(String id, PacketDecoder<BaseS2CMessage> decoder) {
+        MessageType messageType = new MessageType(this, new ResourceLocation(namespace, id), NetworkManager.s2c());
         
         if (Platform.getEnvironment() == Env.CLIENT) {
             NetworkManager.NetworkReceiver receiver = decoder.createReceiver();
-            NetworkManager.registerReceiver(NetworkManager.s2c(), packetID.getId(), receiver);
+            NetworkManager.registerReceiver(NetworkManager.s2c(), messageType.getId(), receiver);
         }
         
-        return packetID;
+        return messageType;
     }
     
     /**
-     * Registers a client -&gt; server packet.
+     * Registers a client -&gt; server message.
      *
-     * @param id a unique ID for the packet, must be a valid value for {@link ResourceLocation#getPath}
-     * @param decoder the packet decoder for the packet
-     * @return a {@link PacketID} describing the registered packet
+     * @param id      a unique ID for the message, must be a valid value for {@link ResourceLocation#getPath}
+     * @param decoder the packet decoder for the message
+     * @return a {@link MessageType} describing the registered message
      */
-    public PacketID registerC2S(String id, PacketDecoder<BaseC2SPacket> decoder) {
-        PacketID packetID = new PacketID(this, new ResourceLocation(namespace, id), NetworkManager.c2s());
+    public MessageType registerC2S(String id, PacketDecoder<BaseC2SMessage> decoder) {
+        MessageType messageType = new MessageType(this, new ResourceLocation(namespace, id), NetworkManager.c2s());
         NetworkManager.NetworkReceiver receiver = decoder.createReceiver();
-        NetworkManager.registerReceiver(NetworkManager.c2s(), packetID.getId(), receiver);
-        return packetID;
+        NetworkManager.registerReceiver(NetworkManager.c2s(), messageType.getId(), receiver);
+        return messageType;
     }
 }

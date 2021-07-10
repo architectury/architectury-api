@@ -27,21 +27,21 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.chunk.LevelChunk;
 
 /**
- * The base class for server -&gt; client packets managed by a {@link SimpleNetworkManager}.
+ * The base class for server -&gt; client messages managed by a {@link SimpleNetworkManager}.
  *
  * @author LatvianModder
  */
-public abstract class BaseS2CPacket extends BasePacket {
+public abstract class BaseS2CMessage extends Message {
     private void sendTo(ServerPlayer player, Packet<?> packet) {
         if (player == null) {
-            throw new NullPointerException("Unable to send packet '" + getId().getId() + "' to a 'null' player!");
+            throw new NullPointerException("Unable to send packet '" + getType().getId() + "' to a 'null' player!");
         }
         
         player.connection.send(packet);
     }
     
     /**
-     * Sends this packet to a player.
+     * Sends this message to a player.
      *
      * @param player the player
      */
@@ -50,7 +50,7 @@ public abstract class BaseS2CPacket extends BasePacket {
     }
     
     /**
-     * Sends this packet to multiple players.
+     * Sends this message to multiple players.
      *
      * @param players the players
      */
@@ -63,7 +63,7 @@ public abstract class BaseS2CPacket extends BasePacket {
     }
     
     /**
-     * Sends this packet to all players in the server.
+     * Sends this message to all players in the server.
      *
      * @param server the server
      */
@@ -72,7 +72,7 @@ public abstract class BaseS2CPacket extends BasePacket {
     }
     
     /**
-     * Sends this packet to all players in a level.
+     * Sends this message to all players in a level.
      *
      * @param level the level
      */
@@ -81,7 +81,7 @@ public abstract class BaseS2CPacket extends BasePacket {
     }
     
     /**
-     * Sends this packet to all players listening to a chunk.
+     * Sends this message to all players listening to a chunk.
      *
      * @param chunk the listened chunk
      */

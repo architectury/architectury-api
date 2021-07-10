@@ -25,46 +25,46 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 
 /**
- * The base class for packets managed by a {@link SimpleNetworkManager}.
+ * The base class for messages managed by a {@link SimpleNetworkManager}.
  *
  * @author LatvianModder
- * @see BaseC2SPacket
- * @see BaseS2CPacket
+ * @see BaseC2SMessage
+ * @see BaseS2CMessage
  */
-public abstract class BasePacket {
-    BasePacket() {
+public abstract class Message {
+    Message() {
     }
     
     /**
-     * {@return the {@link PacketID} of this packet}
+     * {@return the {@link MessageType } of this message}
      *
      * @see SimpleNetworkManager#registerC2S(String, PacketDecoder)
      * @see SimpleNetworkManager#registerS2C(String, PacketDecoder)
      */
-    public abstract PacketID getId();
+    public abstract MessageType getType();
     
     /**
-     * Writes this packet to a byte buffer.
+     * Writes this message to a byte buffer.
      *
      * @param buf the byte buffer
      */
     public abstract void write(FriendlyByteBuf buf);
     
     /**
-     * Handles this packet when it is received.
+     * Handles this message when it is received.
      *
-     * @param context the packet context for handling this packet
+     * @param context the packet context for handling this message
      */
     public abstract void handle(NetworkManager.PacketContext context);
     
     /**
-     * Converts this packet into a corresponding vanilla {@link Packet}.
+     * Converts this message into a corresponding vanilla {@link Packet}.
      *
-     * @return the converted packet
+     * @return the converted {@link Packet}
      */
     public final Packet<?> toPacket() {
         FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
         write(buf);
-        return NetworkManager.toPacket(getId().getSide(), getId().getId(), buf);
+        return NetworkManager.toPacket(getType().getSide(), getType().getId(), buf);
     }
 }

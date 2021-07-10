@@ -20,28 +20,28 @@
 package me.shedaniel.architectury.test.networking;
 
 import me.shedaniel.architectury.networking.NetworkManager;
-import me.shedaniel.architectury.networking.simple.BaseC2SPacket;
-import me.shedaniel.architectury.networking.simple.PacketID;
+import me.shedaniel.architectury.networking.simple.BaseC2SMessage;
+import me.shedaniel.architectury.networking.simple.MessageType;
 import net.minecraft.Util;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.TextComponent;
 
-public class ButtonClickedPacket extends BaseC2SPacket {
+public class ButtonClickedMessage extends BaseC2SMessage {
     private final int buttonId;
     
     /**
-     * To send this packet from client to server, call new ButtonClickedPacket(id).sendToServer()
+     * To send this message from client to server, call new ButtonClickedMessage(id).sendToServer()
      */
-    public ButtonClickedPacket(int id) {
+    public ButtonClickedMessage(int id) {
         buttonId = id;
     }
     
-    public ButtonClickedPacket(FriendlyByteBuf buf) {
+    public ButtonClickedMessage(FriendlyByteBuf buf) {
         buttonId = buf.readVarInt();
     }
     
     @Override
-    public PacketID getId() {
+    public MessageType getType() {
         return TestModNet.BUTTON_CLICKED;
     }
     

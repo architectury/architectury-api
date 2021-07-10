@@ -20,31 +20,31 @@
 package me.shedaniel.architectury.test.networking;
 
 import me.shedaniel.architectury.networking.NetworkManager;
-import me.shedaniel.architectury.networking.simple.BaseS2CPacket;
-import me.shedaniel.architectury.networking.simple.PacketID;
+import me.shedaniel.architectury.networking.simple.BaseS2CMessage;
+import me.shedaniel.architectury.networking.simple.MessageType;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.TextComponent;
 
-public class SyncDataPacket extends BaseS2CPacket {
+public class SyncDataMessage extends BaseS2CMessage {
     private final CompoundTag serverData;
     
     /**
-     * To send this packet, call new SyncDataPacket(tag).sendToPlayer(player) / sendToAll(server) / etc.
+     * To send this message, call new SyncDataMessage(tag).sendToPlayer(player) / sendToAll(server) / etc.
      *
-     * @see BaseS2CPacket
+     * @see BaseS2CMessage
      */
-    public SyncDataPacket(CompoundTag tag) {
+    public SyncDataMessage(CompoundTag tag) {
         serverData = tag;
     }
     
-    public SyncDataPacket(FriendlyByteBuf buf) {
+    public SyncDataMessage(FriendlyByteBuf buf) {
         serverData = buf.readAnySizeNbt();
     }
     
     @Override
-    public PacketID getId() {
+    public MessageType getType() {
         return TestModNet.SYNC_DATA;
     }
     

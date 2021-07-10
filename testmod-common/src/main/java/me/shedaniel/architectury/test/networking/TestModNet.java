@@ -19,18 +19,18 @@
 
 package me.shedaniel.architectury.test.networking;
 
-import me.shedaniel.architectury.networking.simple.PacketID;
+import me.shedaniel.architectury.networking.simple.MessageType;
 import me.shedaniel.architectury.networking.simple.SimpleNetworkManager;
 import me.shedaniel.architectury.test.TestMod;
 
 public interface TestModNet {
     SimpleNetworkManager NET = SimpleNetworkManager.create(TestMod.MOD_ID);
     
-    // An example Client to Server packet
-    PacketID BUTTON_CLICKED = NET.registerC2S("button_clicked", ButtonClickedPacket::new);
+    // An example Client to Server message
+    MessageType BUTTON_CLICKED = NET.registerC2S("button_clicked", ButtonClickedMessage::new);
     
-    // An example Server to Client packet
-    PacketID SYNC_DATA = NET.registerS2C("sync_data", SyncDataPacket::new);
+    // An example Server to Client message
+    MessageType SYNC_DATA = NET.registerS2C("sync_data", SyncDataMessage::new);
     
     static void initialize() {
     }

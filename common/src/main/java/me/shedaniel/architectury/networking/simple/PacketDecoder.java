@@ -23,15 +23,15 @@ import me.shedaniel.architectury.networking.NetworkManager;
 import net.minecraft.network.FriendlyByteBuf;
 
 /**
- * Decodes a {@link BasePacket} from a {@link FriendlyByteBuf}.
+ * Decodes a {@link Message} from a {@link FriendlyByteBuf}.
  *
- * @param <T> the packet type handled by this decoder
+ * @param <T> the message type handled by this decoder
  * @author LatvianModder
  */
 @FunctionalInterface
-public interface PacketDecoder<T extends BasePacket> {
+public interface PacketDecoder<T extends Message> {
     /**
-     * Decodes a {@code T} packet from a byte buffer.
+     * Decodes a {@code T} message from a byte buffer.
      *
      * @param buf the byte buffer
      * @return the decoded instance
@@ -41,14 +41,14 @@ public interface PacketDecoder<T extends BasePacket> {
     /**
      * Creates a network receiver from this decoder.
      *
-     * <p>The returned receiver will first {@linkplain #decode(FriendlyByteBuf) decode a packet}
-     * and then call {@link BasePacket#handle(NetworkManager.PacketContext)} on the decoded packet.
+     * <p>The returned receiver will first {@linkplain #decode(FriendlyByteBuf) decode a message}
+     * and then call {@link Message#handle(NetworkManager.PacketContext)} on the decoded message.
      *
      * @return the created receiver
      */
     default NetworkManager.NetworkReceiver createReceiver() {
         return (buf, context) -> {
-            BasePacket packet = decode(buf);
+            Message packet = decode(buf);
             context.queue(() -> packet.handle(context));
         };
     }
