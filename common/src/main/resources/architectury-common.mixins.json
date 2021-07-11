@@ -8,7 +8,8 @@
   "mixins": [
     "BlockLandingInvoker",
     "FluidTagsAccessor",
-    "MixinLightningBolt"
+    "MixinLightningBolt",
+    "VillagerOfferCreationMixin"
   ],
   "injectors": {
     "maxShiftBy": 5,
