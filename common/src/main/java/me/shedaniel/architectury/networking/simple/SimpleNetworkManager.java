@@ -26,8 +26,6 @@ import net.minecraft.resources.ResourceLocation;
 
 /**
  * A simple wrapper for {@link NetworkManager} to make it easier to register messages and send them to clients/servers.
- *
- * @author LatvianModder
  */
 public class SimpleNetworkManager {
     /**

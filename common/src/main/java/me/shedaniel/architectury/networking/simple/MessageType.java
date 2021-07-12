@@ -26,8 +26,6 @@ import java.util.Objects;
 
 /**
  * A unique type for a message in a {@link SimpleNetworkManager}.
- *
- * @author LatvianModder
  */
 public final class MessageType {
     private final SimpleNetworkManager manager;
@@ -41,21 +39,27 @@ public final class MessageType {
     }
     
     /**
-     * {@return the network manager that manages this message type}
+     * Returns the network manager that manages this message type
+     *
+     * @return the network manager that manages this message type
      */
     public SimpleNetworkManager getManager() {
         return manager;
     }
     
     /**
-     * {@return the ID of this message type}
+     * Returns the ID of this message type
+     *
+     * @return the ID of this message type
      */
     public ResourceLocation getId() {
         return id;
     }
     
     /**
-     * {@return the network side of this message type}
+     * Returns the network side of this message type
+     *
+     * @return the network side of this message type
      */
     public NetworkManager.Side getSide() {
         return side;

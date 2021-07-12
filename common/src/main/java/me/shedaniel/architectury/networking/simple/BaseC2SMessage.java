@@ -25,8 +25,6 @@ import net.minecraft.client.Minecraft;
 
 /**
  * The base class for client -&gt; server messages managed by a {@link SimpleNetworkManager}.
- *
- * @author LatvianModder
  */
 public abstract class BaseC2SMessage extends Message {
     /**

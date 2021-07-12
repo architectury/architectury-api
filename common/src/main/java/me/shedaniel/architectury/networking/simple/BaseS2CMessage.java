@@ -28,8 +28,6 @@ import net.minecraft.world.level.chunk.LevelChunk;
 
 /**
  * The base class for server -&gt; client messages managed by a {@link SimpleNetworkManager}.
- *
- * @author LatvianModder
  */
 public abstract class BaseS2CMessage extends Message {
     private void sendTo(ServerPlayer player, Packet<?> packet) {

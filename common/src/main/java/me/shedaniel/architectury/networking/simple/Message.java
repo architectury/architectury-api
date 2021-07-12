@@ -27,7 +27,6 @@ import net.minecraft.network.protocol.Packet;
 /**
  * The base class for messages managed by a {@link SimpleNetworkManager}.
  *
- * @author LatvianModder
  * @see BaseC2SMessage
  * @see BaseS2CMessage
  */
@@ -36,8 +35,9 @@ public abstract class Message {
     }
     
     /**
-     * {@return the {@link MessageType} of this message}
+     * Returns the {@link MessageType} of this message
      *
+     * @return the {@link MessageType} of this message
      * @see SimpleNetworkManager#registerC2S(String, MessageDecoder)
      * @see SimpleNetworkManager#registerS2C(String, MessageDecoder)
      */
