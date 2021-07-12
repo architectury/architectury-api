@@ -27,6 +27,7 @@ import me.shedaniel.architectury.test.debug.client.ClientOverlayMessageSink;
 import me.shedaniel.architectury.test.entity.TestEntity;
 import me.shedaniel.architectury.test.events.DebugEvents;
 import me.shedaniel.architectury.test.gamerule.TestGameRules;
+import me.shedaniel.architectury.test.networking.TestModNet;
 import me.shedaniel.architectury.test.particle.TestParticles;
 import me.shedaniel.architectury.test.registry.TestRegistries;
 import me.shedaniel.architectury.test.registry.client.TestKeybinds;
@@ -47,6 +48,7 @@ public class TestMod {
         TestTags.initialize();
         TestTrades.init();
         TestParticles.initialize();
+        TestModNet.initialize();
         if (Platform.getEnvironment() == Env.CLIENT) {
             TestKeybinds.initialize();
             EntityRenderers.register(TestEntity.TYPE, MinecartRenderer<TestEntity>::new);
