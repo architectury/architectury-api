@@ -27,6 +27,7 @@ import dev.architectury.test.debug.client.ClientOverlayMessageSink;
 import dev.architectury.test.entity.TestEntity;
 import dev.architectury.test.events.DebugEvents;
 import dev.architectury.test.gamerule.TestGameRules;
+import dev.architectury.test.networking.TestModNet;
 import dev.architectury.test.particle.TestParticles;
 import dev.architectury.test.registry.TestRegistries;
 import dev.architectury.test.registry.client.TestKeybinds;
@@ -50,6 +51,7 @@ public class TestMod {
         TestTags.initialize();
         TestTrades.init();
         TestParticles.initialize();
+        TestModNet.initialize();
         if (Platform.getEnvironment() == Env.CLIENT) {
             initializeClient();
         }
