@@ -22,7 +22,7 @@ public class OfferMixingContext {
         this.iterator = shuffled.iterator();
     }
     
-    public void checkAndHandleMaxOfferReached() {
+    public void skipIteratorIfMaxOffersReached() {
         currentIndex++;
         if (currentIndex >= maxOffers) {
             skip();
