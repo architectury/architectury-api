@@ -22,7 +22,16 @@ import me.shedaniel.architectury.annotations.ExpectPlatform;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+
 public class TradeRegistry {
+    private static final List<Consumer<VillagerOfferContext>> VILLAGER_MODIFY_HANDLERS = new ArrayList<>();
+    private static final List<Predicate<VillagerOfferContext>> VILLAGER_REMOVE_HANDLERS = new ArrayList<>();
+    
     private TradeRegistry() {
     }
     
@@ -46,10 +55,17 @@ public class TradeRegistry {
         throw new AssertionError();
     }
     
-    /**
-     * TODO: Just for testing currently
-     */
-    public static void registerModifier() {}
+    // TODO Doc
+    public static void registerVillagerOfferModify(Consumer<VillagerOfferContext> consumer) {
+        Objects.requireNonNull(consumer);
+        VILLAGER_MODIFY_HANDLERS.add(consumer);
+    }
+    
+    // TODO Doc
+    public static void registerVillagerOfferRemoving(Predicate<VillagerOfferContext> predicate) {
+        Objects.requireNonNull(predicate);
+        VILLAGER_REMOVE_HANDLERS.add(predicate);
+    }
     
     /**
      * Register a trade ({@link VillagerTrades.ItemListing}) to a wandering trader by its rarity.
@@ -63,4 +79,11 @@ public class TradeRegistry {
         throw new AssertionError();
     }
     
+    public static boolean invokeVillagerOfferRemoving(VillagerOfferContext ctx) {
+        return VILLAGER_REMOVE_HANDLERS.stream().anyMatch(predicate -> predicate.test(ctx));
+    }
+    
+    public static void invokeVillagerOfferModify(VillagerOfferContext ctx) {
+        VILLAGER_MODIFY_HANDLERS.forEach(consumer -> consumer.accept(ctx));
+    }
 }
