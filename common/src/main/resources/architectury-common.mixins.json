@@ -9,7 +9,8 @@
     "BlockLandingInvoker",
     "FluidTagsAccessor",
     "MixinLightningBolt",
-    "VillagerOfferCreationMixin"
+    "VillagerOfferCreationMixin",
+    "VillagerMixin"
   ],
   "injectors": {
     "maxShiftBy": 5,
