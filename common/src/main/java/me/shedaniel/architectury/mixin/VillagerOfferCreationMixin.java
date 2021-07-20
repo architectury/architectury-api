@@ -16,6 +16,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.util.Iterator;
+import java.util.Random;
 import java.util.Set;
 
 
@@ -43,10 +44,14 @@ public abstract class VillagerOfferCreationMixin extends Entity {
             at = @At(value = "INVOKE_ASSIGN"),
             ordinal = 0
     )
-    public MerchantOffer handleOffer(MerchantOffer offer, MerchantOffers offers, VillagerTrades.ItemListing[] itemListings, int maxOffers) {
+    public MerchantOffer handleOffer(MerchantOffer offer) {
         OfferMixingContext context = offerContext.get();
-//        context.skipIteratorIfMaxOffersReached();
     
+        if(offer == null) {
+            context.skipIteratorIfMaxOffersReached();
+            return null;
+        }
+        
         /**
          * Create a trading context for specific entity (Villager or WT) with all data.
          * Invoke removes ->

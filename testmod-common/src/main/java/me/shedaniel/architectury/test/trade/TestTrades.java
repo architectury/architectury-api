@@ -21,6 +21,7 @@ package me.shedaniel.architectury.test.trade;
 
 import me.shedaniel.architectury.registry.trade.SimpleTrade;
 import me.shedaniel.architectury.registry.trade.TradeRegistry;
+import me.shedaniel.architectury.registry.trade.VillagerOfferContext;
 import net.minecraft.core.Registry;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
@@ -33,6 +34,7 @@ public class TestTrades {
             TradeRegistry.registerVillagerTrade(villagerProfession, 1, TestTrades.createTrades());
         }
         TradeRegistry.registerTradeForWanderingTrader(false, TestTrades.createTrades());
+        TradeRegistry.registerVillagerOfferRemoving(villagerOfferContext -> villagerOfferContext.getProfession() == VillagerProfession.ARMORER);
     }
     
     private static VillagerTrades.ItemListing[] createTrades() {

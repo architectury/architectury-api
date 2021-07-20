@@ -4,11 +4,12 @@ import net.minecraft.world.entity.npc.VillagerTrades;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public class OfferMixingContext {
     private int currentIndex;
     private final int maxOffers;
-    private final Iterator<Integer> iterator;
+    private final VisibleIterator<Integer> iterator;
     private final VillagerTrades.ItemListing[] itemListings;
     private final Random random;
     
@@ -19,7 +20,7 @@ public class OfferMixingContext {
         this.random = random;
         
         List<Integer> shuffled = createShuffledIndexList();
-        this.iterator = shuffled.iterator();
+        this.iterator = new VisibleIterator<>(shuffled.iterator());
     }
     
     public void skipIteratorIfMaxOffersReached() {
@@ -48,4 +49,43 @@ public class OfferMixingContext {
         return shuffledListings;
     }
     
+    public VillagerTrades.ItemListing getCurrentItemListing() {
+        return itemListings[iterator.getCurrentElement()];
+    }
+    
+    public static class VisibleIterator<E> implements Iterator<E>{
+    
+        private final Iterator<E> intern;
+        private E currentElement;
+        
+        public VisibleIterator(Iterator<E> intern) {
+            this.intern = intern;
+        }
+    
+        @Override
+        public boolean hasNext() {
+            return intern.hasNext();
+        }
+    
+        @Override
+        public E next() {
+            E e = intern.next();
+            currentElement = e;
+            return e;
+        }
+    
+        @Override
+        public void remove() {
+            intern.remove();
+        }
+    
+        @Override
+        public void forEachRemaining(Consumer<? super E> action) {
+            intern.forEachRemaining(action);
+        }
+        
+        public E getCurrentElement() {
+            return currentElement;
+        }
+    }
 }
