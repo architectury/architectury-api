@@ -14,23 +14,47 @@ public class MerchantOfferAccess {
         return offer.getBaseCostA();
     }
     
+    public void setPrimary(ItemStack itemStack) {
+        offer.baseCostA = itemStack.copy();
+    }
+    
     public ItemStack getSecondary() {
         return offer.getCostB();
+    }
+    
+    public void setSecondary(ItemStack itemStack) {
+        offer.costB = itemStack.copy();
     }
     
     public ItemStack getResult() {
         return offer.getResult();
     }
     
+    public void setResult(ItemStack itemStack) {
+        offer.result = itemStack.copy();
+    }
+    
     public int getMaxUses() {
         return offer.getMaxUses();
+    }
+    
+    public void setMaxUses(int maxUses) {
+        offer.maxUses = maxUses;
     }
     
     public float getPriceMultiplier() {
         return offer.getPriceMultiplier();
     }
     
+    public void setPriceMultiplier(float priceMultiplier) {
+        offer.priceMultiplier = priceMultiplier;
+    }
+    
     public int getXp() {
         return offer.getXp();
+    }
+    
+    public void setXp(int xp) {
+        offer.xp = xp;
     }
 }

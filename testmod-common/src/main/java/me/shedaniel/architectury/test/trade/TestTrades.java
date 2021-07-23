@@ -35,6 +35,13 @@ public class TestTrades {
         }
         TradeRegistry.registerTradeForWanderingTrader(false, TestTrades.createTrades());
         TradeRegistry.registerVillagerOfferRemoving(villagerOfferContext -> villagerOfferContext.getProfession() == VillagerProfession.ARMORER);
+        
+        // TODO extend more tests
+        TradeRegistry.registerVillagerOfferModify(villagerOfferContext -> {
+            if(villagerOfferContext.getProfession() == VillagerProfession.FARMER && villagerOfferContext.getOffer().getPrimary().getItem() == Items.POTATO) {
+                villagerOfferContext.getOffer().getResult().setCount(64);
+            }
+        });
     }
     
     private static VillagerTrades.ItemListing[] createTrades() {

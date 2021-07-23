@@ -40,3 +40,14 @@ mutable field net/minecraft/world/level/biome/BiomeSpecialEffects ambientAdditio
 accessible field net/minecraft/world/level/biome/BiomeSpecialEffects backgroundMusic Ljava/util/Optional;
 mutable field net/minecraft/world/level/biome/BiomeSpecialEffects backgroundMusic Ljava/util/Optional;
 accessible method net/minecraft/world/level/storage/LevelResource <init> (Ljava/lang/String;)V
+
+accessible field net/minecraft/world/item/trading/MerchantOffer baseCostA Lnet/minecraft/world/item/ItemStack;
+mutable field net/minecraft/world/item/trading/MerchantOffer baseCostA Lnet/minecraft/world/item/ItemStack;
+accessible field net/minecraft/world/item/trading/MerchantOffer costB Lnet/minecraft/world/item/ItemStack;
+mutable field net/minecraft/world/item/trading/MerchantOffer costB Lnet/minecraft/world/item/ItemStack;
+accessible field net/minecraft/world/item/trading/MerchantOffer result Lnet/minecraft/world/item/ItemStack;
+mutable field net/minecraft/world/item/trading/MerchantOffer result Lnet/minecraft/world/item/ItemStack;
+accessible field net/minecraft/world/item/trading/MerchantOffer maxUses I
+mutable field net/minecraft/world/item/trading/MerchantOffer maxUses I
+accessible field net/minecraft/world/item/trading/MerchantOffer priceMultiplier F
+accessible field net/minecraft/world/item/trading/MerchantOffer xp I
