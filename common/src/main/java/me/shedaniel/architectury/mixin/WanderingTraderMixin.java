@@ -21,11 +21,13 @@ package me.shedaniel.architectury.mixin;
 
 import me.shedaniel.architectury.registry.trade.TradeOfferContext;
 import me.shedaniel.architectury.registry.trade.TradeRegistry;
+import me.shedaniel.architectury.registry.trade.WanderingTraderOfferContext;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.npc.WanderingTrader;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -59,13 +61,18 @@ public abstract class WanderingTraderMixin extends AbstractVillagerMixin {
         if (offer == null) {
             return null;
         }
-        
-        return handleOfferImpl(offer);
+    
+        return invokeWanderingTraderEvents(offer, true);
     }
     
     @Override
     public MerchantOffer handleOfferImpl(MerchantOffer offer) {
-        TradeOfferContext context = new TradeOfferContext(offer, this, random);
+        return invokeWanderingTraderEvents(offer, false);
+    }
+    
+    @Nullable
+    private MerchantOffer invokeWanderingTraderEvents(MerchantOffer offer, boolean rare) {
+        WanderingTraderOfferContext context = new WanderingTraderOfferContext(offer, rare, this, random);
         boolean removeResult = TradeRegistry.invokeWanderingTraderOfferRemoving(context);
         if (removeResult) {
             return null;

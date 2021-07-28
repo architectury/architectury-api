@@ -19,9 +19,7 @@
 
 package me.shedaniel.architectury.test.trade;
 
-import me.shedaniel.architectury.registry.trade.SimpleTrade;
-import me.shedaniel.architectury.registry.trade.TradeRegistry;
-import me.shedaniel.architectury.registry.trade.VillagerTradeOfferContext;
+import me.shedaniel.architectury.registry.trade.*;
 import net.minecraft.core.Registry;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
@@ -53,7 +51,11 @@ public class TestTrades {
         TradeRegistry.overrideVillagerMaxOffers(VillagerProfession.SHEPHERD, 1, 10); // easier to level up
         TradeRegistry.overrideVillagerMaxOffers(VillagerProfession.SHEPHERD, 2, 0);
         
-        TradeRegistry.overrideWanderingTraderMaxOffers(10); // will end up having 11 because of the rare item
+        TradeRegistry.overrideWanderingTraderMaxOffers(7); // will end up having 8 because of the rare item
+        
+        TradeRegistry.registerWanderingTraderOfferModify(wanderingTraderHighRarePrice);
+        TradeRegistry.registerWanderingTraderOfferModify(wanderingTraderLovesFlint);
+        TradeRegistry.registerWanderingTraderOfferRemoving(wanderingTraderRemoveDyes);
     }
     
     private static VillagerTrades.ItemListing[] createTrades() {
@@ -99,5 +101,16 @@ public class TestTrades {
     
     public static Predicate<VillagerTradeOfferContext> removeFarmersLevelTwoTrades = ctx -> ctx.getProfession() == VillagerProfession.FARMER && ctx.getLevel() == 2;
     
+    public static Consumer<WanderingTraderOfferContext> wanderingTraderHighRarePrice = ctx -> {
+        if(ctx.isRare()) {
+            ctx.getOffer().getPrimary().setCount(37);
+        }
+    };
     
+    public static Consumer<WanderingTraderOfferContext> wanderingTraderLovesFlint = ctx -> {
+        int count = ctx.getOffer().getPrimary().getCount();
+        ctx.getOffer().setPrimary(new ItemStack(Items.FLINT, count));
+    };
+    
+    public static Predicate<WanderingTraderOfferContext> wanderingTraderRemoveDyes = ctx -> ctx.getOffer().getResult().getItem().toString().matches("^.*dye$");
 }

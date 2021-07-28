@@ -30,8 +30,8 @@ import java.util.function.Predicate;
 public class TradeRegistry {
     private static final List<Consumer<VillagerTradeOfferContext>> VILLAGER_MODIFY_HANDLERS = new ArrayList<>();
     private static final List<Predicate<VillagerTradeOfferContext>> VILLAGER_REMOVE_HANDLERS = new ArrayList<>();
-    private static final List<Consumer<TradeOfferContext>> WANDERING_TRADER_MODIFY_HANDLERS = new ArrayList<>();
-    private static final List<Predicate<TradeOfferContext>> WANDERING_TRADER_REMOVE_HANDLERS = new ArrayList<>();
+    private static final List<Consumer<WanderingTraderOfferContext>> WANDERING_TRADER_MODIFY_HANDLERS = new ArrayList<>();
+    private static final List<Predicate<WanderingTraderOfferContext>> WANDERING_TRADER_REMOVE_HANDLERS = new ArrayList<>();
     
     private static final Map<VillagerProfession, Map<Integer, Integer>> VILLAGER_MAX_OFFER_OVERRIDES = new HashMap<>();
     private static Integer WANDERING_TRADER_MAX_OFFER_OVERRIDE = null;
@@ -113,21 +113,21 @@ public class TradeRegistry {
     }
     
     /**
-     * Register a consumer which provide {@link TradeOfferContext} to modify the given offer from the wandering trader.
+     * Register a consumer which provide {@link WanderingTraderOfferContext} to modify the given offer from the wandering trader.
      * The consumer gets called when {@link net.minecraft.world.entity.npc.WanderingTrader} generates their offer list.
      * @param consumer The consumer to handle modification for the given offer context.
      */
-    public static void registerWanderingTraderOfferModify(Consumer<TradeOfferContext> consumer) {
+    public static void registerWanderingTraderOfferModify(Consumer<WanderingTraderOfferContext> consumer) {
         Objects.requireNonNull(consumer);
         WANDERING_TRADER_MODIFY_HANDLERS.add(consumer);
     }
     
     /**
-     * Register a predicate which provide {@link TradeOfferContext} to test the given offer from the wandering trader.
+     * Register a predicate which provide {@link WanderingTraderOfferContext} to test the given offer from the wandering trader.
      * The predicate gets called when {@link net.minecraft.world.entity.npc.WanderingTrader} generates their offer list.
      * @param predicate The predicate to test if an offer should be removed. Returning true means the offer will be removed.
      */
-    public static void registerWanderingTraderOfferRemoving(Predicate<TradeOfferContext> predicate) {
+    public static void registerWanderingTraderOfferRemoving(Predicate<WanderingTraderOfferContext> predicate) {
         Objects.requireNonNull(predicate);
         WANDERING_TRADER_REMOVE_HANDLERS.add(predicate);
     }
@@ -171,11 +171,11 @@ public class TradeRegistry {
         VILLAGER_MODIFY_HANDLERS.forEach(consumer -> consumer.accept(ctx));
     }
     
-    public static boolean invokeWanderingTraderOfferRemoving(TradeOfferContext ctx) {
+    public static boolean invokeWanderingTraderOfferRemoving(WanderingTraderOfferContext ctx) {
         return WANDERING_TRADER_REMOVE_HANDLERS.stream().anyMatch(predicate -> predicate.test(ctx));
     }
     
-    public static void invokeWanderingTraderOfferModify(TradeOfferContext ctx) {
+    public static void invokeWanderingTraderOfferModify(WanderingTraderOfferContext ctx) {
         WANDERING_TRADER_MODIFY_HANDLERS.forEach(consumer -> consumer.accept(ctx));
     }
 }
