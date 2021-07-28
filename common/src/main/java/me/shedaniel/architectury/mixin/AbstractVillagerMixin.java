@@ -58,7 +58,7 @@ public abstract class AbstractVillagerMixin extends Entity {
     
     @ModifyVariable(
             method = "addOffersFromItemListings(Lnet/minecraft/world/item/trading/MerchantOffers;[Lnet/minecraft/world/entity/npc/VillagerTrades$ItemListing;I)V",
-            at = @At(value = "STORE"), // TODO ask someone why `INVOKE_ASSIGN` triggers `merchantOffers.add(merchantOffer)` too
+            at = @At(value = "STORE"),
             ordinal = 0
     )
     public MerchantOffer handleOffer(MerchantOffer offer) {
