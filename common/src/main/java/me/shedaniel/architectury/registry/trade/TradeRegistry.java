@@ -23,7 +23,19 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
 
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+
 public class TradeRegistry {
+    private static final List<Consumer<VillagerTradeOfferContext>> VILLAGER_MODIFY_HANDLERS = new ArrayList<>();
+    private static final List<Predicate<VillagerTradeOfferContext>> VILLAGER_REMOVE_HANDLERS = new ArrayList<>();
+    private static final List<Consumer<TradeOfferContext>> WANDERING_TRADER_MODIFY_HANDLERS = new ArrayList<>();
+    private static final List<Predicate<TradeOfferContext>> WANDERING_TRADER_REMOVE_HANDLERS = new ArrayList<>();
+    
+    private static final Map<VillagerProfession, Map<Integer, Integer>> VILLAGER_MAX_OFFER_OVERRIDES = new HashMap<>();
+    private static Integer WANDERING_TRADER_MAX_OFFER_OVERRIDE = null;
+    
     private TradeRegistry() {
     }
     
@@ -48,6 +60,79 @@ public class TradeRegistry {
     }
     
     /**
+     * Override the max possible offers a villager can have by its profession and level.
+     * @param profession The Profession of the villager.
+     * @param level      The level of the villager. Vanilla range is 1 to 5, however mods may extend that upper limit further.
+     * @param maxOffers  Max possible offers a villager can have.
+     */
+    public static void overrideVillagerMaxOffers(VillagerProfession profession, int level, int maxOffers) {
+        if (level < 1) {
+            throw new IllegalArgumentException("Villager Trade level has to be at least 1!");
+        }
+    
+        if (maxOffers < 0) {
+            throw new IllegalArgumentException("Villager's max offers has to be at least 0!");
+        }
+        
+        Map<Integer, Integer> map = VILLAGER_MAX_OFFER_OVERRIDES.computeIfAbsent(profession, k -> new HashMap<>());
+        map.put(level, maxOffers);
+    }
+    
+    /**
+     * @param profession The Profession of the villager.
+     * @param level      The level the villager needs. Vanilla range is 1 to 5, however mods may extend that upper limit further.
+     * @return           Max offers for the villager. Returning null means no override exists
+     */
+    public static Integer getVillagerMaxOffers(VillagerProfession profession, int level) {
+        if(!VILLAGER_MAX_OFFER_OVERRIDES.containsKey(profession)){
+            return null;
+        }
+        
+        return VILLAGER_MAX_OFFER_OVERRIDES.get(profession).get(level);
+    }
+    
+    
+    /**
+     * Register a consumer which provide {@link VillagerTradeOfferContext} to modify the given offer from a villager.
+     * The consumer gets called when {@link net.minecraft.world.entity.npc.Villager} generates their offer list.
+     * @param consumer The consumer to handle modification for the given offer context.
+     */
+    public static void registerVillagerOfferModify(Consumer<VillagerTradeOfferContext> consumer) {
+        Objects.requireNonNull(consumer);
+        VILLAGER_MODIFY_HANDLERS.add(consumer);
+    }
+    
+    /**
+     * Register a predicate which provide {@link VillagerTradeOfferContext} to test the given offer from a villager.
+     * The predicate gets called when {@link net.minecraft.world.entity.npc.Villager} generates their offer list.
+     * @param predicate The predicate to test if an offer should be removed. Returning true means the offer will be removed.
+     */
+    public static void registerVillagerOfferRemoving(Predicate<VillagerTradeOfferContext> predicate) {
+        Objects.requireNonNull(predicate);
+        VILLAGER_REMOVE_HANDLERS.add(predicate);
+    }
+    
+    /**
+     * Register a consumer which provide {@link TradeOfferContext} to modify the given offer from the wandering trader.
+     * The consumer gets called when {@link net.minecraft.world.entity.npc.WanderingTrader} generates their offer list.
+     * @param consumer The consumer to handle modification for the given offer context.
+     */
+    public static void registerWanderingTraderOfferModify(Consumer<TradeOfferContext> consumer) {
+        Objects.requireNonNull(consumer);
+        WANDERING_TRADER_MODIFY_HANDLERS.add(consumer);
+    }
+    
+    /**
+     * Register a predicate which provide {@link TradeOfferContext} to test the given offer from the wandering trader.
+     * The predicate gets called when {@link net.minecraft.world.entity.npc.WanderingTrader} generates their offer list.
+     * @param predicate The predicate to test if an offer should be removed. Returning true means the offer will be removed.
+     */
+    public static void registerWanderingTraderOfferRemoving(Predicate<TradeOfferContext> predicate) {
+        Objects.requireNonNull(predicate);
+        WANDERING_TRADER_REMOVE_HANDLERS.add(predicate);
+    }
+    
+    /**
      * Register a trade ({@link VillagerTrades.ItemListing}) to a wandering trader by its rarity.
      * When the mod loader is Forge, the {@code WandererTradesEvent} event is used.
      *
@@ -59,4 +144,38 @@ public class TradeRegistry {
         throw new AssertionError();
     }
     
+    /**
+     * Override the max possible offers the wandering trader can have. This does not affect the rare trade.
+     * @param maxOffers  Max possible offers a villager can have.
+     */
+    public static void overrideWanderingTraderMaxOffers(int maxOffers) {
+        if (maxOffers < 0) {
+            throw new IllegalArgumentException("Wandering trader's max offers has to be at least 0!");
+        }
+        
+        WANDERING_TRADER_MAX_OFFER_OVERRIDE = maxOffers;
+    }
+    
+    /**
+     * @return Max offers for the wandering trader. Returning null means no override exists
+     */
+    public static Integer getWanderingTraderMaxOffers() {
+        return WANDERING_TRADER_MAX_OFFER_OVERRIDE;
+    }
+    
+    public static boolean invokeVillagerOfferRemoving(VillagerTradeOfferContext ctx) {
+        return VILLAGER_REMOVE_HANDLERS.stream().anyMatch(predicate -> predicate.test(ctx));
+    }
+    
+    public static void invokeVillagerOfferModify(VillagerTradeOfferContext ctx) {
+        VILLAGER_MODIFY_HANDLERS.forEach(consumer -> consumer.accept(ctx));
+    }
+    
+    public static boolean invokeWanderingTraderOfferRemoving(TradeOfferContext ctx) {
+        return WANDERING_TRADER_REMOVE_HANDLERS.stream().anyMatch(predicate -> predicate.test(ctx));
+    }
+    
+    public static void invokeWanderingTraderOfferModify(TradeOfferContext ctx) {
+        WANDERING_TRADER_MODIFY_HANDLERS.forEach(consumer -> consumer.accept(ctx));
+    }
 }
