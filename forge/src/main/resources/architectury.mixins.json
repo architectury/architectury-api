@@ -1,28 +1,28 @@
 {
   "required": true,
   "package": "me.shedaniel.architectury.mixin.forge",
-  "plugin": "me.shedaniel.architectury.plugin.forge.ArchitecturyMixinPlugin",
+  "plugin": "dev.architectury.plugin.forge.ArchitecturyMixinPlugin",
   "compatibilityLevel": "JAVA_16",
   "minVersion": "0.8",
   "client": [
-    "MixinClientLevel",
-    "ParticleEngineAccessor",
+    "dev.architectury.architectury.mixin.forge.MixinClientLevel",
+    "dev.architectury.architectury.mixin.forge.ParticleEngineAccessor",
     "ParticleEngineAccessor$MutableSpriteSetAccessor"
   ],
   "mixins": [
-    "BiomeGenerationSettingsBuilderAccessor",
-    "GameRulesAccessor",
+    "dev.architectury.architectury.mixin.forge.BiomeGenerationSettingsBuilderAccessor",
+    "dev.architectury.architectury.mixin.forge.GameRulesAccessor",
     "GameRulesAccessor$BooleanValue",
     "GameRulesAccessor$BooleanValueSimple",
     "GameRulesAccessor$IntegerValue",
     "GameRulesAccessor$IntegerValueSimple",
-    "MixinBlockEntity",
-    "MixinBlockEntityExtension",
-    "MixinChunkSerializer",
-    "MixinItemExtension",
-    "MixinRegistryEntry",
-    "MixinWorldEvent",
-    "MobSpawnSettingsBuilderAccessor"
+    "dev.architectury.architectury.mixin.forge.MixinBlockEntity",
+    "dev.architectury.architectury.mixin.forge.MixinBlockEntityExtension",
+    "dev.architectury.architectury.mixin.forge.MixinChunkSerializer",
+    "dev.architectury.architectury.mixin.forge.MixinItemExtension",
+    "dev.architectury.architectury.mixin.forge.MixinRegistryEntry",
+    "dev.architectury.architectury.mixin.forge.MixinWorldEvent",
+    "dev.architectury.architectury.mixin.forge.MobSpawnSettingsBuilderAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

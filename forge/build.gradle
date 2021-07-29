@@ -4,7 +4,7 @@ plugins {
 }
 
 loom {
-    mixinConfigs = ["architectury.mixins.json", "architectury-common.mixins.json"]
+//    mixinConfigs = ["architectury.mixins.json", "architectury-common.mixins.json"]
 }
 
 configurations {
