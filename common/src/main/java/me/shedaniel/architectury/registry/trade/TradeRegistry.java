@@ -65,7 +65,7 @@ public class TradeRegistry {
      * @param level      The level of the villager. Vanilla range is 1 to 5, however mods may extend that upper limit further.
      * @param maxOffers  Max possible offers a villager can have.
      */
-    public static void overrideVillagerMaxOffers(VillagerProfession profession, int level, int maxOffers) {
+    public static void setVillagerMaxOffers(VillagerProfession profession, int level, int maxOffers) {
         if (level < 1) {
             throw new IllegalArgumentException("Villager Trade level has to be at least 1!");
         }
@@ -93,43 +93,43 @@ public class TradeRegistry {
     
     
     /**
-     * Register a consumer which provide {@link VillagerTradeOfferContext} to modify the given offer from a villager.
-     * The consumer gets called when {@link net.minecraft.world.entity.npc.Villager} generates their offer list.
-     * @param consumer The consumer to handle modification for the given offer context.
+     * Register a callback which provide {@link VillagerTradeOfferContext} to modify the given offer from a villager.
+     * The callback gets called when {@link net.minecraft.world.entity.npc.Villager} generates their offer list.
+     * @param callback The callback to handle modification for the given offer context.
      */
-    public static void registerVillagerOfferModify(Consumer<VillagerTradeOfferContext> consumer) {
-        Objects.requireNonNull(consumer);
-        VILLAGER_MODIFY_HANDLERS.add(consumer);
+    public static void modifyVillagerOffers(Consumer<VillagerTradeOfferContext> callback) {
+        Objects.requireNonNull(callback);
+        VILLAGER_MODIFY_HANDLERS.add(callback);
     }
     
     /**
-     * Register a predicate which provide {@link VillagerTradeOfferContext} to test the given offer from a villager.
-     * The predicate gets called when {@link net.minecraft.world.entity.npc.Villager} generates their offer list.
-     * @param predicate The predicate to test if an offer should be removed. Returning true means the offer will be removed.
+     * Register a filter which provide {@link VillagerTradeOfferContext} to test the given offer from a villager.
+     * The filter gets called when {@link net.minecraft.world.entity.npc.Villager} generates their offer list.
+     * @param filter The filter to test if an offer should be removed. Returning true means the offer will be removed.
      */
-    public static void registerVillagerOfferRemoving(Predicate<VillagerTradeOfferContext> predicate) {
-        Objects.requireNonNull(predicate);
-        VILLAGER_REMOVE_HANDLERS.add(predicate);
+    public static void removeVillagerOffers(Predicate<VillagerTradeOfferContext> filter) {
+        Objects.requireNonNull(filter);
+        VILLAGER_REMOVE_HANDLERS.add(filter);
     }
     
     /**
-     * Register a consumer which provide {@link WanderingTraderOfferContext} to modify the given offer from the wandering trader.
-     * The consumer gets called when {@link net.minecraft.world.entity.npc.WanderingTrader} generates their offer list.
-     * @param consumer The consumer to handle modification for the given offer context.
+     * Register a callback which provide {@link WanderingTraderOfferContext} to modify the given offer from the wandering trader.
+     * The callback gets called when {@link net.minecraft.world.entity.npc.WanderingTrader} generates their offer list.
+     * @param callback The callback to handle modification for the given offer context.
      */
-    public static void registerWanderingTraderOfferModify(Consumer<WanderingTraderOfferContext> consumer) {
-        Objects.requireNonNull(consumer);
-        WANDERING_TRADER_MODIFY_HANDLERS.add(consumer);
+    public static void modifyWanderingTraderOffers(Consumer<WanderingTraderOfferContext> callback) {
+        Objects.requireNonNull(callback);
+        WANDERING_TRADER_MODIFY_HANDLERS.add(callback);
     }
     
     /**
-     * Register a predicate which provide {@link WanderingTraderOfferContext} to test the given offer from the wandering trader.
-     * The predicate gets called when {@link net.minecraft.world.entity.npc.WanderingTrader} generates their offer list.
-     * @param predicate The predicate to test if an offer should be removed. Returning true means the offer will be removed.
+     * Register a filter which provide {@link WanderingTraderOfferContext} to test the given offer from the wandering trader.
+     * The filter gets called when {@link net.minecraft.world.entity.npc.WanderingTrader} generates their offer list.
+     * @param filter The filter to test if an offer should be removed. Returning true means the offer will be removed.
      */
-    public static void registerWanderingTraderOfferRemoving(Predicate<WanderingTraderOfferContext> predicate) {
-        Objects.requireNonNull(predicate);
-        WANDERING_TRADER_REMOVE_HANDLERS.add(predicate);
+    public static void removeWanderingTraderOffers(Predicate<WanderingTraderOfferContext> filter) {
+        Objects.requireNonNull(filter);
+        WANDERING_TRADER_REMOVE_HANDLERS.add(filter);
     }
     
     /**
@@ -148,7 +148,7 @@ public class TradeRegistry {
      * Override the max possible offers the wandering trader can have. This does not affect the rare trade.
      * @param maxOffers  Max possible offers a villager can have.
      */
-    public static void overrideWanderingTraderMaxOffers(int maxOffers) {
+    public static void setWanderingTraderMaxOffers(int maxOffers) {
         if (maxOffers < 0) {
             throw new IllegalArgumentException("Wandering trader's max offers has to be at least 0!");
         }

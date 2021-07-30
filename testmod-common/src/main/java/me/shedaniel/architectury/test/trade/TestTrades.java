@@ -36,26 +36,26 @@ public class TestTrades {
         }
         TradeRegistry.registerTradeForWanderingTrader(false, TestTrades.createTrades());
         
-        TradeRegistry.registerVillagerOfferModify(farmerSwitchBreadResultToGoldenApple);
-        TradeRegistry.registerVillagerOfferModify(farmerCarrotsNeedSticksToo);
-        TradeRegistry.registerVillagerOfferModify(farmerCarrotWithStickIncreasePriceMultiplier);
-        TradeRegistry.registerVillagerOfferModify(butcherWantsManyEmeralds);
-        TradeRegistry.registerVillagerOfferModify(butcherGivesMoreEmeraldForChicken);
+        TradeRegistry.modifyVillagerOffers(farmerSwitchBreadResultToGoldenApple);
+        TradeRegistry.modifyVillagerOffers(farmerCarrotsNeedSticksToo);
+        TradeRegistry.modifyVillagerOffers(farmerCarrotWithStickIncreasePriceMultiplier);
+        TradeRegistry.modifyVillagerOffers(butcherWantsManyEmeralds);
+        TradeRegistry.modifyVillagerOffers(butcherGivesMoreEmeraldForChicken);
         
-        TradeRegistry.registerVillagerOfferRemoving(removeCarrotTrade);
-        TradeRegistry.registerVillagerOfferRemoving(removeFarmersLevelTwoTrades);
+        TradeRegistry.removeVillagerOffers(removeCarrotTrade);
+        TradeRegistry.removeVillagerOffers(removeFarmersLevelTwoTrades);
         
-        TradeRegistry.overrideVillagerMaxOffers(VillagerProfession.FISHERMAN, 1, 100);
-        TradeRegistry.overrideVillagerMaxOffers(VillagerProfession.BUTCHER, 2, 100);
+        TradeRegistry.setVillagerMaxOffers(VillagerProfession.FISHERMAN, 1, 100);
+        TradeRegistry.setVillagerMaxOffers(VillagerProfession.BUTCHER, 2, 100);
         
-        TradeRegistry.overrideVillagerMaxOffers(VillagerProfession.SHEPHERD, 1, 10); // easier to level up
-        TradeRegistry.overrideVillagerMaxOffers(VillagerProfession.SHEPHERD, 2, 0);
+        TradeRegistry.setVillagerMaxOffers(VillagerProfession.SHEPHERD, 1, 10); // easier to level up
+        TradeRegistry.setVillagerMaxOffers(VillagerProfession.SHEPHERD, 2, 0);
         
-        TradeRegistry.overrideWanderingTraderMaxOffers(7); // will end up having 8 because of the rare item
+        TradeRegistry.setWanderingTraderMaxOffers(7); // will end up having 8 because of the rare item
         
-        TradeRegistry.registerWanderingTraderOfferModify(wanderingTraderHighRarePrice);
-        TradeRegistry.registerWanderingTraderOfferModify(wanderingTraderLovesFlint);
-        TradeRegistry.registerWanderingTraderOfferRemoving(wanderingTraderRemoveDyes);
+        TradeRegistry.modifyWanderingTraderOffers(wanderingTraderHighRarePrice);
+        TradeRegistry.modifyWanderingTraderOffers(wanderingTraderLovesFlint);
+        TradeRegistry.removeWanderingTraderOffers(wanderingTraderRemoveDyes);
     }
     
     private static VillagerTrades.ItemListing[] createTrades() {
