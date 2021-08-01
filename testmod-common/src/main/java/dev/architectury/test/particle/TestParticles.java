@@ -19,6 +19,7 @@
 
 package dev.architectury.test.particle;
 
+import dev.architectury.event.events.client.ClientLifecycleEvent;
 import dev.architectury.platform.Platform;
 import dev.architectury.registry.client.particle.ParticleProviderRegistry;
 import dev.architectury.registry.registries.DeferredRegister;
@@ -38,7 +39,10 @@ public class TestParticles {
     
     public static void initialize() {
         PARTICLE_TYPES.register();
-        if (Platform.getEnvironment() == Env.CLIENT)
-            ParticleProviderRegistry.register(TEST_PARTICLE.get(), HeartParticle.Provider::new);
+        if (Platform.getEnvironment() == Env.CLIENT) {
+            ClientLifecycleEvent.CLIENT_SETUP.register(instance -> {
+                    ParticleProviderRegistry.register(TEST_PARTICLE.get(), HeartParticle.Provider::new);
+            });
+        }
     }
 }

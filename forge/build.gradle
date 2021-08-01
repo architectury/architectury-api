@@ -4,7 +4,7 @@ plugins {
 }
 
 loom {
-    mixinConfigs = ["architectury.mixins.json", "architectury-common.mixins.json"]
+//    mixinConfigs = ["architectury.mixins.json", "architectury-common.mixins.json"]
 }
 
 configurations {
@@ -104,6 +104,7 @@ curseforge {
             changelogType = "html"
             changelog = releaseChangelog()
             addGameVersion "1.17"
+            addGameVersion "1.17.1"
             addGameVersion "Java 16"
             addGameVersion "Forge"
             mainArtifact(remapJar.archivePath) {

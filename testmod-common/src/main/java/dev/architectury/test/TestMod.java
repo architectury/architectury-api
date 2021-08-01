@@ -42,7 +42,7 @@ import net.minecraft.client.renderer.entity.MinecartRenderer;
 
 public class TestMod {
     public static final MessageSink SINK = EnvExecutor.getEnvSpecific(() -> ClientOverlayMessageSink::new, () -> ConsoleMessageSink::new);
-    public static final String MOD_ID = "architectury-test";
+    public static final String MOD_ID = "architectury_test";
     
     public static void initialize() {
         DebugEvents.initialize();
