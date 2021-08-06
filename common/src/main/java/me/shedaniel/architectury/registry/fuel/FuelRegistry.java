@@ -19,7 +19,7 @@
 
 package me.shedaniel.architectury.registry.fuel;
 
-import me.shedaniel.architectury.annotations.ExpectPlatform;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 

@@ -19,9 +19,9 @@
 
 package me.shedaniel.architectury.platform;
 
+import dev.architectury.injectables.annotations.ExpectPlatform;
+import dev.architectury.injectables.targets.ArchitecturyTarget;
 import me.shedaniel.architectury.Architectury;
-import me.shedaniel.architectury.annotations.ExpectPlatform;
-import me.shedaniel.architectury.targets.ArchitecturyTarget;
 import me.shedaniel.architectury.utils.Env;
 import net.fabricmc.api.EnvType;
 import net.minecraft.SharedConstants;

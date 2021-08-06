@@ -19,7 +19,7 @@
 
 package me.shedaniel.architectury.registry;
 
-import me.shedaniel.architectury.annotations.ExpectPlatform;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;

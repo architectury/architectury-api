@@ -19,7 +19,7 @@
 
 package me.shedaniel.architectury.registry.trade;
 
-import me.shedaniel.architectury.annotations.ExpectPlatform;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
 

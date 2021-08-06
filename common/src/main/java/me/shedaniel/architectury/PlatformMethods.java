@@ -19,7 +19,7 @@
 
 package me.shedaniel.architectury;
 
-import me.shedaniel.architectury.targets.ArchitecturyTarget;
+import dev.architectury.injectables.targets.ArchitecturyTarget;
 import me.shedaniel.architectury.utils.PlatformExpectedError;
 import org.jetbrains.annotations.ApiStatus;
 

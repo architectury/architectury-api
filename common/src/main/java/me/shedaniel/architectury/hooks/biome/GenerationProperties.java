@@ -19,7 +19,6 @@
 
 package me.shedaniel.architectury.hooks.biome;
 
-import net.minecraft.world.entity.animal.Panda;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;

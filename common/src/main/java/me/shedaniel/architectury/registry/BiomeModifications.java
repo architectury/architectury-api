@@ -20,7 +20,7 @@
 package me.shedaniel.architectury.registry;
 
 import com.google.common.base.Predicates;
-import me.shedaniel.architectury.annotations.ExpectPlatform;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import me.shedaniel.architectury.hooks.biome.BiomeProperties;
 import net.minecraft.resources.ResourceLocation;
 

@@ -19,7 +19,7 @@
 
 package me.shedaniel.architectury.hooks;
 
-import me.shedaniel.architectury.annotations.ExpectPlatform;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import me.shedaniel.architectury.mixin.FluidTagsAccessor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.*;

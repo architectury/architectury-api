@@ -19,7 +19,7 @@
 
 package me.shedaniel.architectury.registry;
 
-import me.shedaniel.architectury.annotations.ExpectPlatform;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import me.shedaniel.architectury.registry.menu.ExtendedMenuProvider;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
