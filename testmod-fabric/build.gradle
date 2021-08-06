@@ -13,7 +13,6 @@ dependencies {
     mappings loom.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
-    modCompileOnly "io.github.prospector:modmenu:${rootProject.mod_menu_version}"
 
     implementation project(path: ":fabric", configuration: "dev")
     implementation(project(path: ":common")) {
