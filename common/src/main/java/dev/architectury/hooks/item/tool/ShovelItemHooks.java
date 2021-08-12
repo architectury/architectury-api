@@ -11,10 +11,10 @@ public final class ShovelItemHooks {
     private ShovelItemHooks() {
     }
 
-    public static void addFlatteningRecipe(Block src, BlockState dst) {
+    public static void addFlatteningRecipe(Block input, BlockState result) {
         if (ShovelItem.FLATTENABLES instanceof ImmutableMap) {
             ShovelItem.FLATTENABLES = new HashMap<>(ShovelItem.FLATTENABLES);
         }
-        ShovelItem.FLATTENABLES.put(src, dst);
+        ShovelItem.FLATTENABLES.put(input, result);
     }
 }

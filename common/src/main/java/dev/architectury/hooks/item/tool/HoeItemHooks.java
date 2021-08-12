@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class HoeItemHooks {
+public final class HoeItemHooks {
     private HoeItemHooks() {
     }
 

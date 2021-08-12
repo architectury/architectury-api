@@ -11,14 +11,14 @@ public final class AxeItemHooks {
     private AxeItemHooks() {
     }
 
-    public static void addStrippingRecipe(Block src, Block dst) {
-        if (!src.defaultBlockState().hasProperty(RotatedPillarBlock.AXIS))
-            throw new IllegalArgumentException("Source block is missing required 'AXIS' property!");
-        if (!dst.defaultBlockState().hasProperty(RotatedPillarBlock.AXIS))
-            throw new IllegalArgumentException("Destination block is missing required 'AXIS' property!");
+    public static void addStrippingRecipe(Block input, Block result) {
+        if (!input.defaultBlockState().hasProperty(RotatedPillarBlock.AXIS))
+            throw new IllegalArgumentException("Input block is missing required 'AXIS' property!");
+        if (!result.defaultBlockState().hasProperty(RotatedPillarBlock.AXIS))
+            throw new IllegalArgumentException("Result block is missing required 'AXIS' property!");
         if (AxeItem.STRIPPABLES instanceof ImmutableMap) {
             AxeItem.STRIPPABLES = new HashMap<>(AxeItem.STRIPPABLES);
         }
-        AxeItem.STRIPPABLES.put(src, dst);
+        AxeItem.STRIPPABLES.put(input, result);
     }
 }
