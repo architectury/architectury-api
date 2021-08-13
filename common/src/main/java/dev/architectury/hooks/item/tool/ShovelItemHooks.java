@@ -12,7 +12,7 @@ public final class ShovelItemHooks {
     }
     
     /**
-     * Adds a new flattening (interact with shovel) recipe to the game.<p>
+     * Adds a new flattening (interact with shovel) interaction to the game.<p>
      *
      * <b>Notes:</b>
      * <ul>
@@ -24,7 +24,7 @@ public final class ShovelItemHooks {
      * @param input input block
      * @param result result block state
      */
-    public static void addFlatteningRecipe(Block input, BlockState result) {
+    public static void addFlattenable(Block input, BlockState result) {
         if (ShovelItem.FLATTENABLES instanceof ImmutableMap) {
             ShovelItem.FLATTENABLES = new HashMap<>(ShovelItem.FLATTENABLES);
         }

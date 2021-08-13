@@ -15,7 +15,7 @@ public final class HoeItemHooks {
     }
     
     /**
-     * Adds a new tilling (interact with hoe) recipe to the game.<p>
+     * Adds a new tilling (interact with hoe) interaction to the game.<p>
      *
      * Tilling uses a predicate/consumer pair system:
      * <ul>
@@ -29,7 +29,7 @@ public final class HoeItemHooks {
      * @param predicate context predicate
      * @param action action to run
      */
-    public static void addTillingRecipe(Block input, Predicate<UseOnContext> predicate, Consumer<UseOnContext> action) {
+    public static void addTillable(Block input, Predicate<UseOnContext> predicate, Consumer<UseOnContext> action) {
         if (HoeItem.TILLABLES instanceof ImmutableMap) {
             HoeItem.TILLABLES = new HashMap<>(HoeItem.TILLABLES);
         }

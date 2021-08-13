@@ -29,7 +29,7 @@ import dev.architectury.test.events.DebugEvents;
 import dev.architectury.test.gamerule.TestGameRules;
 import dev.architectury.test.networking.TestModNet;
 import dev.architectury.test.particle.TestParticles;
-import dev.architectury.test.recipe.TestRecipes;
+import dev.architectury.test.item.TestBlockInteractions;
 import dev.architectury.test.registry.TestRegistries;
 import dev.architectury.test.registry.client.TestKeybinds;
 import dev.architectury.test.tags.TestTags;
@@ -53,7 +53,7 @@ public class TestMod {
         TestTrades.init();
         TestParticles.initialize();
         TestModNet.initialize();
-        TestRecipes.init();
+        TestBlockInteractions.init();
         if (Platform.getEnvironment() == Env.CLIENT) {
             initializeClient();
         }

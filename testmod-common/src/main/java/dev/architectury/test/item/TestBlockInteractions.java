@@ -1,4 +1,4 @@
-package dev.architectury.test.recipe;
+package dev.architectury.test.item;
 
 import dev.architectury.hooks.item.tool.AxeItemHooks;
 import dev.architectury.hooks.item.tool.HoeItemHooks;
@@ -9,14 +9,14 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Blocks;
 
-public final class TestRecipes {
-    private TestRecipes() {
+public final class TestBlockInteractions {
+    private TestBlockInteractions() {
     }
 
     public static void init() {
-        AxeItemHooks.addStrippingRecipe(Blocks.QUARTZ_PILLAR, Blocks.OAK_LOG);
-        ShovelItemHooks.addFlatteningRecipe(Blocks.IRON_ORE, Blocks.DIAMOND_BLOCK.defaultBlockState());
-        HoeItemHooks.addTillingRecipe(Blocks.COAL_BLOCK, ctx -> {
+        AxeItemHooks.addStrippable(Blocks.QUARTZ_PILLAR, Blocks.OAK_LOG);
+        ShovelItemHooks.addFlattenable(Blocks.IRON_ORE, Blocks.DIAMOND_BLOCK.defaultBlockState());
+        HoeItemHooks.addTillable(Blocks.COAL_BLOCK, ctx -> {
             if (!ctx.getLevel().isNight()) {
                 if (!ctx.getLevel().isClientSide) {
                     Player player = ctx.getPlayer();
