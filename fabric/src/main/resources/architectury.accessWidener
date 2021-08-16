@@ -99,3 +99,9 @@ accessible field net/minecraft/world/level/biome/BiomeSpecialEffects backgroundM
 mutable field net/minecraft/world/level/biome/BiomeSpecialEffects backgroundMusic Ljava/util/Optional;
 accessible method net/minecraft/world/level/storage/LevelResource <init> (Ljava/lang/String;)V
 accessible class net/minecraft/world/level/block/entity/BlockEntityType$BlockEntitySupplier
+accessible field net/minecraft/world/item/AxeItem STRIPPABLES Ljava/util/Map;
+mutable field net/minecraft/world/item/AxeItem STRIPPABLES Ljava/util/Map;
+accessible field net/minecraft/world/item/ShovelItem FLATTENABLES Ljava/util/Map;
+mutable field net/minecraft/world/item/ShovelItem FLATTENABLES Ljava/util/Map;
+accessible field net/minecraft/world/item/HoeItem TILLABLES Ljava/util/Map;
+mutable field net/minecraft/world/item/HoeItem TILLABLES Ljava/util/Map;
