@@ -24,7 +24,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.item.ItemPropertyFunction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 
 /**
  * Registry for registering item properties used for model predicates.
@@ -36,12 +36,27 @@ public final class ItemPropertiesRegistry {
     private ItemPropertiesRegistry() {
     }
     
+    /**
+     * Registers a generic item property function for all items.
+     *
+     * @param propertyId the id of the property
+     * @param function   the function to be registered
+     * @return the function registered
+     */
     public static ItemPropertyFunction registerGeneric(ResourceLocation propertyId, ItemPropertyFunction function) {
         return ItemProperties.registerGeneric(propertyId, function);
     }
     
-    public static ItemPropertyFunction register(Item item, ResourceLocation propertyId, ItemPropertyFunction function) {
-        ItemProperties.register(item, propertyId, function);
+    /**
+     * Registers a generic item property function for a specific item.
+     *
+     * @param item       the item to be registered for
+     * @param propertyId the id of the property
+     * @param function   the function to be registered
+     * @return the function registered
+     */
+    public static ItemPropertyFunction register(ItemLike item, ResourceLocation propertyId, ItemPropertyFunction function) {
+        ItemProperties.register(item.asItem(), propertyId, function);
         return function;
     }
 }
