@@ -20,8 +20,8 @@
 package me.shedaniel.architectury.test.trade;
 
 import me.shedaniel.architectury.registry.trade.*;
-import me.shedaniel.architectury.registry.trade.interal.VillagerTradeOfferContext;
-import me.shedaniel.architectury.registry.trade.interal.WanderingTraderOfferContext;
+import me.shedaniel.architectury.registry.trade.VillagerTradeOfferContext;
+import me.shedaniel.architectury.registry.trade.WanderingTraderOfferContext;
 import net.minecraft.core.Registry;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;

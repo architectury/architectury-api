@@ -1,5 +1,7 @@
-package me.shedaniel.architectury.registry.trade.interal;
+package me.shedaniel.architectury.registry.trade.impl;
 
+import me.shedaniel.architectury.registry.trade.VillagerTradeOfferContext;
+import me.shedaniel.architectury.registry.trade.WanderingTraderOfferContext;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -24,11 +26,11 @@ public class TradeRegistryData {
     /**
      * @param profession The Profession of the villager.
      * @param level      The level the villager needs. Vanilla range is 1 to 5, however mods may extend that upper limit further.
-     * @return           Max offers for the villager. Returning null means no override exists
+     * @return Max offers for the villager. Returning null means no override exists
      */
     @Nullable
     public static Integer getVillagerMaxOffers(VillagerProfession profession, int level) {
-        if(!VILLAGER_MAX_OFFER_OVERRIDES.containsKey(profession)){
+        if (!VILLAGER_MAX_OFFER_OVERRIDES.containsKey(profession)) {
             return null;
         }
         

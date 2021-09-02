@@ -25,7 +25,7 @@ import net.minecraft.world.item.trading.MerchantOffer;
 public class MerchantOfferAccess {
     private final MerchantOffer offer;
     
-    public MerchantOfferAccess(MerchantOffer offer) {
+    MerchantOfferAccess(MerchantOffer offer) {
         this.offer = offer;
     }
     

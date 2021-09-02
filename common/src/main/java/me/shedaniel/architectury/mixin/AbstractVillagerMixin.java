@@ -20,7 +20,7 @@
 package me.shedaniel.architectury.mixin;
 
 import com.google.common.base.MoreObjects;
-import me.shedaniel.architectury.registry.trade.interal.OfferMixingContext;
+import me.shedaniel.architectury.registry.trade.impl.OfferMixingContext;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.npc.AbstractVillager;

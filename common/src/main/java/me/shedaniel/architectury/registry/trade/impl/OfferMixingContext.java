@@ -17,7 +17,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package me.shedaniel.architectury.registry.trade.interal;
+package me.shedaniel.architectury.registry.trade.impl;
 
 import net.minecraft.world.entity.npc.VillagerTrades;
 import org.jetbrains.annotations.ApiStatus;

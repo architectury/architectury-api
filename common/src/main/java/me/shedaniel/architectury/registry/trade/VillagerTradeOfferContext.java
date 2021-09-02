@@ -17,7 +17,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package me.shedaniel.architectury.registry.trade.interal;
+package me.shedaniel.architectury.registry.trade;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.npc.VillagerData;
@@ -28,13 +28,13 @@ import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Random;
 
-@ApiStatus.Internal
 public class VillagerTradeOfferContext extends TradeOfferContext {
     
     private final VillagerProfession profession;
     private final int level;
     private final VillagerType type;
     
+    @ApiStatus.Internal
     public VillagerTradeOfferContext(VillagerData vd, MerchantOffer offer, Entity entity, Random random) {
         super(offer, entity, random);
         this.profession = vd.getProfession();

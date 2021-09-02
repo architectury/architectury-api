@@ -19,8 +19,8 @@
 
 package me.shedaniel.architectury.mixin;
 
-import me.shedaniel.architectury.registry.trade.interal.TradeRegistryData;
-import me.shedaniel.architectury.registry.trade.interal.VillagerTradeOfferContext;
+import me.shedaniel.architectury.registry.trade.impl.TradeRegistryData;
+import me.shedaniel.architectury.registry.trade.VillagerTradeOfferContext;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.npc.VillagerData;
