@@ -19,13 +19,14 @@
 
 package me.shedaniel.architectury.mixin;
 
-import me.shedaniel.architectury.registry.trade.TradeRegistry;
-import me.shedaniel.architectury.registry.trade.VillagerTradeOfferContext;
+import me.shedaniel.architectury.registry.trade.interal.TradeRegistryData;
+import me.shedaniel.architectury.registry.trade.interal.VillagerTradeOfferContext;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.npc.VillagerData;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
@@ -40,27 +41,23 @@ public abstract class VillagerMixin extends AbstractVillagerMixin {
     public abstract VillagerData getVillagerData();
     
     @Override
-    public MerchantOffer handleOfferImpl(MerchantOffer offer) {
+    public MerchantOffer architectury$handleOffer(MerchantOffer offer) {
         VillagerData vd = getVillagerData();
     
         VillagerTradeOfferContext context = new VillagerTradeOfferContext(vd, offer, this, random);
         
-        boolean removeResult = TradeRegistry.invokeVillagerOfferRemoving(context);
+        boolean removeResult = TradeRegistryData.invokeVillagerOfferRemoving(context);
         if(removeResult) {
             return null;
         }
-        
-        TradeRegistry.invokeVillagerOfferModify(context);
+    
+        TradeRegistryData.invokeVillagerOfferModify(context);
         return offer;
     }
     
     @Override
-    public int overrideMaxOffersIfRegistered(int currentMaxOffers) {
-        Integer newMaxOffers = TradeRegistry.getVillagerMaxOffers(getVillagerData().getProfession(), getVillagerData().getLevel());
-        if(newMaxOffers == null) {
-            return currentMaxOffers;
-        }
-        
-        return newMaxOffers;
+    @Nullable
+    public Integer architectury$getMaxOfferOverride() {
+        return TradeRegistryData.getVillagerMaxOffers(getVillagerData().getProfession(), getVillagerData().getLevel());
     }
 }

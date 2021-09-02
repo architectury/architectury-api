@@ -29,19 +29,19 @@ public class MerchantOfferAccess {
         this.offer = offer;
     }
     
-    public ItemStack getPrimary() {
+    public ItemStack getCostA() {
         return offer.getBaseCostA();
     }
     
-    public void setPrimary(ItemStack itemStack) {
+    public void setCostA(ItemStack itemStack) {
         offer.baseCostA = itemStack.copy();
     }
     
-    public ItemStack getSecondary() {
+    public ItemStack getCostB() {
         return offer.getCostB();
     }
     
-    public void setSecondary(ItemStack itemStack) {
+    public void setCostB(ItemStack itemStack) {
         offer.costB = itemStack.copy();
     }
     
@@ -75,5 +75,9 @@ public class MerchantOfferAccess {
     
     public void setXp(int xp) {
         offer.xp = xp;
+    }
+    
+    public MerchantOffer getOffer() {
+        return offer;
     }
 }

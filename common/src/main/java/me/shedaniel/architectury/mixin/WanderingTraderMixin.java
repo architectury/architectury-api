@@ -19,9 +19,8 @@
 
 package me.shedaniel.architectury.mixin;
 
-import me.shedaniel.architectury.registry.trade.TradeOfferContext;
-import me.shedaniel.architectury.registry.trade.TradeRegistry;
-import me.shedaniel.architectury.registry.trade.WanderingTraderOfferContext;
+import me.shedaniel.architectury.registry.trade.interal.TradeRegistryData;
+import me.shedaniel.architectury.registry.trade.interal.WanderingTraderOfferContext;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.npc.WanderingTrader;
@@ -66,29 +65,25 @@ public abstract class WanderingTraderMixin extends AbstractVillagerMixin {
     }
     
     @Override
-    public MerchantOffer handleOfferImpl(MerchantOffer offer) {
+    public MerchantOffer architectury$handleOffer(MerchantOffer offer) {
         return invokeWanderingTraderEvents(offer, false);
     }
     
     @Nullable
     private MerchantOffer invokeWanderingTraderEvents(MerchantOffer offer, boolean rare) {
         WanderingTraderOfferContext context = new WanderingTraderOfferContext(offer, rare, this, random);
-        boolean removeResult = TradeRegistry.invokeWanderingTraderOfferRemoving(context);
+        boolean removeResult = TradeRegistryData.invokeWanderingTraderOfferRemoving(context);
         if (removeResult) {
             return null;
         }
-        
-        TradeRegistry.invokeWanderingTraderOfferModify(context);
+    
+        TradeRegistryData.invokeWanderingTraderOfferModify(context);
         return offer;
     }
     
     @Override
-    public int overrideMaxOffersIfRegistered(int currentMaxOffers) {
-        Integer newMaxOffers = TradeRegistry.getWanderingTraderMaxOffers();
-        if(newMaxOffers == null) {
-            return currentMaxOffers;
-        }
-        
-        return newMaxOffers;
+    @Nullable
+    public Integer architectury$getMaxOfferOverride() {
+        return TradeRegistryData.getWanderingTraderMaxOffers();
     }
 }

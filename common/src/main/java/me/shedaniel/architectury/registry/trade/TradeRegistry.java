@@ -20,6 +20,9 @@
 package me.shedaniel.architectury.registry.trade;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import me.shedaniel.architectury.registry.trade.interal.TradeRegistryData;
+import me.shedaniel.architectury.registry.trade.interal.VillagerTradeOfferContext;
+import me.shedaniel.architectury.registry.trade.interal.WanderingTraderOfferContext;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
 
@@ -28,14 +31,6 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class TradeRegistry {
-    private static final List<Consumer<VillagerTradeOfferContext>> VILLAGER_MODIFY_HANDLERS = new ArrayList<>();
-    private static final List<Predicate<VillagerTradeOfferContext>> VILLAGER_REMOVE_HANDLERS = new ArrayList<>();
-    private static final List<Consumer<WanderingTraderOfferContext>> WANDERING_TRADER_MODIFY_HANDLERS = new ArrayList<>();
-    private static final List<Predicate<WanderingTraderOfferContext>> WANDERING_TRADER_REMOVE_HANDLERS = new ArrayList<>();
-    
-    private static final Map<VillagerProfession, Map<Integer, Integer>> VILLAGER_MAX_OFFER_OVERRIDES = new HashMap<>();
-    private static Integer WANDERING_TRADER_MAX_OFFER_OVERRIDE = null;
-    
     private TradeRegistry() {
     }
     
@@ -74,21 +69,8 @@ public class TradeRegistry {
             throw new IllegalArgumentException("Villager's max offers has to be at least 0!");
         }
         
-        Map<Integer, Integer> map = VILLAGER_MAX_OFFER_OVERRIDES.computeIfAbsent(profession, k -> new HashMap<>());
+        Map<Integer, Integer> map = TradeRegistryData.VILLAGER_MAX_OFFER_OVERRIDES.computeIfAbsent(profession, k -> new HashMap<>());
         map.put(level, maxOffers);
-    }
-    
-    /**
-     * @param profession The Profession of the villager.
-     * @param level      The level the villager needs. Vanilla range is 1 to 5, however mods may extend that upper limit further.
-     * @return           Max offers for the villager. Returning null means no override exists
-     */
-    public static Integer getVillagerMaxOffers(VillagerProfession profession, int level) {
-        if(!VILLAGER_MAX_OFFER_OVERRIDES.containsKey(profession)){
-            return null;
-        }
-        
-        return VILLAGER_MAX_OFFER_OVERRIDES.get(profession).get(level);
     }
     
     
@@ -99,7 +81,7 @@ public class TradeRegistry {
      */
     public static void modifyVillagerOffers(Consumer<VillagerTradeOfferContext> callback) {
         Objects.requireNonNull(callback);
-        VILLAGER_MODIFY_HANDLERS.add(callback);
+        TradeRegistryData.VILLAGER_MODIFY_HANDLERS.add(callback);
     }
     
     /**
@@ -109,7 +91,7 @@ public class TradeRegistry {
      */
     public static void removeVillagerOffers(Predicate<VillagerTradeOfferContext> filter) {
         Objects.requireNonNull(filter);
-        VILLAGER_REMOVE_HANDLERS.add(filter);
+        TradeRegistryData.VILLAGER_REMOVE_HANDLERS.add(filter);
     }
     
     /**
@@ -119,7 +101,7 @@ public class TradeRegistry {
      */
     public static void modifyWanderingTraderOffers(Consumer<WanderingTraderOfferContext> callback) {
         Objects.requireNonNull(callback);
-        WANDERING_TRADER_MODIFY_HANDLERS.add(callback);
+        TradeRegistryData.WANDERING_TRADER_MODIFY_HANDLERS.add(callback);
     }
     
     /**
@@ -129,7 +111,7 @@ public class TradeRegistry {
      */
     public static void removeWanderingTraderOffers(Predicate<WanderingTraderOfferContext> filter) {
         Objects.requireNonNull(filter);
-        WANDERING_TRADER_REMOVE_HANDLERS.add(filter);
+        TradeRegistryData.WANDERING_TRADER_REMOVE_HANDLERS.add(filter);
     }
     
     /**
@@ -152,30 +134,7 @@ public class TradeRegistry {
         if (maxOffers < 0) {
             throw new IllegalArgumentException("Wandering trader's max offers has to be at least 0!");
         }
-        
-        WANDERING_TRADER_MAX_OFFER_OVERRIDE = maxOffers;
-    }
     
-    /**
-     * @return Max offers for the wandering trader. Returning null means no override exists
-     */
-    public static Integer getWanderingTraderMaxOffers() {
-        return WANDERING_TRADER_MAX_OFFER_OVERRIDE;
-    }
-    
-    public static boolean invokeVillagerOfferRemoving(VillagerTradeOfferContext ctx) {
-        return VILLAGER_REMOVE_HANDLERS.stream().anyMatch(predicate -> predicate.test(ctx));
-    }
-    
-    public static void invokeVillagerOfferModify(VillagerTradeOfferContext ctx) {
-        VILLAGER_MODIFY_HANDLERS.forEach(consumer -> consumer.accept(ctx));
-    }
-    
-    public static boolean invokeWanderingTraderOfferRemoving(WanderingTraderOfferContext ctx) {
-        return WANDERING_TRADER_REMOVE_HANDLERS.stream().anyMatch(predicate -> predicate.test(ctx));
-    }
-    
-    public static void invokeWanderingTraderOfferModify(WanderingTraderOfferContext ctx) {
-        WANDERING_TRADER_MODIFY_HANDLERS.forEach(consumer -> consumer.accept(ctx));
+        TradeRegistryData.wanderingTraderMaxOfferOverride = maxOffers;
     }
 }

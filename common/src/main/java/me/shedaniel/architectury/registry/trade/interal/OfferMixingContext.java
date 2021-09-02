@@ -17,13 +17,15 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package me.shedaniel.architectury.registry.trade;
+package me.shedaniel.architectury.registry.trade.interal;
 
 import net.minecraft.world.entity.npc.VillagerTrades;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
+@ApiStatus.Internal
 public class OfferMixingContext {
     private int currentIndex;
     private final int maxOffers;
@@ -54,7 +56,8 @@ public class OfferMixingContext {
     }
     
     private void skip() {
-        iterator.forEachRemaining(($) -> { });
+        iterator.forEachRemaining(($) -> {
+        });
     }
     
     @NotNull

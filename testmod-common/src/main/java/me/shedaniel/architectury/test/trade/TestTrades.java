@@ -20,6 +20,8 @@
 package me.shedaniel.architectury.test.trade;
 
 import me.shedaniel.architectury.registry.trade.*;
+import me.shedaniel.architectury.registry.trade.interal.VillagerTradeOfferContext;
+import me.shedaniel.architectury.registry.trade.interal.WanderingTraderOfferContext;
 import net.minecraft.core.Registry;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
@@ -72,44 +74,44 @@ public class TestTrades {
     };
     
     public static Consumer<VillagerTradeOfferContext> farmerCarrotsNeedSticksToo = ctx -> {
-        if (ctx.getProfession() == VillagerProfession.FARMER && ctx.getOffer().getPrimary().getItem() == Items.CARROT) {
-            ctx.getOffer().setSecondary(new ItemStack(Items.STICK, 32)); // will switch the empty itemstack to 3 sticks
+        if (ctx.getProfession() == VillagerProfession.FARMER && ctx.getOffer().getCostA().getItem() == Items.CARROT) {
+            ctx.getOffer().setCostB(new ItemStack(Items.STICK, 32)); // will switch the empty itemstack to 3 sticks
         }
     };
     
     public static Consumer<VillagerTradeOfferContext> farmerCarrotWithStickIncreasePriceMultiplier = ctx -> {
         if (ctx.getProfession() == VillagerProfession.FARMER
-                && ctx.getOffer().getPrimary().getItem() == Items.CARROT
-                && ctx.getOffer().getSecondary().getItem() == Items.STICK) {
+                && ctx.getOffer().getCostA().getItem() == Items.CARROT
+                && ctx.getOffer().getCostB().getItem() == Items.STICK) {
             ctx.getOffer().setPriceMultiplier(5f);
         }
     };
     
     public static Consumer<VillagerTradeOfferContext> butcherWantsManyEmeralds = ctx -> {
-        if (ctx.getProfession() == VillagerProfession.BUTCHER && ctx.getOffer().getPrimary().getItem() == Items.EMERALD) {
-            ctx.getOffer().getPrimary().setCount(42);
+        if (ctx.getProfession() == VillagerProfession.BUTCHER && ctx.getOffer().getCostA().getItem() == Items.EMERALD) {
+            ctx.getOffer().getCostA().setCount(42);
         }
     };
     
     public static Consumer<VillagerTradeOfferContext> butcherGivesMoreEmeraldForChicken = ctx -> {
-        if (ctx.getProfession() == VillagerProfession.BUTCHER && ctx.getOffer().getPrimary().getItem() == Items.CHICKEN) {
+        if (ctx.getProfession() == VillagerProfession.BUTCHER && ctx.getOffer().getCostA().getItem() == Items.CHICKEN) {
             ctx.getOffer().getResult().setCount(64);
         }
     };
     
-    public static Predicate<VillagerTradeOfferContext> removeCarrotTrade = ctx -> ctx.getProfession() == VillagerProfession.FARMER && ctx.getOffer().getPrimary().getItem() == Items.POTATO;
+    public static Predicate<VillagerTradeOfferContext> removeCarrotTrade = ctx -> ctx.getProfession() == VillagerProfession.FARMER && ctx.getOffer().getCostA().getItem() == Items.POTATO;
     
     public static Predicate<VillagerTradeOfferContext> removeFarmersLevelTwoTrades = ctx -> ctx.getProfession() == VillagerProfession.FARMER && ctx.getLevel() == 2;
     
     public static Consumer<WanderingTraderOfferContext> wanderingTraderHighRarePrice = ctx -> {
         if(ctx.isRare()) {
-            ctx.getOffer().getPrimary().setCount(37);
+            ctx.getOffer().getCostA().setCount(37);
         }
     };
     
     public static Consumer<WanderingTraderOfferContext> wanderingTraderLovesFlint = ctx -> {
-        int count = ctx.getOffer().getPrimary().getCount();
-        ctx.getOffer().setPrimary(new ItemStack(Items.FLINT, count));
+        int count = ctx.getOffer().getCostA().getCount();
+        ctx.getOffer().setCostA(new ItemStack(Items.FLINT, count));
     };
     
     public static Predicate<WanderingTraderOfferContext> wanderingTraderRemoveDyes = ctx -> ctx.getOffer().getResult().getItem().toString().matches("^.*dye$");
