@@ -102,7 +102,6 @@ accessible field net/minecraft/world/item/ShovelItem FLATTENABLES Ljava/util/Map
 mutable field net/minecraft/world/item/ShovelItem FLATTENABLES Ljava/util/Map;
 accessible field net/minecraft/world/item/HoeItem TILLABLES Ljava/util/Map;
 mutable field net/minecraft/world/item/HoeItem TILLABLES Ljava/util/Map;
-
 accessible field net/minecraft/world/item/trading/MerchantOffer baseCostA Lnet/minecraft/world/item/ItemStack;
 mutable field net/minecraft/world/item/trading/MerchantOffer baseCostA Lnet/minecraft/world/item/ItemStack;
 accessible field net/minecraft/world/item/trading/MerchantOffer costB Lnet/minecraft/world/item/ItemStack;
@@ -113,3 +112,5 @@ accessible field net/minecraft/world/item/trading/MerchantOffer maxUses I
 mutable field net/minecraft/world/item/trading/MerchantOffer maxUses I
 accessible field net/minecraft/world/item/trading/MerchantOffer priceMultiplier F
 accessible field net/minecraft/world/item/trading/MerchantOffer xp I
+accessible method net/minecraft/client/renderer/item/ItemProperties registerGeneric (Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/client/renderer/item/ItemPropertyFunction;)Lnet/minecraft/client/renderer/item/ItemPropertyFunction;
+accessible method net/minecraft/client/renderer/item/ItemProperties register (Lnet/minecraft/world/item/Item;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/client/renderer/item/ItemPropertyFunction;)V
