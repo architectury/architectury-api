@@ -21,6 +21,7 @@ package me.shedaniel.architectury.mixin;
 
 import com.google.common.base.MoreObjects;
 import me.shedaniel.architectury.registry.trade.impl.OfferMixingContext;
+import me.shedaniel.architectury.registry.trade.TradeRegistry;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.npc.AbstractVillager;
@@ -38,7 +39,18 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import java.util.Iterator;
 import java.util.Set;
 
-
+/**
+ * {@link AbstractVillager#addOffersFromItemListings(MerchantOffers, VillagerTrades.ItemListing[], int)} creates
+ * a {@link Set} with x random integer from {@link VillagerTrades.ItemListing} array indexes to iterate through.
+ * <p>
+ * If we use {@link TradeRegistry} to remove one offer from a villager
+ * we will end up with just x-1 offers but we still want to have x offers (as long there are enough) for a villager if
+ * there are still {@link VillagerTrades.ItemListing} left.
+ * <p>
+ * To solve this we override the iterator with our own iterator which iterate through all indexes.
+ * As soon {@link OfferMixingContext#maxOffers} offers are created we skip the remaining elements in the iterator {@link OfferMixingContext#skipIteratorIfMaxOffersReached()}.
+ *
+ */
 @Mixin(AbstractVillager.class)
 public abstract class AbstractVillagerMixin extends Entity {
     public AbstractVillagerMixin(EntityType<?> entityType, Level level) {
@@ -48,6 +60,7 @@ public abstract class AbstractVillagerMixin extends Entity {
     @Unique
     private final ThreadLocal<OfferMixingContext> offerContext = new ThreadLocal<>();
     
+ 
     @Redirect(
             method = "addOffersFromItemListings(Lnet/minecraft/world/item/trading/MerchantOffers;[Lnet/minecraft/world/entity/npc/VillagerTrades$ItemListing;I)V",
             at = @At(value = "INVOKE", target = "Ljava/util/Set;iterator()Ljava/util/Iterator;")
