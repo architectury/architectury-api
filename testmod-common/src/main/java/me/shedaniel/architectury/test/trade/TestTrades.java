@@ -19,7 +19,8 @@
 
 package me.shedaniel.architectury.test.trade;
 
-import me.shedaniel.architectury.registry.trade.*;
+import me.shedaniel.architectury.registry.trade.SimpleTrade;
+import me.shedaniel.architectury.registry.trade.TradeRegistry;
 import me.shedaniel.architectury.registry.trade.VillagerTradeOfferContext;
 import me.shedaniel.architectury.registry.trade.WanderingTraderOfferContext;
 import net.minecraft.core.Registry;
@@ -104,7 +105,7 @@ public class TestTrades {
     public static Predicate<VillagerTradeOfferContext> removeFarmersLevelTwoTrades = ctx -> ctx.getProfession() == VillagerProfession.FARMER && ctx.getLevel() == 2;
     
     public static Consumer<WanderingTraderOfferContext> wanderingTraderHighRarePrice = ctx -> {
-        if(ctx.isRare()) {
+        if (ctx.isRare()) {
             ctx.getOffer().getCostA().setCount(37);
         }
     };

@@ -19,8 +19,8 @@
 
 package me.shedaniel.architectury.mixin;
 
-import me.shedaniel.architectury.registry.trade.impl.TradeRegistryData;
 import me.shedaniel.architectury.registry.trade.WanderingTraderOfferContext;
+import me.shedaniel.architectury.registry.trade.impl.TradeRegistryData;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.npc.WanderingTrader;
@@ -60,7 +60,7 @@ public abstract class WanderingTraderMixin extends AbstractVillagerMixin {
         if (offer == null) {
             return null;
         }
-    
+        
         return invokeWanderingTraderEvents(offer, true);
     }
     
@@ -76,7 +76,7 @@ public abstract class WanderingTraderMixin extends AbstractVillagerMixin {
         if (removeResult) {
             return null;
         }
-    
+        
         TradeRegistryData.invokeWanderingTraderOfferModify(context);
         return offer;
     }

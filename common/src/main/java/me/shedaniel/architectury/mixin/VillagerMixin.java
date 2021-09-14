@@ -19,8 +19,8 @@
 
 package me.shedaniel.architectury.mixin;
 
-import me.shedaniel.architectury.registry.trade.impl.TradeRegistryData;
 import me.shedaniel.architectury.registry.trade.VillagerTradeOfferContext;
+import me.shedaniel.architectury.registry.trade.impl.TradeRegistryData;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.npc.VillagerData;
@@ -43,14 +43,14 @@ public abstract class VillagerMixin extends AbstractVillagerMixin {
     @Override
     public MerchantOffer architectury$handleOffer(MerchantOffer offer) {
         VillagerData vd = getVillagerData();
-    
+        
         VillagerTradeOfferContext context = new VillagerTradeOfferContext(vd, offer, this, random);
         
         boolean removeResult = TradeRegistryData.invokeVillagerOfferRemoving(context);
-        if(removeResult) {
+        if (removeResult) {
             return null;
         }
-    
+        
         TradeRegistryData.invokeVillagerOfferModify(context);
         return offer;
     }

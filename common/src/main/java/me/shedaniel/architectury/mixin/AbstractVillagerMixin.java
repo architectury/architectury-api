@@ -20,8 +20,8 @@
 package me.shedaniel.architectury.mixin;
 
 import com.google.common.base.MoreObjects;
-import me.shedaniel.architectury.registry.trade.impl.OfferMixingContext;
 import me.shedaniel.architectury.registry.trade.TradeRegistry;
+import me.shedaniel.architectury.registry.trade.impl.OfferMixingContext;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.npc.AbstractVillager;
@@ -49,7 +49,6 @@ import java.util.Set;
  * <p>
  * To solve this we override the iterator with our own iterator which iterate through all indexes.
  * As soon {@link OfferMixingContext#maxOffers} offers are created we skip the remaining elements in the iterator {@link OfferMixingContext#skipIteratorIfMaxOffersReached()}.
- *
  */
 @Mixin(AbstractVillager.class)
 public abstract class AbstractVillagerMixin extends Entity {
@@ -60,7 +59,7 @@ public abstract class AbstractVillagerMixin extends Entity {
     @Unique
     private final ThreadLocal<OfferMixingContext> offerContext = new ThreadLocal<>();
     
- 
+    
     @Redirect(
             method = "addOffersFromItemListings(Lnet/minecraft/world/item/trading/MerchantOffers;[Lnet/minecraft/world/entity/npc/VillagerTrades$ItemListing;I)V",
             at = @At(value = "INVOKE", target = "Ljava/util/Set;iterator()Ljava/util/Iterator;")
