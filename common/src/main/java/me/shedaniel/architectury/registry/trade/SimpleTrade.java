@@ -50,7 +50,7 @@ public class SimpleTrade implements VillagerTrades.ItemListing {
      * You can take a look at all the values the vanilla game uses right here {@link VillagerTrades#TRADES}.
      *
      * @param primaryPrice     The first price a player has to pay to get the 'sale' stack.
-     * @param secondaryPrice   A optional, secondary price to pay as well as the primary one. If not needed just use {@link ItemStack#EMPTY}.
+     * @param secondaryPrice   An optional, secondary price to pay as well as the primary one. If not needed just use {@link ItemStack#EMPTY}.
      * @param sale             The ItemStack which a player can purchase in exchange for the two prices.
      * @param maxTrades        The amount of trades one villager or wanderer can do. When the amount is surpassed, the trade can't be purchased anymore.
      * @param experiencePoints How much experience points does the player get, when trading. Vanilla uses between 2 and 30 for this.
