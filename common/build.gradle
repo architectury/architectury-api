@@ -1,5 +1,5 @@
 loom {
-    accessWidener = file("src/main/resources/architectury.accessWidener")
+    accessWidenerPath = file("src/main/resources/architectury.accessWidener")
 }
 
 dependencies {
@@ -14,21 +14,23 @@ architectury {
 
 afterEvaluate {
     remapJar {
-        remapAccessWidener.set false
+        remapAccessWidener = false
     }
+}
+
+configurations {
+    dev
+}
+
+artifacts {
+    dev(jar)
 }
 
 publishing {
     publications {
         mavenCommon(MavenPublication) {
             artifactId = rootProject.archivesBaseName
-            artifact(remapJar)
-            afterEvaluate {
-                artifact(remapSourcesJar.output) {
-                    builtBy remapSourcesJar
-                    classifier "sources"
-                }
-            }
+            from components.java
         }
     }
 

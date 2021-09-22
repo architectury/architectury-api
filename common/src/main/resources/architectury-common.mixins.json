@@ -7,7 +7,6 @@
   ],
   "mixins": [
     "FluidTagsAccessor",
-    "MixinFallingBlockEntity",
     "MixinLightningBolt"
   ],
   "injectors": {

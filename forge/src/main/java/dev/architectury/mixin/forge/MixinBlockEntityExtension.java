@@ -19,24 +19,26 @@
 
 package dev.architectury.mixin.forge;
 
-/*import dev.architectury.extensions.BlockEntityExtension;
+import dev.architectury.extensions.BlockEntityExtension;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.extensions.IForgeTileEntity;
+import net.minecraftforge.common.extensions.IForgeBlockEntity;
 import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(BlockEntityExtension.class)
-public interface MixinBlockEntityExtension extends IForgeTileEntity {
+public interface MixinBlockEntityExtension extends IForgeBlockEntity {
     @Override
-    default void handleUpdateTag(BlockState state, CompoundTag tag) {
-        ((BlockEntityExtension) this).loadClientData(state, tag);
+    default void handleUpdateTag(CompoundTag tag) {
+        var entity = (BlockEntity) this;
+        if (entity.hasLevel()) {
+            ((BlockEntityExtension) this).loadClientData(entity.getBlockState(), tag);
+        }
     }
     
     @Override
     default void onDataPacket(Connection connection, ClientboundBlockEntityDataPacket packet) {
-        ((BlockEntityExtension) this).loadClientData(((BlockEntity) this).getBlockState(), packet.getTag());
+        handleUpdateTag(packet.getTag());
     }
-}*/
+}

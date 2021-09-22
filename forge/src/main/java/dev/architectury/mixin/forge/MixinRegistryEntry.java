@@ -19,11 +19,9 @@
 
 package dev.architectury.mixin.forge;
 
-/*
 import dev.architectury.core.RegistryEntry;
 import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(RegistryEntry.class)
 public class MixinRegistryEntry<T> {
 }
-*/

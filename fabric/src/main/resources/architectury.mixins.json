@@ -33,6 +33,7 @@
     "MixinDedicatedServer",
     "MixinEntity",
     "MixinExplosion",
+    "MixinFallingBlockEntity",
     "MixinFarmBlock",
     "MixinFurnaceResultSlot",
     "MixinInventory",

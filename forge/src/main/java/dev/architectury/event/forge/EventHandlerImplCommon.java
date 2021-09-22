@@ -410,10 +410,9 @@ public class EventHandlerImplCommon {
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(ChunkDataEvent.Load event) {
         LevelAccessor level = event.getChunk().getWorldForge();
-        // TODO Fix when mixin is back
-//        if (!(level instanceof ServerLevel)) {
-//            level = ((WorldEventAttachment) event).architectury$getAttachedLevel();
-//        }
+        if (!(level instanceof ServerLevel)) {
+            level = ((WorldEventAttachment) event).architectury$getAttachedLevel();
+        }
         ChunkEvent.LOAD_DATA.invoker().load(event.getChunk(), level instanceof ServerLevel ? (ServerLevel) level : null, event.getData());
     }
     

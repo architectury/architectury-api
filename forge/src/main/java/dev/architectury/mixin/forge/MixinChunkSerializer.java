@@ -19,7 +19,6 @@
 
 package dev.architectury.mixin.forge;
 
-/*
 import dev.architectury.event.forge.EventHandlerImplCommon;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -64,4 +63,3 @@ public class MixinChunkSerializer {
         return event;
     }
 }
-*/

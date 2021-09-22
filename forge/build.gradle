@@ -4,7 +4,10 @@ plugins {
 }
 
 loom {
-//    mixinConfigs = ["architectury.mixins.json", "architectury-common.mixins.json"]
+    forge {
+        mixinConfig "architectury.mixins.json"
+        mixinConfig "architectury-common.mixins.json"
+    }
 }
 
 configurations {
@@ -24,10 +27,10 @@ architectury {
 dependencies {
     forge "net.minecraftforge:forge:${rootProject.architectury.minecraft}-${rootProject.forge_version}"
 
-    implementation(project(path: ":common")) {
+    implementation(project(path: ":common", configuration: "dev")) {
         transitive = false
     }
-    developmentForge(project(path: ":common")) {
+    developmentForge(project(path: ":common", configuration: "dev")) {
         transitive = false
     }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) {

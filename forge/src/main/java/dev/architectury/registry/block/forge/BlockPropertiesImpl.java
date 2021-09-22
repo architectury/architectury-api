@@ -66,9 +66,8 @@ public class BlockPropertiesImpl {
         }
         
         @Override
+        @Deprecated
         public BlockProperties tool(ToolType type, int level) {
-            harvestTool(net.minecraftforge.common.ToolType.get(type.forgeName));
-            harvestLevel(level);
             return this;
         }
     }

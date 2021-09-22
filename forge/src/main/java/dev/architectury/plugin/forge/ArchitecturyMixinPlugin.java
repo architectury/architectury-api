@@ -19,7 +19,6 @@
 
 package dev.architectury.plugin.forge;
 
-/*
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
@@ -62,7 +61,7 @@ public class ArchitecturyMixinPlugin implements IMixinConfigPlugin {
     public void preApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
         // Inject our own sugar
         switch (mixinClassName) {
-            case "me.shedaniel.architectury.mixin.forge.MixinRegistryEntry":
+            case "dev.architectury.mixin.forge.MixinRegistryEntry":
                 targetClass.superName = "net/minecraftforge/registries/ForgeRegistryEntry";
                 for (MethodNode method : targetClass.methods) {
                     if (Objects.equals(method.name, "<init>")) {
@@ -87,4 +86,3 @@ public class ArchitecturyMixinPlugin implements IMixinConfigPlugin {
         
     }
 }
-*/

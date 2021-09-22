@@ -19,7 +19,6 @@
 
 package dev.architectury.mixin.forge;
 
-/*
 import dev.architectury.extensions.ItemExtension;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -42,4 +41,3 @@ public interface MixinItemExtension extends IForgeItem {
         return ((ItemExtension) this).getCustomEquipmentSlot(stack);
     }
 }
-*/

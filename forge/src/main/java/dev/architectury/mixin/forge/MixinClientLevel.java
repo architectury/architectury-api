@@ -19,7 +19,6 @@
 
 package dev.architectury.mixin.forge;
 
-/*
 import dev.architectury.event.events.client.ClientTickEvent;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.resources.ResourceKey;
@@ -44,7 +43,7 @@ public abstract class MixinClientLevel extends Level {
     private void tickEntities(CallbackInfo ci) {
         ProfilerFiller profiler = getProfiler();
         profiler.push("architecturyClientLevelPreTick");
-        ClientTickEvent.CLIENT_WORLD_PRE.invoker().tick((ClientLevel) (Object) this);
+        ClientTickEvent.CLIENT_LEVEL_PRE.invoker().tick((ClientLevel) (Object) this);
         profiler.pop();
     }
     
@@ -52,8 +51,7 @@ public abstract class MixinClientLevel extends Level {
     private void tickEntitiesPost(CallbackInfo ci) {
         ProfilerFiller profiler = getProfiler();
         profiler.push("architecturyClientLevelPostTick");
-        ClientTickEvent.CLIENT_WORLD_POST.invoker().tick((ClientLevel) (Object) this);
+        ClientTickEvent.CLIENT_LEVEL_POST.invoker().tick((ClientLevel) (Object) this);
         profiler.pop();
     }
 }
-*/

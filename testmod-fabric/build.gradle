@@ -3,6 +3,10 @@ plugins {
     id "com.matthewprenger.cursegradle"
 }
 
+loom {
+    mixin { useLegacyMixinAp = true }
+}
+
 architectury {
     platformSetupLoomIde()
     fabric()
@@ -13,16 +17,16 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
 
     implementation project(path: ":fabric", configuration: "dev")
-    implementation(project(path: ":common")) {
+    implementation(project(path: ":common", configuration: "dev")) {
         transitive = false
     }
-    developmentFabric(project(path: ":common")) {
+    developmentFabric(project(path: ":common", configuration: "dev")) {
         transitive = false
     }
-    implementation(project(path: ":testmod-common")) {
+    implementation(project(path: ":testmod-common", configuration: "dev")) {
         transitive = false
     }
-    developmentFabric(project(path: ":testmod-common")) {
+    developmentFabric(project(path: ":testmod-common", configuration: "dev")) {
         transitive = false
     }
 }

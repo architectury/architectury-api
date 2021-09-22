@@ -19,7 +19,6 @@
 
 package dev.architectury.mixin.forge;
 
-/*
 import dev.architectury.extensions.BlockEntityExtension;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -51,4 +50,3 @@ public abstract class MixinBlockEntity {
         }
     }
 }
-*/

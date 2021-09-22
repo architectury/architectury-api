@@ -8,3 +8,11 @@ dependencies {
 architectury {
     common()
 }
+
+configurations {
+    dev
+}
+
+artifacts {
+    dev(jar)
+}

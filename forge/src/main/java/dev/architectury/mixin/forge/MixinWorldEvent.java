@@ -19,7 +19,6 @@
 
 package dev.architectury.mixin.forge;
 
-/*
 import dev.architectury.event.forge.EventHandlerImplCommon;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraftforge.event.world.WorldEvent;
@@ -43,4 +42,3 @@ public class MixinWorldEvent implements EventHandlerImplCommon.WorldEventAttachm
         this.level = new WeakReference<>(level);
     }
 }
-*/

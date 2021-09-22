@@ -17,7 +17,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.mixin;
+package dev.architectury.mixin.forge;
 
 import dev.architectury.event.events.common.BlockEvent;
 import net.minecraft.core.BlockPos;
@@ -46,7 +46,7 @@ public abstract class MixinFallingBlockEntity extends Entity {
     @Inject(method = "tick", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/level/block/Fallable;onLand(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/entity/item/FallingBlockEntity;)V"),
             locals = LocalCapture.CAPTURE_FAILHARD)
-    public void handleLand(CallbackInfo ci, Block block, BlockPos blockPos2, boolean bl, boolean bl2, BlockState blockState) {
+    public void handleLand(CallbackInfo ci, Block block, BlockPos blockPos2, boolean bl, boolean bl2, double d, BlockState blockState) {
         BlockEvent.FALLING_LAND.invoker().onLand(this.level, blockPos2, this.blockState, blockState, (FallingBlockEntity) (Object) this);
     }
 }
