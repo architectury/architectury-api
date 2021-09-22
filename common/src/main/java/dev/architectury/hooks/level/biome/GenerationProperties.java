@@ -36,8 +36,6 @@ public interface GenerationProperties {
     
     List<List<Supplier<ConfiguredFeature<?, ?>>>> getFeatures();
     
-    List<Supplier<ConfiguredStructureFeature<?, ?>>> getStructureStarts();
-    
     interface Mutable extends GenerationProperties {
         Mutable setSurfaceBuilder(ConfiguredSurfaceBuilder<?> builder);
         

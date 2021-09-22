@@ -7,7 +7,7 @@ on:
       - '**.properties'
       - '**/src/**'
     branches:
-      - "1.17"
+      - "1.18"
   workflow_dispatch:
     inputs:
       norelease:

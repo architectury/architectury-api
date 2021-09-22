@@ -32,10 +32,6 @@ public interface BiomeProperties {
     
     BiomeCategory getCategory();
     
-    float getDepth();
-    
-    float getScale();
-    
     interface Mutable extends BiomeProperties {
         @Override
         ClimateProperties.Mutable getClimateProperties();
@@ -50,9 +46,5 @@ public interface BiomeProperties {
         SpawnProperties.Mutable getSpawnProperties();
         
         Mutable setCategory(BiomeCategory category);
-        
-        Mutable setDepth(float depth);
-        
-        Mutable setScale(float scale);
     }
 }

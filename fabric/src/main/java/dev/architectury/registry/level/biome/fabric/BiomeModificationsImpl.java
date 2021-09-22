@@ -129,20 +129,6 @@ public class BiomeModificationsImpl {
                 context.setCategory(category);
                 return this;
             }
-            
-            @Override
-            @NotNull
-            public BiomeProperties.Mutable setDepth(float depth) {
-                context.setDepth(depth);
-                return this;
-            }
-            
-            @Override
-            @NotNull
-            public BiomeProperties.Mutable setScale(float scale) {
-                context.setScale(scale);
-                return this;
-            }
         };
     }
     

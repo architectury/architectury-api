@@ -19,7 +19,6 @@
 
 package dev.architectury.hooks.block.fabric;
 
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -42,15 +41,11 @@ public class BlockEntityHooksImpl {
      * limitations under the License.
      */
     public static void syncData(BlockEntity entity) {
-        if (entity instanceof BlockEntityClientSerializable) {
-            ((BlockEntityClientSerializable) entity).sync();
+        var world = Objects.requireNonNull(entity.getLevel());
+        if (!(world instanceof ServerLevel)) {
+            throw new IllegalStateException("Cannot call sync() on the logical client! Did you check world.isClient first?");
         } else {
-            var world = Objects.requireNonNull(entity.getLevel());
-            if (!(world instanceof ServerLevel)) {
-                throw new IllegalStateException("Cannot call sync() on the logical client! Did you check world.isClient first?");
-            } else {
-                ((ServerLevel) world).getChunkSource().blockChanged(entity.getBlockPos());
-            }
+            ((ServerLevel) world).getChunkSource().blockChanged(entity.getBlockPos());
         }
     }
 }

@@ -95,16 +95,6 @@ public final class BiomeHooks {
         public BiomeCategory getCategory() {
             return biome.biomeCategory;
         }
-        
-        @Override
-        public float getDepth() {
-            return biome.depth;
-        }
-        
-        @Override
-        public float getScale() {
-            return biome.scale;
-        }
     }
     
     public static class MutableBiomeWrapped extends BiomeWrapped implements BiomeProperties.Mutable {
@@ -153,18 +143,6 @@ public final class BiomeHooks {
         @Override
         public Mutable setCategory(BiomeCategory category) {
             biome.biomeCategory = category;
-            return this;
-        }
-        
-        @Override
-        public Mutable setDepth(float depth) {
-            biome.depth = depth;
-            return this;
-        }
-        
-        @Override
-        public Mutable setScale(float scale) {
-            biome.scale = scale;
             return this;
         }
     }
@@ -393,11 +371,6 @@ public final class BiomeHooks {
         @Override
         public List<List<Supplier<ConfiguredFeature<?, ?>>>> getFeatures() {
             return settings.features();
-        }
-        
-        @Override
-        public List<Supplier<ConfiguredStructureFeature<?, ?>>> getStructureStarts() {
-            return (List<Supplier<ConfiguredStructureFeature<?, ?>>>) settings.structures();
         }
     }
     

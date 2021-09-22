@@ -6,7 +6,7 @@ dependencies {
 }
 
 architectury {
-    common()
+    common(rootProject.forgeEnabled.toBoolean())
 }
 
 configurations {
