@@ -16,10 +16,11 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-
-package me.shedaniel.architectury.mixin.fabric;
+package me.shedaniel.architectury.mixin.fabric.client;
 
 import me.shedaniel.architectury.event.events.EntityEvent;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -29,8 +30,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(value = {Player.class})
-public class PlayerAttackInvoker {
+@Mixin(value = {LocalPlayer.class, RemotePlayer.class})
+public class ClientPlayerAttackInvoker {
     @Inject(method = "hurt", at = @At("HEAD"), cancellable = true)
     private void hurt(DamageSource damageSource, float f, CallbackInfoReturnable<Boolean> cir) {
         if (EntityEvent.LIVING_ATTACK.invoker().attack((LivingEntity) (Object) this, damageSource, f) == InteractionResult.FAIL && (Object) this instanceof Player) {
