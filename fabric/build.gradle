@@ -7,18 +7,22 @@ loom {
     accessWidenerPath = file("src/main/resources/architectury.accessWidener")
 }
 
+architectury {
+    platformSetupLoomIde()
+    fabric()
+}
+
 configurations {
-    shadowCommon
+    common
+    shadowCommon // Don't use shadow from the shadow plugin because we don't want IDEA to index this.
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentFabric.extendsFrom common
     dev
 }
 
 artifacts {
     dev(jar)
-}
-
-architectury {
-    platformSetupLoomIde()
-    fabric()
 }
 
 repositories {
@@ -30,15 +34,8 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
     modCompileOnly("com.terraformersmc:modmenu:${rootProject.mod_menu_version}") { transitive false }
 
-    implementation(project(path: ":common", configuration: "dev")) {
-        transitive = false
-    }
-    developmentFabric(project(path: ":common", configuration: "dev")) {
-        transitive = false
-    }
-    shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) {
-        transitive = false
-    }
+    common(project(path: ":common", configuration: "dev")) { transitive false }
+    shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 }
 
 processResources {
@@ -50,13 +47,17 @@ processResources {
 
 shadowJar {
     configurations = [project.configurations.shadowCommon]
-    classifier "shadow"
+    classifier "dev-shadow"
 }
 
 remapJar {
-    dependsOn(shadowJar)
-    input.set(shadowJar.archiveFile)
-    archiveClassifier = "fabric"
+    input.set shadowJar.archiveFile
+    dependsOn shadowJar
+    classifier null
+}
+
+jar {
+    classifier "dev"
 }
 
 sourcesJar {
@@ -71,17 +72,17 @@ sourcesJar {
     }
 }
 
+components.java {
+    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
+        skip()
+    }
+}
+
 publishing {
     publications {
         mavenFabric(MavenPublication) {
             artifactId = rootProject.archivesBaseName + "-fabric"
-            artifact(remapJar) { classifier null }
-            afterEvaluate {
-                artifact(remapSourcesJar.output) {
-                    builtBy remapSourcesJar
-                    classifier "sources"
-                }
-            }
+            from components.java
         }
     }
 

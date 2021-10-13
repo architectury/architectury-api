@@ -12,21 +12,18 @@ architectury {
     fabric()
 }
 
+configurations {
+    common
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentFabric.extendsFrom common
+}
+
 dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
 
     implementation project(path: ":fabric", configuration: "dev")
-    implementation(project(path: ":common", configuration: "dev")) {
-        transitive = false
-    }
-    developmentFabric(project(path: ":common", configuration: "dev")) {
-        transitive = false
-    }
-    implementation(project(path: ":testmod-common", configuration: "dev")) {
-        transitive = false
-    }
-    developmentFabric(project(path: ":testmod-common", configuration: "dev")) {
-        transitive = false
-    }
+    common(project(path: ":common", configuration: "dev")) { transitive = false }
+    common(project(path: ":testmod-common", configuration: "dev")) { transitive false }
 }
