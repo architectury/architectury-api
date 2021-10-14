@@ -29,8 +29,6 @@ import net.minecraft.world.level.biome.BiomeSpecialEffects.GrassColorModifier;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
-import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
-import net.minecraft.world.level.levelgen.surfacebuilders.ConfiguredSurfaceBuilder;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -356,11 +354,6 @@ public final class BiomeHooks {
         
         public GenerationSettingsWrapped(BiomeGenerationSettings settings) {
             this.settings = settings;
-        }
-        
-        @Override
-        public Optional<Supplier<ConfiguredSurfaceBuilder<?>>> getSurfaceBuilder() {
-            return Optional.ofNullable(settings.getSurfaceBuilder());
         }
         
         @Override

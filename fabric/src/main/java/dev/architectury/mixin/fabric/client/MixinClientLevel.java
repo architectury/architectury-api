@@ -39,7 +39,7 @@ import java.util.function.Supplier;
 @Mixin(ClientLevel.class)
 public class MixinClientLevel {
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void construct(ClientPacketListener clientPacketListener, ClientLevel.ClientLevelData clientLevelData, ResourceKey<Level> resourceKey, DimensionType dimensionType, int i, Supplier<ProfilerFiller> supplier, LevelRenderer levelRenderer, boolean bl, long l, CallbackInfo ci) {
+    private void construct(ClientPacketListener clientPacketListener, ClientLevel.ClientLevelData clientLevelData, ResourceKey<Level> resourceKey, DimensionType dimensionType, int i, int j, Supplier<ProfilerFiller> supplier, LevelRenderer levelRenderer, boolean bl, long l, CallbackInfo ci) {
         ClientLifecycleEvent.CLIENT_LEVEL_LOAD.invoker().act((ClientLevel) (Object) this);
     }
     

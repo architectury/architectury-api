@@ -43,7 +43,6 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
-import net.minecraft.world.level.levelgen.surfacebuilders.ConfiguredSurfaceBuilder;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -138,12 +137,6 @@ public class BiomeModificationsImpl {
         public MutableGenerationProperties(Biome biome, GenerationSettingsContext context) {
             super(biome);
             this.context = context;
-        }
-        
-        @Override
-        public Mutable setSurfaceBuilder(ConfiguredSurfaceBuilder<?> builder) {
-            this.context.setBuiltInSurfaceBuilder(builder);
-            return this;
         }
         
         @Override

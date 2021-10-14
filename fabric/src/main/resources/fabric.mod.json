@@ -32,7 +32,7 @@
   "accessWidener": "architectury.accessWidener",
   "icon": "icon.png",
   "depends": {
-    "minecraft": "~1.17.1"
+    "minecraft": "~1.18-"
   },
   "custom": {
     "modmenu:api": true

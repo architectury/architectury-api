@@ -107,9 +107,7 @@ curseforge {
             releaseType = "$rootProject.cf_type"
             changelogType = "html"
             changelog = releaseChangelog()
-            addGameVersion "1.17"
-            addGameVersion "1.17.1"
-            addGameVersion "1.17-Snapshot"
+            addGameVersion "1.18-Snapshot"
             addGameVersion "Java 16"
             addGameVersion "Fabric"
             relations {

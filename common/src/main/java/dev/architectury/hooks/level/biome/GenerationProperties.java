@@ -23,22 +23,16 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
-import net.minecraft.world.level.levelgen.surfacebuilders.ConfiguredSurfaceBuilder;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 public interface GenerationProperties {
-    Optional<Supplier<ConfiguredSurfaceBuilder<?>>> getSurfaceBuilder();
-    
     List<Supplier<ConfiguredWorldCarver<?>>> getCarvers(GenerationStep.Carving carving);
     
     List<List<Supplier<ConfiguredFeature<?, ?>>>> getFeatures();
     
     interface Mutable extends GenerationProperties {
-        Mutable setSurfaceBuilder(ConfiguredSurfaceBuilder<?> builder);
-        
         Mutable addFeature(GenerationStep.Decoration decoration, ConfiguredFeature<?, ?> feature);
         
         Mutable addCarver(GenerationStep.Carving carving, ConfiguredWorldCarver<?> feature);
