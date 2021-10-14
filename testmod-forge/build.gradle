@@ -20,20 +20,17 @@ architectury {
     forge()
 }
 
+configurations {
+    common
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentForge.extendsFrom common
+}
+
 dependencies {
     forge "net.minecraftforge:forge:${gradle.rootProject.architectury.minecraft}-${rootProject.forge_version}"
 
     implementation project(path: ":forge", configuration: "dev")
-    implementation(project(path: ":common", configuration: "dev")) {
-        transitive = false
-    }
-    developmentForge(project(path: ":common", configuration: "dev")) {
-        transitive = false
-    }
-    implementation(project(path: ":testmod-common", configuration: "dev")) {
-        transitive = false
-    }
-    developmentForge(project(path: ":testmod-common", configuration: "dev")) {
-        transitive = false
-    }
+    common(project(path: ":common", configuration: "dev")) { transitive false }
+    common(project(path: ":testmod-common", configuration: "dev")) { transitive false }
 }
