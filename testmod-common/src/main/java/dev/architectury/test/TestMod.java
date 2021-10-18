@@ -27,9 +27,9 @@ import dev.architectury.test.debug.client.ClientOverlayMessageSink;
 import dev.architectury.test.entity.TestEntity;
 import dev.architectury.test.events.DebugEvents;
 import dev.architectury.test.gamerule.TestGameRules;
+import dev.architectury.test.item.TestBlockInteractions;
 import dev.architectury.test.networking.TestModNet;
 import dev.architectury.test.particle.TestParticles;
-import dev.architectury.test.item.TestBlockInteractions;
 import dev.architectury.test.registry.TestRegistries;
 import dev.architectury.test.registry.client.TestKeybinds;
 import dev.architectury.test.tags.TestTags;
@@ -62,6 +62,7 @@ public class TestMod {
     @Environment(EnvType.CLIENT)
     public static void initializeClient() {
         TestKeybinds.initialize();
+        TestModNet.initializeClient();
         EntityRendererRegistry.register(TestEntity.TYPE, context ->
                 new MinecartRenderer<>(context, ModelLayers.MINECART));
     }

@@ -53,14 +53,37 @@ public class SplitPacketTransformer implements PacketTransformer {
             this.side = side;
             this.playerUUID = playerUUID;
         }
+        
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof PartKey)) return false;
+            PartKey key = (PartKey) o;
+            return side == key.side && Objects.equals(playerUUID, key.playerUUID);
+        }
+        
+        @Override
+        public int hashCode() {
+            return Objects.hash(side, playerUUID);
+        }
+        
+        @Override
+        public String toString() {
+            return "PartKey{" +
+                    "side=" + side +
+                    ", playerUUID=" + playerUUID +
+                    '}';
+        }
     }
     
     private static class PartData {
         private final ResourceLocation id;
+        private final int partsExpected;
         private final List<FriendlyByteBuf> parts;
         
-        public PartData(ResourceLocation id) {
+        public PartData(ResourceLocation id, int partsExpected) {
             this.id = id;
+            this.partsExpected = partsExpected;
             this.parts = new ArrayList<>();
         }
     }
@@ -89,7 +112,7 @@ public class SplitPacketTransformer implements PacketTransformer {
         PartData data;
         switch (buf.readByte()) {
             case START:
-                data = new PartData(id);
+                data = new PartData(id, buf.readInt());
                 if (cache.put(key, data) != null) {
                     LOGGER.warn("Received invalid START packet for SplitPacketTransformer with packet id " + id + " for side " + side);
                 }
@@ -104,7 +127,9 @@ public class SplitPacketTransformer implements PacketTransformer {
                     LOGGER.warn("Received invalid PART packet for SplitPacketTransformer with packet id " + id + " for side " + side + ", id in cache is " + data.id);
                     buf.release();
                     for (FriendlyByteBuf part : data.parts) {
-                        part.release();
+                        if (part != buf) {
+                            part.release();
+                        }
                     }
                     cache.remove(key);
                 } else {
@@ -120,18 +145,26 @@ public class SplitPacketTransformer implements PacketTransformer {
                     LOGGER.warn("Received invalid END packet for SplitPacketTransformer with packet id " + id + " for side " + side + ", id in cache is " + data.id);
                     buf.release();
                     for (FriendlyByteBuf part : data.parts) {
-                        part.release();
+                        if (part != buf) {
+                            part.release();
+                        }
                     }
                     cache.remove(key);
                 } else {
                     buf.retain();
                     data.parts.add(buf);
                 }
-                FriendlyByteBuf byteBuf = new FriendlyByteBuf(Unpooled.wrappedBuffer(data.parts.toArray(new ByteBuf[0])));
-                sink.accept(side, data.id, byteBuf);
-                byteBuf.release();
-                for (FriendlyByteBuf part : data.parts) {
-                    part.release();
+                if (data.parts.size() != data.partsExpected) {
+                    LOGGER.warn("Received invalid END packet for SplitPacketTransformer with packet id " + id + " for side " + side + " with size " + data.parts + ", parts expected is " + data.partsExpected);
+                    for (FriendlyByteBuf part : data.parts) {
+                        if (part != buf) {
+                            part.release();
+                        }
+                    }
+                } else {
+                    FriendlyByteBuf byteBuf = new FriendlyByteBuf(Unpooled.wrappedBuffer(data.parts.toArray(new ByteBuf[0])));
+                    sink.accept(side, data.id, byteBuf);
+                    byteBuf.release();
                 }
                 cache.remove(key);
                 break;
@@ -153,7 +186,7 @@ public class SplitPacketTransformer implements PacketTransformer {
             sink.accept(side, id, packetBuffer);
         } else {
             int partSize = maxSize - 4;
-            int parts = buf.readableBytes() / partSize;
+            int parts = Math.round(buf.readableBytes() / (float) partSize);
             for (int i = 0; i < parts; i++) {
                 FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
                 if (i == 0) {
