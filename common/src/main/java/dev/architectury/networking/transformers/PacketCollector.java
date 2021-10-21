@@ -26,24 +26,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class PacketCollector<P extends Packet<?>> implements PacketSink<P> {
+public class PacketCollector implements PacketSink {
     @Nullable
-    private final Consumer<P> consumer;
-    private final List<P> packets = new ArrayList<>();
+    private final Consumer<Packet<?>> consumer;
+    private final List<Packet<?>> packets = new ArrayList<>();
     
-    public PacketCollector(@Nullable Consumer<P> consumer) {
+    public PacketCollector(@Nullable Consumer<Packet<?>> consumer) {
         this.consumer = consumer;
     }
     
     @Override
-    public void accept(P packet) {
+    public void accept(Packet<?> packet) {
         packets.add(packet);
         if (this.consumer != null) {
             this.consumer.accept(packet);
         }
     }
     
-    public List<P> collect() {
+    public List<Packet<?>> collect() {
         return packets;
     }
 }

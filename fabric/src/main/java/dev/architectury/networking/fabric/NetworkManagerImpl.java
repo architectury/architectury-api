@@ -106,14 +106,14 @@ public class NetworkManagerImpl {
         };
     }
     
-    public static void collectPackets(PacketSink<?> sink, NetworkManager.Side side, ResourceLocation id, FriendlyByteBuf buf) {
+    public static void collectPackets(PacketSink sink, NetworkManager.Side side, ResourceLocation id, FriendlyByteBuf buf) {
         PacketTransformer transformer = side == NetworkManager.Side.C2S ? C2S_TRANSFORMERS.get(id) : S2C_TRANSFORMERS.get(id);
         if (transformer != null) {
             transformer.outbound(side, id, buf, (side1, id1, buf1) -> {
-                ((PacketSink<Packet<?>>) sink).accept(toPacket(side1, id1, buf1));
+                sink.accept(toPacket(side1, id1, buf1));
             });
         } else {
-            ((PacketSink<Packet<?>>) sink).accept(toPacket(side, id, buf));
+            sink.accept(toPacket(side, id, buf));
         }
     }
     

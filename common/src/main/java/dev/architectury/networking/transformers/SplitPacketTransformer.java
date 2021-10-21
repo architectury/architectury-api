@@ -29,14 +29,15 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
+@ApiStatus.Experimental
 public class SplitPacketTransformer implements PacketTransformer {
     private static final Logger LOGGER = LogManager.getLogger(SplitPacketTransformer.class);
     private static final byte START = 0x0;
@@ -107,7 +108,7 @@ public class SplitPacketTransformer implements PacketTransformer {
     }
     
     @Override
-    public <P extends Packet<?>> void inbound(NetworkManager.Side side, ResourceLocation id, FriendlyByteBuf buf, NetworkManager.PacketContext context, TransformationSink<P> sink) {
+    public void inbound(NetworkManager.Side side, ResourceLocation id, FriendlyByteBuf buf, NetworkManager.PacketContext context, TransformationSink sink) {
         PartKey key = side == NetworkManager.Side.S2C ? new PartKey(side, null) : new PartKey(side, context.getPlayer().getUUID());
         PartData data;
         switch (buf.readByte()) {
@@ -177,7 +178,7 @@ public class SplitPacketTransformer implements PacketTransformer {
     }
     
     @Override
-    public <P extends Packet<?>> void outbound(NetworkManager.Side side, ResourceLocation id, FriendlyByteBuf buf, TransformationSink<P> sink) {
+    public void outbound(NetworkManager.Side side, ResourceLocation id, FriendlyByteBuf buf, TransformationSink sink) {
         int maxSize = (side == NetworkManager.Side.C2S ? 32767 : 1048576) - 1 - 10;
         if (buf.readableBytes() <= maxSize) {
             ByteBuf stateBuf = Unpooled.buffer(1);

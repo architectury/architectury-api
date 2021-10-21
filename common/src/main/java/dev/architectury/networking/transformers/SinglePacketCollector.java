@@ -24,17 +24,17 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
-public class SinglePacketCollector<P extends Packet<?>> implements PacketSink<P> {
+public class SinglePacketCollector implements PacketSink {
     @Nullable
-    private final Consumer<P> consumer;
-    private P packet;
+    private final Consumer<Packet<?>> consumer;
+    private Packet<?> packet;
     
-    public SinglePacketCollector(@Nullable Consumer<P> consumer) {
+    public SinglePacketCollector(@Nullable Consumer<Packet<?>> consumer) {
         this.consumer = consumer;
     }
     
     @Override
-    public void accept(P packet) {
+    public void accept(Packet<?> packet) {
         if (this.packet == null) {
             this.packet = packet;
             if (this.consumer != null) {
@@ -45,7 +45,7 @@ public class SinglePacketCollector<P extends Packet<?>> implements PacketSink<P>
         }
     }
     
-    public P getPacket() {
+    public Packet<?> getPacket() {
         return packet;
     }
 }

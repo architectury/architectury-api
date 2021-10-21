@@ -44,6 +44,7 @@ public final class NetworkManager {
     }
     
     @ExpectPlatform
+    @ApiStatus.Experimental
     public static void registerReceiver(Side side, ResourceLocation id, List<PacketTransformer> packetTransformers, NetworkReceiver receiver) {
         throw new AssertionError();
     }
@@ -51,7 +52,7 @@ public final class NetworkManager {
     @Deprecated
     @ApiStatus.ScheduledForRemoval
     public static Packet<?> toPacket(Side side, ResourceLocation id, FriendlyByteBuf buf) {
-        SinglePacketCollector<Packet<?>> sink = new SinglePacketCollector<>(null);
+        SinglePacketCollector sink = new SinglePacketCollector(null);
         collectPackets(sink, side, id, buf);
         return sink.getPacket();
     }
@@ -59,13 +60,13 @@ public final class NetworkManager {
     @Deprecated
     @ApiStatus.ScheduledForRemoval
     public static List<Packet<?>> toPackets(Side side, ResourceLocation id, FriendlyByteBuf buf) {
-        PacketCollector<Packet<?>> sink = new PacketCollector<>(null);
+        PacketCollector sink = new PacketCollector(null);
         collectPackets(sink, side, id, buf);
         return sink.collect();
     }
     
     @ExpectPlatform
-    public static void collectPackets(PacketSink<?> sink, Side side, ResourceLocation id, FriendlyByteBuf buf) {
+    public static void collectPackets(PacketSink sink, Side side, ResourceLocation id, FriendlyByteBuf buf) {
         throw new AssertionError();
     }
     

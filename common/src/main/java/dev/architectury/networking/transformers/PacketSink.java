@@ -28,12 +28,12 @@ import net.minecraft.server.level.ServerPlayer;
 import java.util.Objects;
 
 @FunctionalInterface
-public interface PacketSink<P extends Packet<?>> {
-    static PacketSink<?> ofPlayer(ServerPlayer player) {
+public interface PacketSink {
+    static PacketSink ofPlayer(ServerPlayer player) {
         return packet -> Objects.requireNonNull(player, "Unable to send packet to a 'null' player!").connection.send(packet);
     }
     
-    static PacketSink<?> ofPlayers(Iterable<? extends ServerPlayer> players) {
+    static PacketSink ofPlayers(Iterable<? extends ServerPlayer> players) {
         return packet -> {
             for (var player : players) {
                 Objects.requireNonNull(player, "Unable to send packet to a 'null' player!").connection.send(packet);
@@ -42,7 +42,7 @@ public interface PacketSink<P extends Packet<?>> {
     }
     
     @Environment(EnvType.CLIENT)
-    static PacketSink<?> client() {
+    static PacketSink client() {
         return packet -> {
             if (Minecraft.getInstance().getConnection() != null) {
                 Minecraft.getInstance().getConnection().send(packet);
@@ -52,5 +52,5 @@ public interface PacketSink<P extends Packet<?>> {
         };
     }
     
-    void accept(P packet);
+    void accept(Packet<?> packet);
 }
