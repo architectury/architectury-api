@@ -30,6 +30,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.network.NetworkEvent;
 
+import java.util.Collections;
 import java.util.Set;
 
 import static me.shedaniel.architectury.networking.forge.NetworkManagerImpl.C2S;
@@ -38,10 +39,10 @@ import static me.shedaniel.architectury.networking.forge.NetworkManagerImpl.SYNC
 @OnlyIn(Dist.CLIENT)
 public class ClientNetworkingManager {
     public static void initClient() {
-        NetworkManagerImpl.CHANNEL.addListener(NetworkManagerImpl.createPacketHandler(NetworkEvent.ServerCustomPayloadEvent.class, NetworkManagerImpl.S2C));
+        NetworkManagerImpl.CHANNEL.addListener(NetworkManagerImpl.createPacketHandler(NetworkEvent.ServerCustomPayloadEvent.class, NetworkManagerImpl.S2C_TRANSFORMERS));
         MinecraftForge.EVENT_BUS.register(ClientNetworkingManager.class);
         
-        NetworkManagerImpl.registerS2CReceiver(SYNC_IDS, (buffer, context) -> {
+        NetworkManagerImpl.registerS2CReceiver(SYNC_IDS, Collections.emptyList(), (buffer, context) -> {
             Set<ResourceLocation> receivables = NetworkManagerImpl.serverReceivables;
             int size = buffer.readInt();
             receivables.clear();

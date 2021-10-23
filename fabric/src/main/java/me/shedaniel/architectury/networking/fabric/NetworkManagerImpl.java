@@ -21,6 +21,8 @@ package me.shedaniel.architectury.networking.fabric;
 
 import me.shedaniel.architectury.networking.NetworkManager;
 import me.shedaniel.architectury.networking.NetworkManager.NetworkReceiver;
+import me.shedaniel.architectury.networking.transformers.PacketSink;
+import me.shedaniel.architectury.networking.transformers.PacketTransformer;
 import me.shedaniel.architectury.utils.Env;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -34,22 +36,55 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class NetworkManagerImpl {
-    public static void registerReceiver(NetworkManager.Side side, ResourceLocation id, NetworkReceiver receiver) {
+    private static final Map<ResourceLocation, NetworkReceiver> C2S_RECEIVER = new HashMap<>();
+    private static final Map<ResourceLocation, NetworkReceiver> S2C_RECEIVER = new HashMap<>();
+    private static final Map<ResourceLocation, PacketTransformer> C2S_TRANSFORMERS = new HashMap<>();
+    private static final Map<ResourceLocation, PacketTransformer> S2C_TRANSFORMERS = new HashMap<>();
+    
+    public static void registerReceiver(NetworkManager.Side side, ResourceLocation id, List<PacketTransformer> packetTransformers, NetworkReceiver receiver) {
         if (side == NetworkManager.Side.C2S) {
-            registerC2SReceiver(id, receiver);
+            registerC2SReceiver(id, packetTransformers, receiver);
         } else if (side == NetworkManager.Side.S2C) {
-            registerS2CReceiver(id, receiver);
+            registerS2CReceiver(id, packetTransformers, receiver);
         }
     }
     
-    private static void registerC2SReceiver(ResourceLocation id, NetworkReceiver receiver) {
-        ServerSidePacketRegistry.INSTANCE.register(id, (packetContext, buf) -> receiver.receive(buf, to(packetContext)));
+    private static void registerC2SReceiver(ResourceLocation id, List<PacketTransformer> packetTransformers, NetworkReceiver receiver) {
+        C2S_RECEIVER.put(id, receiver);
+        PacketTransformer transformer = PacketTransformer.concat(packetTransformers);
+        ServerSidePacketRegistry.INSTANCE.register(id, (packetContext, buf) -> {
+            NetworkManager.PacketContext context = to(packetContext);
+            transformer.inbound(NetworkManager.Side.C2S, id, buf, context, (side, id1, buf1) -> {
+                NetworkReceiver networkReceiver = side == NetworkManager.Side.C2S ? C2S_RECEIVER.get(id1) : S2C_RECEIVER.get(id1);
+                if (networkReceiver == null) {
+                    throw new IllegalArgumentException("Network Receiver not found! " + id1);
+                }
+                networkReceiver.receive(buf1, context);
+            });
+        });
+        C2S_TRANSFORMERS.put(id, transformer);
     }
     
     @Environment(EnvType.CLIENT)
-    private static void registerS2CReceiver(ResourceLocation id, NetworkReceiver receiver) {
-        ClientSidePacketRegistry.INSTANCE.register(id, (packetContext, buf) -> receiver.receive(buf, to(packetContext)));
+    private static void registerS2CReceiver(ResourceLocation id, List<PacketTransformer> packetTransformers, NetworkReceiver receiver) {
+        S2C_RECEIVER.put(id, receiver);
+        PacketTransformer transformer = PacketTransformer.concat(packetTransformers);
+        ClientSidePacketRegistry.INSTANCE.register(id, (packetContext, buf) -> {
+            NetworkManager.PacketContext context = to(packetContext);
+            transformer.inbound(NetworkManager.Side.S2C, id, buf, context, (side, id1, buf1) -> {
+                NetworkReceiver networkReceiver = side == NetworkManager.Side.C2S ? C2S_RECEIVER.get(id1) : S2C_RECEIVER.get(id1);
+                if (networkReceiver == null) {
+                    throw new IllegalArgumentException("Network Receiver not found! " + id1);
+                }
+                networkReceiver.receive(buf1, context);
+            });
+        });
+        S2C_TRANSFORMERS.put(id, transformer);
     }
     
     private static NetworkManager.PacketContext to(PacketContext context) {
@@ -69,6 +104,17 @@ public class NetworkManagerImpl {
                 return Env.fromPlatform(context.getPacketEnvironment());
             }
         };
+    }
+    
+    public static void collectPackets(PacketSink sink, NetworkManager.Side side, ResourceLocation id, FriendlyByteBuf buf) {
+        PacketTransformer transformer = side == NetworkManager.Side.C2S ? C2S_TRANSFORMERS.get(id) : S2C_TRANSFORMERS.get(id);
+        if (transformer != null) {
+            transformer.outbound(side, id, buf, (side1, id1, buf1) -> {
+                sink.accept(toPacket(side1, id1, buf1));
+            });
+        } else {
+            sink.accept(toPacket(side, id, buf));
+        }
     }
     
     public static Packet<?> toPacket(NetworkManager.Side side, ResourceLocation id, FriendlyByteBuf buf) {

@@ -53,6 +53,7 @@ public class TestMod {
         TestBlockInteractions.init();
         if (Platform.getEnvironment() == Env.CLIENT) {
             TestKeybinds.initialize();
+            TestModNet.initializeClient();
             EntityRenderers.register(TestEntity.TYPE, MinecartRenderer<TestEntity>::new);
         }
     }
