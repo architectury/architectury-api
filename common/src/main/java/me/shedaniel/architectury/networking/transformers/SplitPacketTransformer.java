@@ -203,8 +203,8 @@ public class SplitPacketTransformer implements PacketTransformer {
                 buf.skipBytes(next);
                 sink.accept(side, id, packetBuffer);
             }
-            
+    
+            buf.release();
         }
-        buf.release();
     }
 }
