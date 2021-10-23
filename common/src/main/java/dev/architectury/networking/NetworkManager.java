@@ -20,48 +20,67 @@
 package dev.architectury.networking;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import dev.architectury.networking.transformers.PacketCollector;
+import dev.architectury.networking.transformers.PacketSink;
+import dev.architectury.networking.transformers.PacketTransformer;
+import dev.architectury.networking.transformers.SinglePacketCollector;
 import dev.architectury.utils.Env;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.ApiStatus;
 
-import java.util.Objects;
+import java.util.Collections;
+import java.util.List;
 
 public final class NetworkManager {
-    @ExpectPlatform
     public static void registerReceiver(Side side, ResourceLocation id, NetworkReceiver receiver) {
-        throw new AssertionError();
+        registerReceiver(side, id, Collections.emptyList(), receiver);
     }
     
     @ExpectPlatform
+    @ApiStatus.Experimental
+    public static void registerReceiver(Side side, ResourceLocation id, List<PacketTransformer> packetTransformers, NetworkReceiver receiver) {
+        throw new AssertionError();
+    }
+    
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval
     public static Packet<?> toPacket(Side side, ResourceLocation id, FriendlyByteBuf buf) {
+        SinglePacketCollector sink = new SinglePacketCollector(null);
+        collectPackets(sink, side, id, buf);
+        return sink.getPacket();
+    }
+    
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval
+    public static List<Packet<?>> toPackets(Side side, ResourceLocation id, FriendlyByteBuf buf) {
+        PacketCollector sink = new PacketCollector(null);
+        collectPackets(sink, side, id, buf);
+        return sink.collect();
+    }
+    
+    @ExpectPlatform
+    public static void collectPackets(PacketSink sink, Side side, ResourceLocation id, FriendlyByteBuf buf) {
         throw new AssertionError();
     }
     
     public static void sendToPlayer(ServerPlayer player, ResourceLocation id, FriendlyByteBuf buf) {
-        Objects.requireNonNull(player, "Unable to send packet to a 'null' player!").connection.send(toPacket(serverToClient(), id, buf));
+        collectPackets(PacketSink.ofPlayer(player), serverToClient(), id, buf);
     }
     
     public static void sendToPlayers(Iterable<ServerPlayer> players, ResourceLocation id, FriendlyByteBuf buf) {
-        var packet = toPacket(serverToClient(), id, buf);
-        for (var player : players) {
-            Objects.requireNonNull(player, "Unable to send packet to a 'null' player!").connection.send(packet);
-        }
+        collectPackets(PacketSink.ofPlayers(players), serverToClient(), id, buf);
     }
     
     @Environment(EnvType.CLIENT)
     public static void sendToServer(ResourceLocation id, FriendlyByteBuf buf) {
-        if (Minecraft.getInstance().getConnection() != null) {
-            Minecraft.getInstance().getConnection().send(toPacket(clientToServer(), id, buf));
-        } else {
-            throw new IllegalStateException("Unable to send packet to the server while not in game!");
-        }
+        collectPackets(PacketSink.client(), clientToServer(), id, buf);
     }
     
     @Environment(EnvType.CLIENT)
