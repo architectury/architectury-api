@@ -24,6 +24,8 @@ import com.google.common.collect.*;
 import dev.architectury.forge.ArchitecturyForge;
 import dev.architectury.networking.NetworkManager;
 import dev.architectury.networking.NetworkManager.NetworkReceiver;
+import dev.architectury.networking.transformers.PacketSink;
+import dev.architectury.networking.transformers.PacketTransformer;
 import dev.architectury.utils.Env;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
@@ -48,6 +50,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -55,11 +58,11 @@ import java.util.function.Consumer;
 
 @Mod.EventBusSubscriber(modid = ArchitecturyForge.MOD_ID)
 public class NetworkManagerImpl {
-    public static void registerReceiver(NetworkManager.Side side, ResourceLocation id, NetworkReceiver receiver) {
+    public static void registerReceiver(NetworkManager.Side side, ResourceLocation id, List<PacketTransformer> packetTransformers, NetworkReceiver receiver) {
         if (side == NetworkManager.Side.C2S) {
-            registerC2SReceiver(id, receiver);
+            registerC2SReceiver(id, packetTransformers, receiver);
         } else if (side == NetworkManager.Side.S2C) {
-            registerS2CReceiver(id, receiver);
+            registerS2CReceiver(id, packetTransformers, receiver);
         }
     }
     
@@ -70,21 +73,34 @@ public class NetworkManagerImpl {
         return (side == NetworkManager.Side.C2S ? NetworkDirection.PLAY_TO_SERVER : NetworkDirection.PLAY_TO_CLIENT).buildPacket(Pair.of(packetBuffer, 0), CHANNEL_ID).getThis();
     }
     
+    public static void collectPackets(PacketSink sink, NetworkManager.Side side, ResourceLocation id, FriendlyByteBuf buf) {
+        PacketTransformer transformer = side == NetworkManager.Side.C2S ? C2S_TRANSFORMERS.get(id) : S2C_TRANSFORMERS.get(id);
+        if (transformer != null) {
+            transformer.outbound(side, id, buf, (side1, id1, buf1) -> {
+                sink.accept(toPacket(side1, id1, buf1));
+            });
+        } else {
+            sink.accept(toPacket(side, id, buf));
+        }
+    }
+    
     private static final Logger LOGGER = LogManager.getLogger();
     private static final ResourceLocation CHANNEL_ID = new ResourceLocation("architectury:network");
     static final ResourceLocation SYNC_IDS = new ResourceLocation("architectury:sync_ids");
     static final EventNetworkChannel CHANNEL = NetworkRegistry.newEventChannel(CHANNEL_ID, () -> "1", version -> true, version -> true);
     static final Map<ResourceLocation, NetworkReceiver> S2C = Maps.newHashMap();
     static final Map<ResourceLocation, NetworkReceiver> C2S = Maps.newHashMap();
+    static final Map<ResourceLocation, PacketTransformer> S2C_TRANSFORMERS = Maps.newHashMap();
+    static final Map<ResourceLocation, PacketTransformer> C2S_TRANSFORMERS = Maps.newHashMap();
     static final Set<ResourceLocation> serverReceivables = Sets.newHashSet();
     private static final Multimap<Player, ResourceLocation> clientReceivables = Multimaps.newMultimap(Maps.newHashMap(), Sets::newHashSet);
     
     static {
-        CHANNEL.addListener(createPacketHandler(NetworkEvent.ClientCustomPayloadEvent.class, C2S));
+        CHANNEL.addListener(createPacketHandler(NetworkEvent.ClientCustomPayloadEvent.class, C2S_TRANSFORMERS));
         
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> ClientNetworkingManager::initClient);
         
-        registerC2SReceiver(SYNC_IDS, (buffer, context) -> {
+        registerC2SReceiver(SYNC_IDS, Collections.emptyList(), (buffer, context) -> {
             Set<ResourceLocation> receivables = (Set<ResourceLocation>) clientReceivables.get(context.getPlayer());
             int size = buffer.readInt();
             receivables.clear();
@@ -94,7 +110,7 @@ public class NetworkManagerImpl {
         });
     }
     
-    static <T extends NetworkEvent> Consumer<T> createPacketHandler(Class<T> clazz, Map<ResourceLocation, NetworkReceiver> map) {
+    static <T extends NetworkEvent> Consumer<T> createPacketHandler(Class<T> clazz, Map<ResourceLocation, PacketTransformer> map) {
         return event -> {
             if (event.getClass() != clazz) return;
             NetworkEvent.Context context = event.getSource().get();
@@ -102,10 +118,11 @@ public class NetworkManagerImpl {
             FriendlyByteBuf buffer = event.getPayload();
             if (buffer == null) return;
             ResourceLocation type = buffer.readResourceLocation();
-            NetworkReceiver receiver = map.get(type);
+            PacketTransformer transformer = map.get(type);
             
-            if (receiver != null) {
-                receiver.receive(buffer, new NetworkManager.PacketContext() {
+            if (transformer != null) {
+                NetworkManager.Side side = context.getDirection().getReceptionSide() == LogicalSide.CLIENT ? NetworkManager.Side.S2C : NetworkManager.Side.C2S;
+                NetworkManager.PacketContext packetContext = new NetworkManager.PacketContext() {
                     @Override
                     public Player getPlayer() {
                         return getEnvironment() == Env.CLIENT ? getClientPlayer() : context.getSender();
@@ -124,6 +141,13 @@ public class NetworkManagerImpl {
                     private Player getClientPlayer() {
                         return DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> ClientNetworkingManager::getClientPlayer);
                     }
+                };
+                transformer.inbound(side, type, buffer, packetContext, (side1, id1, buf1) -> {
+                    NetworkReceiver networkReceiver = side == NetworkManager.Side.C2S ? C2S.get(id1) : S2C.get(id1);
+                    if (networkReceiver == null) {
+                        throw new IllegalArgumentException("Network Receiver not found! " + id1);
+                    }
+                    networkReceiver.receive(buf1, packetContext);
                 });
             } else {
                 LOGGER.error("Unknown message ID: " + type);
@@ -134,12 +158,16 @@ public class NetworkManagerImpl {
     }
     
     @OnlyIn(Dist.CLIENT)
-    public static void registerS2CReceiver(ResourceLocation id, NetworkReceiver receiver) {
+    public static void registerS2CReceiver(ResourceLocation id, List<PacketTransformer> packetTransformers, NetworkReceiver receiver) {
         S2C.put(id, receiver);
+        PacketTransformer transformer = PacketTransformer.concat(packetTransformers);
+        S2C_TRANSFORMERS.put(id, transformer);
     }
     
-    public static void registerC2SReceiver(ResourceLocation id, NetworkReceiver receiver) {
+    public static void registerC2SReceiver(ResourceLocation id, List<PacketTransformer> packetTransformers, NetworkReceiver receiver) {
         C2S.put(id, receiver);
+        PacketTransformer transformer = PacketTransformer.concat(packetTransformers);
+        C2S_TRANSFORMERS.put(id, transformer);
     }
     
     public static boolean canServerReceive(ResourceLocation id) {
