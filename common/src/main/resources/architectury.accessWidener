@@ -1,10 +1,6 @@
 accessWidener v1 named
 accessible method net/minecraft/world/level/block/state/BlockBehaviour$Properties <init> (Lnet/minecraft/world/level/material/Material;Ljava/util/function/Function;)V
 accessible field net/minecraft/world/level/biome/Biome climateSettings Lnet/minecraft/world/level/biome/Biome$ClimateSettings;
-accessible field net/minecraft/world/level/biome/Biome depth F
-mutable field net/minecraft/world/level/biome/Biome depth F
-accessible field net/minecraft/world/level/biome/Biome scale F
-mutable field net/minecraft/world/level/biome/Biome scale F
 accessible field net/minecraft/world/level/biome/Biome biomeCategory Lnet/minecraft/world/level/biome/Biome$BiomeCategory;
 mutable field net/minecraft/world/level/biome/Biome biomeCategory Lnet/minecraft/world/level/biome/Biome$BiomeCategory;
 accessible field net/minecraft/world/level/biome/Biome$ClimateSettings precipitation Lnet/minecraft/world/level/biome/Biome$Precipitation;
