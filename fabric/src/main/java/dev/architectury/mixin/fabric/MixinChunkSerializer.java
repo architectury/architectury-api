@@ -28,6 +28,7 @@ import net.minecraft.world.entity.ai.village.poi.PoiManager;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.*;
 import net.minecraft.world.level.chunk.storage.ChunkSerializer;
+import net.minecraft.world.level.levelgen.blending.GenerationUpgradeData;
 import net.minecraft.world.level.lighting.LevelLightEngine;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -39,10 +40,10 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 public class MixinChunkSerializer {
     @Inject(method = "read", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
     private static void load(ServerLevel serverLevel, PoiManager poiManager, ChunkPos chunkPos, CompoundTag compoundTag,
-                             CallbackInfoReturnable<ProtoChunk> cir, CompoundTag compoundTag2, UpgradeData upgradeData,
-                             ProtoTickList protoTickList, ProtoTickList protoTickList2, boolean bl, ListTag listTag,
-                             int i, LevelChunkSection levelChunkSections[], boolean bl2, ChunkSource chunkSource,
-                             LevelLightEngine levelLightEngine, Registry registry, long m, ChunkStatus.ChunkType chunkType, ChunkAccess chunkAccess2) {
+                             CallbackInfoReturnable<ProtoChunk> cir, UpgradeData upgradeData,
+                             boolean bl, ListTag listTag, int i, LevelChunkSection levelChunkSections[], boolean bl2, ChunkSource chunkSource,
+                             LevelLightEngine levelLightEngine, Registry registry, long m, ChunkStatus.ChunkType chunkType,
+                             GenerationUpgradeData generationUpgradeData, ChunkAccess chunkAccess2) {
         ChunkEvent.LOAD_DATA.invoker().load(chunkAccess2, serverLevel, compoundTag);
     }
 }
