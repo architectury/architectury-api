@@ -34,7 +34,7 @@ public class EntityHooksImpl {
     
     @Nullable
     public static Entity fromCollision(CollisionContext ctx) {
-        return ctx instanceof EntityCollisionContext ? ((EntityCollisionContext) ctx).getEntity().orElse(null) : null;
+        return ctx instanceof EntityCollisionContext ? ((EntityCollisionContext) ctx).getEntity() : null;
     }
     
     public static EntityInLevelCallback wrapEntityInLevelCallback(Entity entity, EntityInLevelCallback callback) {
