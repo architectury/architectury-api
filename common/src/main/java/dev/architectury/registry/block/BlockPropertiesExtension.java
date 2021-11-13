@@ -20,11 +20,4 @@
 package dev.architectury.registry.block;
 
 public interface BlockPropertiesExtension {
-    @Deprecated
-    default BlockProperties tool(ToolType type) {
-        return tool(type, 0);
-    }
-    
-    @Deprecated
-    BlockProperties tool(ToolType type, int level);
 }

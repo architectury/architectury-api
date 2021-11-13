@@ -20,9 +20,7 @@
 package dev.architectury.registry.block.fabric;
 
 import dev.architectury.registry.block.BlockProperties;
-import dev.architectury.registry.block.ToolType;
 import net.fabricmc.fabric.impl.object.builder.BlockSettingsInternals;
-import net.fabricmc.fabric.impl.object.builder.FabricBlockInternals;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
@@ -70,12 +68,6 @@ public class BlockPropertiesImpl {
     private static final class Impl extends BlockProperties {
         public Impl(Material material, Function<BlockState, MaterialColor> function) {
             super(material, function);
-        }
-        
-        @Override
-        public BlockProperties tool(ToolType type, int level) {
-            FabricBlockInternals.computeExtraData(this).addMiningLevel(type.fabricTag.get(), level);
-            return this;
         }
     }
 }

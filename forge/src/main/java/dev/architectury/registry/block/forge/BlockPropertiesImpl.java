@@ -64,11 +64,5 @@ public class BlockPropertiesImpl {
         public Impl(Material material, Function<BlockState, MaterialColor> function) {
             super(material, function);
         }
-        
-        @Override
-        @Deprecated
-        public BlockProperties tool(ToolType type, int level) {
-            return this;
-        }
     }
 }

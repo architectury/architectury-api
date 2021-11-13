@@ -25,19 +25,12 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import org.jetbrains.annotations.ApiStatus;
 
 import java.util.function.Supplier;
 
 @Environment(EnvType.CLIENT)
 public final class EntityRendererRegistry {
     private EntityRendererRegistry() {
-    }
-    
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval
-    public static <T extends Entity> void register(EntityType<? extends T> type, EntityRendererProvider<T> provider) {
-        register(() -> type, provider);
     }
     
     @ExpectPlatform

@@ -63,7 +63,7 @@ public class TestMod {
     public static void initializeClient() {
         TestKeybinds.initialize();
         TestModNet.initializeClient();
-        EntityRendererRegistry.register(TestEntity.TYPE, context ->
+        EntityRendererRegistry.register(() -> TestEntity.TYPE, context ->
                 new MinecartRenderer<>(context, ModelLayers.MINECART));
     }
 }
