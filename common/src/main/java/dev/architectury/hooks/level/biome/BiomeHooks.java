@@ -29,6 +29,7 @@ import net.minecraft.world.level.biome.BiomeSpecialEffects.GrassColorModifier;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -362,7 +363,7 @@ public final class BiomeHooks {
         }
         
         @Override
-        public List<List<Supplier<ConfiguredFeature<?, ?>>>> getFeatures() {
+        public List<List<Supplier<PlacedFeature>>> getFeatures() {
             return settings.features();
         }
     }

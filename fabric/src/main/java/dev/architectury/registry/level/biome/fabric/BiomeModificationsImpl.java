@@ -23,12 +23,12 @@ import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
 import dev.architectury.hooks.level.biome.*;
 import dev.architectury.registry.level.biome.BiomeModifications.BiomeContext;
-import net.fabricmc.fabric.api.biome.v1.BiomeModification;
+/*import net.fabricmc.fabric.api.biome.v1.BiomeModification;
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext.GenerationSettingsContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext.SpawnSettingsContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
-import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
+import net.fabricmc.fabric.api.biome.v1.ModificationPhase;*/
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.Music;
 import net.minecraft.sounds.SoundEvent;
@@ -76,7 +76,7 @@ public class BiomeModificationsImpl {
         REPLACEMENTS.add(Pair.of(predicate, modifier));
     }
     
-    static {
+    /*static {
         var modification = net.fabricmc.fabric.api.biome.v1.BiomeModifications.create(FABRIC_MODIFICATION);
         registerModification(modification, ModificationPhase.ADDITIONS, ADDITIONS);
         registerModification(modification, ModificationPhase.POST_PROCESSING, POST_PROCESSING);
@@ -344,6 +344,6 @@ public class BiomeModificationsImpl {
                 return this;
             }
         };
-    }
+    }*/
     
 }

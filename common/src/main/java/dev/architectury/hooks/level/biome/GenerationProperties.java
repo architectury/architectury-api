@@ -23,6 +23,7 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -30,7 +31,7 @@ import java.util.function.Supplier;
 public interface GenerationProperties {
     List<Supplier<ConfiguredWorldCarver<?>>> getCarvers(GenerationStep.Carving carving);
     
-    List<List<Supplier<ConfiguredFeature<?, ?>>>> getFeatures();
+    List<List<Supplier<PlacedFeature>>> getFeatures();
     
     interface Mutable extends GenerationProperties {
         Mutable addFeature(GenerationStep.Decoration decoration, ConfiguredFeature<?, ?> feature);
