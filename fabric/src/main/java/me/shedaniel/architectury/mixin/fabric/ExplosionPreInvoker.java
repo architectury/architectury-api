@@ -35,10 +35,10 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(value = {Level.class, ServerLevel.class})
 public class ExplosionPreInvoker {
-    @Inject(method = "explode(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/damagesource/DamageSource;Lnet/minecraft/world/level/ExplosionDamageCalculator;DDDFZLnet/minecraft/world/level/Explosion$BlockInteraction;)Lnet/minecraft/world/level/Explosion;", 
+    @Inject(method = "explode(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/damagesource/DamageSource;Lnet/minecraft/world/level/ExplosionDamageCalculator;DDDFZLnet/minecraft/world/level/Explosion$BlockInteraction;)Lnet/minecraft/world/level/Explosion;",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Explosion;explode()V"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
     private void explodePre(Entity entity, DamageSource damageSource, ExplosionDamageCalculator explosionDamageCalculator, double d, double e, double f, float g, boolean bl, Explosion.BlockInteraction blockInteraction, CallbackInfoReturnable<Explosion> cir, Explosion explosion) {
-        if (ExplosionEvent.PRE.invoker().explode((Level)(Object) this, explosion) == InteractionResult.FAIL) {
+        if (ExplosionEvent.PRE.invoker().explode((Level) (Object) this, explosion) == InteractionResult.FAIL) {
             cir.setReturnValue(explosion);
         }
     }

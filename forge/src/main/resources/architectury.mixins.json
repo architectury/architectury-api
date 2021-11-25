@@ -5,11 +5,24 @@
   "compatibilityLevel": "JAVA_8",
   "minVersion": "0.8",
   "client": [
+    "MixinClientLevel",
+    "ParticleEngineAccessor",
+    "ParticleEngineAccessor$MutableSpriteSetAccessor"
   ],
   "mixins": [
-    "BiomeGenerationSettingsBuilderAccessor", "GameRulesAccessor", "GameRulesAccessor$BooleanValue", "GameRulesAccessor$BooleanValueSimple",
-    "GameRulesAccessor$IntegerValue", "GameRulesAccessor$IntegerValueSimple", "MixinBlockEntity", "MixinBlockEntityExtension", "MixinItemExtension",
-    "MixinRegistryEntry", "MobSpawnSettingsBuilderAccessor"
+    "BiomeGenerationSettingsBuilderAccessor",
+    "GameRulesAccessor",
+    "GameRulesAccessor$BooleanValue",
+    "GameRulesAccessor$BooleanValueSimple",
+    "GameRulesAccessor$IntegerValue",
+    "GameRulesAccessor$IntegerValueSimple",
+    "MixinBlockEntity",
+    "MixinBlockEntityExtension",
+    "MixinChunkSerializer",
+    "MixinItemExtension",
+    "MixinRegistryEntry",
+    "MixinWorldEvent",
+    "MobSpawnSettingsBuilderAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

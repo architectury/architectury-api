@@ -31,7 +31,6 @@ import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.level.levelgen.surfacebuilders.ConfiguredSurfaceBuilder;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -61,10 +60,10 @@ public final class BiomeHooks {
         }
         
         public BiomeWrapped(Biome biome,
-                ClimateProperties climateProperties,
-                EffectsProperties effectsProperties,
-                GenerationProperties generationProperties,
-                SpawnProperties spawnProperties) {
+                            ClimateProperties climateProperties,
+                            EffectsProperties effectsProperties,
+                            GenerationProperties generationProperties,
+                            SpawnProperties spawnProperties) {
             this.biome = biome;
             this.climateProperties = climateProperties;
             this.effectsProperties = effectsProperties;
@@ -110,8 +109,8 @@ public final class BiomeHooks {
     
     public static class MutableBiomeWrapped extends BiomeWrapped implements BiomeProperties.Mutable {
         public MutableBiomeWrapped(Biome biome,
-                GenerationProperties.Mutable generationProperties,
-                SpawnProperties.Mutable spawnProperties) {
+                                   GenerationProperties.Mutable generationProperties,
+                                   SpawnProperties.Mutable spawnProperties) {
             this(biome,
                     new ClimateWrapped(biome.climateSettings),
                     new EffectsWrapped(biome.getSpecialEffects()),
@@ -120,10 +119,10 @@ public final class BiomeHooks {
         }
         
         public MutableBiomeWrapped(Biome biome,
-                ClimateProperties.Mutable climateProperties,
-                EffectsProperties.Mutable effectsProperties,
-                GenerationProperties.Mutable generationProperties,
-                SpawnProperties.Mutable spawnProperties) {
+                                   ClimateProperties.Mutable climateProperties,
+                                   EffectsProperties.Mutable effectsProperties,
+                                   GenerationProperties.Mutable generationProperties,
+                                   SpawnProperties.Mutable spawnProperties) {
             super(biome,
                     climateProperties,
                     effectsProperties,
@@ -389,6 +388,11 @@ public final class BiomeHooks {
         @Override
         public List<Supplier<ConfiguredWorldCarver<?>>> getCarvers(GenerationStep.Carving carving) {
             return settings.getCarvers(carving);
+        }
+        
+        @Override
+        public List<Supplier<ConfiguredFeature<?, ?>>> getFeatures(GenerationStep.Decoration decoration) {
+            return settings.features().get(decoration.ordinal());
         }
         
         @Override

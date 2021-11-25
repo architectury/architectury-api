@@ -20,15 +20,16 @@
 package me.shedaniel.architectury.event;
 
 import com.google.common.reflect.AbstractInvocationHandler;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import me.shedaniel.architectury.ForgeEvent;
 import me.shedaniel.architectury.ForgeEventCancellable;
-import me.shedaniel.architectury.annotations.ExpectPlatform;
 import net.jodah.typetools.TypeResolver;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -39,10 +40,11 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public final class EventFactory {
-    private EventFactory() {}
+    private EventFactory() {
+    }
     
     @Deprecated
-    @ApiStatus.ScheduledForRemoval
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     public static <T> Event<T> create(Function<T[], T> function) {
         Class<?>[] arguments = TypeResolver.resolveRawArguments(Function.class, function.getClass());
         T[] array;
@@ -64,32 +66,41 @@ public final class EventFactory {
         return createLoop((Class<T>) typeGetter.getClass().getComponentType());
     }
     
+    private static <T, R> R invokeMethod(T listener, Method method, Object[] args) throws Throwable {
+        return (R) MethodHandles.lookup().unreflect(method)
+                .bindTo(listener).invokeWithArguments(args);
+    }
+    
     @SuppressWarnings("UnstableApiUsage")
     public static <T> Event<T> createLoop(Class<T> clazz) {
         return of(listeners -> (T) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{clazz}, new AbstractInvocationHandler() {
             @Override
             protected Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {
                 for (T listener : listeners) {
-                    method.invoke(listener, args);
+                    invokeMethod(listener, method, args);
                 }
                 return null;
             }
         }));
     }
     
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     @SafeVarargs
     public static <T> Event<T> createInteractionResult(T... typeGetter) {
         if (typeGetter.length != 0) throw new IllegalStateException("array must be empty!");
         return createInteractionResult((Class<T>) typeGetter.getClass().getComponentType());
     }
     
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     @SuppressWarnings("UnstableApiUsage")
     public static <T> Event<T> createInteractionResult(Class<T> clazz) {
         return of(listeners -> (T) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{clazz}, new AbstractInvocationHandler() {
             @Override
             protected Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {
                 for (T listener : listeners) {
-                    InteractionResult result = (InteractionResult) Objects.requireNonNull(method.invoke(listener, args));
+                    InteractionResult result = Objects.requireNonNull(invokeMethod(listener, method, args));
                     if (result != InteractionResult.PASS) {
                         return result;
                     }
@@ -111,7 +122,7 @@ public final class EventFactory {
             @Override
             protected Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {
                 for (T listener : listeners) {
-                    EventResult result = (EventResult) Objects.requireNonNull(method.invoke(listener, args));
+                    EventResult result = Objects.requireNonNull(invokeMethod(listener, method, args));
                     if (result.interruptsFurtherEvaluation()) {
                         return result;
                     }
@@ -121,19 +132,23 @@ public final class EventFactory {
         }));
     }
     
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     @SafeVarargs
     public static <T> Event<T> createInteractionResultHolder(T... typeGetter) {
         if (typeGetter.length != 0) throw new IllegalStateException("array must be empty!");
         return createInteractionResultHolder((Class<T>) typeGetter.getClass().getComponentType());
     }
     
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     @SuppressWarnings("UnstableApiUsage")
     public static <T> Event<T> createInteractionResultHolder(Class<T> clazz) {
         return of(listeners -> (T) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{clazz}, new AbstractInvocationHandler() {
             @Override
             protected Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {
                 for (T listener : listeners) {
-                    InteractionResultHolder result = (InteractionResultHolder) Objects.requireNonNull(method.invoke(listener, args));
+                    InteractionResultHolder result = Objects.requireNonNull(invokeMethod(listener, method, args));
                     if (result.getResult() != InteractionResult.PASS) {
                         return result;
                     }
@@ -155,7 +170,7 @@ public final class EventFactory {
             @Override
             protected Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {
                 for (T listener : listeners) {
-                    CompoundEventResult result = (CompoundEventResult) Objects.requireNonNull(method.invoke(listener, args));
+                    CompoundEventResult result = Objects.requireNonNull(invokeMethod(listener, method, args));
                     if (result.interruptsFurtherEvaluation()) {
                         return result;
                     }
@@ -177,7 +192,7 @@ public final class EventFactory {
             @Override
             protected Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {
                 for (Consumer<T> listener : listeners) {
-                    method.invoke(listener, args);
+                    invokeMethod(listener, method, args);
                 }
                 return null;
             }
@@ -192,19 +207,23 @@ public final class EventFactory {
         return event;
     }
     
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     @SafeVarargs
     public static <T> Event<Actor<T>> createActorLoop(T... typeGetter) {
         if (typeGetter.length != 0) throw new IllegalStateException("array must be empty!");
         return createActorLoop((Class<T>) typeGetter.getClass().getComponentType());
     }
     
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     @SuppressWarnings("UnstableApiUsage")
     public static <T> Event<Actor<T>> createActorLoop(Class<T> clazz) {
         Event<Actor<T>> event = of(listeners -> (Actor<T>) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{Actor.class}, new AbstractInvocationHandler() {
             @Override
             protected Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {
                 for (Actor<T> listener : listeners) {
-                    InteractionResult result = (InteractionResult) method.invoke(listener, args);
+                    InteractionResult result = invokeMethod(listener, method, args);
                     if (result != InteractionResult.PASS) {
                         return result;
                     }
@@ -243,7 +262,7 @@ public final class EventFactory {
             @Override
             protected Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {
                 for (EventActor<T> listener : listeners) {
-                    EventResult result = (EventResult) method.invoke(listener, args);
+                    EventResult result = invokeMethod(listener, method, args);
                     if (result.interruptsFurtherEvaluation()) {
                         return result;
                     }

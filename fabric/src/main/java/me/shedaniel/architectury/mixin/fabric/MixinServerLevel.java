@@ -40,7 +40,7 @@ public class MixinServerLevel {
     }
     
     @Inject(method = "addEntity", at = @At(value = "INVOKE",
-                                           target = "Lnet/minecraft/server/level/ServerLevel;getChunk(IILnet/minecraft/world/level/chunk/ChunkStatus;Z)Lnet/minecraft/world/level/chunk/ChunkAccess;"),
+            target = "Lnet/minecraft/server/level/ServerLevel;getChunk(IILnet/minecraft/world/level/chunk/ChunkStatus;Z)Lnet/minecraft/world/level/chunk/ChunkAccess;"),
             cancellable = true)
     private void addEntity(Entity entity, CallbackInfoReturnable<Boolean> cir) {
         if (EntityEvent.ADD.invoker().add(entity, (ServerLevel) (Object) this) == InteractionResult.FAIL) {

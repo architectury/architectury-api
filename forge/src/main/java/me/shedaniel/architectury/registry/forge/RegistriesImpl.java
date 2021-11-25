@@ -230,9 +230,9 @@ public class RegistriesImpl {
         }
         
         @Override
-        public @NotNull RegistrySupplier<T> registerSupplied(ResourceLocation id, Supplier<T> supplier) {
+        public @NotNull <E extends T> RegistrySupplier<E> registerSupplied(ResourceLocation id, Supplier<E> supplier) {
             net.minecraft.core.Registry.register(delegate, id, supplier.get());
-            return delegateSupplied(id);
+            return (RegistrySupplier<E>) delegateSupplied(id);
         }
         
         @Override
@@ -347,10 +347,10 @@ public class RegistriesImpl {
         }
         
         @Override
-        public @NotNull RegistrySupplier<T> registerSupplied(ResourceLocation id, Supplier<T> supplier) {
+        public @NotNull <E extends T> RegistrySupplier<E> registerSupplied(ResourceLocation id, Supplier<E> supplier) {
             RegistryObject registryObject = RegistryObject.of(id, delegate);
             registry.put(delegate.getRegistrySuperType(), registryObject, () -> supplier.get().setRegistryName(id));
-            return new RegistrySupplier<T>() {
+            return new RegistrySupplier<E>() {
                 @Override
                 public @NotNull ResourceLocation getRegistryId() {
                     return delegate.getRegistryName();
@@ -367,8 +367,8 @@ public class RegistriesImpl {
                 }
                 
                 @Override
-                public T get() {
-                    return (T) registryObject.get();
+                public E get() {
+                    return (E) registryObject.get();
                 }
                 
                 @Override

@@ -161,9 +161,9 @@ public class RegistriesImpl {
         }
         
         @Override
-        public @NotNull RegistrySupplier<T> registerSupplied(ResourceLocation id, Supplier<T> supplier) {
+        public @NotNull <E extends T> RegistrySupplier<E> registerSupplied(ResourceLocation id, Supplier<E> supplier) {
             net.minecraft.core.Registry.register(delegate, id, supplier.get());
-            return delegateSupplied(id);
+            return (RegistrySupplier<E>) delegateSupplied(id);
         }
         
         @Override

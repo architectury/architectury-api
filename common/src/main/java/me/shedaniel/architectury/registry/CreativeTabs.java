@@ -19,7 +19,7 @@
 
 package me.shedaniel.architectury.registry;
 
-import me.shedaniel.architectury.annotations.ExpectPlatform;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -27,7 +27,8 @@ import net.minecraft.world.item.ItemStack;
 import java.util.function.Supplier;
 
 public final class CreativeTabs {
-    private CreativeTabs() {}
+    private CreativeTabs() {
+    }
     
     // I am sorry, fabric wants a resource location instead of the translation key for whatever reason
     @ExpectPlatform

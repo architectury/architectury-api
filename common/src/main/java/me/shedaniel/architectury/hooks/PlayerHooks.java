@@ -19,11 +19,12 @@
 
 package me.shedaniel.architectury.hooks;
 
-import me.shedaniel.architectury.annotations.ExpectPlatform;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.world.entity.player.Player;
 
 public final class PlayerHooks {
-    private PlayerHooks() {}
+    private PlayerHooks() {
+    }
     
     @ExpectPlatform
     public static boolean isFake(Player player) {

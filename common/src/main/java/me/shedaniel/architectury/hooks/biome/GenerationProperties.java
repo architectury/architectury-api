@@ -34,6 +34,8 @@ public interface GenerationProperties {
     
     List<Supplier<ConfiguredWorldCarver<?>>> getCarvers(GenerationStep.Carving carving);
     
+    List<Supplier<ConfiguredFeature<?, ?>>> getFeatures(GenerationStep.Decoration decoration);
+    
     List<List<Supplier<ConfiguredFeature<?, ?>>>> getFeatures();
     
     List<Supplier<ConfiguredStructureFeature<?, ?>>> getStructureStarts();

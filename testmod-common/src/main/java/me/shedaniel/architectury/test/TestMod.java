@@ -20,16 +20,23 @@
 package me.shedaniel.architectury.test;
 
 import me.shedaniel.architectury.platform.Platform;
+import me.shedaniel.architectury.registry.entity.EntityRenderers;
 import me.shedaniel.architectury.test.debug.ConsoleMessageSink;
 import me.shedaniel.architectury.test.debug.MessageSink;
 import me.shedaniel.architectury.test.debug.client.ClientOverlayMessageSink;
+import me.shedaniel.architectury.test.entity.TestEntity;
 import me.shedaniel.architectury.test.events.DebugEvents;
 import me.shedaniel.architectury.test.gamerule.TestGameRules;
+import me.shedaniel.architectury.test.item.TestBlockInteractions;
+import me.shedaniel.architectury.test.networking.TestModNet;
+import me.shedaniel.architectury.test.particle.TestParticles;
 import me.shedaniel.architectury.test.registry.TestRegistries;
 import me.shedaniel.architectury.test.registry.client.TestKeybinds;
 import me.shedaniel.architectury.test.tags.TestTags;
+import me.shedaniel.architectury.test.trade.TestTrades;
 import me.shedaniel.architectury.utils.Env;
 import me.shedaniel.architectury.utils.EnvExecutor;
+import net.minecraft.client.renderer.entity.MinecartRenderer;
 
 public class TestMod {
     public static final MessageSink SINK = EnvExecutor.getEnvSpecific(() -> ClientOverlayMessageSink::new, () -> ConsoleMessageSink::new);
@@ -40,7 +47,14 @@ public class TestMod {
         TestRegistries.initialize();
         TestGameRules.init();
         TestTags.initialize();
-        if (Platform.getEnvironment() == Env.CLIENT)
+        TestTrades.init();
+        TestParticles.initialize();
+        TestModNet.initialize();
+        TestBlockInteractions.init();
+        if (Platform.getEnvironment() == Env.CLIENT) {
             TestKeybinds.initialize();
+            TestModNet.initializeClient();
+            EntityRenderers.register(TestEntity.TYPE, MinecartRenderer<TestEntity>::new);
+        }
     }
 }

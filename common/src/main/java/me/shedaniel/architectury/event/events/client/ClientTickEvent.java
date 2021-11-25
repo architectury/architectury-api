@@ -36,8 +36,10 @@ public interface ClientTickEvent<T> {
     void tick(T instance);
     
     @Environment(EnvType.CLIENT)
-    interface Client extends ClientTickEvent<Minecraft> {}
+    interface Client extends ClientTickEvent<Minecraft> {
+    }
     
     @Environment(EnvType.CLIENT)
-    interface ClientWorld extends ClientTickEvent<ClientLevel> {}
+    interface ClientWorld extends ClientTickEvent<ClientLevel> {
+    }
 }

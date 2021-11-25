@@ -96,27 +96,27 @@ public class DeferredRegister<T> {
         private final ResourceLocation id;
         private final Supplier<R> supplier;
         private RegistrySupplier<R> value;
-    
+        
         public Entry(ResourceLocation id, Supplier<R> supplier) {
             this.id = id;
             this.supplier = supplier;
         }
-    
+        
         @Override
         public ResourceLocation getRegistryId() {
             return key.location();
         }
-    
+        
         @Override
         public ResourceLocation getId() {
             return id;
         }
-    
+        
         @Override
         public boolean isPresent() {
             return value != null && value.isPresent();
         }
-    
+        
         @Override
         public R get() {
             if (isPresent()) {
@@ -124,12 +124,12 @@ public class DeferredRegister<T> {
             }
             throw new NullPointerException("Registry Object not present: " + this.id);
         }
-    
+        
         @Override
         public int hashCode() {
             return com.google.common.base.Objects.hashCode(getRegistryId(), getId());
         }
-    
+        
         @Override
         public boolean equals(Object obj) {
             if (this == obj) return true;
@@ -137,7 +137,7 @@ public class DeferredRegister<T> {
             RegistrySupplier<?> other = (RegistrySupplier<?>) obj;
             return other.getRegistryId().equals(getRegistryId()) && other.getId().equals(getId());
         }
-    
+        
         @Override
         public String toString() {
             return getRegistryId().toString() + "@" + id.toString();

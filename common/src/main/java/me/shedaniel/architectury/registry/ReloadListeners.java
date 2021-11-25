@@ -19,12 +19,13 @@
 
 package me.shedaniel.architectury.registry;
 
-import me.shedaniel.architectury.annotations.ExpectPlatform;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 
 public final class ReloadListeners {
-    private ReloadListeners() {}
+    private ReloadListeners() {
+    }
     
     @ExpectPlatform
     public static void registerReloadListener(PackType type, PreparableReloadListener listener) {

@@ -19,7 +19,7 @@
 
 package me.shedaniel.architectury.registry;
 
-import me.shedaniel.architectury.annotations.ExpectPlatform;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.RenderType;
@@ -28,7 +28,8 @@ import net.minecraft.world.level.material.Fluid;
 
 @Environment(EnvType.CLIENT)
 public final class RenderTypes {
-    private RenderTypes() {}
+    private RenderTypes() {
+    }
     
     @ExpectPlatform
     public static void register(RenderType type, Block... blocks) {

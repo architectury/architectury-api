@@ -19,7 +19,7 @@
 
 package me.shedaniel.architectury.event;
 
-import me.shedaniel.architectury.annotations.ExpectPlatform;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import me.shedaniel.architectury.event.events.BlockEvent;
 import me.shedaniel.architectury.event.events.EntityEvent;
 import me.shedaniel.architectury.event.events.PlayerEvent;
@@ -29,7 +29,8 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 public final class EventHandler {
-    private EventHandler() {}
+    private EventHandler() {
+    }
     
     private static boolean initialized = false;
     

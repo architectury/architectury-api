@@ -19,14 +19,15 @@
 
 package me.shedaniel.architectury.hooks;
 
-import me.shedaniel.architectury.annotations.ExpectPlatform;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 public final class ExplosionHooks {
-    private ExplosionHooks() {}
+    private ExplosionHooks() {
+    }
     
     @ExpectPlatform
     public static Vec3 getPosition(Explosion explosion) {

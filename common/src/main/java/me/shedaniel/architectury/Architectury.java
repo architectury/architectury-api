@@ -19,9 +19,11 @@
 
 package me.shedaniel.architectury;
 
-import me.shedaniel.architectury.targets.ArchitecturyTarget;
+import dev.architectury.injectables.targets.ArchitecturyTarget;
 import org.jetbrains.annotations.ApiStatus;
 
+@Deprecated
+@ApiStatus.ScheduledForRemoval(inVersion = "2.0")
 @ApiStatus.Internal
 public class Architectury {
     @Deprecated

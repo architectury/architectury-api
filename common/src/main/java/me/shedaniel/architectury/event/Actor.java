@@ -21,6 +21,8 @@ package me.shedaniel.architectury.event;
 
 import net.minecraft.world.InteractionResult;
 
+// Not ScheduledForRemoval for avoiding compile errors for listeners
+@Deprecated
 @FunctionalInterface
 public interface Actor<T> {
     InteractionResult act(T t);

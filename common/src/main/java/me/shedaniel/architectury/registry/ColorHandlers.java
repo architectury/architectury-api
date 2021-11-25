@@ -19,7 +19,7 @@
 
 package me.shedaniel.architectury.registry;
 
-import me.shedaniel.architectury.annotations.ExpectPlatform;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.color.block.BlockColor;
@@ -32,7 +32,8 @@ import java.util.function.Supplier;
 
 @Environment(EnvType.CLIENT)
 public final class ColorHandlers {
-    private ColorHandlers() {}
+    private ColorHandlers() {
+    }
     
     public static void registerItemColors(ItemColor color, ItemLike... items) {
         Supplier<ItemLike>[] array = new Supplier[items.length];
@@ -54,13 +55,13 @@ public final class ColorHandlers {
     
     @SafeVarargs
     @ExpectPlatform
-    public static void registerItemColors(ItemColor color, Supplier<ItemLike>... items) {
+    public static void registerItemColors(ItemColor color, Supplier<? extends ItemLike>... items) {
         throw new AssertionError();
     }
     
     @SafeVarargs
     @ExpectPlatform
-    public static void registerBlockColors(BlockColor color, Supplier<Block>... blocks) {
+    public static void registerBlockColors(BlockColor color, Supplier<? extends Block>... blocks) {
         throw new AssertionError();
     }
 }

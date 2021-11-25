@@ -19,9 +19,9 @@
 
 package me.shedaniel.architectury.platform;
 
+import dev.architectury.injectables.annotations.ExpectPlatform;
+import dev.architectury.injectables.targets.ArchitecturyTarget;
 import me.shedaniel.architectury.Architectury;
-import me.shedaniel.architectury.annotations.ExpectPlatform;
-import me.shedaniel.architectury.targets.ArchitecturyTarget;
 import me.shedaniel.architectury.utils.Env;
 import net.fabricmc.api.EnvType;
 import net.minecraft.SharedConstants;
@@ -32,14 +32,15 @@ import java.util.Collection;
 import java.util.Optional;
 
 public final class Platform {
-    private Platform() {}
+    private Platform() {
+    }
     
     private static int simpleLoaderCache = -1;
     
     /**
      * @return the current mod loader, either "fabric" or "forge"
      * @deprecated does not reflect the true mod loader, "quilt" is never returned,
-     *             use {@link ArchitecturyTarget#getCurrentTarget()} instead.
+     * use {@link ArchitecturyTarget#getCurrentTarget()} instead.
      */
     @Deprecated
     @ApiStatus.ScheduledForRemoval(inVersion = "2.0")

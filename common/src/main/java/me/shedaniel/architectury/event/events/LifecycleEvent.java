@@ -27,47 +27,89 @@ import net.minecraft.world.level.Level;
 
 public interface LifecycleEvent {
     /**
-     * Invoked when server is starting, equivalent to forge's {@code FMLServerAboutToStartEvent} and fabric's {@code ServerLifecycleEvents#SERVER_STARTING}.
+     * Invoked before initial server startup. This is the earliest point at which the server will be available.
+     * Equivalent to Forge's {@code FMLServerAboutToStartEvent} event and
+     * Fabric's {@code ServerLifecycleEvents#SERVER_STARTING}.
+     *
+     * @see ServerState#stateChanged(Object)
      */
     Event<ServerState> SERVER_BEFORE_START = EventFactory.createLoop();
     /**
-     * Invoked when server is starting, equivalent to forge's {@code FMLServerStartingEvent}.
+     * Invoked during server startup.
+     * Equivalent to Forge's {@code FMLServerStartingEvent} event.
+     *
+     * @see ServerState#stateChanged(Object)
      */
     Event<ServerState> SERVER_STARTING = EventFactory.createLoop();
     /**
-     * Invoked when server has started, equivalent to forge's {@code FMLServerStartedEvent} and fabric's {@code ServerLifecycleEvents#SERVER_STARTED}.
+     * Invoked when the server has started and is ready to accept players.
+     * Equivalent to Forge's {@code FMLServerStartedEvent} event
+     * and Fabric's {@code ServerLifecycleEvents#SERVER_STARTED}.
+     *
+     * @see ServerState#stateChanged(Object)
      */
     Event<ServerState> SERVER_STARTED = EventFactory.createLoop();
     /**
-     * Invoked when server is stopping, equivalent to forge's {@code FMLServerStoppingEvent} and fabric's {@code ServerLifecycleEvents#SERVER_STOPPING}.
+     * Invoked when the server begins shutting down.
+     * Equivalent to Forge's {@code FMLServerStoppingEvent} event and
+     * Fabric's {@code ServerLifecycleEvents#SERVER_STOPPING}.
+     *
+     * @see ServerState#stateChanged(Object)
      */
     Event<ServerState> SERVER_STOPPING = EventFactory.createLoop();
     /**
-     * Invoked when server has stopped, equivalent to forge's {@code FMLServerStoppedEvent} and fabric's {@code ServerLifecycleEvents#SERVER_STOPPED}.
+     * Invoked when the server has finished stopping, and is about to fully shut down.
+     * Equivalent to Forge's {@code FMLServerStoppedEvent} event and
+     * Fabric's {@code ServerLifecycleEvents#SERVER_STOPPED}.
+     *
+     * @see ServerState#stateChanged(Object)
      */
     Event<ServerState> SERVER_STOPPED = EventFactory.createLoop();
     /**
-     * Invoked after a world is loaded only on server, equivalent to forge's {@code WorldEvent.Load} and fabric's {@code ServerWorldEvents#LOAD}.
+     * Invoked when a world is loaded on the server-side.
+     * Equivalent to Forge's {@code WorldEvent.Load} event (on server)
+     * and Fabric's {@code ServerWorldEvents#LOAD}.
+     *
+     * @see ServerWorldState#act(Level)
      */
     Event<ServerWorldState> SERVER_WORLD_LOAD = EventFactory.createLoop();
     /**
-     * Invoked after a world is unloaded, equivalent to forge's {@code WorldEvent.Unload} and fabric's {@code ServerWorldEvents#UNLOAD}.
+     * Invoked when a world is unloaded on the server-side.
+     * Equivalent to Forge's {@code WorldEvent.Unload} event (on server)
+     * and Fabric's {@code ServerWorldEvents#UNLOAD}.
+     *
+     * @see ServerWorldState#act(Level)
      */
     Event<ServerWorldState> SERVER_WORLD_UNLOAD = EventFactory.createLoop();
     /**
-     * Invoked during a world is saved, equivalent to forge's {@code WorldEvent.Save}.
+     * Invoked when the world is being saved.
+     * Equivalent to Forge's {@code WorldEvent.Save} event.
+     *
+     * @see ServerWorldState#act(Level)
      */
     Event<ServerWorldState> SERVER_WORLD_SAVE = EventFactory.createLoop();
     
     interface InstanceState<T> {
+        /**
+         * Parent event type for any events that are invoked on instance state change.
+         *
+         * @param instance The changed state.
+         */
         void stateChanged(T instance);
     }
     
-    interface ServerState extends InstanceState<MinecraftServer> {}
+    interface ServerState extends InstanceState<MinecraftServer> {
+    }
     
     interface WorldState<T extends Level> {
+        /**
+         * Parent event type for any events that are invoked on world state change.
+         *
+         * @param world The world that has changed.
+         */
         void act(T world);
     }
     
-    interface ServerWorldState extends WorldState<ServerLevel> {}
+    interface ServerWorldState extends WorldState<ServerLevel> {
+    }
 }

@@ -29,7 +29,6 @@ import me.shedaniel.architectury.platform.Platform;
 import me.shedaniel.architectury.utils.Env;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.inventory.AnvilScreen;
 import net.minecraft.core.Position;
 import net.minecraft.core.Vec3i;
@@ -218,6 +217,12 @@ public class DebugEvents {
         LightningEvent.STRIKE.register((bolt, level, pos, toStrike) -> {
             SINK.accept(bolt.getScoreboardName() + " struck at " + toShortString(pos) + logSide(level));
         });
+        ChunkEvent.LOAD_DATA.register((chunk, level, nbt) -> {
+            SINK.accept("Chunk loaded at x=" + chunk.getPos().x + ", z=" + chunk.getPos().z + " in dimension '" + level.dimension().location() + "'");
+        });
+        ChunkEvent.SAVE_DATA.register((chunk, level, nbt) -> {
+            SINK.accept("Chunk saved at x=" + chunk.getPos().x + ", z=" + chunk.getPos().z + " in dimension '" + level.dimension().location() + "'");
+        });
     }
     
     public static String toShortString(Vec3i pos) {
@@ -236,6 +241,14 @@ public class DebugEvents {
     
     @Environment(EnvType.CLIENT)
     public static void debugEventsClient() {
+        ClientTickEvent.CLIENT_WORLD_PRE.register(instance -> {
+            try {
+                // Uncomment the following line to see the profiler spike for root.tick.level.architecturyClientLevelPreTick
+                //Thread.sleep(10);
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+        });
         ClientChatEvent.CLIENT.register(message -> {
             SINK.accept("Client chat sent: " + message);
             return InteractionResultHolder.pass(message);

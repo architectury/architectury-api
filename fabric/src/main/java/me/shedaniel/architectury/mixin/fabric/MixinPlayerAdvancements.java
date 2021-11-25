@@ -31,11 +31,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PlayerAdvancements.class)
 public class MixinPlayerAdvancements {
-    @Shadow private ServerPlayer player;
+    @Shadow
+    private ServerPlayer player;
     
     @Inject(method = "award",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/advancements/AdvancementRewards;grant(Lnet/minecraft/server/level/ServerPlayer;)V",
-                     shift = At.Shift.AFTER))
+                    shift = At.Shift.AFTER))
     private void award(Advancement advancement, String string, CallbackInfoReturnable<Boolean> cir) {
         PlayerEvent.PLAYER_ADVANCEMENT.invoker().award(player, advancement);
     }

@@ -25,7 +25,8 @@ import java.util.*;
 import java.util.function.Consumer;
 
 public final class EventBuses {
-    private EventBuses() {}
+    private EventBuses() {
+    }
     
     private static final Map<String, IEventBus> EVENT_BUS_MAP = new HashMap<>();
     private static final Map<String, List<Consumer<IEventBus>>> ON_REGISTERED = new HashMap<>();

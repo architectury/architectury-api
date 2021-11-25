@@ -28,11 +28,12 @@ import static me.shedaniel.architectury.registry.GameRuleRegistry.register;
 
 public class TestGameRules {
     private static final Logger LOGGER = LogManager.getLogger();
-
+    
     public static final GameRules.Key<GameRules.BooleanValue> SIMPLE_BOOL = register("simpleBool", GameRules.Category.MISC, GameRuleFactory.createBooleanRule(true));
     public static final GameRules.Key<GameRules.IntegerValue> SIMPLE_INT = register("simpleInt", GameRules.Category.MISC, GameRuleFactory.createIntRule(10));
     public static final GameRules.Key<GameRules.BooleanValue> CALLBACK_BOOL = register("callbackBool", GameRules.Category.MISC, GameRuleFactory.createBooleanRule(true, (server, value) -> LOGGER.info("changed to {}", value.get())));
     public static final GameRules.Key<GameRules.IntegerValue> CALLBACK_INT = register("callbackInt", GameRules.Category.MISC, GameRuleFactory.createIntRule(10, (server, value) -> LOGGER.info("changed to {}", value.get())));
-
-    public static void init() {}
+    
+    public static void init() {
+    }
 }

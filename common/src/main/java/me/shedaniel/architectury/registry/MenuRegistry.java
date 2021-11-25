@@ -19,7 +19,7 @@
 
 package me.shedaniel.architectury.registry;
 
-import me.shedaniel.architectury.annotations.ExpectPlatform;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import me.shedaniel.architectury.registry.menu.ExtendedMenuProvider;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -41,7 +41,8 @@ import java.util.function.Consumer;
  * A utility class to register {@link MenuType}s and {@link Screen}s for containers
  */
 public final class MenuRegistry {
-    private MenuRegistry() {}
+    private MenuRegistry() {
+    }
     
     /**
      * Opens the menu.

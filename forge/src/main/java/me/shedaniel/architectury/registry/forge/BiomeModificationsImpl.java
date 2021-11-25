@@ -38,6 +38,7 @@ import net.minecraft.world.level.levelgen.surfacebuilders.ConfiguredSurfaceBuild
 import net.minecraftforge.common.world.BiomeGenerationSettingsBuilder;
 import net.minecraftforge.common.world.MobSpawnInfoBuilder;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.tuple.Pair;
@@ -53,22 +54,25 @@ import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(modid = ArchitecturyForge.MOD_ID)
 public class BiomeModificationsImpl {
-    private static final List<Pair<Predicate<BiomeContext>, BiConsumer<BiomeContext, BiomeProperties.Mutable>>> MODIFICATIONS = Lists.newArrayList();
+    private static final List<Pair<Predicate<BiomeContext>, BiConsumer<BiomeContext, BiomeProperties.Mutable>>> ADDITIONS = Lists.newArrayList();
+    private static final List<Pair<Predicate<BiomeContext>, BiConsumer<BiomeContext, BiomeProperties.Mutable>>> POST_PROCESSING = Lists.newArrayList();
+    private static final List<Pair<Predicate<BiomeContext>, BiConsumer<BiomeContext, BiomeProperties.Mutable>>> REMOVALS = Lists.newArrayList();
+    private static final List<Pair<Predicate<BiomeContext>, BiConsumer<BiomeContext, BiomeProperties.Mutable>>> REPLACEMENTS = Lists.newArrayList();
     
     public static void addProperties(Predicate<BiomeContext> predicate, BiConsumer<BiomeContext, BiomeProperties.Mutable> modifier) {
-        MODIFICATIONS.add(Pair.of(predicate, modifier));
+        ADDITIONS.add(Pair.of(predicate, modifier));
     }
     
     public static void postProcessProperties(Predicate<BiomeContext> predicate, BiConsumer<BiomeContext, BiomeProperties.Mutable> modifier) {
-        MODIFICATIONS.add(Pair.of(predicate, modifier));
+        POST_PROCESSING.add(Pair.of(predicate, modifier));
     }
     
     public static void removeProperties(Predicate<BiomeContext> predicate, BiConsumer<BiomeContext, BiomeProperties.Mutable> modifier) {
-        MODIFICATIONS.add(Pair.of(predicate, modifier));
+        REMOVALS.add(Pair.of(predicate, modifier));
     }
     
     public static void replaceProperties(Predicate<BiomeContext> predicate, BiConsumer<BiomeContext, BiomeProperties.Mutable> modifier) {
-        MODIFICATIONS.add(Pair.of(predicate, modifier));
+        REPLACEMENTS.add(Pair.of(predicate, modifier));
     }
     
     private static BiomeContext wrapSelectionContext(BiomeLoadingEvent event) {
@@ -157,7 +161,9 @@ public class BiomeModificationsImpl {
     private static class GenerationSettingsBuilderWrapped implements GenerationProperties {
         protected final BiomeGenerationSettingsBuilder generation;
         
-        public GenerationSettingsBuilderWrapped(BiomeGenerationSettingsBuilder generation) {this.generation = generation;}
+        public GenerationSettingsBuilderWrapped(BiomeGenerationSettingsBuilder generation) {
+            this.generation = generation;
+        }
         
         @Override
         public @NotNull Optional<Supplier<ConfiguredSurfaceBuilder<?>>> getSurfaceBuilder() {
@@ -168,7 +174,12 @@ public class BiomeModificationsImpl {
         public @NotNull List<Supplier<ConfiguredWorldCarver<?>>> getCarvers(GenerationStep.Carving carving) {
             return generation.getCarvers(carving);
         }
-        
+    
+        @Override
+        public List<Supplier<ConfiguredFeature<?, ?>>> getFeatures(GenerationStep.Decoration decoration) {
+            return generation.getFeatures(decoration);
+        }
+    
         @Override
         public @NotNull List<List<Supplier<ConfiguredFeature<?, ?>>>> getFeatures() {
             return ((BiomeGenerationSettingsBuilderAccessor) generation).getFeatures();
@@ -184,7 +195,9 @@ public class BiomeModificationsImpl {
     private static class SpawnSettingsBuilderWrapped implements SpawnProperties {
         protected final MobSpawnInfoBuilder builder;
         
-        public SpawnSettingsBuilderWrapped(MobSpawnInfoBuilder builder) {this.builder = builder;}
+        public SpawnSettingsBuilderWrapped(MobSpawnInfoBuilder builder) {
+            this.builder = builder;
+        }
         
         @Override
         public float getCreatureProbability() {
@@ -431,11 +444,30 @@ public class BiomeModificationsImpl {
         }
     }
     
-    @SubscribeEvent
-    public static void onBiomeLoading(BiomeLoadingEvent event) {
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void processAdditions(BiomeLoadingEvent event) {
+        modifyBiome(event, ADDITIONS);
+    }
+    
+    @SubscribeEvent(priority = EventPriority.NORMAL)
+    public static void processRemovals(BiomeLoadingEvent event) {
+        modifyBiome(event, REMOVALS);
+    }
+    
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public static void processReplacements(BiomeLoadingEvent event) {
+        modifyBiome(event, REPLACEMENTS);
+    }
+    
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void postProcessBiomes(BiomeLoadingEvent event) {
+        modifyBiome(event, POST_PROCESSING);
+    }
+    
+    private static void modifyBiome(BiomeLoadingEvent event, List<Pair<Predicate<BiomeContext>, BiConsumer<BiomeContext, BiomeProperties.Mutable>>> list) {
         BiomeContext biomeContext = wrapSelectionContext(event);
         BiomeProperties.Mutable mutableBiome = new MutableBiomeWrapped(event);
-        for (Pair<Predicate<BiomeContext>, BiConsumer<BiomeContext, BiomeProperties.Mutable>> pair : MODIFICATIONS) {
+        for (Pair<Predicate<BiomeContext>, BiConsumer<BiomeContext, BiomeProperties.Mutable>> pair : list) {
             if (pair.getLeft().test(biomeContext)) {
                 pair.getRight().accept(biomeContext, mutableBiome);
             }

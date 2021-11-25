@@ -5,7 +5,14 @@
   "minVersion": "0.7.11",
   "client": [
   ],
-  "mixins": ["BlockLandingInvoker", "FluidTagsAccessor", "MixinLightningBolt"],
+  "mixins": [
+    "BlockLandingInvoker",
+    "FluidTagsAccessor",
+    "MixinLightningBolt",
+    "AbstractVillagerMixin",
+    "VillagerMixin",
+    "WanderingTraderMixin"
+  ],
   "injectors": {
     "maxShiftBy": 5,
     "defaultRequire": 1

@@ -32,7 +32,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(FurnaceResultSlot.class)
 public class MixinFurnaceResultSlot {
-    @Shadow @Final private Player player;
+    @Shadow
+    @Final
+    private Player player;
     
     @Inject(method = "checkTakeAchievements", at = @At("RETURN"))
     private void checkTakeAchievements(ItemStack itemStack, CallbackInfo ci) {

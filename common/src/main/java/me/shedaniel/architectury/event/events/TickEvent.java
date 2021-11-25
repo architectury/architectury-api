@@ -26,20 +26,65 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 
 public interface TickEvent<T> {
+    /**
+     * Invoked before a server tick is processed.
+     * Equivalent to Forge's {@code ServerTickEvent} event in the START Phase.
+     *
+     * @see #tick(Object)
+     */
     Event<Server> SERVER_PRE = EventFactory.createLoop();
+    /**
+     * Invoked after a server tick has been processed.
+     * Equivalent to Forge's {@code ServerTickEvent} event in the END Phase.
+     *
+     * @see #tick(Object)
+     */
     Event<Server> SERVER_POST = EventFactory.createLoop();
+    /**
+     * Invoked before a server level tick is processed.
+     * Equivalent to Forge's {@code WorldTickEvent} event in the START Phase.
+     *
+     * @see #tick(Object)
+     */
     Event<ServerWorld> SERVER_WORLD_PRE = EventFactory.createLoop();
+    /**
+     * Invoked after a server level tick has been processed.
+     * Equivalent to Forge's {@code WorldTickEvent} event in the END Phase.
+     *
+     * @see #tick(Object)
+     */
     Event<ServerWorld> SERVER_WORLD_POST = EventFactory.createLoop();
+    /**
+     * Invoked before a player tick is processed.
+     * Equivalent to Forge's {@code PlayerTickEvent} event in the START Phase.
+     *
+     * @see #tick(Object)
+     */
     Event<Player> PLAYER_PRE = EventFactory.createLoop();
+    /**
+     * Invoked after a player tick has been processed.
+     * Equivalent to Forge's {@code PlayerTickEvent} event in the END Phase.
+     *
+     * @see #tick(Object)
+     */
     Event<Player> PLAYER_POST = EventFactory.createLoop();
     
+    /**
+     * Callback method for tick events.
+     *
+     * @param instance The object ticking.
+     */
     void tick(T instance);
     
-    interface Server extends TickEvent<MinecraftServer> {}
+    interface Server extends TickEvent<MinecraftServer> {
+    }
     
-    interface WorldTick<T extends Level> extends TickEvent<T> {}
+    interface WorldTick<T extends Level> extends TickEvent<T> {
+    }
     
-    interface ServerWorld extends WorldTick<ServerLevel> {}
+    interface ServerWorld extends WorldTick<ServerLevel> {
+    }
     
-    interface Player extends TickEvent<net.minecraft.world.entity.player.Player> {}
+    interface Player extends TickEvent<net.minecraft.world.entity.player.Player> {
+    }
 }

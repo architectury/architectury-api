@@ -19,7 +19,7 @@
 
 package me.shedaniel.architectury.registry;
 
-import me.shedaniel.architectury.annotations.ExpectPlatform;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import me.shedaniel.architectury.core.RegistryEntry;
 import me.shedaniel.architectury.registry.registries.RegistryBuilder;
 import net.minecraft.resources.ResourceKey;

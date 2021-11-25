@@ -19,7 +19,7 @@
 
 package me.shedaniel.architectury.registry.entity;
 
-import me.shedaniel.architectury.annotations.ExpectPlatform;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
@@ -31,7 +31,8 @@ import java.util.function.Function;
 
 @Environment(EnvType.CLIENT)
 public final class EntityRenderers {
-    private EntityRenderers() {}
+    private EntityRenderers() {
+    }
     
     @ExpectPlatform
     public static <T extends Entity> void register(EntityType<T> type, Function<EntityRenderDispatcher, EntityRenderer<T>> factory) {

@@ -22,8 +22,8 @@ package me.shedaniel.architectury.compat.fabric;
 import com.google.common.collect.Maps;
 import io.github.prospector.modmenu.api.ConfigScreenFactory;
 import io.github.prospector.modmenu.api.ModMenuApi;
-import me.shedaniel.architectury.platform.fabric.PlatformImpl;
 import me.shedaniel.architectury.platform.Mod;
+import me.shedaniel.architectury.platform.fabric.PlatformImpl;
 
 import java.util.Map;
 

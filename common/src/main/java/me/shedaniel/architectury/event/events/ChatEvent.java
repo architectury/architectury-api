@@ -27,11 +27,21 @@ import net.minecraft.world.InteractionResultHolder;
 
 public interface ChatEvent {
     /**
-     * Invoked when server receives a message, equivalent to forge's {@code ServerChatEvent}.
+     * @see Server#process(ServerPlayer, String, Component)
      */
     Event<Server> SERVER = EventFactory.createInteractionResultHolder();
     
     interface Server {
+        /**
+         * Invoked when the server receives a message from a client.
+         * Equivalent to Forge's {@code ServerChatEvent} event.
+         *
+         * @param player    The player who has sent the message.
+         * @param message   The raw message itself.
+         * @param component The message as component.
+         * @return A {@link InteractionResultHolder} determining the outcome of the event,
+         * if an outcome is set, the vanilla message is overridden.
+         */
         InteractionResultHolder<Component> process(ServerPlayer player, String message, Component component);
     }
 }

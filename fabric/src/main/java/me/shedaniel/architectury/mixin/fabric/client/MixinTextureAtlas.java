@@ -38,7 +38,7 @@ import java.util.stream.Stream;
 public class MixinTextureAtlas {
     @Inject(method = "prepareToStitch",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V", ordinal = 0,
-                     shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD)
+                    shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD)
     private void preStitch(ResourceManager resourceManager, Stream<ResourceLocation> stream, ProfilerFiller profilerFiller, int i, CallbackInfoReturnable<TextureAtlas.Preparations> cir, Set<ResourceLocation> set) {
         TextureStitchEvent.PRE.invoker().stitch((TextureAtlas) (Object) this, set::add);
     }

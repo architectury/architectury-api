@@ -19,7 +19,7 @@
 
 package me.shedaniel.architectury.registry;
 
-import me.shedaniel.architectury.annotations.ExpectPlatform;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.GameRules;
 
@@ -29,8 +29,9 @@ import java.util.function.BiConsumer;
  * A utility class for creating game rule types.
  */
 public final class GameRuleFactory {
-    private GameRuleFactory() {}
-
+    private GameRuleFactory() {
+    }
+    
     /**
      * Creates a boolean rule type.
      *
@@ -41,7 +42,7 @@ public final class GameRuleFactory {
     public static GameRules.Type<GameRules.BooleanValue> createBooleanRule(boolean defaultValue) {
         throw new AssertionError();
     }
-
+    
     /**
      * Creates a boolean rule type.
      *
@@ -53,7 +54,7 @@ public final class GameRuleFactory {
     public static GameRules.Type<GameRules.BooleanValue> createBooleanRule(boolean defaultValue, BiConsumer<MinecraftServer, GameRules.BooleanValue> changedCallback) {
         throw new AssertionError();
     }
-
+    
     /**
      * Creates an integer rule type.
      *
@@ -64,7 +65,7 @@ public final class GameRuleFactory {
     public static GameRules.Type<GameRules.IntegerValue> createIntRule(int defaultValue) {
         throw new AssertionError();
     }
-
+    
     /**
      * Creates an integer rule type.
      *

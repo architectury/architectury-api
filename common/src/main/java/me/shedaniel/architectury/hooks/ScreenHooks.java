@@ -19,7 +19,7 @@
 
 package me.shedaniel.architectury.hooks;
 
-import me.shedaniel.architectury.annotations.ExpectPlatform;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -30,7 +30,8 @@ import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public final class ScreenHooks {
-    private ScreenHooks() {}
+    private ScreenHooks() {
+    }
     
     @ExpectPlatform
     public static List<AbstractWidget> getButtons(Screen screen) {

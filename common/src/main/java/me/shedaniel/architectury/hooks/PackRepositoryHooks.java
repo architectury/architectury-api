@@ -19,12 +19,13 @@
 
 package me.shedaniel.architectury.hooks;
 
-import me.shedaniel.architectury.annotations.ExpectPlatform;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.server.packs.repository.RepositorySource;
 
 public class PackRepositoryHooks {
-    private PackRepositoryHooks() {}
+    private PackRepositoryHooks() {
+    }
     
     @ExpectPlatform
     public static void addSource(PackRepository repository, RepositorySource source) {

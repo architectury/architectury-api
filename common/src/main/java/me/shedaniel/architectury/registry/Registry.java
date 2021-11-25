@@ -35,11 +35,11 @@ public interface Registry<T> extends Iterable<T> {
     
     RegistrySupplier<T> delegateSupplied(ResourceLocation id);
     
-    default Supplier<T> register(ResourceLocation id, Supplier<T> supplier) {
+    default <E extends T> Supplier<E> register(ResourceLocation id, Supplier<E> supplier) {
         return registerSupplied(id, supplier);
     }
     
-    RegistrySupplier<T> registerSupplied(ResourceLocation id, Supplier<T> supplier);
+    <E extends T> RegistrySupplier<E> registerSupplied(ResourceLocation id, Supplier<E> supplier);
     
     @Nullable
     ResourceLocation getId(T obj);
