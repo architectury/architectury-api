@@ -22,6 +22,8 @@ package dev.architectury.registry.registries.forge;
 import com.google.common.base.Objects;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
 import dev.architectury.platform.forge.EventBuses;
 import dev.architectury.registry.registries.Registrar;
@@ -30,6 +32,7 @@ import dev.architectury.registry.registries.Registries;
 import dev.architectury.registry.registries.RegistrySupplier;
 import dev.architectury.registry.registries.options.RegistrarOption;
 import dev.architectury.registry.registries.options.StandardRegistrarOption;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
@@ -48,6 +51,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class RegistriesImpl {
@@ -69,27 +73,47 @@ public class RegistriesImpl {
     
     public static class RegistryProviderImpl implements Registries.RegistryProvider {
         private final String modId;
-        private final IEventBus eventBus;
+        private final Supplier<IEventBus> eventBus;
         private final Table<Type, RegistryObject<?>, Supplier<? extends IForgeRegistryEntry<?>>> registry = HashBasedTable.create();
+        private final Multimap<ResourceKey<Registry<?>>, Consumer<Registrar<?>>> listeners = HashMultimap.create();
         
         public RegistryProviderImpl(String modId) {
             this.modId = modId;
-            this.eventBus = EventBuses.getModEventBus(modId).orElseThrow(() -> new IllegalStateException("Can't get event bus for mod '" + modId + "' because it was not registered!"));
-            this.eventBus.register(new EventListener());
+            this.eventBus = Suppliers.memoize(() -> {
+                IEventBus eventBus = EventBuses.getModEventBus(modId).orElseThrow(() -> new IllegalStateException("Can't get event bus for mod '" + modId + "' because it was not registered!"));
+                eventBus.register(new EventListener());
+                return eventBus;
+            });
+        }
+        
+        private void updateEventBus() {
+            synchronized (eventBus) {
+                // Make sure that the eventbus is setup
+                this.eventBus.get();
+            }
         }
         
         @Override
         public <T> Registrar<T> get(ResourceKey<net.minecraft.core.Registry<T>> registryKey) {
+            updateEventBus();
             return get(RegistryManager.ACTIVE.getRegistry(registryKey.location()));
         }
         
         public <T> Registrar<T> get(IForgeRegistry registry) {
+            updateEventBus();
             return new ForgeBackedRegistryImpl<>(this.registry, registry);
         }
         
         @Override
         public <T> Registrar<T> get(net.minecraft.core.Registry<T> registry) {
+            updateEventBus();
             return new VanillaBackedRegistryImpl<>(registry);
+        }
+        
+        @Override
+        public <T> void forRegistry(ResourceKey<net.minecraft.core.Registry<T>> key, Consumer<Registrar<T>> consumer) {
+            this.listeners.put((ResourceKey<net.minecraft.core.Registry<?>>) (ResourceKey<? extends net.minecraft.core.Registry<?>>) key,
+                    (Consumer<Registrar<?>>) (Consumer<? extends Registrar<?>>) consumer);
         }
         
         @Override
@@ -103,6 +127,7 @@ public class RegistriesImpl {
             @SubscribeEvent
             public void handleEvent(RegistryEvent.Register event) {
                 IForgeRegistry registry = event.getRegistry();
+                Registrar<Object> archRegistry = get(registry);
                 
                 for (Map.Entry<Type, Map<RegistryObject<?>, Supplier<? extends IForgeRegistryEntry<?>>>> row : RegistryProviderImpl.this.registry.rowMap().entrySet()) {
                     if (row.getKey() == event.getGenericType()) {
@@ -110,6 +135,12 @@ public class RegistriesImpl {
                             registry.register(entry.getValue().get());
                             entry.getKey().updateReference(registry);
                         }
+                    }
+                }
+                
+                for (Map.Entry<ResourceKey<net.minecraft.core.Registry<?>>, Consumer<Registrar<?>>> entry : listeners.entries()) {
+                    if (entry.getKey().location().equals(registry.getRegistryName())) {
+                        entry.getValue().accept(archRegistry);
                     }
                 }
             }

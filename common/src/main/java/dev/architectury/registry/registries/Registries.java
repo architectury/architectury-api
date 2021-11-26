@@ -28,6 +28,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 /**
  * Platform-agnostic wrapper of minecraft registries, should be used to register content.
@@ -53,6 +54,19 @@ public final class Registries {
     @Deprecated
     public <T> Registrar<T> get(Registry<T> registry) {
         return this.provider.get(registry);
+    }
+    
+    /**
+     * Listen to registry registration, the callback is called when content should be registered.
+     * On forge, this is invoked after {@code RegistryEvent.Register}.
+     * On fabric, this is invoked immediately.
+     *
+     * @param key      the key of the registry
+     * @param callback the callback to be invoked
+     * @param <T>      the type of registry entry
+     */
+    public <T> void forRegistry(ResourceKey<Registry<T>> key, Consumer<Registrar<T>> callback) {
+        this.provider.forRegistry(key, callback);
     }
     
     @SafeVarargs
@@ -107,6 +121,8 @@ public final class Registries {
         
         @Deprecated
         <T> Registrar<T> get(Registry<T> registry);
+        
+        <T> void forRegistry(ResourceKey<Registry<T>> key, Consumer<Registrar<T>> consumer);
         
         <T> RegistrarBuilder<T> builder(Class<T> type, ResourceLocation registryId);
     }
