@@ -40,6 +40,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class RegistriesImpl {
@@ -70,6 +71,11 @@ public class RegistriesImpl {
         @Override
         public <T> Registrar<T> get(Registry<T> registry) {
             return new RegistrarImpl<>(registry);
+        }
+        
+        @Override
+        public <T> void forRegistry(ResourceKey<Registry<T>> key, Consumer<Registrar<T>> consumer) {
+            consumer.accept(get(key));
         }
         
         @Override
