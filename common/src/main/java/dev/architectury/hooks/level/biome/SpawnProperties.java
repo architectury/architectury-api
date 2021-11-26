@@ -34,8 +34,6 @@ public interface SpawnProperties {
     
     Map<EntityType<?>, MobSpawnSettings.MobSpawnCost> getMobSpawnCosts();
     
-    boolean isPlayerSpawnFriendly();
-    
     interface Mutable extends SpawnProperties {
         Mutable setCreatureProbability(float probability);
         
@@ -48,7 +46,5 @@ public interface SpawnProperties {
         Mutable setSpawnCost(EntityType<?> entityType, double mass, double gravityLimit);
         
         Mutable clearSpawnCost(EntityType<?> entityType);
-        
-        Mutable setPlayerSpawnFriendly(boolean friendly);
     }
 }

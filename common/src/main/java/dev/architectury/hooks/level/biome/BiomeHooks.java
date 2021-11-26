@@ -393,10 +393,5 @@ public final class BiomeHooks {
         public Map<EntityType<?>, MobSpawnSettings.MobSpawnCost> getMobSpawnCosts() {
             return null;
         }
-        
-        @Override
-        public boolean isPlayerSpawnFriendly() {
-            return this.settings.playerSpawnFriendly();
-        }
     }
 }
