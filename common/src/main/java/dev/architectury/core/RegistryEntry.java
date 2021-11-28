@@ -19,8 +19,41 @@
 
 package dev.architectury.core;
 
+import com.google.common.reflect.TypeToken;
+import dev.architectury.injectables.annotations.PlatformOnly;
+import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
+
 /**
- * An entry in registries, will extend {@code ForgeRegistryEntry} on forge.
+ * An entry in registries, will implement methods from {@code IForgeRegistryEntry}.
  */
 public class RegistryEntry<T> {
+    private final TypeToken<T> token = new TypeToken<T>(getClass()) {
+    };
+    private ResourceLocation registryName = null;
+    
+    @ApiStatus.Internal
+    @PlatformOnly(PlatformOnly.FORGE)
+    public T setRegistryName(ResourceLocation name) {
+        if (registryName != null) {
+            throw new IllegalStateException("Tried to override registry name from previous " + registryName + " to " + name);
+        }
+        
+        registryName = name;
+        return (T) this;
+    }
+    
+    @Nullable
+    @ApiStatus.Internal
+    @PlatformOnly(PlatformOnly.FORGE)
+    public ResourceLocation getRegistryName() {
+        return registryName;
+    }
+    
+    @ApiStatus.Internal
+    @PlatformOnly(PlatformOnly.FORGE)
+    public Class<T> getRegistryType() {
+        return (Class<T>) token.getRawType();
+    }
 }

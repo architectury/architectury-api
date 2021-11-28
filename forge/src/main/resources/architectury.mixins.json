@@ -13,7 +13,6 @@
     "MixinChunkSerializer",
     "MixinFallingBlockEntity",
     "MixinItemExtension",
-    "MixinRegistryEntry",
     "MixinWorldEvent"
   ],
   "injectors": {
