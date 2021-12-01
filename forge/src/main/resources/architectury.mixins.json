@@ -8,8 +8,6 @@
     "MixinClientLevel"
   ],
   "mixins": [
-    "MixinBlockEntity",
-    "MixinBlockEntityExtension",
     "MixinChunkSerializer",
     "MixinFallingBlockEntity",
     "MixinItemExtension",

@@ -25,9 +25,8 @@ import dev.architectury.event.EventFactory;
 import dev.architectury.event.EventResult;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.FormattedText;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 
@@ -40,13 +39,9 @@ public interface ClientTooltipEvent {
      */
     Event<Item> ITEM = EventFactory.createLoop();
     /**
-     * @see RenderVanilla#renderTooltip(PoseStack, List, int, int)
+     * @see Render#renderTooltip(PoseStack, List, int, int)
      */
-    Event<RenderVanilla> RENDER_VANILLA_PRE = EventFactory.createEventResult();
-    /**
-     * @see RenderForge#renderTooltip(PoseStack, List, int, int)
-     */
-    Event<RenderForge> RENDER_FORGE_PRE = EventFactory.createEventResult();
+    Event<Render> RENDER_PRE = EventFactory.createEventResult();
     /**
      * @see RenderModifyPosition#renderTooltip(PoseStack, PositionContext)
      */
@@ -71,13 +66,9 @@ public interface ClientTooltipEvent {
     }
     
     @Environment(EnvType.CLIENT)
-    interface RenderVanilla {
+    interface Render {
         /**
          * Invoked before the tooltip for a tooltip is rendered.
-         *
-         * <p> This is <b>not</b> invoked on Forge due to
-         * {@link RenderForge#renderTooltip(PoseStack, List, int, int) fundamental differences}
-         * in Forge and vanilla tooltip logic.
          *
          * @param matrices The pose stack.
          * @param texts    The mutable list of components that are rendered.
@@ -86,26 +77,7 @@ public interface ClientTooltipEvent {
          * @return A {@link EventResult} determining the outcome of the event,
          * the execution of the vanilla tooltip rendering may be cancelled by the result.
          */
-        EventResult renderTooltip(PoseStack matrices, List<? extends FormattedCharSequence> texts, int x, int y);
-    }
-    
-    @Environment(EnvType.CLIENT)
-    interface RenderForge {
-        /**
-         * Invoked before the tooltip for a tooltip is rendered.
-         *
-         * <p> This is <b>only</b> invoked on Forge due to
-         * {@link RenderVanilla#renderTooltip(PoseStack, List, int, int) fundamental differences}
-         * in Forge and vanilla tooltip logic.
-         *
-         * @param matrices The pose stack.
-         * @param texts    The mutable list of components that are rendered.
-         * @param x        The x-coordinate of the tooltip.
-         * @param y        The y-coordinate of the tooltip.
-         * @return A {@link EventResult} determining the outcome of the event,
-         * the execution of the forge tooltip rendering may be cancelled by the result.
-         */
-        EventResult renderTooltip(PoseStack matrices, List<? extends FormattedText> texts, int x, int y);
+        EventResult renderTooltip(PoseStack matrices, List<? extends ClientTooltipComponent> texts, int x, int y);
     }
     
     @Environment(EnvType.CLIENT)

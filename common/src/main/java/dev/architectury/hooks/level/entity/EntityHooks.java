@@ -22,6 +22,7 @@ package dev.architectury.hooks.level.entity;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import org.jetbrains.annotations.Nullable;
 
 public final class EntityHooks {
@@ -34,8 +35,7 @@ public final class EntityHooks {
     }
     
     @Nullable
-    @ExpectPlatform
     public static Entity fromCollision(CollisionContext ctx) {
-        throw new AssertionError();
+        return ctx instanceof EntityCollisionContext ? ((EntityCollisionContext) ctx).getEntity() : null;
     }
 }

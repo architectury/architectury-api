@@ -20,7 +20,7 @@
 package dev.architectury.registry.client.keymappings.forge;
 
 import net.minecraft.client.KeyMapping;
-import net.minecraftforge.fmlclient.registry.ClientRegistry;
+import net.minecraftforge.client.ClientRegistry;
 
 public class KeyMappingRegistryImpl {
     public static void register(KeyMapping keyBinding) {

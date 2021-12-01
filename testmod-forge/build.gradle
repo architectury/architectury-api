@@ -5,7 +5,7 @@ plugins {
 
 loom {
     forge {
-        mixinConfig "architectury.mixins.json"
+        // mixinConfig "architectury.mixins.json"
 
         localMods {
             forge {

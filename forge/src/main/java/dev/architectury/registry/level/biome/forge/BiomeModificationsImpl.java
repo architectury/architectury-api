@@ -30,11 +30,9 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
-import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
-import net.minecraft.world.level.levelgen.surfacebuilders.ConfiguredSurfaceBuilder;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraftforge.common.world.BiomeGenerationSettingsBuilder;
-import net.minecraftforge.common.world.MobSpawnInfoBuilder;
+import net.minecraftforge.common.world.MobSpawnSettingsBuilder;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -43,7 +41,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
@@ -139,17 +136,6 @@ public class BiomeModificationsImpl {
         public Biome.@NotNull BiomeCategory getCategory() {
             return event.getCategory();
         }
-        
-        @Override
-        public float getDepth() {
-            return event.getDepth();
-        }
-        
-        @Override
-        public float getScale() {
-            return event.getScale();
-        }
-        
     }
     
     private static class GenerationSettingsBuilderWrapped implements GenerationProperties {
@@ -160,31 +146,20 @@ public class BiomeModificationsImpl {
         }
         
         @Override
-        public @NotNull Optional<Supplier<ConfiguredSurfaceBuilder<?>>> getSurfaceBuilder() {
-            return generation.getSurfaceBuilder();
-        }
-        
-        @Override
         public @NotNull List<Supplier<ConfiguredWorldCarver<?>>> getCarvers(GenerationStep.Carving carving) {
             return generation.getCarvers(carving);
         }
         
         @Override
-        public @NotNull List<List<Supplier<ConfiguredFeature<?, ?>>>> getFeatures() {
+        public @NotNull List<List<Supplier<PlacedFeature>>> getFeatures() {
             return generation.features;
         }
-        
-        @Override
-        public @NotNull List<Supplier<ConfiguredStructureFeature<?, ?>>> getStructureStarts() {
-            return generation.getStructures();
-        }
-        
     }
     
     private static class SpawnSettingsBuilderWrapped implements SpawnProperties {
-        protected final MobSpawnInfoBuilder builder;
+        protected final MobSpawnSettingsBuilder builder;
         
-        public SpawnSettingsBuilderWrapped(MobSpawnInfoBuilder builder) {
+        public SpawnSettingsBuilderWrapped(MobSpawnSettingsBuilder builder) {
             this.builder = builder;
         }
         
@@ -201,11 +176,6 @@ public class BiomeModificationsImpl {
         @Override
         public @NotNull Map<EntityType<?>, MobSpawnSettings.MobSpawnCost> getMobSpawnCosts() {
             return builder.mobSpawnCosts;
-        }
-        
-        @Override
-        public boolean isPlayerSpawnFriendly() {
-            return builder.playerCanSpawn;
         }
     }
     
@@ -242,18 +212,6 @@ public class BiomeModificationsImpl {
         @Override
         public @NotNull Mutable setCategory(Biome.@NotNull BiomeCategory category) {
             event.setCategory(category);
-            return this;
-        }
-        
-        @Override
-        public @NotNull Mutable setDepth(float depth) {
-            event.setDepth(depth);
-            return this;
-        }
-        
-        @Override
-        public @NotNull Mutable setScale(float scale) {
-            event.setScale(scale);
             return this;
         }
     }
@@ -338,13 +296,7 @@ public class BiomeModificationsImpl {
         }
         
         @Override
-        public Mutable setSurfaceBuilder(ConfiguredSurfaceBuilder<?> builder) {
-            generation.surfaceBuilder(builder);
-            return this;
-        }
-        
-        @Override
-        public Mutable addFeature(GenerationStep.Decoration decoration, ConfiguredFeature<?, ?> feature) {
+        public Mutable addFeature(GenerationStep.Decoration decoration, PlacedFeature feature) {
             generation.addFeature(decoration, feature);
             return this;
         }
@@ -356,13 +308,7 @@ public class BiomeModificationsImpl {
         }
         
         @Override
-        public Mutable addStructure(ConfiguredStructureFeature<?, ?> feature) {
-            generation.addStructureStart(feature);
-            return this;
-        }
-        
-        @Override
-        public Mutable removeFeature(GenerationStep.Decoration decoration, ConfiguredFeature<?, ?> feature) {
+        public Mutable removeFeature(GenerationStep.Decoration decoration, PlacedFeature feature) {
             generation.getFeatures(decoration).removeIf(supplier -> supplier.get() == feature);
             return this;
         }
@@ -372,16 +318,10 @@ public class BiomeModificationsImpl {
             generation.getCarvers(carving).removeIf(supplier -> supplier.get() == feature);
             return this;
         }
-        
-        @Override
-        public Mutable removeStructure(ConfiguredStructureFeature<?, ?> feature) {
-            generation.getStructures().removeIf(supplier -> supplier.get() == feature);
-            return this;
-        }
     }
     
     private static class MutableSpawnSettingsBuilderWrapped extends SpawnSettingsBuilderWrapped implements SpawnProperties.Mutable {
-        public MutableSpawnSettingsBuilderWrapped(MobSpawnInfoBuilder builder) {
+        public MutableSpawnSettingsBuilderWrapped(MobSpawnSettingsBuilder builder) {
             super(builder);
         }
         
@@ -423,12 +363,6 @@ public class BiomeModificationsImpl {
         @Override
         public Mutable clearSpawnCost(EntityType<?> entityType) {
             getMobSpawnCosts().remove(entityType);
-            return this;
-        }
-        
-        @Override
-        public @NotNull Mutable setPlayerSpawnFriendly(boolean friendly) {
-            builder.playerCanSpawn = friendly;
             return this;
         }
     }

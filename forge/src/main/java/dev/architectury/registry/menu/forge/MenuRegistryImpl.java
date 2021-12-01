@@ -31,8 +31,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.extensions.IForgeContainerType;
-import net.minecraftforge.fmllegacy.network.NetworkHooks;
+import net.minecraftforge.common.extensions.IForgeMenuType;
+import net.minecraftforge.network.NetworkHooks;
 
 public class MenuRegistryImpl {
     public static void openExtendedMenu(ServerPlayer player, ExtendedMenuProvider provider) {
@@ -44,7 +44,7 @@ public class MenuRegistryImpl {
     }
     
     public static <T extends AbstractContainerMenu> MenuType<T> ofExtended(ExtendedMenuTypeFactory<T> factory) {
-        return IForgeContainerType.create(factory::create);
+        return IForgeMenuType.create(factory::create);
     }
     
     @OnlyIn(Dist.CLIENT)

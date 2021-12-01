@@ -31,7 +31,7 @@ import dev.architectury.impl.fabric.ScreenInputDelegate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -99,13 +99,13 @@ public abstract class MixinScreen implements ScreenInputDelegate {
     }
     
     @Inject(method = "renderTooltipInternal", at = @At("HEAD"), cancellable = true)
-    private void renderTooltip(PoseStack poseStack, List<? extends FormattedCharSequence> list, int x, int y, CallbackInfo ci) {
+    private void renderTooltip(PoseStack poseStack, List<? extends ClientTooltipComponent> list, int x, int y, CallbackInfo ci) {
         if (!list.isEmpty()) {
             var colorContext = tooltipColorContext.get();
             colorContext.reset();
             var positionContext = tooltipPositionContext.get();
             positionContext.reset(x, y);
-            if (ClientTooltipEvent.RENDER_VANILLA_PRE.invoker().renderTooltip(poseStack, list, x, y).isFalse()) {
+            if (ClientTooltipEvent.RENDER_PRE.invoker().renderTooltip(poseStack, list, x, y).isFalse()) {
                 ci.cancel();
             } else {
                 ClientTooltipEvent.RENDER_MODIFY_COLOR.invoker().renderTooltip(poseStack, x, y, colorContext);

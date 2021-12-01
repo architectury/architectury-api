@@ -21,9 +21,8 @@ package dev.architectury.hooks.level.biome;
 
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
-import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -34,16 +33,14 @@ public interface GenerationProperties {
     List<List<Supplier<PlacedFeature>>> getFeatures();
     
     interface Mutable extends GenerationProperties {
-        Mutable addFeature(GenerationStep.Decoration decoration, ConfiguredFeature<?, ?> feature);
+        @ApiStatus.Experimental
+        Mutable addFeature(GenerationStep.Decoration decoration, PlacedFeature feature);
         
         Mutable addCarver(GenerationStep.Carving carving, ConfiguredWorldCarver<?> feature);
         
-        Mutable addStructure(ConfiguredStructureFeature<?, ?> feature);
-        
-        Mutable removeFeature(GenerationStep.Decoration decoration, ConfiguredFeature<?, ?> feature);
+        @ApiStatus.Experimental
+        Mutable removeFeature(GenerationStep.Decoration decoration, PlacedFeature feature);
         
         Mutable removeCarver(GenerationStep.Carving carving, ConfiguredWorldCarver<?> feature);
-        
-        Mutable removeStructure(ConfiguredStructureFeature<?, ?> feature);
     }
 }

@@ -1,5 +1,5 @@
 plugins {
-    id "com.github.johnrengelman.shadow" version "7.0.0"
+    id "com.github.johnrengelman.shadow" version "7.1.0"
     id "com.matthewprenger.cursegradle"
 }
 
@@ -107,8 +107,9 @@ curseforge {
             releaseType = "$rootProject.cf_type"
             changelogType = "html"
             changelog = releaseChangelog()
+            addGameVersion "1.18"
             addGameVersion "1.18-Snapshot"
-            addGameVersion "Java 16"
+            addGameVersion "Java 17"
             addGameVersion "Fabric"
             relations {
                 requiredDependency "fabric-api"

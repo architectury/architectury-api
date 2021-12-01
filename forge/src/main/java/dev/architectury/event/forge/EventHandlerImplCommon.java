@@ -47,6 +47,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.entity.player.*;
 import net.minecraftforge.event.entity.player.PlayerEvent.*;
+import net.minecraftforge.event.server.*;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.BlockEvent.EntityPlaceEvent;
 import net.minecraftforge.event.world.BlockEvent.FarmlandTrampleEvent;
@@ -58,8 +59,7 @@ import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
-import net.minecraftforge.fmlserverevents.*;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 public class EventHandlerImplCommon {
     @SubscribeEvent(priority = EventPriority.HIGH)
@@ -81,22 +81,22 @@ public class EventHandlerImplCommon {
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void event(FMLServerStartingEvent event) {
+    public static void event(ServerStartingEvent event) {
         LifecycleEvent.SERVER_STARTING.invoker().stateChanged(event.getServer());
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void event(FMLServerStartedEvent event) {
+    public static void event(ServerStartedEvent event) {
         LifecycleEvent.SERVER_STARTED.invoker().stateChanged(event.getServer());
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void event(FMLServerStoppingEvent event) {
+    public static void event(ServerStoppingEvent event) {
         LifecycleEvent.SERVER_STOPPING.invoker().stateChanged(event.getServer());
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void event(FMLServerStoppedEvent event) {
+    public static void event(ServerStoppedEvent event) {
         LifecycleEvent.SERVER_STOPPED.invoker().stateChanged(event.getServer());
     }
     
@@ -389,7 +389,7 @@ public class EventHandlerImplCommon {
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void event(FMLServerAboutToStartEvent event) {
+    public static void event(ServerAboutToStartEvent event) {
         LifecycleEvent.SERVER_BEFORE_START.invoker().stateChanged(event.getServer());
     }
     
@@ -410,7 +410,7 @@ public class EventHandlerImplCommon {
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(ChunkDataEvent.Load event) {
         LevelAccessor level = event.getChunk().getWorldForge();
-        if (!(level instanceof ServerLevel)) {
+        if (!(level instanceof ServerLevel) && event instanceof WorldEventAttachment) {
             level = ((WorldEventAttachment) event).architectury$getAttachedLevel();
         }
         ChunkEvent.LOAD_DATA.invoker().load(event.getChunk(), level instanceof ServerLevel ? (ServerLevel) level : null, event.getData());
