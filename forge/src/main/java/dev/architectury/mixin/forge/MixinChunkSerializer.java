@@ -44,7 +44,7 @@ public class MixinChunkSerializer {
     private static ThreadLocal<WeakReference<ServerLevel>> level = new ThreadLocal<>();
     
     @Inject(method = "read", at = @At("HEAD"))
-    private static void read(ServerLevel worldIn, StructureManager templateManagerIn, PoiManager poiManager, ChunkPos pos, CompoundTag compound, CallbackInfoReturnable<ProtoChunk> cir) {
+    private static void read(ServerLevel worldIn, PoiManager arg2, ChunkPos arg3, CompoundTag arg4, CallbackInfoReturnable<ProtoChunk> cir) {
         level.set(new WeakReference<>(worldIn));
     }
     

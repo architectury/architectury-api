@@ -5,8 +5,8 @@ plugins {
 
 loom {
     forge {
-//        mixinConfig "architectury.mixins.json"
-//        mixinConfig "architectury-common.mixins.json"
+        mixinConfig "architectury.mixins.json"
+        mixinConfig "architectury-common.mixins.json"
     }
 }
 
@@ -33,8 +33,6 @@ dependencies {
 
     common(project(path: ":common", configuration: "dev")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive false }
-    // compile with mixins for now
-    compileClasspath("dev.architectury:mixin-patched:0.8.4.+")
 }
 
 processResources {
