@@ -170,8 +170,7 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(RenderTooltipEvent.Pre event) {
-        // TODO: https://discord.com/channels/313125603924639766/852298000042164244/915646384437350472
-        PoseStack stack = new PoseStack();
+        PoseStack stack = event.getPoseStack();
         
         if (ClientTooltipEvent.RENDER_PRE.invoker().renderTooltip(stack, event.getComponents(), event.getX(), event.getY()).isFalse()) {
             event.setCanceled(true);
@@ -187,8 +186,7 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(RenderTooltipEvent.Color event) {
-        // TODO: https://discord.com/channels/313125603924639766/852298000042164244/915646384437350472
-        PoseStack stack = new PoseStack();
+        PoseStack stack = event.getPoseStack();
         
         TooltipEventColorContextImpl colorContext = tooltipColorContext.get();
         colorContext.reset();
