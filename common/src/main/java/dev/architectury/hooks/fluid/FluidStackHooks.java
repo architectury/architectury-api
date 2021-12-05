@@ -31,6 +31,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class FluidStackHooks {
@@ -145,7 +146,25 @@ public class FluidStackHooks {
     
     @ExpectPlatform
     @Environment(EnvType.CLIENT)
+    public static int getColor(@NotNull FluidStack stack, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos) {
+        throw new AssertionError();
+    }
+    
+    @ExpectPlatform
+    @Environment(EnvType.CLIENT)
     public static int getColor(Fluid fluid) {
+        throw new AssertionError();
+    }
+    
+    @ExpectPlatform
+    @Environment(EnvType.CLIENT)
+    public static boolean shouldRenderFromTop(FluidStack stack) {
+        throw new AssertionError();
+    }
+    
+    @ExpectPlatform
+    @Environment(EnvType.CLIENT)
+    public static boolean shouldRenderFromTop(Fluid fluid) {
         throw new AssertionError();
     }
 }

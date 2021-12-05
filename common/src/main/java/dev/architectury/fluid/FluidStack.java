@@ -21,6 +21,9 @@ package dev.architectury.fluid;
 
 import dev.architectury.hooks.fluid.FluidStackHooks;
 import dev.architectury.utils.NbtType;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -198,5 +201,27 @@ public final class FluidStack {
     
     public CompoundTag write(CompoundTag tag) {
         return FluidStackHooks.write(this, tag);
+    }
+    
+    @Environment(EnvType.CLIENT)
+    @Nullable
+    public TextureAtlasSprite getStillTexture() {
+        return FluidStackHooks.getStillTexture(this);
+    }
+    
+    @Environment(EnvType.CLIENT)
+    @Nullable
+    public TextureAtlasSprite getFlowingTexture() {
+        return FluidStackHooks.getFlowingTexture(this);
+    }
+    
+    @Environment(EnvType.CLIENT)
+    public int getColor() {
+        return FluidStackHooks.getColor(this);
+    }
+    
+    @Environment(EnvType.CLIENT)
+    public boolean shouldRenderFromTop() {
+        return FluidStackHooks.shouldRenderFromTop(this);
     }
 }

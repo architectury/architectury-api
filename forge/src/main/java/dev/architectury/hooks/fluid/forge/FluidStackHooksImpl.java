@@ -117,7 +117,11 @@ public class FluidStackHooksImpl {
     @OnlyIn(Dist.CLIENT)
     public static int getColor(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, @NotNull FluidState state) {
         if (state.getType() == Fluids.EMPTY) return -1;
-        return state.getType().getAttributes().getColor(level, pos);
+        if (level != null && pos != null) {
+            return state.getType().getAttributes().getColor(level, pos);
+        } else {
+            return getColor(state.getType());
+        }
     }
     
     @OnlyIn(Dist.CLIENT)
@@ -127,8 +131,28 @@ public class FluidStackHooksImpl {
     }
     
     @OnlyIn(Dist.CLIENT)
+    public static int getColor(@NotNull FluidStack stack, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos) {
+        if (stack.getFluid() == Fluids.EMPTY) return -1;
+        if (level != null && pos != null) {
+            return stack.getFluid().getAttributes().getColor(level, pos);
+        } else {
+            return stack.getFluid().getAttributes().getColor(FluidStackHooksForge.toForge(stack));
+        }
+    }
+    
+    @OnlyIn(Dist.CLIENT)
     public static int getColor(@NotNull Fluid fluid) {
         if (fluid == Fluids.EMPTY) return -1;
         return fluid.getAttributes().getColor();
+    }
+    
+    @OnlyIn(Dist.CLIENT)
+    public static boolean shouldRenderFromTop(FluidStack stack) {
+        return stack.getFluid().getAttributes().isGaseous();
+    }
+    
+    @OnlyIn(Dist.CLIENT)
+    public static boolean shouldRenderFromTop(Fluid fluid) {
+        return fluid.getAttributes().isGaseous();
     }
 }
