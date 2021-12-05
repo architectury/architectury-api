@@ -27,6 +27,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.function.Function;
+
 public interface BlockTransferAccess<T, C> extends TransferAccess<T> {
     @Nullable
     T get(Level level, BlockPos pos, C context);
@@ -39,12 +41,6 @@ public interface BlockTransferAccess<T, C> extends TransferAccess<T> {
     @FunctionalInterface
     interface BlockAccessProvider<T, C> {
         @Nullable
-        BlockAccessApplicator<T, C> get(Level level, BlockPos pos, BlockState state, BlockEntity blockEntity);
-    }
-    
-    @FunctionalInterface
-    interface BlockAccessApplicator<T, C> {
-        @Nullable
-        T get(Level level, BlockPos pos, BlockState state, BlockEntity blockEntity, @Nullable C context);
+        Function<C, T> get(Level level, BlockPos pos, BlockState state, BlockEntity blockEntity);
     }
 }

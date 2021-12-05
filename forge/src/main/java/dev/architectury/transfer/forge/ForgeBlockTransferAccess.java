@@ -29,6 +29,8 @@ import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.function.Function;
+
 public interface ForgeBlockTransferAccess<T, C> extends BlockTransferAccess<T, Direction> {
     Capability<C> getCapability();
     
@@ -39,14 +41,14 @@ public interface ForgeBlockTransferAccess<T, C> extends BlockTransferAccess<T, D
         CapabilitiesAttachListeners.add(event -> {
             if (event.getObject() instanceof BlockEntity) {
                 BlockEntity blockEntity = (BlockEntity) event.getObject();
-                BlockAccessApplicator<T, Direction> applicator = provider.get(blockEntity.getLevel(), blockEntity.getBlockPos(), blockEntity.getBlockState(), blockEntity);
+                Function<Direction, T> applicator = provider.get(blockEntity.getLevel(), blockEntity.getBlockPos(), blockEntity.getBlockState(), blockEntity);
                 if (applicator != null) {
                     event.addCapability(id, new ICapabilityProvider() {
                         @NotNull
                         @Override
                         public <S> LazyOptional<S> getCapability(@NotNull Capability<S> capability, @Nullable Direction arg) {
                             if (capability == ForgeBlockTransferAccess.this.getCapability()) {
-                                T handler = applicator.get(blockEntity.getLevel(), blockEntity.getBlockPos(), blockEntity.getBlockState(), blockEntity, arg);
+                                T handler = applicator.apply(arg);
                                 
                                 return LazyOptional.of(() -> from(handler)).cast();
                             }
