@@ -22,25 +22,26 @@ package dev.architectury.transfer.fluid;
 import dev.architectury.fluid.FluidStack;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.transfer.TransferHandler;
-import net.minecraft.core.BlockPos;
+import dev.architectury.transfer.access.BlockTransferAccess;
+import dev.architectury.transfer.access.ItemTransferAccess;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 public class FluidTransfer {
     private FluidTransfer() {
     }
     
+    public static final BlockTransferAccess<TransferHandler<FluidStack>, Direction> BLOCK = instantiateBlockAccess();
+    public static final ItemTransferAccess<TransferHandler<FluidStack>, TransferHandler<ItemStack>> ITEM = instantiateItemAccess();
+    
     @ExpectPlatform
-    @Nullable
-    public static TransferHandler<FluidStack> get(Level level, BlockPos pos, Direction direction) {
+    private static BlockTransferAccess<TransferHandler<FluidStack>, Direction> instantiateBlockAccess() {
         throw new AssertionError();
     }
     
     @ExpectPlatform
-    @Nullable
-    public static TransferHandler<FluidStack> get(Level level, BlockPos pos, @Nullable BlockEntity blockEntity, Direction direction) {
+    private static ItemTransferAccess<TransferHandler<FluidStack>, TransferHandler<ItemStack>> instantiateItemAccess() {
         throw new AssertionError();
     }
     

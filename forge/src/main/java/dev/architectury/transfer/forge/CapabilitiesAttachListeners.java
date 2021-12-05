@@ -17,25 +17,31 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.hooks.fluid.fabric;
+package dev.architectury.transfer.forge;
 
-import dev.architectury.fluid.FluidStack;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-public final class FluidStackHooksFabric {
-    private FluidStackHooksFabric() {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+
+public class CapabilitiesAttachListeners {
+    private static final List<Consumer<AttachCapabilitiesEvent>> LISTENERS = new ArrayList<>();
+    
+    static {
+        MinecraftForge.EVENT_BUS.register(CapabilitiesAttachListeners.class);
     }
     
-    public static FluidStack fromFabric(StorageView<FluidVariant> storageView) {
-        return fromFabric(storageView.getResource(), storageView.getAmount());
+    @SubscribeEvent
+    public static void attach(AttachCapabilitiesEvent event) {
+        for (Consumer<AttachCapabilitiesEvent> consumer : LISTENERS) {
+            consumer.accept(event);
+        }
     }
     
-    public static FluidStack fromFabric(FluidVariant variant, long amount) {
-        return FluidStack.create(variant.getFluid(), amount, variant.getNbt());
-    }
-    
-    public static FluidVariant toFabric(FluidStack stack) {
-        return FluidVariant.of(stack.getFluid(), stack.getTag());
+    public static void add(Consumer<AttachCapabilitiesEvent> consumer) {
+        LISTENERS.add(consumer);
     }
 }

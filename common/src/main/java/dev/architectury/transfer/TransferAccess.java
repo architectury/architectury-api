@@ -17,25 +17,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.hooks.fluid.fabric;
+package dev.architectury.transfer;
 
-import dev.architectury.fluid.FluidStack;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
-
-public final class FluidStackHooksFabric {
-    private FluidStackHooksFabric() {
-    }
-    
-    public static FluidStack fromFabric(StorageView<FluidVariant> storageView) {
-        return fromFabric(storageView.getResource(), storageView.getAmount());
-    }
-    
-    public static FluidStack fromFabric(FluidVariant variant, long amount) {
-        return FluidStack.create(variant.getFluid(), amount, variant.getNbt());
-    }
-    
-    public static FluidVariant toFabric(FluidStack stack) {
-        return FluidVariant.of(stack.getFluid(), stack.getTag());
-    }
+public interface TransferAccess<T> {
 }

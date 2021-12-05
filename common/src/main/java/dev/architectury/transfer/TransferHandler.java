@@ -19,7 +19,12 @@
 
 package dev.architectury.transfer;
 
+import dev.architectury.fluid.FluidStack;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
+
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 /**
  * A handler for transferring resources.
@@ -33,40 +38,82 @@ import org.jetbrains.annotations.ApiStatus;
 @ApiStatus.NonExtendable
 public interface TransferHandler<T> {
     /**
-     * Returns an empty transfer handler, which does nothing.
+     * Returns an empty item transfer handler, which does nothing.
      *
-     * @param <T> the type of resource
-     * @return an empty transfer handler
+     * @return an empty item transfer handler
      */
-    static <T> TransferHandler<T> empty() {
-        return (TransferHandler<T>) EmptyTransferHandler.INSTANCE;
+    static TransferHandler<ItemStack> emptyItem() {
+        return EmptyTransferHandler.ITEM;
     }
     
     /**
-     * Returns the iterable of immutable resources that are currently in the handler.
+     * Returns an empty fluid transfer handler, which does nothing.
      *
-     * @param context the context of the transfer
+     * @return an empty fluid transfer handler
+     */
+    static TransferHandler<FluidStack> emptyFluid() {
+        return EmptyTransferHandler.FLUID;
+    }
+    
+    /**
+     * Returns the iterable of immutable resources that are currently in the handler.<br>
+     * <b>Please properly close this stream.</b> Failure to do so will result in a potential
+     * crash in conflicting transactions.
+     *
      * @return the iterable of resources that are currently in the handler
      */
-    Iterable<ResourceView<T>> getResources(TransferContext context);
+    Stream<ResourceView<T>> getContents();
+    
+    /**
+     * Returns the size of the handler.
+     * This may be extremely expensive to compute, avoid if you can.
+     *
+     * @return the size of the handler
+     */
+    @Deprecated
+    int getContentsSize();
+    
+    /**
+     * Returns the resource in a particular index.
+     * This may be extremely expensive to compute, avoid if you can.
+     *
+     * @param index the index of the resource
+     * @return the resource in the given index
+     */
+    @Deprecated
+    ResourceView<T> getContent(int index);
     
     /**
      * Inserts the given resource into the handler, returning the amount that was inserted.
      *
      * @param toInsert the resource to insert
      * @param action   whether to simulate or actually insert the resource
-     * @param context  the context of the transfer
      * @return the amount that was inserted
      */
-    long insert(T toInsert, TransferAction action, TransferContext context);
+    long insert(T toInsert, TransferAction action);
     
     /**
-     * Extracts the given resource from the handler, returning the amount that was extracted.
+     * Extracts the given resource from the handler, returning the stack that was extracted.
      *
      * @param toExtract the resource to extract
      * @param action    whether to simulate or actually extract the resource
-     * @param context   the context of the transfer
-     * @return the amount that was extracted
+     * @return the stack that was extracted
      */
-    long extract(T toExtract, TransferAction action, TransferContext context);
+    T extract(T toExtract, TransferAction action);
+    
+    /**
+     * Extracts the given resource from the handler, returning the stack that was extracted.
+     *
+     * @param toExtract the predicates to use to filter the resources to extract
+     * @param action    whether to simulate or actually extract the resource
+     * @return the stack that was extracted
+     */
+    T extract(Predicate<T> toExtract, long maxAmount, TransferAction action);
+    
+    /**
+     * Returns a blank resource.
+     *
+     * @return a blank resource
+     */
+    T blank();
 }

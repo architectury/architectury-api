@@ -21,6 +21,6 @@ package dev.architectury.transfer;
 
 public enum TransferAction {
     SIMULATE,
-    COMMIT,
+    ACT,
     ;
 }

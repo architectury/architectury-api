@@ -183,6 +183,10 @@ public final class FluidStack {
         return getFluid() == other.getFluid() && getAmount() == other.getAmount() && isTagEqual(other);
     }
     
+    public boolean isFluidEqual(FluidStack other) {
+        return getFluid() == other.getFluid();
+    }
+    
     private boolean isTagEqual(FluidStack other) {
         return tag == null ? other.tag == null : other.tag != null && tag.equals(other.tag);
     }
@@ -201,6 +205,11 @@ public final class FluidStack {
     
     public CompoundTag write(CompoundTag tag) {
         return FluidStackHooks.write(this, tag);
+    }
+    
+    public FluidStack copyWithAmount(long amount) {
+        if (isEmpty()) return this;
+        return new FluidStack(fluid, amount, tag);
     }
     
     @Environment(EnvType.CLIENT)

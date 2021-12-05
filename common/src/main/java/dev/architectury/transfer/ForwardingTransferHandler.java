@@ -19,54 +19,46 @@
 
 package dev.architectury.transfer;
 
-import dev.architectury.fluid.FluidStack;
-import net.minecraft.world.item.ItemStack;
-
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-class EmptyTransferHandler<T> implements TransferHandler<T> {
-    static final TransferHandler<ItemStack> ITEM = new EmptyTransferHandler<>(() -> ItemStack.EMPTY);
-    static final TransferHandler<FluidStack> FLUID = new EmptyTransferHandler<>(FluidStack::empty);
-    private final Supplier<T> blank;
+public interface ForwardingTransferHandler<T> extends TransferHandler<T> {
+    TransferHandler<T> forwardingTo();
     
-    protected EmptyTransferHandler(Supplier<T> blank) {
-        this.blank = blank;
+    @Override
+    default Stream<ResourceView<T>> getContents() {
+        return forwardingTo().getContents();
     }
     
     @Override
-    public Stream<ResourceView<T>> getContents() {
-        return Stream.empty();
+    @Deprecated
+    default int getContentsSize() {
+        return forwardingTo().getContentsSize();
     }
     
     @Override
-    public int getContentsSize() {
-        return 0;
+    @Deprecated
+    default ResourceView<T> getContent(int index) {
+        return forwardingTo().getContent(index);
     }
     
     @Override
-    public ResourceView<T> getContent(int index) {
-        throw new IndexOutOfBoundsException(index);
+    default long insert(T toInsert, TransferAction action) {
+        return forwardingTo().insert(toInsert, action);
     }
     
     @Override
-    public long insert(T toInsert, TransferAction action) {
-        return 0;
+    default T extract(T toExtract, TransferAction action) {
+        return forwardingTo().extract(toExtract, action);
     }
     
     @Override
-    public T extract(T toExtract, TransferAction action) {
-        return blank();
+    default T extract(Predicate<T> toExtract, long maxAmount, TransferAction action) {
+        return forwardingTo().extract(toExtract, maxAmount, action);
     }
     
     @Override
-    public T extract(Predicate<T> toExtract, long maxAmount, TransferAction action) {
-        return blank();
-    }
-    
-    @Override
-    public T blank() {
-        return blank.get();
+    default T blank() {
+        return forwardingTo().blank();
     }
 }

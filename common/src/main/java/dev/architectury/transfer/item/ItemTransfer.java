@@ -17,37 +17,35 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.transfer;
+package dev.architectury.transfer.item;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
-import dev.architectury.injectables.annotations.PlatformOnly;
+import dev.architectury.transfer.TransferHandler;
+import dev.architectury.transfer.access.BlockTransferAccess;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Transfer context is used to defer the state of the transaction.
- * <p>
- * On Fabric, each thread can only have one transaction at a time,
- * you can create a new context with {@link #create()}, this will instantiate
- * a Transaction on Fabric.
- * <p>
- * If you wish to create a context with a transaction, you can use
- * {@link #create(Object)} with the transaction object, this method
- * is only available on Fabric.
- * <p>
- * This class must be closed with {@link #close()}, you can use try-and-resources
- * block to ensure that the context is closed.
- */
-public interface TransferContext extends AutoCloseable {
+public class ItemTransfer {
+    public static final BlockTransferAccess<TransferHandler<ItemStack>, Direction> BLOCK = instantiateBlockAccess();
+    
     @ExpectPlatform
-    static TransferContext create() {
+    private static BlockTransferAccess<TransferHandler<ItemStack>, Direction> instantiateBlockAccess() {
         throw new AssertionError();
     }
     
-    @PlatformOnly(PlatformOnly.FABRIC)
+    /**
+     * Wraps a platform-specific item transfer handler into the architectury transfer handler.
+     * This accepts {@code IItemHandler} on Forge.
+     * This accepts {@code Storage<ItemVariant>} or {@code ContainerItemContext} on Fabric.
+     *
+     * @param object the handler to wrap
+     * @return the wrapped handler, or {@code null} if {@code object} is null
+     * @throws IllegalArgumentException if {@code object} is not a supported handler
+     */
     @ExpectPlatform
-    static TransferContext create(@Nullable Object transaction) {
+    @Nullable
+    public static TransferHandler<ItemStack> wrap(@Nullable Object object) {
         throw new AssertionError();
     }
-    
-    int nestingDepth();
 }
