@@ -48,6 +48,10 @@ public class FabricStorageTransferHandler<F, S> implements TransferHandler<S> {
         this.typeAdapter = typeAdapter;
     }
     
+    public Storage<F> getStorage() {
+        return storage;
+    }
+    
     @Override
     public Stream<ResourceView<S>> getContents() {
         Transaction transaction = Transaction.openNested(this.transaction);
@@ -135,6 +139,16 @@ public class FabricStorageTransferHandler<F, S> implements TransferHandler<S> {
         return typeAdapter.blank.get();
     }
     
+    @Override
+    public Object saveState() {
+        throw new UnsupportedOperationException();
+    }
+    
+    @Override
+    public void loadState(Object state) {
+        throw new UnsupportedOperationException();
+    }
+    
     private boolean isEmpty(S stack) {
         return typeAdapter.isEmpty.test(stack);
     }
@@ -179,15 +193,51 @@ public class FabricStorageTransferHandler<F, S> implements TransferHandler<S> {
         public long getCapacity() {
             return view.getCapacity();
         }
+        
+        @Override
+        public S copyWithAmount(S resource, long amount) {
+            return FabricStorageTransferHandler.this.copyWithAmount(resource, amount);
+        }
+        
+        @Override
+        public S extract(S toExtract, TransferAction action) {
+            if (isEmpty(toExtract)) return blank();
+            long extracted;
+            
+            try (Transaction nested = Transaction.openNested(FabricStorageTransferHandler.this.transaction)) {
+                extracted = this.view.extract(toFabric(toExtract), getAmount(toExtract), nested);
+                
+                if (action == TransferAction.ACT) {
+                    nested.commit();
+                }
+            }
+            
+            return copyWithAmount(toExtract, extracted);
+        }
+        
+        @Override
+        public S blank() {
+            return null;
+        }
+        
+        @Override
+        public Object saveState() {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public void loadState(Object state) {
+            throw new UnsupportedOperationException();
+        }
     }
     
     public static class TypeAdapter<F, S> {
-        private final Function<S, F> toFabric;
-        private final FunctionWithAmount<F, S> fromFabric;
-        private final FunctionWithAmount<S, S> copyWithAmount;
-        private final Supplier<S> blank;
-        private final Predicate<S> isEmpty;
-        private final ToLongFunction<S> toAmount;
+        final Function<S, F> toFabric;
+        final FunctionWithAmount<F, S> fromFabric;
+        final FunctionWithAmount<S, S> copyWithAmount;
+        final Supplier<S> blank;
+        final Predicate<S> isEmpty;
+        final ToLongFunction<S> toAmount;
         
         public TypeAdapter(Function<S, F> toFabric, FunctionWithAmount<F, S> fromFabric, FunctionWithAmount<S, S> copyWithAmount, Supplier<S> blank, Predicate<S> isEmpty, ToLongFunction<S> toAmount) {
             this.toFabric = toFabric;

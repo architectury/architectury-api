@@ -20,6 +20,7 @@
 package dev.architectury.hooks.fluid.fabric;
 
 import dev.architectury.fluid.FluidStack;
+import dev.architectury.fluid.fabric.FluidStackImpl;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 
@@ -32,10 +33,10 @@ public final class FluidStackHooksFabric {
     }
     
     public static FluidStack fromFabric(FluidVariant variant, long amount) {
-        return FluidStack.create(variant.getFluid(), amount, variant.getNbt());
+        return FluidStackImpl.fromValue.apply(new FluidStackImpl.Pair(variant, amount));
     }
     
     public static FluidVariant toFabric(FluidStack stack) {
-        return FluidVariant.of(stack.getFluid(), stack.getTag());
+        return ((FluidStackImpl.Pair) FluidStackImpl.toValue.apply(stack)).variant;
     }
 }

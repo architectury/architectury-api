@@ -17,7 +17,13 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.transfer;
+package dev.architectury.transfer.access;
 
-public interface TransferAccess<T> {
+import dev.architectury.impl.transfer.access.ItemLookupAccessImpl;
+import dev.architectury.transfer.ApiLookupAccess;
+
+public interface ItemLookupAccess<T, Context> extends ApiLookupAccess<T, ItemLookup<T, Context>, ItemLookupRegistration<T, Context>>, ItemLookup<T, Context>, ItemLookupRegistration<T, Context> {
+    static <T, Context> ItemLookupAccess<T, Context> create() {
+        return new ItemLookupAccessImpl<>();
+    }
 }

@@ -22,8 +22,8 @@ package dev.architectury.transfer.fluid;
 import dev.architectury.fluid.FluidStack;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.transfer.TransferHandler;
-import dev.architectury.transfer.access.BlockTransferAccess;
-import dev.architectury.transfer.access.ItemTransferAccess;
+import dev.architectury.transfer.access.BlockLookupAccess;
+import dev.architectury.transfer.access.ItemLookupAccess;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -32,16 +32,25 @@ public class FluidTransfer {
     private FluidTransfer() {
     }
     
-    public static final BlockTransferAccess<TransferHandler<FluidStack>, Direction> BLOCK = instantiateBlockAccess();
-    public static final ItemTransferAccess<TransferHandler<FluidStack>, TransferHandler<ItemStack>> ITEM = instantiateItemAccess();
+    /**
+     * A lookup access for fluid transfer handlers, the direction context is
+     * only required on fabric.
+     * <p>
+     * This is the equivalent to getting the fluid transfer handler for a
+     * block entity on Forge, or the storage with the lookup api on Fabric.
+     * <p>
+     * There are performance implications for using the architectury lookups,
+     * please keep your implementations as simple as possible.
+     */
+    public static final BlockLookupAccess<TransferHandler<FluidStack>, Direction> BLOCK = BlockLookupAccess.create();
+    // public static final ItemLookupAccess<TransferHandler<FluidStack>, TransferHandler<ItemStack>> ITEM = ItemLookupAccess.create();
     
-    @ExpectPlatform
-    private static BlockTransferAccess<TransferHandler<FluidStack>, Direction> instantiateBlockAccess() {
-        throw new AssertionError();
+    static {
+        init();
     }
     
     @ExpectPlatform
-    private static ItemTransferAccess<TransferHandler<FluidStack>, TransferHandler<ItemStack>> instantiateItemAccess() {
+    private static void init() {
         throw new AssertionError();
     }
     

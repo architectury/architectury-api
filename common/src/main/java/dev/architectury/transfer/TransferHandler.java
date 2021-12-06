@@ -23,7 +23,6 @@ import dev.architectury.fluid.FluidStack;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
 
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
@@ -36,7 +35,7 @@ import java.util.stream.Stream;
  * @param <T> the type of resource
  */
 @ApiStatus.NonExtendable
-public interface TransferHandler<T> {
+public interface TransferHandler<T> extends TransferView<T> {
     /**
      * Returns an empty item transfer handler, which does nothing.
      *
@@ -91,29 +90,4 @@ public interface TransferHandler<T> {
      * @return the amount that was inserted
      */
     long insert(T toInsert, TransferAction action);
-    
-    /**
-     * Extracts the given resource from the handler, returning the stack that was extracted.
-     *
-     * @param toExtract the resource to extract
-     * @param action    whether to simulate or actually extract the resource
-     * @return the stack that was extracted
-     */
-    T extract(T toExtract, TransferAction action);
-    
-    /**
-     * Extracts the given resource from the handler, returning the stack that was extracted.
-     *
-     * @param toExtract the predicates to use to filter the resources to extract
-     * @param action    whether to simulate or actually extract the resource
-     * @return the stack that was extracted
-     */
-    T extract(Predicate<T> toExtract, long maxAmount, TransferAction action);
-    
-    /**
-     * Returns a blank resource.
-     *
-     * @return a blank resource
-     */
-    T blank();
 }

@@ -21,16 +21,20 @@ package dev.architectury.transfer.item;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.transfer.TransferHandler;
-import dev.architectury.transfer.access.BlockTransferAccess;
+import dev.architectury.transfer.access.BlockLookupAccess;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 public class ItemTransfer {
-    public static final BlockTransferAccess<TransferHandler<ItemStack>, Direction> BLOCK = instantiateBlockAccess();
+    public static final BlockLookupAccess<TransferHandler<ItemStack>, Direction> BLOCK = BlockLookupAccess.create();
+    
+    static {
+        init();
+    }
     
     @ExpectPlatform
-    private static BlockTransferAccess<TransferHandler<ItemStack>, Direction> instantiateBlockAccess() {
+    private static void init() {
         throw new AssertionError();
     }
     

@@ -19,12 +19,17 @@
 
 package dev.architectury.transfer.access;
 
-import dev.architectury.transfer.TransferAccess;
-import dev.architectury.transfer.TransferHandler;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-public interface ItemTransferAccess<T, C> extends TransferAccess<T> {
+public interface ItemLookup<T, Context> {
+    /**
+     * Queries the api for the given item stack.
+     *
+     * @param stack   the item stack
+     * @param context the context
+     * @return the transfer handler, or null if none was found
+     */
     @Nullable
-    T get(ItemStack stack, C context);
+    T get(ItemStack stack, Context context);
 }

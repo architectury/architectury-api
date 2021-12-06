@@ -1,6 +1,6 @@
 /*
  * This file is part of architectury.
- * Copyright (C) 2020, 2021, 2022 architectury
+ * Copyright (C) 2020, 2021 architectury
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,20 +17,20 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.hooks.fluid.forge;
+package dev.architectury.transfer.access;
 
-import dev.architectury.fluid.FluidStack;
-import dev.architectury.fluid.forge.FluidStackImpl;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
-public final class FluidStackHooksForge {
-    private FluidStackHooksForge() {
-    }
+import java.util.function.Function;
+
+public interface ItemLookupRegistration<T, Context> {
+    boolean register(ResourceLocation id, ItemAccessProvider<Function<Context, T>> provider);
     
-    public static FluidStack fromForge(net.minecraftforge.fluids.FluidStack stack) {
-        return FluidStackImpl.fromValue.apply(stack);
-    }
-    
-    public static net.minecraftforge.fluids.FluidStack toForge(FluidStack stack) {
-        return (net.minecraftforge.fluids.FluidStack) FluidStackImpl.toValue.apply(stack);
+    @FunctionalInterface
+    interface ItemAccessProvider<R> {
+        @Nullable
+        R get(ItemStack stack);
     }
 }

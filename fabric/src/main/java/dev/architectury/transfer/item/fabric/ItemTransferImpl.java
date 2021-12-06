@@ -21,14 +21,15 @@ package dev.architectury.transfer.item.fabric;
 
 import dev.architectury.hooks.item.ItemStackHooks;
 import dev.architectury.transfer.TransferHandler;
-import dev.architectury.transfer.access.BlockTransferAccess;
-import dev.architectury.transfer.fabric.FabricBlockTransferAccess;
+import dev.architectury.transfer.fabric.BlockApiLookupWrapper;
+import dev.architectury.transfer.fabric.FabricBlockLookupRegistration;
 import dev.architectury.transfer.fabric.FabricStorageTransferHandler;
+import dev.architectury.transfer.fabric.TransferHandlerStorage;
+import dev.architectury.transfer.item.ItemTransfer;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,7 +60,19 @@ public class ItemTransferImpl {
         }
     }
     
-    public static BlockTransferAccess<TransferHandler<ItemStack>, Direction> instantiateBlockAccess() {
-        return new FabricBlockTransferAccess<>(ItemStorage.SIDED, ItemTransferImpl::wrap);
+    @Nullable
+    public static Storage<ItemVariant> unwrap(@Nullable TransferHandler<ItemStack> handler) {
+        if (handler == null) return null;
+        
+        if (handler instanceof FabricStorageTransferHandler) {
+            return ((FabricStorageTransferHandler) handler).getStorage();
+        } else {
+            return new TransferHandlerStorage<>(handler, TYPE_ADAPTER);
+        }
+    }
+    
+    public static void init() {
+        ItemTransfer.BLOCK.addQueryHandler(new BlockApiLookupWrapper<>(ItemStorage.SIDED, ItemTransferImpl::wrap));
+        ItemTransfer.BLOCK.addRegistrationHandler(FabricBlockLookupRegistration.create(ItemStorage.SIDED, ItemTransferImpl::unwrap));
     }
 }

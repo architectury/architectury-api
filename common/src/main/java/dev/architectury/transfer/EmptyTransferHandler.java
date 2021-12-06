@@ -69,4 +69,14 @@ class EmptyTransferHandler<T> implements TransferHandler<T> {
     public T blank() {
         return blank.get();
     }
+    
+    @Override
+    public Object saveState() {
+        throw new UnsupportedOperationException();
+    }
+    
+    @Override
+    public void loadState(Object state) {
+        throw new UnsupportedOperationException();
+    }
 }

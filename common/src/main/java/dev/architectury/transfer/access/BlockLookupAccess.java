@@ -1,6 +1,6 @@
 /*
  * This file is part of architectury.
- * Copyright (C) 2020, 2021, 2022 architectury
+ * Copyright (C) 2020, 2021 architectury
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,20 +17,19 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.hooks.fluid.forge;
+package dev.architectury.transfer.access;
 
-import dev.architectury.fluid.FluidStack;
-import dev.architectury.fluid.forge.FluidStackImpl;
+import dev.architectury.impl.transfer.access.BlockLookupAccessImpl;
+import dev.architectury.transfer.ApiLookupAccess;
 
-public final class FluidStackHooksForge {
-    private FluidStackHooksForge() {
-    }
-    
-    public static FluidStack fromForge(net.minecraftforge.fluids.FluidStack stack) {
-        return FluidStackImpl.fromValue.apply(stack);
-    }
-    
-    public static net.minecraftforge.fluids.FluidStack toForge(FluidStack stack) {
-        return (net.minecraftforge.fluids.FluidStack) FluidStackImpl.toValue.apply(stack);
+/**
+ * An API lookup for blocks.
+ *
+ * @param <T> the type of the API
+ * @param <Context> the type of the context
+ */
+public interface BlockLookupAccess<T, Context> extends ApiLookupAccess<T, BlockLookup<T, Context>, BlockLookupRegistration<T, Context>>, BlockLookup<T, Context>, BlockLookupRegistration<T, Context> {
+    static <T, Context> BlockLookupAccess<T, Context> create() {
+        return new BlockLookupAccessImpl<>();
     }
 }

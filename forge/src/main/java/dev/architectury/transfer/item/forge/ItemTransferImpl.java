@@ -20,11 +20,13 @@
 package dev.architectury.transfer.item.forge;
 
 import dev.architectury.fluid.FluidStack;
+import dev.architectury.hooks.item.ItemStackHooks;
 import dev.architectury.transfer.ResourceView;
 import dev.architectury.transfer.TransferAction;
 import dev.architectury.transfer.TransferHandler;
-import dev.architectury.transfer.access.BlockTransferAccess;
-import dev.architectury.transfer.forge.ForgeBlockTransferAccess;
+import dev.architectury.transfer.access.BlockLookup;
+import dev.architectury.transfer.forge.ForgeBlockLookupRegistration;
+import dev.architectury.transfer.item.ItemTransfer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -32,7 +34,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -56,8 +57,14 @@ public class ItemTransferImpl {
         }
     }
     
-    public static BlockTransferAccess<TransferHandler<ItemStack>, Direction> instantiateBlockAccess() {
-        return new ForgeBlockTransferAccess<TransferHandler<ItemStack>, IItemHandler>() {
+    public static void init() {
+        ItemTransfer.BLOCK.addQueryHandler(instantiateBlockLookup());
+        ItemTransfer.BLOCK.addRegistrationHandler(ForgeBlockLookupRegistration.create(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
+                (level, pos, state, blockEntity) -> (direction, handler) -> new ArchItemHandler(handler)));
+    }
+    
+    public static BlockLookup<TransferHandler<ItemStack>, Direction> instantiateBlockLookup() {
+        return new BlockLookup<TransferHandler<ItemStack>, Direction>() {
             @Override
             @Nullable
             public TransferHandler<ItemStack> get(Level level, BlockPos pos, Direction direction) {
@@ -78,16 +85,6 @@ public class ItemTransferImpl {
                     }
                 }
                 return wrap(handler);
-            }
-            
-            @Override
-            public Capability<IItemHandler> getCapability() {
-                return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
-            }
-            
-            @Override
-            public IItemHandler from(TransferHandler<ItemStack> handler) {
-                return new ArchItemHandler(handler);
             }
         };
     }
@@ -166,17 +163,29 @@ public class ItemTransferImpl {
         
         @Override
         public ItemStack extract(ItemStack toExtract, TransferAction action) {
+            // TODO: implement
             return null;
         }
         
         @Override
         public ItemStack extract(Predicate<ItemStack> toExtract, long maxAmount, TransferAction action) {
+            // TODO: implement
             return null;
         }
         
         @Override
         public ItemStack blank() {
             return ItemStack.EMPTY;
+        }
+        
+        @Override
+        public Object saveState() {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public void loadState(Object state) {
+            throw new UnsupportedOperationException();
         }
         
         private class ForgeResourceView implements ResourceView<ItemStack> {
@@ -194,6 +203,31 @@ public class ItemTransferImpl {
             @Override
             public long getCapacity() {
                 return handler.getSlotLimit(index);
+            }
+            
+            @Override
+            public ItemStack extract(ItemStack toExtract, TransferAction action) {
+                return handler.extractItem(index, toExtract.getCount(), action == TransferAction.SIMULATE);
+            }
+            
+            @Override
+            public ItemStack blank() {
+                return ItemStack.EMPTY;
+            }
+            
+            @Override
+            public ItemStack copyWithAmount(ItemStack resource, long amount) {
+                return ItemStackHooks.copyWithCount(resource, (int) amount);
+            }
+            
+            @Override
+            public Object saveState() {
+                throw new UnsupportedOperationException();
+            }
+            
+            @Override
+            public void loadState(Object state) {
+                throw new UnsupportedOperationException();
             }
         }
     }

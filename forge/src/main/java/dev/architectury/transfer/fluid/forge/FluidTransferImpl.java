@@ -24,9 +24,11 @@ import dev.architectury.hooks.fluid.forge.FluidStackHooksForge;
 import dev.architectury.transfer.ResourceView;
 import dev.architectury.transfer.TransferAction;
 import dev.architectury.transfer.TransferHandler;
-import dev.architectury.transfer.access.BlockTransferAccess;
-import dev.architectury.transfer.access.ItemTransferAccess;
-import dev.architectury.transfer.forge.ForgeBlockTransferAccess;
+import dev.architectury.transfer.access.BlockLookup;
+import dev.architectury.transfer.access.ItemLookup;
+import dev.architectury.transfer.fluid.FluidTransfer;
+import dev.architectury.transfer.forge.ForgeBlockLookupRegistration;
+import dev.architectury.transfer.forge.ForgeItemLookupRegistration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -35,10 +37,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BucketPickup;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.wrappers.BucketPickupHandlerWrapper;
 import net.minecraftforge.fluids.capability.wrappers.FluidBlockWrapper;
 import org.jetbrains.annotations.NotNull;
@@ -65,8 +67,17 @@ public class FluidTransferImpl {
         }
     }
     
-    public static BlockTransferAccess<TransferHandler<FluidStack>, Direction> instantiateBlockAccess() {
-        return new ForgeBlockTransferAccess<TransferHandler<FluidStack>, IFluidHandler>() {
+    public static void init() {
+        FluidTransfer.BLOCK.addQueryHandler(instantiateBlockLookup());
+        FluidTransfer.BLOCK.addRegistrationHandler(ForgeBlockLookupRegistration.create(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
+                (level, pos, state, blockEntity) -> (direction, handler) -> new ArchFluidHandler(handler)));
+//        FluidTransfer.ITEM.addQueryHandler(instantiateItemLookup());
+//        FluidTransfer.ITEM.addRegistrationHandler(ForgeItemLookupRegistration.create(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY,
+//                stack -> (direction, handler) -> new ArchFluidHandlerItem(handler, stack)));
+    }
+    
+    public static BlockLookup<TransferHandler<FluidStack>, Direction> instantiateBlockLookup() {
+        return new BlockLookup<TransferHandler<FluidStack>, Direction>() {
             @Override
             @Nullable
             public TransferHandler<FluidStack> get(Level level, BlockPos pos, Direction direction) {
@@ -92,21 +103,11 @@ public class FluidTransferImpl {
                 }
                 return wrap(handler);
             }
-            
-            @Override
-            public Capability<IFluidHandler> getCapability() {
-                return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
-            }
-            
-            @Override
-            public IFluidHandler from(TransferHandler<FluidStack> handler) {
-                return new ArchFluidHandler(handler);
-            }
         };
     }
     
-    public static ItemTransferAccess<TransferHandler<FluidStack>, TransferHandler<ItemStack>> instantiateItemAccess() {
-        return new ItemTransferAccess<TransferHandler<FluidStack>, TransferHandler<ItemStack>>() {
+    public static ItemLookup<TransferHandler<FluidStack>, TransferHandler<ItemStack>> instantiateItemLookup() {
+        return new ItemLookup<TransferHandler<FluidStack>, TransferHandler<ItemStack>>() {
             @Override
             @Nullable
             public TransferHandler<FluidStack> get(ItemStack stack, TransferHandler<ItemStack> context) {
@@ -160,6 +161,21 @@ public class FluidTransferImpl {
         @Override
         public net.minecraftforge.fluids.FluidStack drain(int maxAmount, FluidAction action) {
             return FluidStackHooksForge.toForge(handler.extract(TRUE, maxAmount, getFluidAction(action)));
+        }
+    }
+    
+    public static class ArchFluidHandlerItem extends ArchFluidHandler implements IFluidHandlerItem {
+        private final ItemStack stack;
+        
+        public ArchFluidHandlerItem(TransferHandler<FluidStack> handler, ItemStack stack) {
+            super(handler);
+            this.stack = stack;
+        }
+        
+        @NotNull
+        @Override
+        public ItemStack getContainer() {
+            return stack;
         }
     }
     
@@ -217,6 +233,16 @@ public class FluidTransferImpl {
             return FluidStack.empty();
         }
         
+        @Override
+        public Object saveState() {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public void loadState(Object state) {
+            throw new UnsupportedOperationException();
+        }
+        
         private class Itr implements Iterator<ResourceView<FluidStack>> {
             int cursor;
             
@@ -266,6 +292,32 @@ public class FluidTransferImpl {
             @Override
             public long getCapacity() {
                 return handler.getTankCapacity(index);
+            }
+            
+            @Override
+            public FluidStack extract(FluidStack toExtract, TransferAction action) {
+                // TODO: implement
+                return null;
+            }
+            
+            @Override
+            public FluidStack blank() {
+                return FluidStack.empty();
+            }
+            
+            @Override
+            public FluidStack copyWithAmount(FluidStack resource, long amount) {
+                return resource.copyWithAmount(amount);
+            }
+            
+            @Override
+            public Object saveState() {
+                throw new UnsupportedOperationException();
+            }
+            
+            @Override
+            public void loadState(Object state) {
+                throw new UnsupportedOperationException();
             }
         }
     }

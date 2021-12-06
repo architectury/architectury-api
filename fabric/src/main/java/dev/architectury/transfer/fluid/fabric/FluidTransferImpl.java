@@ -22,10 +22,11 @@ package dev.architectury.transfer.fluid.fabric;
 import dev.architectury.fluid.FluidStack;
 import dev.architectury.hooks.fluid.fabric.FluidStackHooksFabric;
 import dev.architectury.transfer.TransferHandler;
-import dev.architectury.transfer.access.BlockTransferAccess;
-import dev.architectury.transfer.access.ItemTransferAccess;
-import dev.architectury.transfer.fabric.FabricBlockTransferAccess;
+import dev.architectury.transfer.fabric.BlockApiLookupWrapper;
+import dev.architectury.transfer.fabric.FabricBlockLookupRegistration;
 import dev.architectury.transfer.fabric.FabricStorageTransferHandler;
+import dev.architectury.transfer.fabric.TransferHandlerStorage;
+import dev.architectury.transfer.fluid.FluidTransfer;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -34,7 +35,6 @@ import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -64,18 +64,23 @@ public class FluidTransferImpl {
         }
     }
     
-    public static BlockTransferAccess<TransferHandler<FluidStack>, Direction> instantiateBlockAccess() {
-        return new FabricBlockTransferAccess<>(FluidStorage.SIDED, FluidTransferImpl::wrap);
+    @Nullable
+    public static Storage<FluidVariant> unwrap(@Nullable TransferHandler<FluidStack> handler) {
+        if (handler == null) return null;
+        
+        if (handler instanceof FabricStorageTransferHandler) {
+            return ((FabricStorageTransferHandler) handler).getStorage();
+        } else {
+            return new TransferHandlerStorage<>(handler, TYPE_ADAPTER);
+        }
     }
     
-    public static ItemTransferAccess<TransferHandler<FluidStack>, TransferHandler<ItemStack>> instantiateItemAccess() {
-        return new ItemTransferAccess<TransferHandler<FluidStack>, TransferHandler<ItemStack>>() {
-            @Override
-            @Nullable
-            public TransferHandler<FluidStack> get(ItemStack stack, TransferHandler<ItemStack> context) {
-                return wrap(FluidStorage.ITEM.find(stack, fromTransfer(stack, context)));
-            }
-        };
+    public static void init() {
+        FluidTransfer.BLOCK.addQueryHandler(new BlockApiLookupWrapper<>(FluidStorage.SIDED, FluidTransferImpl::wrap));
+        FluidTransfer.BLOCK.addRegistrationHandler(FabricBlockLookupRegistration.create(FluidStorage.SIDED, FluidTransferImpl::unwrap));
+//        FluidTransfer.ITEM.addQueryHandler((stack, context) -> {
+//            return wrap(FluidStorage.ITEM.find(stack, fromTransfer(stack, context)));
+//        });
     }
     
     public static ContainerItemContext fromTransfer(ItemStack stack, TransferHandler<ItemStack> transferHandler) {

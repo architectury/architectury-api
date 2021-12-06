@@ -17,24 +17,32 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.transfer.forge;
+package dev.architectury.transfer;
 
-import dev.architectury.transfer.TransferContext;
-
-public enum TransferContextImpl implements TransferContext {
-    INSTANCE;
+/**
+ * The base interface for all lookup accesses.
+ *
+ * @param <T> the type of the API
+ * @param <H> the type of the query handler
+ * @param <R> the type of the registration handler
+ */
+public interface ApiLookupAccess<T, H, R> {
+    /**
+     * Adds a handler for querying the api, this will
+     * only be called by architectury mods.
+     * <p>
+     * For adding interop with platform APIs, use the
+     * register methods for linking and attaching to fabric's
+     * api lookup or forge's capability system.
+     *
+     * @param handler the query handler to add
+     */
+    void addQueryHandler(H handler);
     
-    public static TransferContext create() {
-        return TransferContextImpl.INSTANCE;
-    }
-    
-    @Override
-    public int nestingDepth() {
-        return 0;
-    }
-    
-    @Override
-    public void close() throws Exception {
-        
-    }
+    /**
+     * Adds a lookup registration.
+     *
+     * @param registration the registration handler to add
+     */
+    void addRegistrationHandler(R registration);
 }

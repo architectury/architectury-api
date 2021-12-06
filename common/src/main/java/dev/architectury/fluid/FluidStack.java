@@ -20,6 +20,7 @@
 package dev.architectury.fluid;
 
 import dev.architectury.hooks.fluid.FluidStackHooks;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.utils.NbtType;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -30,22 +31,56 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public final class FluidStack {
     private static final FluidStack EMPTY = create(Fluids.EMPTY, 0);
-    private long amount;
-    @Nullable
-    private CompoundTag tag;
-    private Supplier<Fluid> fluid;
+    private static final FluidStackAdapter ADAPTER = adapt(FluidStack::getValue, FluidStack::new);
+    
+    private Object value;
     
     private FluidStack(Supplier<Fluid> fluid, long amount, CompoundTag tag) {
-        this.fluid = Objects.requireNonNull(fluid);
-        this.amount = amount;
-        this.tag = tag == null ? null : tag.copy();
+        this(ADAPTER.create(fluid, amount, tag));
+    }
+    
+    private FluidStack(Object value) {
+        this.value = value;
+    }
+    
+    private Object getValue() {
+        return value;
+    }
+    
+    @ExpectPlatform
+    private static FluidStackAdapter adapt(Function<FluidStack, Object> toValue, Function<Object, FluidStack> fromValue) {
+        throw new AssertionError();
+    }
+    
+    @ApiStatus.Internal
+    public interface FluidStackAdapter {
+        Object create(Supplier<Fluid> fluid, long amount, CompoundTag tag);
+        
+        void check(Object object);
+        
+        Supplier<Fluid> getRawFluidSupplier(Object object);
+        
+        Fluid getFluid(Object object);
+        
+        long getAmount(Object object);
+        
+        void setAmount(Object object, long amount);
+        
+        CompoundTag getTag(Object value);
+        
+        void setTag(Object value, CompoundTag tag);
+        
+        Object copy(Object value);
+        
+        int hashCode(Object value);
     }
     
     public static FluidStack empty() {
@@ -82,61 +117,66 @@ public final class FluidStack {
     
     @Nullable
     public final Fluid getRawFluid() {
-        return fluid.get();
+        return ADAPTER.getFluid(value);
     }
     
     public final Supplier<Fluid> getRawFluidSupplier() {
-        return fluid;
+        return ADAPTER.getRawFluidSupplier(value);
     }
     
     public boolean isEmpty() {
-        return getRawFluid() == Fluids.EMPTY || amount <= 0;
+        return getRawFluid() == Fluids.EMPTY || ADAPTER.getAmount(value) <= 0;
     }
     
     public long getAmount() {
-        return isEmpty() ? 0 : amount;
+        return isEmpty() ? 0 : ADAPTER.getAmount(value);
     }
     
     public void setAmount(long amount) {
-        this.amount = amount;
+        ADAPTER.setAmount(value, amount);
     }
     
     public void grow(long amount) {
-        setAmount(this.amount + amount);
+        setAmount(getAmount() + amount);
     }
     
     public void shrink(long amount) {
-        setAmount(this.amount - amount);
+        setAmount(getAmount() - amount);
     }
     
     public boolean hasTag() {
-        return tag != null;
+        return getTag() != null;
     }
     
     @Nullable
     public CompoundTag getTag() {
-        return tag;
+        return ADAPTER.getTag(value);
     }
     
     public void setTag(@Nullable CompoundTag tag) {
-        this.tag = tag;
+        ADAPTER.setTag(value, tag);
     }
     
     public CompoundTag getOrCreateTag() {
-        if (tag == null)
-            setTag(new CompoundTag());
+        CompoundTag tag = getTag();
+        if (tag == null) {
+            tag = new CompoundTag();
+            setTag(tag);
+            return tag;
+        }
         return tag;
     }
     
     @Nullable
     public CompoundTag getChildTag(String childName) {
+        CompoundTag tag = getTag();
         if (tag == null)
             return null;
         return tag.getCompound(childName);
     }
     
     public CompoundTag getOrCreateChildTag(String childName) {
-        getOrCreateTag();
+        CompoundTag tag = getOrCreateTag();
         var child = tag.getCompound(childName);
         if (!tag.contains(childName, Tag.TAG_COMPOUND)) {
             tag.put(childName, child);
@@ -145,6 +185,7 @@ public final class FluidStack {
     }
     
     public void removeChildTag(String childName) {
+        CompoundTag tag = getTag();
         if (tag != null)
             tag.remove(childName);
     }
@@ -158,17 +199,12 @@ public final class FluidStack {
     }
     
     public FluidStack copy() {
-        return new FluidStack(fluid, amount, tag);
+        return new FluidStack(ADAPTER.copy(value));
     }
     
     @Override
     public final int hashCode() {
-        var code = 1;
-        code = 31 * code + getFluid().hashCode();
-        code = 31 * code + Long.hashCode(amount);
-        if (tag != null)
-            code = 31 * code + tag.hashCode();
-        return code;
+        return ADAPTER.hashCode(value);
     }
     
     @Override
@@ -188,7 +224,9 @@ public final class FluidStack {
     }
     
     private boolean isTagEqual(FluidStack other) {
-        return tag == null ? other.tag == null : other.tag != null && tag.equals(other.tag);
+        var tag = getTag();
+        var otherTag = other.getTag();
+        return tag == null ? otherTag == null : otherTag != null && tag.equals(otherTag);
     }
     
     public static FluidStack read(FriendlyByteBuf buf) {
@@ -209,7 +247,7 @@ public final class FluidStack {
     
     public FluidStack copyWithAmount(long amount) {
         if (isEmpty()) return this;
-        return new FluidStack(fluid, amount, tag);
+        return new FluidStack(getRawFluidSupplier(), amount, getTag());
     }
     
     @Environment(EnvType.CLIENT)

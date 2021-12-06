@@ -19,28 +19,36 @@
 
 package dev.architectury.transfer.access;
 
-import dev.architectury.transfer.TransferAccess;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Function;
-
-public interface BlockTransferAccess<T, C> extends TransferAccess<T> {
+public interface BlockLookup<T, Context> {
+    /**
+     * Queries the api for the given block.
+     * If you need the block state or block entity, you must query it yourself,
+     * as this method will not do it for you.
+     *
+     * @param level   the level
+     * @param pos     the position of the block
+     * @param context the context
+     * @return the transfer handler, or null if none was found
+     */
     @Nullable
-    T get(Level level, BlockPos pos, C context);
+    T get(Level level, BlockPos pos, Context context);
     
+    /**
+     * Queries the api for the given block.
+     *
+     * @param level       the level
+     * @param pos         the position of the block
+     * @param state       the state of the block
+     * @param blockEntity the block entity, or null if none
+     * @param context     the context
+     * @return the transfer handler, or null if none was found
+     */
     @Nullable
-    T get(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, C context);
-    
-    void register(ResourceLocation id, BlockAccessProvider<T, C> provider);
-    
-    @FunctionalInterface
-    interface BlockAccessProvider<T, C> {
-        @Nullable
-        Function<C, T> get(Level level, BlockPos pos, BlockState state, BlockEntity blockEntity);
-    }
+    T get(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, Context context);
 }

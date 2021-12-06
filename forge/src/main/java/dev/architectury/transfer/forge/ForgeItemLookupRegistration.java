@@ -19,38 +19,53 @@
 
 package dev.architectury.transfer.forge;
 
-import dev.architectury.transfer.access.BlockTransferAccess;
+import dev.architectury.transfer.access.ItemLookupRegistration;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public interface ForgeBlockTransferAccess<T, C> extends BlockTransferAccess<T, Direction> {
-    Capability<C> getCapability();
+public interface ForgeItemLookupRegistration<T, Cap, Context> extends ItemLookupRegistration<T, Context> {
+    static <T, C, Context> ForgeItemLookupRegistration<T, C, Context> create(Capability<C> capability, ItemAccessProvider<BiFunction<Direction, T, C>> transformer) {
+        return new ForgeItemLookupRegistration<T, C, Context>() {
+            @Override
+            public Capability<C> getCapability() {
+                return capability;
+            }
+            
+            @Override
+            public C from(ItemStack stack, @Nullable Direction arg, T handler) {
+                return transformer.get(stack).apply(arg, handler);
+            }
+        };
+    }
     
-    C from(T handler);
+    Capability<Cap> getCapability();
+    
+    Cap from(ItemStack stack, @Nullable Direction arg, T handler);
     
     @Override
-    default void register(ResourceLocation id, BlockAccessProvider<T, Direction> provider) {
+    default boolean register(ResourceLocation id, ItemAccessProvider<Function<Context, T>> provider) {
         CapabilitiesAttachListeners.add(event -> {
-            if (event.getObject() instanceof BlockEntity) {
-                BlockEntity blockEntity = (BlockEntity) event.getObject();
-                Function<Direction, T> applicator = provider.get(blockEntity.getLevel(), blockEntity.getBlockPos(), blockEntity.getBlockState(), blockEntity);
+            if (event.getObject() instanceof ItemStack) {
+                ItemStack stack = (ItemStack) event.getObject();
+                Function<Context, T> applicator = provider.get(stack);
                 if (applicator != null) {
                     event.addCapability(id, new ICapabilityProvider() {
                         @NotNull
                         @Override
                         public <S> LazyOptional<S> getCapability(@NotNull Capability<S> capability, @Nullable Direction arg) {
-                            if (capability == ForgeBlockTransferAccess.this.getCapability()) {
-                                T handler = applicator.apply(arg);
+                            if (capability == ForgeItemLookupRegistration.this.getCapability()) {
+                                T handler = applicator.apply(null);
                                 
-                                return LazyOptional.of(() -> from(handler)).cast();
+                                return handler == null ? LazyOptional.empty() : LazyOptional.of(() -> from(stack, arg, handler)).cast();
                             }
                             
                             return LazyOptional.empty();
@@ -59,5 +74,7 @@ public interface ForgeBlockTransferAccess<T, C> extends BlockTransferAccess<T, D
                 }
             }
         });
+        
+        return true;
     }
 }

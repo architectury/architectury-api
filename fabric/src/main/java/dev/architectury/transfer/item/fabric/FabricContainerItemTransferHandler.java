@@ -46,6 +46,10 @@ public class FabricContainerItemTransferHandler implements TransferHandler<ItemS
         this.transaction = transaction;
     }
     
+    public ContainerItemContext getContext() {
+        return context;
+    }
+    
     @Override
     public Stream<ResourceView<ItemStack>> getContents() {
         return Stream.concat(Stream.of(context.getMainSlot()), context.getAdditionalSlots().stream())
@@ -118,7 +122,17 @@ public class FabricContainerItemTransferHandler implements TransferHandler<ItemS
         return ItemStack.EMPTY;
     }
     
-    private static class FabricResourceView implements ResourceView<ItemStack> {
+    @Override
+    public Object saveState() {
+        throw new UnsupportedOperationException();
+    }
+    
+    @Override
+    public void loadState(Object state) {
+        throw new UnsupportedOperationException();
+    }
+    
+    private class FabricResourceView implements ResourceView<ItemStack> {
         private final SingleSlotStorage<ItemVariant> storage;
         
         private FabricResourceView(SingleSlotStorage<ItemVariant> storage) {
@@ -133,6 +147,42 @@ public class FabricContainerItemTransferHandler implements TransferHandler<ItemS
         @Override
         public long getCapacity() {
             return storage.getCapacity();
+        }
+        
+        @Override
+        public ItemStack copyWithAmount(ItemStack resource, long amount) {
+            return ItemStackHooks.copyWithCount(resource, (int) amount);
+        }
+        
+        @Override
+        public ItemStack extract(ItemStack toExtract, TransferAction action) {
+            if (toExtract.isEmpty()) return blank();
+            long extracted;
+            
+            try (Transaction nested = Transaction.openNested(FabricContainerItemTransferHandler.this.transaction)) {
+                extracted = this.storage.extract(ItemVariant.of(toExtract), toExtract.getCount(), nested);
+                
+                if (action == TransferAction.ACT) {
+                    nested.commit();
+                }
+            }
+            
+            return copyWithAmount(toExtract, extracted);
+        }
+        
+        @Override
+        public ItemStack blank() {
+            return ItemStack.EMPTY;
+        }
+        
+        @Override
+        public Object saveState() {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public void loadState(Object state) {
+            throw new UnsupportedOperationException();
         }
     }
 }

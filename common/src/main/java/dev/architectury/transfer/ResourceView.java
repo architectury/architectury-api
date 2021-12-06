@@ -19,13 +19,44 @@
 
 package dev.architectury.transfer;
 
+import java.util.function.Predicate;
+
 /**
  * Represents an <b>immutable</b> view of a resource.
  *
  * @param <T> the type of resource
  */
-public interface ResourceView<T> {
+public interface ResourceView<T> extends TransferView<T> {
+    /**
+     * Returns the resource that this view represents.
+     * The returned resource is <b>immutable</b>.
+     *
+     * @return the resource
+     */
     T getResource();
     
+    /**
+     * Returns the capacity of this view.
+     *
+     * @return the capacity
+     */
     long getCapacity();
+    
+    /**
+     * Returns a copy of a resource with the given amount.
+     *
+     * @param resource the resource to copy
+     * @param amount   the amount to copy
+     * @return the copy
+     */
+    T copyWithAmount(T resource, long amount);
+    
+    @Override
+    default T extract(Predicate<T> toExtract, long maxAmount, TransferAction action) {
+        if (toExtract.test(getResource())) {
+            return extract(copyWithAmount(getResource(), maxAmount), action);
+        }
+        
+        return blank();
+    }
 }

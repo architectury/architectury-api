@@ -20,7 +20,7 @@
 package dev.architectury.transfer.fabric;
 
 import dev.architectury.transfer.TransferHandler;
-import dev.architectury.transfer.access.BlockTransferAccess;
+import dev.architectury.transfer.access.BlockLookup;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -30,11 +30,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 
-public class FabricBlockTransferAccess<T, F, C> implements BlockTransferAccess<TransferHandler<T>, C> {
+public class BlockApiLookupWrapper<T, F, C> implements BlockLookup<TransferHandler<T>, C> {
     private final BlockApiLookup<F, C> lookup;
-    private final Function<F, TransferHandler<T>> wrapper;
+    private final Function<@Nullable F, @Nullable TransferHandler<T>> wrapper;
     
-    public FabricBlockTransferAccess(BlockApiLookup<F, C> lookup, Function<F, TransferHandler<T>> wrapper) {
+    public BlockApiLookupWrapper(BlockApiLookup<F, C> lookup, Function<@Nullable F, @Nullable TransferHandler<T>> wrapper) {
         this.lookup = lookup;
         this.wrapper = wrapper;
     }
@@ -49,7 +49,7 @@ public class FabricBlockTransferAccess<T, F, C> implements BlockTransferAccess<T
     @Nullable
     public TransferHandler<T> get(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, C context) {
         if (blockEntity != null) {
-            return wrapper.apply(lookup.find(level, pos, blockEntity.getBlockState(), blockEntity, context));
+            return wrapper.apply(lookup.find(level, pos, state, blockEntity, context));
         } else {
             return get(level, pos, context);
         }
