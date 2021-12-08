@@ -49,7 +49,9 @@ public interface ClientLifecycleEvent {
      * <p> This happens during {@code FMLClientSetupEvent} on Forge,
      * or when Architectury API's client entrypoint initialises on Fabric.
      * <p>
-     * Registries should be initialised here.
+     * Registries should have been initialised by this point, but there
+     * are no such limits in place, as you modify the registry beyond this point
+     * on non-Forge environments.
      */
     Event<ClientState> CLIENT_SETUP = EventFactory.createLoop();
     

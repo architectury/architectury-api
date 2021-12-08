@@ -21,7 +21,6 @@ package dev.architectury.event.events.common;
 
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
-import dev.architectury.event.events.client.ClientLifecycleEvent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
@@ -94,7 +93,9 @@ public interface LifecycleEvent {
      * <p> This happens during {@code FMLCommonSetupEvent} on Forge,
      * or when Architectury API's entrypoint initialises on Fabric.
      * <p>
-     * Registries should be initialised here.
+     * Registries should have been initialised by this point, but there
+     * are no such limits in place, as you modify the registry beyond this point
+     * on non-Forge environments.
      */
     Event<Runnable> SETUP = EventFactory.createLoop();
     
