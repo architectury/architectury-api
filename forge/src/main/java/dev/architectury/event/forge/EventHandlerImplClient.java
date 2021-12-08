@@ -318,5 +318,10 @@ public class EventHandlerImplClient {
         public static void event(FMLClientSetupEvent event) {
             ClientLifecycleEvent.CLIENT_SETUP.invoker().stateChanged(Minecraft.getInstance());
         }
+        
+        @SubscribeEvent(priority = EventPriority.HIGH)
+        public static void event(RegisterShadersEvent event) {
+            ClientReloadShadersEvent.EVENT.invoker().reload(event.getResourceManager(), event::registerShader);
+        }
     }
 }
