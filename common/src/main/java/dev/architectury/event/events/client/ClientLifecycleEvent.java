@@ -50,7 +50,7 @@ public interface ClientLifecycleEvent {
      * or when Architectury API's client entrypoint initialises on Fabric.
      * <p>
      * Registries should have been initialised by this point, but there
-     * are no such limits in place, as you modify the registry beyond this point
+     * are no such guarantees, as you can modify the registry beyond this point
      * on non-Forge environments.
      */
     Event<ClientState> CLIENT_SETUP = EventFactory.createLoop();
