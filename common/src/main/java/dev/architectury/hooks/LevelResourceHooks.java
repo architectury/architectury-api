@@ -20,11 +20,17 @@
 package dev.architectury.hooks;
 
 import net.minecraft.world.level.storage.LevelResource;
+import org.jetbrains.annotations.ApiStatus;
 
 public class LevelResourceHooks {
     private LevelResourceHooks() {
     }
     
+    /**
+     * @deprecated Use the constructor directly.
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval
     public static LevelResource create(String id) {
         return new LevelResource(id);
     }
