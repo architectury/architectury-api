@@ -163,8 +163,22 @@ public class ItemTransferImpl {
         
         @Override
         public ItemStack extract(ItemStack toExtract, TransferAction action) {
-            // TODO: implement
-            return null;
+            for (int i = 0; i < handler.getSlots(); i++) {
+                ItemStack slot = handler.getStackInSlot(i);
+                
+                if (ItemHandlerHelper.canItemStacksStack(toExtract, slot)) {
+                    int toExtractCount = toExtract.getCount();
+                    ItemStack left = handler.extractItem(i, toExtractCount, action == TransferAction.SIMULATE);
+                    
+                    if (left.isEmpty()) {
+                        return toExtract;
+                    }
+                    
+                    toExtract = left;
+                }
+            }
+            
+            return ItemStack.EMPTY;
         }
         
         @Override

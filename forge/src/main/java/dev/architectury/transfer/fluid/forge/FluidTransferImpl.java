@@ -28,7 +28,6 @@ import dev.architectury.transfer.access.BlockLookup;
 import dev.architectury.transfer.access.ItemLookup;
 import dev.architectury.transfer.fluid.FluidTransfer;
 import dev.architectury.transfer.forge.ForgeBlockLookupRegistration;
-import dev.architectury.transfer.forge.ForgeItemLookupRegistration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -296,8 +295,8 @@ public class FluidTransferImpl {
             
             @Override
             public FluidStack extract(FluidStack toExtract, TransferAction action) {
-                // TODO: implement
-                return null;
+                // impossible to extract from a forge handler with an index
+                return blank();
             }
             
             @Override

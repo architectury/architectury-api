@@ -19,7 +19,7 @@
 
 package dev.architectury.transfer.fabric;
 
-import com.google.common.collect.Iterators;
+import com.google.common.collect.Iterables;
 import dev.architectury.transfer.ResourceView;
 import dev.architectury.transfer.TransferAction;
 import dev.architectury.transfer.TransferHandler;
@@ -80,7 +80,7 @@ public class FabricStorageTransferHandler<F, S> implements TransferHandler<S> {
             return new FabricStorageResourceView((StorageView<F>) ((InventoryStorage) storage).getSlots().get(index));
         }
         try (Transaction transaction = Transaction.openNested(this.transaction)) {
-            return new FabricStorageResourceView(Iterators.get(storage.iterator(transaction), index));
+            return new FabricStorageResourceView(Iterables.get(storage.iterable(transaction), index));
         }
     }
     
