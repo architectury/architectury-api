@@ -3,8 +3,6 @@ loom {
 }
 
 dependencies {
-    minecraft "com.mojang:minecraft:${rootProject.architectury.minecraft}"
-    mappings minecraft.officialMojangMappings()
     // We depend on fabric loader here to use the fabric @Environment annotations
     // Do NOT use other classes from fabric loader
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
@@ -19,12 +17,7 @@ publishing {
     publications {
         mavenCommon(MavenPublication) {
             artifactId = rootProject.archivesBaseName
-            artifact(file("${project.buildDir}/libs/${project.archivesBaseName}-${project.version}.jar")) {
-                builtBy build
-            }
-            artifact(sourcesJar) {
-                builtBy remapSourcesJar
-            }
+            from components.java
         }
     }
 

@@ -19,6 +19,7 @@
 
 package me.shedaniel.architectury.test.particle;
 
+import me.shedaniel.architectury.event.events.client.ClientLifecycleEvent;
 import me.shedaniel.architectury.platform.Platform;
 import me.shedaniel.architectury.registry.DeferredRegister;
 import me.shedaniel.architectury.registry.ParticleProviderRegistry;
@@ -38,7 +39,10 @@ public class TestParticles {
     
     public static void initialize() {
         PARTICLE_TYPES.register();
-        if (Platform.getEnvironment() == Env.CLIENT)
-            ParticleProviderRegistry.register(TEST_PARTICLE.get(), HeartParticle.Provider::new);
+        if (Platform.getEnvironment() == Env.CLIENT) {
+            ClientLifecycleEvent.CLIENT_SETUP.register(instance -> {
+                ParticleProviderRegistry.register(TEST_PARTICLE.get(), HeartParticle.Provider::new);
+            });
+        }
     }
 }

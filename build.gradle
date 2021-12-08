@@ -1,6 +1,6 @@
 plugins {
     id "architectury-plugin" version "3.4-SNAPSHOT"
-    id "dev.architectury.loom" version "0.7.3-SNAPSHOT" apply false
+    id "dev.architectury.loom" version "0.10.0-SNAPSHOT" apply false
     id "org.cadixdev.licenser" version "0.6.1"
     id "com.matthewprenger.cursegradle" version "1.4.0" apply false
     id "maven-publish"
@@ -15,7 +15,11 @@ subprojects {
 
     loom {
         silentMojangMappingsLicense()
-        useFabricMixin = true
+    }
+
+    dependencies {
+        minecraft "com.mojang:minecraft:${rootProject.architectury.minecraft}"
+        mappings loom.officialMojangMappings()
     }
 }
 
@@ -99,6 +103,10 @@ allprojects {
             proc.waitFor()
             return changes.toString()
         }
+    }
+
+    java {
+        withSourcesJar()
     }
 }
 
