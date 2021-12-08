@@ -19,7 +19,6 @@
 
 package me.shedaniel.architectury.hooks.fabric;
 
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.phys.Vec3;
 
@@ -28,25 +27,7 @@ public class ExplosionHooksImpl {
         return ((ExplosionExtensions) explosion).architectury_getPosition();
     }
     
-    public static Entity getSource(Explosion explosion) {
-        return ((ExplosionExtensions) explosion).architectury_getSource();
-    }
-    
-    public static float getRadius(Explosion explosion) {
-        return ((ExplosionExtensions) explosion).architectury_getRadius();
-    }
-    
-    public static void setRadius(Explosion explosion, float radius) {
-        ((ExplosionExtensions) explosion).architectury_setRadius(radius);
-    }
-    
     public interface ExplosionExtensions {
         Vec3 architectury_getPosition();
-        
-        Entity architectury_getSource();
-        
-        float architectury_getRadius();
-        
-        void architectury_setRadius(float v);
     }
 }

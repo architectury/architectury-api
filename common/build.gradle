@@ -1,5 +1,5 @@
 loom {
-    accessWidener = file("src/main/resources/architectury.accessWidener")
+    accessWidener = file("src/main/resources/architectury-common.accessWidener")
 }
 
 dependencies {
@@ -13,11 +13,6 @@ dependencies {
 
 architectury {
     common()
-}
-
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = "sources"
-    from sourceSets.main.allSource
 }
 
 publishing {

@@ -1,4 +1,4 @@
-accessWidener v1 named
+accessWidener v2 named
 accessible method net/minecraft/world/level/block/state/BlockBehaviour$Properties <init> (Lnet/minecraft/world/level/material/Material;Ljava/util/function/Function;)V
 accessible field net/minecraft/world/level/biome/Biome climateSettings Lnet/minecraft/world/level/biome/Biome$ClimateSettings;
 accessible field net/minecraft/world/level/biome/Biome depth F
@@ -39,13 +39,19 @@ accessible field net/minecraft/world/level/biome/BiomeSpecialEffects ambientAddi
 mutable field net/minecraft/world/level/biome/BiomeSpecialEffects ambientAdditionsSettings Ljava/util/Optional;
 accessible field net/minecraft/world/level/biome/BiomeSpecialEffects backgroundMusic Ljava/util/Optional;
 mutable field net/minecraft/world/level/biome/BiomeSpecialEffects backgroundMusic Ljava/util/Optional;
-accessible method net/minecraft/world/level/storage/LevelResource <init> (Ljava/lang/String;)V
-accessible field net/minecraft/world/item/AxeItem STRIPABLES Ljava/util/Map;
+transitive-accessible method net/minecraft/world/entity/Entity getEncodeId ()Ljava/lang/String;
+transitive-accessible method net/minecraft/world/level/storage/LevelResource <init> (Ljava/lang/String;)V
+transitive-accessible field net/minecraft/world/item/AxeItem STRIPABLES Ljava/util/Map;
 mutable field net/minecraft/world/item/AxeItem STRIPABLES Ljava/util/Map;
 accessible field net/minecraft/world/item/ShovelItem FLATTENABLES Ljava/util/Map;
 mutable field net/minecraft/world/item/ShovelItem FLATTENABLES Ljava/util/Map;
 accessible field net/minecraft/world/item/HoeItem TILLABLES Ljava/util/Map;
 mutable field net/minecraft/world/item/HoeItem TILLABLES Ljava/util/Map;
+transitive-accessible field net/minecraft/world/level/Explosion source Lnet/minecraft/world/entity/Entity;
+transitive-mutable field net/minecraft/world/level/Explosion source Lnet/minecraft/world/entity/Entity;
+transitive-accessible field net/minecraft/world/level/Explosion radius F
+transitive-mutable field net/minecraft/world/level/Explosion radius F
+transitive-accessible method net/minecraft/world/entity/player/Player closeContainer ()V
 
 accessible field net/minecraft/world/item/trading/MerchantOffer baseCostA Lnet/minecraft/world/item/ItemStack;
 mutable field net/minecraft/world/item/trading/MerchantOffer baseCostA Lnet/minecraft/world/item/ItemStack;

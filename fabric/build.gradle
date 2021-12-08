@@ -8,12 +8,11 @@ loom {
 }
 
 configurations {
-    shadowCommon
-    dev
-}
-
-artifacts {
-    dev(jar)
+    common
+    shadowCommon // Don't use shadow from the shadow plugin because we don't want IDEA to index this.
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentFabric.extendsFrom common
 }
 
 architectury {
@@ -34,15 +33,8 @@ dependencies {
     implementation "net.jodah:typetools:0.6.2"
     shadowCommon "net.jodah:typetools:0.6.2"
 
-    implementation(project(path: ":common")) {
-        transitive = false
-    }
-    developmentFabric(project(path: ":common")) {
-        transitive = false
-    }
-    shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) {
-        transitive = false
-    }
+    common(project(path: ":common", configuration: "namedElements")) { transitive false }
+    shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 }
 
 processResources {
@@ -53,6 +45,9 @@ processResources {
 }
 
 shadowJar {
+    exclude "architectury-common.accessWidener"
+    exclude "architectury.common.json"
+
     relocate "net.jodah.typetools", "me.shedaniel.architectury.shadowed.impl.net.jodah.typetools"
     configurations = [project.configurations.shadowCommon]
     classifier "shadow"

@@ -21,17 +21,7 @@ dependencies {
     mappings loom.officialMojangMappings()
     forge "net.minecraftforge:forge:${gradle.rootProject.architectury.minecraft}-${rootProject.forge_version}"
 
-    implementation project(path: ":forge", configuration: "dev")
-    implementation(project(path: ":common")) {
-        transitive = false
-    }
-    developmentForge(project(path: ":common")) {
-        transitive = false
-    }
-    implementation(project(path: ":testmod-common")) {
-        transitive = false
-    }
-    developmentForge(project(path: ":testmod-common")) {
-        transitive = false
-    }
+    implementation project(path: ":forge", configuration: "namedElements")
+    common(project(path: ":common", configuration: "namedElements")) { transitive false }
+    common(project(path: ":testmod-common", configuration: "namedElements")) { transitive false }
 }

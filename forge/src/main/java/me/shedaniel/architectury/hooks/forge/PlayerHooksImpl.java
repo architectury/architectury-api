@@ -26,8 +26,4 @@ public class PlayerHooksImpl {
     public static boolean isFake(Player playerEntity) {
         return playerEntity instanceof FakePlayer;
     }
-    
-    public static void closeContainer(Player playerEntity) {
-        playerEntity.closeContainer();
-    }
 }

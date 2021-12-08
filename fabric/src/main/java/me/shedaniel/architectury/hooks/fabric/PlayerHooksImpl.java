@@ -25,8 +25,4 @@ public class PlayerHooksImpl {
     public static boolean isFake(Player player) {
         return false;
     }
-    
-    public static void closeContainer(Player player) {
-        player.closeContainer();
-    }
 }

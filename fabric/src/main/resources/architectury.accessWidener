@@ -1,4 +1,4 @@
-accessWidener v1 named
+accessWidener v2 named
 accessible method net/minecraft/client/gui/screens/Screen addButton (Lnet/minecraft/client/gui/components/AbstractWidget;)Lnet/minecraft/client/gui/components/AbstractWidget;
 accessible method net/minecraft/client/gui/screens/Screen addWidget (Lnet/minecraft/client/gui/components/events/GuiEventListener;)Lnet/minecraft/client/gui/components/events/GuiEventListener;
 accessible field net/minecraft/client/gui/screens/Screen buttons Ljava/util/List;
@@ -114,3 +114,7 @@ accessible field net/minecraft/world/item/trading/MerchantOffer priceMultiplier 
 accessible field net/minecraft/world/item/trading/MerchantOffer xp I
 accessible method net/minecraft/client/renderer/item/ItemProperties registerGeneric (Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/client/renderer/item/ItemPropertyFunction;)Lnet/minecraft/client/renderer/item/ItemPropertyFunction;
 accessible method net/minecraft/client/renderer/item/ItemProperties register (Lnet/minecraft/world/item/Item;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/client/renderer/item/ItemPropertyFunction;)V
+accessible field net/minecraft/world/level/Explosion source Lnet/minecraft/world/entity/Entity;
+mutable field net/minecraft/world/level/Explosion source Lnet/minecraft/world/entity/Entity;
+accessible field net/minecraft/world/level/Explosion radius F
+mutable field net/minecraft/world/level/Explosion radius F

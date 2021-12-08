@@ -21,6 +21,8 @@ package me.shedaniel.architectury.hooks;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 public final class PlayerHooks {
     private PlayerHooks() {
@@ -31,8 +33,12 @@ public final class PlayerHooks {
         throw new AssertionError();
     }
     
-    @ExpectPlatform
+    /**
+     * @deprecated Use the method directly.
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval
     public static void closeContainer(Player player) {
-        throw new AssertionError();
+        player.closeContainer();
     }
 }
