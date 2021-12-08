@@ -50,14 +50,6 @@ public class MixinExplosion implements ExplosionHooksImpl.ExplosionExtensions {
     @Shadow
     @Final
     private double z;
-    @Shadow
-    @Final
-    @Nullable
-    private Entity source;
-    @Shadow
-    @Final
-    @Mutable
-    private float radius;
     @Unique
     Vec3 position;
     
@@ -73,20 +65,5 @@ public class MixinExplosion implements ExplosionHooksImpl.ExplosionExtensions {
             return position = new Vec3(x, y, z);
         }
         return position;
-    }
-    
-    @Override
-    public Entity architectury_getSource() {
-        return source;
-    }
-    
-    @Override
-    public float architectury_getRadius() {
-        return radius;
-    }
-    
-    @Override
-    public void architectury_setRadius(float v) {
-        radius = v;
     }
 }

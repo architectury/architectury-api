@@ -25,10 +25,6 @@ import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import org.jetbrains.annotations.Nullable;
 
 public class EntityHooksImpl {
-    public static String getEncodeId(Entity entity) {
-        return entity.getEncodeId();
-    }
-    
     @Nullable
     public static Entity fromCollision(CollisionContext ctx) {
         return ctx instanceof EntityCollisionContext ? ((EntityCollisionContext) ctx).getEntity().orElse(null) : null;

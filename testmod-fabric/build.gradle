@@ -23,7 +23,7 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
 
-    implementation project(path: ":fabric", configuration: "dev")
-    common(project(path: ":common", configuration: "dev")) { transitive = false }
-    common(project(path: ":testmod-common", configuration: "dev")) { transitive false }
+    implementation project(path: ":fabric", configuration: "namedElements")
+    common(project(path: ":common", configuration: "namedElements")) { transitive false }
+    common(project(path: ":testmod-common", configuration: "namedElements")) { transitive false }
 }
