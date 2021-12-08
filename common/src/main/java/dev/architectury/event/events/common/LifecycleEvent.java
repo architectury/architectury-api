@@ -21,6 +21,7 @@ package dev.architectury.event.events.common;
 
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
+import dev.architectury.event.events.client.ClientLifecycleEvent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
@@ -88,6 +89,14 @@ public interface LifecycleEvent {
      * @see ServerLevelState#act(Level)
      */
     Event<ServerLevelState> SERVER_LEVEL_SAVE = EventFactory.createLoop();
+    /**
+     * Invoked once common setup has begun.
+     * <p> This happens during {@code FMLCommonSetupEvent} on Forge,
+     * or when Architectury API's entrypoint initialises on Fabric.
+     * <p>
+     * Registries should be initialised here.
+     */
+    Event<Runnable> SETUP = EventFactory.createLoop();
     
     interface InstanceState<T> {
         /**
