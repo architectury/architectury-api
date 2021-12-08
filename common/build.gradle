@@ -1,5 +1,5 @@
 loom {
-    accessWidenerPath = file("src/main/resources/architectury.accessWidener")
+    accessWidenerPath = file("src/main/resources/architectury-common.accessWidener")
 }
 
 dependencies {
@@ -10,20 +10,6 @@ dependencies {
 
 architectury {
     common(rootProject.forgeEnabled.toBoolean())
-}
-
-afterEvaluate {
-    remapJar {
-        remapAccessWidener = false
-    }
-}
-
-configurations {
-    dev
-}
-
-artifacts {
-    dev(jar)
 }
 
 publishing {

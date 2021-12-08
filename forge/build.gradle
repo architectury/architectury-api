@@ -21,17 +21,12 @@ configurations {
     compileClasspath.extendsFrom common
     runtimeClasspath.extendsFrom common
     developmentForge.extendsFrom common
-    dev
-}
-
-artifacts {
-    dev(jar)
 }
 
 dependencies {
     forge "net.minecraftforge:forge:${rootProject.architectury.minecraft}-${rootProject.forge_version}"
 
-    common(project(path: ":common", configuration: "dev")) { transitive false }
+    common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive false }
 }
 
@@ -45,6 +40,7 @@ processResources {
 shadowJar {
     exclude "fabric.mod.json"
     exclude "architectury-common.accessWidener"
+    exclude "architectury.common.json"
 
     configurations = [project.configurations.shadowCommon]
     classifier "dev-shadow"

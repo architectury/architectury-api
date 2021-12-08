@@ -18,11 +18,6 @@ configurations {
     compileClasspath.extendsFrom common
     runtimeClasspath.extendsFrom common
     developmentFabric.extendsFrom common
-    dev
-}
-
-artifacts {
-    dev(jar)
 }
 
 repositories {
@@ -34,7 +29,7 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
     modCompileOnly("com.terraformersmc:modmenu:${rootProject.mod_menu_version}") { transitive false }
 
-    common(project(path: ":common", configuration: "dev")) { transitive false }
+    common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 }
 
@@ -46,6 +41,9 @@ processResources {
 }
 
 shadowJar {
+    exclude "architectury-common.accessWidener"
+    exclude "architectury.common.json"
+
     configurations = [project.configurations.shadowCommon]
     classifier "dev-shadow"
 }

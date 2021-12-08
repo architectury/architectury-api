@@ -19,24 +19,11 @@
 
 package dev.architectury.hooks.level.forge;
 
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.phys.Vec3;
 
 public class ExplosionHooksImpl {
     public static Vec3 getPosition(Explosion explosion) {
         return explosion.getPosition();
-    }
-    
-    public static Entity getSource(Explosion explosion) {
-        return explosion.getExploder();
-    }
-    
-    public static float getRadius(Explosion explosion) {
-        return explosion.radius;
-    }
-    
-    public static void setRadius(Explosion explosion, float v) {
-        explosion.radius = v;
     }
 }

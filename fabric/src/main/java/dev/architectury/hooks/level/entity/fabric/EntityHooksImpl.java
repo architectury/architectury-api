@@ -25,10 +25,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.entity.EntityInLevelCallback;
 
 public class EntityHooksImpl {
-    public static String getEncodeId(Entity entity) {
-        return entity.getEncodeId();
-    }
-    
     public static EntityInLevelCallback wrapEntityInLevelCallback(Entity entity, EntityInLevelCallback callback) {
         if (callback == EntityInLevelCallback.NULL) return callback;
         if (callback == null) return callback;

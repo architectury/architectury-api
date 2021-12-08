@@ -8,11 +8,3 @@ dependencies {
 architectury {
     common(rootProject.forgeEnabled.toBoolean())
 }
-
-configurations {
-    dev
-}
-
-artifacts {
-    dev(jar)
-}

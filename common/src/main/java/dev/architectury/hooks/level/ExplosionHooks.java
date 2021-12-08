@@ -23,6 +23,7 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 public final class ExplosionHooks {
@@ -34,19 +35,31 @@ public final class ExplosionHooks {
         throw new AssertionError();
     }
     
+    /**
+     * @deprecated Use the field directly.
+     */
     @Nullable
-    @ExpectPlatform
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval
     public static Entity getSource(Explosion explosion) {
-        throw new AssertionError();
+        return explosion.source;
     }
     
-    @ExpectPlatform
+    /**
+     * @deprecated Use the field directly.
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval
     public static float getRadius(Explosion explosion) {
-        throw new AssertionError();
+        return explosion.radius;
     }
     
-    @ExpectPlatform
+    /**
+     * @deprecated Use the field directly.
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval
     public static void setRadius(Explosion explosion, float radius) {
-        throw new AssertionError();
+        explosion.radius = radius;
     }
 }

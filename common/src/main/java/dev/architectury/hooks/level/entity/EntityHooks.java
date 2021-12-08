@@ -23,15 +23,20 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 public final class EntityHooks {
     private EntityHooks() {
     }
     
-    @ExpectPlatform
+    /**
+     * @deprecated Use the field directly.
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval
     public static String getEncodeId(Entity entity) {
-        throw new AssertionError();
+        return entity.getEncodeId();
     }
     
     @Nullable
