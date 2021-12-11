@@ -20,7 +20,6 @@
     "MixinBlockEntityExtension",
     "MixinChunkSerializer",
     "MixinItemExtension",
-    "MixinRegistryEntry",
     "MixinWorldEvent",
     "MobSpawnSettingsBuilderAccessor"
   ],

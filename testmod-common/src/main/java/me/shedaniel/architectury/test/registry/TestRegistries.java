@@ -26,6 +26,7 @@ import me.shedaniel.architectury.registry.DeferredRegister;
 import me.shedaniel.architectury.registry.RegistrySupplier;
 import me.shedaniel.architectury.test.TestMod;
 import me.shedaniel.architectury.test.entity.TestEntity;
+import me.shedaniel.architectury.test.recipes.TestRecipeSerializer;
 import me.shedaniel.architectury.test.registry.objects.EquippableTickingItem;
 import me.shedaniel.architectury.test.tab.TestCreativeTabs;
 import net.minecraft.core.BlockPos;
@@ -37,6 +38,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -51,9 +54,11 @@ public class TestRegistries {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(TestMod.MOD_ID, Registry.BLOCK_REGISTRY);
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(TestMod.MOD_ID, Registry.ENTITY_TYPE_REGISTRY);
     public static final DeferredRegister<MobEffect> MOB_EFFECTS = DeferredRegister.create(TestMod.MOD_ID, Registry.MOB_EFFECT_REGISTRY);
+    public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(TestMod.MOD_ID, Registry.RECIPE_SERIALIZER_REGISTRY);
     
     public static final RegistrySupplier<MobEffect> TEST_EFFECT = MOB_EFFECTS.register("test_effect", () ->
-            new MobEffect(MobEffectCategory.NEUTRAL, 0x123456) {});
+            new MobEffect(MobEffectCategory.NEUTRAL, 0x123456) {
+            });
     
     public static final RegistrySupplier<Item> TEST_ITEM = ITEMS.register("test_item", () ->
             new Item(new Item.Properties().tab(TestCreativeTabs.TEST_TAB)));
@@ -83,10 +88,13 @@ public class TestRegistries {
     
     public static final RegistrySupplier<EntityType<TestEntity>> TEST_ENTITY = ENTITY_TYPES.register("test_entity", () -> TestEntity.TYPE);
     
+    public static final RegistrySupplier<RecipeSerializer<CustomRecipe>> TEST_SERIALIZER = RECIPE_SERIALIZERS.register("test_serializer", TestRecipeSerializer::new);
+    
     public static void initialize() {
         MOB_EFFECTS.register();
         BLOCKS.register();
         ITEMS.register();
         ENTITY_TYPES.register();
+        RECIPE_SERIALIZERS.register();
     }
 }
