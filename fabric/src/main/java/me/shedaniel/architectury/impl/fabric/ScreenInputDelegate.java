@@ -43,7 +43,7 @@ public interface ScreenInputDelegate {
                 return true;
             if (parent.mouseDragged(d, e, i, f, g))
                 return true;
-            return ClientScreenInputEvent.MOUSE_DRAGGED_PRE.invoker().mouseDragged(Minecraft.getInstance(), parent, d, e, i, f, g) != InteractionResult.PASS;
+            return ClientScreenInputEvent.MOUSE_DRAGGED_POST.invoker().mouseDragged(Minecraft.getInstance(), parent, d, e, i, f, g) != InteractionResult.PASS;
         }
         
         @Override
