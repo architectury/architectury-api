@@ -165,6 +165,6 @@ public class MixinMouseHandler {
         if (screen.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)) {
             return true;
         }
-        return ClientScreenInputEvent.MOUSE_DRAGGED_PRE.invoker().mouseDragged(Minecraft.getInstance(), screen, mouseX, mouseY, button, deltaX, deltaY).isPresent();
+        return ClientScreenInputEvent.MOUSE_DRAGGED_POST.invoker().mouseDragged(Minecraft.getInstance(), screen, mouseX, mouseY, button, deltaX, deltaY).isPresent();
     }
 }
