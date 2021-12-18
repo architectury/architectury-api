@@ -21,7 +21,6 @@ package dev.architectury.mixin.fabric.client;
 
 import dev.architectury.event.events.client.ClientRawInputEvent;
 import dev.architectury.event.events.client.ClientScreenInputEvent;
-import dev.architectury.impl.fabric.ScreenInputDelegate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
 import net.minecraft.client.gui.screens.Screen;
@@ -30,7 +29,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
@@ -153,11 +152,19 @@ public class MixinMouseHandler {
     }
     
     @SuppressWarnings("UnresolvedMixinReference")
-    @ModifyVariable(method = {"method_1602", "lambda$onMove$11"}, at = @At("HEAD"), ordinal = 0, argsOnly = true)
-    private Screen wrapMouseDragged(Screen screen) {
-        if (screen instanceof ScreenInputDelegate delegate) {
-            return delegate.architectury_delegateInputs();
+    @Inject(method = {"method_1602", "lambda$onMove$11"}, at = @At("HEAD"), cancellable = true, remap = false)
+    private void onGuiMouseDraggedPre(Screen screen, double mouseX, double mouseY, double deltaX, double deltaY, CallbackInfo ci) {
+        if (ClientScreenInputEvent.MOUSE_DRAGGED_PRE.invoker().mouseDragged(Minecraft.getInstance(), screen, mouseX, mouseY, this.activeButton, deltaX, deltaY).isPresent()) {
+            ci.cancel();
         }
-        return screen;
+    }
+    
+    @SuppressWarnings("UnresolvedMixinReference")
+    @Redirect(method = {"method_1602", "lambda$onMove$11"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;mouseDragged(DDIDD)Z"), remap = false)
+    private boolean onGuiMouseDraggedPost(Screen screen, double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        if (screen.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)) {
+            return true;
+        }
+        return ClientScreenInputEvent.MOUSE_DRAGGED_PRE.invoker().mouseDragged(Minecraft.getInstance(), screen, mouseX, mouseY, button, deltaX, deltaY).isPresent();
     }
 }
