@@ -49,3 +49,5 @@ transitive-mutable field net/minecraft/world/level/Explosion source Lnet/minecra
 transitive-accessible field net/minecraft/world/level/Explosion radius F
 transitive-mutable field net/minecraft/world/level/Explosion radius F
 transitive-accessible method net/minecraft/world/entity/player/Player closeContainer ()V
+transitive-accessible method net/minecraft/client/renderer/RenderType create (Ljava/lang/String;Lcom/mojang/blaze3d/vertex/VertexFormat;Lcom/mojang/blaze3d/vertex/VertexFormat$Mode;IZZLnet/minecraft/client/renderer/RenderType$CompositeState;)Lnet/minecraft/client/renderer/RenderType$CompositeRenderType;
+transitive-accessible class net/minecraft/client/renderer/RenderType$CompositeState
