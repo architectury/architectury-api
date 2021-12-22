@@ -103,6 +103,7 @@ curseforge {
             releaseType = "$rootProject.cf_type"
             changelogType = "html"
             changelog = releaseChangelog()
+            addGameVersion "1.18.1"
             addGameVersion "1.18"
             addGameVersion "Java 17"
             addGameVersion "Forge"
