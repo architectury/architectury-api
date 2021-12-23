@@ -19,7 +19,6 @@
 
 package dev.architectury.test;
 
-import dev.architectury.platform.Platform;
 import dev.architectury.registry.level.entity.EntityRendererRegistry;
 import dev.architectury.test.debug.ConsoleMessageSink;
 import dev.architectury.test.debug.MessageSink;
@@ -54,16 +53,17 @@ public class TestMod {
         TestParticles.initialize();
         TestModNet.initialize();
         TestBlockInteractions.init();
-        if (Platform.getEnvironment() == Env.CLIENT) {
-            initializeClient();
-        }
+        EnvExecutor.runInEnv(Env.CLIENT, () -> TestMod.Client::initializeClient);
     }
     
     @Environment(EnvType.CLIENT)
-    public static void initializeClient() {
-        TestKeybinds.initialize();
-        TestModNet.initializeClient();
-        EntityRendererRegistry.register(() -> TestEntity.TYPE, context ->
-                new MinecartRenderer<>(context, ModelLayers.MINECART));
+    public static class Client {
+        @Environment(EnvType.CLIENT)
+        public static void initializeClient() {
+            TestKeybinds.initialize();
+            TestModNet.initializeClient();
+            EntityRendererRegistry.register(() -> TestEntity.TYPE, context ->
+                    new MinecartRenderer<>(context, ModelLayers.MINECART));
+        }
     }
 }
