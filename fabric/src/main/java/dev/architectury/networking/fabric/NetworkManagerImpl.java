@@ -127,6 +127,7 @@ public class NetworkManagerImpl {
         throw new IllegalArgumentException("Invalid side: " + side);
     }
     
+    @Environment(EnvType.CLIENT)
     public static boolean canServerReceive(ResourceLocation id) {
         return ClientSidePacketRegistry.INSTANCE.canServerReceive(id);
     }
