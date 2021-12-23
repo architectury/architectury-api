@@ -19,6 +19,7 @@
 
 package dev.architectury.networking.fabric;
 
+import dev.architectury.extensions.network.EntitySpawnExtension;
 import dev.architectury.networking.NetworkManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -55,6 +56,9 @@ public class SpawnEntityPacket {
         buffer.writeDouble(deltaMovement.x);
         buffer.writeDouble(deltaMovement.y);
         buffer.writeDouble(deltaMovement.z);
+        if (entity instanceof EntitySpawnExtension ext) {
+            ext.saveAdditionalSpawnData(buffer);
+        }
         return NetworkManager.toPacket(NetworkManager.s2c(), PACKET_ID, buffer);
     }
     
@@ -98,6 +102,9 @@ public class SpawnEntityPacket {
                 entity.absMoveTo(x, y, z, xRot, yRot);
                 entity.setYHeadRot(yHeadRot);
                 entity.setYBodyRot(yHeadRot);
+                if (entity instanceof EntitySpawnExtension ext) {
+                    ext.loadAdditionalSpawnData(buf);
+                }
                 Minecraft.getInstance().level.putNonPlayerEntity(id, entity);
                 entity.lerpMotion(deltaX, deltaY, deltaZ);
             });
