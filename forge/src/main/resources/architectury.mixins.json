@@ -9,6 +9,7 @@
   ],
   "mixins": [
     "MixinChunkSerializer",
+    "MixinEntitySpawnExtension",
     "MixinFallingBlockEntity",
     "MixinItemExtension",
     "MixinRegistryEntry",
