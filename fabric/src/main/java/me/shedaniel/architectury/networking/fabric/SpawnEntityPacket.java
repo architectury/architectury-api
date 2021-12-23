@@ -20,6 +20,8 @@
 package me.shedaniel.architectury.networking.fabric;
 
 import me.shedaniel.architectury.networking.NetworkManager;
+import me.shedaniel.architectury.utils.Env;
+import me.shedaniel.architectury.utils.EnvExecutor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -81,7 +83,7 @@ public class SpawnEntityPacket {
         double deltaX = buf.readDouble();
         double deltaY = buf.readDouble();
         double deltaZ = buf.readDouble();
-        context.queue(() -> {
+        EnvExecutor.runInEnv(Env.CLIENT, () -> () -> context.queue(() -> {
             EntityType<?> entityType = Registry.ENTITY_TYPE.byId(entityTypeId);
             if (entityType == null) {
                 throw new IllegalStateException("Entity type (" + entityTypeId + ") is unknown, spawning at (" + x + ", " + y + ", " + z + ")");
@@ -101,6 +103,6 @@ public class SpawnEntityPacket {
             entity.setYBodyRot(yHeadRot);
             Minecraft.getInstance().level.putNonPlayerEntity(id, entity);
             entity.lerpMotion(deltaX, deltaY, deltaZ);
-        });
+        }));
     }
 }
