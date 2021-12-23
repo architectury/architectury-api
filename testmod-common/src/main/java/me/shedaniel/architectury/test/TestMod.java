@@ -19,7 +19,6 @@
 
 package me.shedaniel.architectury.test;
 
-import me.shedaniel.architectury.platform.Platform;
 import me.shedaniel.architectury.registry.entity.EntityRenderers;
 import me.shedaniel.architectury.test.debug.ConsoleMessageSink;
 import me.shedaniel.architectury.test.debug.MessageSink;
@@ -36,6 +35,8 @@ import me.shedaniel.architectury.test.tags.TestTags;
 import me.shedaniel.architectury.test.trade.TestTrades;
 import me.shedaniel.architectury.utils.Env;
 import me.shedaniel.architectury.utils.EnvExecutor;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.entity.MinecartRenderer;
 
 public class TestMod {
@@ -51,7 +52,13 @@ public class TestMod {
         TestParticles.initialize();
         TestModNet.initialize();
         TestBlockInteractions.init();
-        if (Platform.getEnvironment() == Env.CLIENT) {
+        EnvExecutor.runInEnv(Env.CLIENT, () -> TestMod.Client::initializeClient);
+    }
+    
+    @Environment(EnvType.CLIENT)
+    public static class Client {
+        @Environment(EnvType.CLIENT)
+        public static void initializeClient() {
             TestKeybinds.initialize();
             TestModNet.initializeClient();
             EntityRenderers.register(TestEntity.TYPE, MinecartRenderer<TestEntity>::new);

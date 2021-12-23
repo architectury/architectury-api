@@ -20,8 +20,6 @@
 package me.shedaniel.architectury.networking.fabric;
 
 import me.shedaniel.architectury.networking.NetworkManager;
-import me.shedaniel.architectury.utils.Env;
-import me.shedaniel.architectury.utils.EnvExecutor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -41,11 +39,6 @@ import java.util.UUID;
  */
 public class SpawnEntityPacket {
     private static final ResourceLocation PACKET_ID = new ResourceLocation("architectury", "spawn_entity_packet");
-    
-    @Environment(EnvType.CLIENT)
-    public static void register() {
-        NetworkManager.registerReceiver(NetworkManager.s2c(), PACKET_ID, SpawnEntityPacket::receive);
-    }
     
     public static Packet<?> create(Entity entity) {
         if (entity.level.isClientSide()) {
@@ -69,40 +62,49 @@ public class SpawnEntityPacket {
         return NetworkManager.toPacket(NetworkManager.s2c(), PACKET_ID, buffer);
     }
     
+    
     @Environment(EnvType.CLIENT)
-    public static void receive(FriendlyByteBuf buf, NetworkManager.PacketContext context) {
-        int entityTypeId = buf.readVarInt();
-        UUID uuid = buf.readUUID();
-        int id = buf.readVarInt();
-        double x = buf.readDouble();
-        double y = buf.readDouble();
-        double z = buf.readDouble();
-        float xRot = buf.readFloat();
-        float yRot = buf.readFloat();
-        float yHeadRot = buf.readFloat();
-        double deltaX = buf.readDouble();
-        double deltaY = buf.readDouble();
-        double deltaZ = buf.readDouble();
-        EnvExecutor.runInEnv(Env.CLIENT, () -> () -> context.queue(() -> {
-            EntityType<?> entityType = Registry.ENTITY_TYPE.byId(entityTypeId);
-            if (entityType == null) {
-                throw new IllegalStateException("Entity type (" + entityTypeId + ") is unknown, spawning at (" + x + ", " + y + ", " + z + ")");
-            }
-            if (Minecraft.getInstance().level == null) {
-                throw new IllegalStateException("Client world is null!");
-            }
-            Entity entity = entityType.create(Minecraft.getInstance().level);
-            if (entity == null) {
-                throw new IllegalStateException("Created entity is null!");
-            }
-            entity.setUUID(uuid);
-            entity.setId(id);
-            entity.setPacketCoordinates(x, y, z);
-            entity.absMoveTo(x, y, z, xRot, yRot);
-            entity.setYHeadRot(yHeadRot);
-            entity.setYBodyRot(yHeadRot);
-            Minecraft.getInstance().level.putNonPlayerEntity(id, entity);
-            entity.lerpMotion(deltaX, deltaY, deltaZ);
-        }));
+    public static class Client {
+        @Environment(EnvType.CLIENT)
+        public static void register() {
+            NetworkManager.registerReceiver(NetworkManager.s2c(), PACKET_ID, Client::receive);
+        }
+        
+        @Environment(EnvType.CLIENT)
+        public static void receive(FriendlyByteBuf buf, NetworkManager.PacketContext context) {
+            int entityTypeId = buf.readVarInt();
+            UUID uuid = buf.readUUID();
+            int id = buf.readVarInt();
+            double x = buf.readDouble();
+            double y = buf.readDouble();
+            double z = buf.readDouble();
+            float xRot = buf.readFloat();
+            float yRot = buf.readFloat();
+            float yHeadRot = buf.readFloat();
+            double deltaX = buf.readDouble();
+            double deltaY = buf.readDouble();
+            double deltaZ = buf.readDouble();
+            context.queue(() -> {
+                EntityType<?> entityType = Registry.ENTITY_TYPE.byId(entityTypeId);
+                if (entityType == null) {
+                    throw new IllegalStateException("Entity type (" + entityTypeId + ") is unknown, spawning at (" + x + ", " + y + ", " + z + ")");
+                }
+                if (Minecraft.getInstance().level == null) {
+                    throw new IllegalStateException("Client world is null!");
+                }
+                Entity entity = entityType.create(Minecraft.getInstance().level);
+                if (entity == null) {
+                    throw new IllegalStateException("Created entity is null!");
+                }
+                entity.setUUID(uuid);
+                entity.setId(id);
+                entity.setPacketCoordinates(x, y, z);
+                entity.absMoveTo(x, y, z, xRot, yRot);
+                entity.setYHeadRot(yHeadRot);
+                entity.setYBodyRot(yHeadRot);
+                Minecraft.getInstance().level.putNonPlayerEntity(id, entity);
+                entity.lerpMotion(deltaX, deltaY, deltaZ);
+            });
+        }
     }
 }
