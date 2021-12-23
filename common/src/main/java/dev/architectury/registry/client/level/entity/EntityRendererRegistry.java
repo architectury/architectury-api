@@ -17,31 +17,24 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.event.events.client;
+package dev.architectury.registry.client.level.entity;
 
-import dev.architectury.event.Event;
-import dev.architectury.event.EventFactory;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.renderer.ShaderInstance;
-import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 
-import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 @Environment(EnvType.CLIENT)
-@FunctionalInterface
-public interface ClientReloadShadersEvent {
-    /**
-     * Invoked when client reloads shaders.
-     *
-     * @see net.minecraft.client.renderer.GameRenderer#reloadShaders(ResourceManager)
-     */
-    Event<ClientReloadShadersEvent> EVENT = EventFactory.createLoop();
+public final class EntityRendererRegistry {
+    private EntityRendererRegistry() {
+    }
     
-    void reload(ResourceManager manager, ShadersSink sink);
-    
-    @FunctionalInterface
-    interface ShadersSink {
-        void registerShader(ShaderInstance shader, Consumer<ShaderInstance> callback);
+    @ExpectPlatform
+    public static <T extends Entity> void register(Supplier<EntityType<? extends T>> type, EntityRendererProvider<T> provider) {
+        throw new AssertionError();
     }
 }
