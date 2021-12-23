@@ -20,6 +20,8 @@
 package dev.architectury.networking.fabric;
 
 import dev.architectury.networking.NetworkManager;
+import dev.architectury.utils.Env;
+import dev.architectury.utils.EnvExecutor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -77,7 +79,7 @@ public class SpawnEntityPacket {
         var deltaX = buf.readDouble();
         var deltaY = buf.readDouble();
         var deltaZ = buf.readDouble();
-        context.queue(() -> {
+        EnvExecutor.runInEnv(Env.CLIENT, () -> () -> context.queue(() -> {
             var entityType = Registry.ENTITY_TYPE.byId(entityTypeId);
             if (entityType == null) {
                 throw new IllegalStateException("Entity type (" + entityTypeId + ") is unknown, spawning at (" + x + ", " + y + ", " + z + ")");
@@ -97,6 +99,6 @@ public class SpawnEntityPacket {
             entity.setYBodyRot(yHeadRot);
             Minecraft.getInstance().level.putNonPlayerEntity(id, entity);
             entity.lerpMotion(deltaX, deltaY, deltaZ);
-        });
+        }));
     }
 }
