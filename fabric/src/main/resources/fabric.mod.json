@@ -22,6 +22,9 @@
     "main": [
       "dev.architectury.utils.fabric.GameInstanceImpl::init"
     ],
+    "server": [
+      "dev.architectury.init.fabric.ArchitecturyServer::init"
+    ],
     "client": [
       "dev.architectury.init.fabric.ArchitecturyClient::init"
     ],

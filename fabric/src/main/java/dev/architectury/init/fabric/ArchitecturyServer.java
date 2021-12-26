@@ -19,16 +19,10 @@
 
 package dev.architectury.init.fabric;
 
-import dev.architectury.event.events.client.ClientLifecycleEvent;
 import dev.architectury.event.events.common.LifecycleEvent;
-import dev.architectury.networking.fabric.SpawnEntityPacket;
-import net.minecraft.client.Minecraft;
 
-public class ArchitecturyClient {
+public class ArchitecturyServer {
     public static void init() {
         LifecycleEvent.SETUP.invoker().run();
-        ClientLifecycleEvent.CLIENT_SETUP.invoker().stateChanged(Minecraft.getInstance());
-        
-        SpawnEntityPacket.Client.register();
     }
 }

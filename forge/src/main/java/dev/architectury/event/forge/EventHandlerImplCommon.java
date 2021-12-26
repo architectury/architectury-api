@@ -59,6 +59,7 @@ import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 public class EventHandlerImplCommon {
@@ -423,6 +424,9 @@ public class EventHandlerImplCommon {
     }
     
     public static class ModBasedEventHandler {
-        
+        @SubscribeEvent(priority = EventPriority.HIGH)
+        public static void event(FMLCommonSetupEvent event) {
+            LifecycleEvent.SETUP.invoker().run();
+        }
     }
 }

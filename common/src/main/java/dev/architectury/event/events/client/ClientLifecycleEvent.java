@@ -48,6 +48,10 @@ public interface ClientLifecycleEvent {
      * Invoked once client setup has begun.
      * <p> This happens during {@code FMLClientSetupEvent} on Forge,
      * or when Architectury API's client entrypoint initialises on Fabric.
+     * <p>
+     * Registries should have been initialised by this point, but there
+     * are no such guarantees, as you can modify the registry beyond this point
+     * on non-Forge environments.
      */
     Event<ClientState> CLIENT_SETUP = EventFactory.createLoop();
     
