@@ -20,15 +20,9 @@
 package me.shedaniel.architectury.init.fabric;
 
 import me.shedaniel.architectury.event.events.LifecycleEvent;
-import me.shedaniel.architectury.event.events.client.ClientLifecycleEvent;
-import me.shedaniel.architectury.networking.fabric.SpawnEntityPacket;
-import net.minecraft.client.Minecraft;
 
-public class ArchitecturyClient {
+public class ArchitecturyServer {
     public static void init() {
         LifecycleEvent.SETUP.invoker().run();
-        ClientLifecycleEvent.CLIENT_SETUP.invoker().stateChanged(Minecraft.getInstance());
-        
-        SpawnEntityPacket.Client.register();
     }
 }

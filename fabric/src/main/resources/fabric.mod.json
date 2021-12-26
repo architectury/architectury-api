@@ -22,6 +22,9 @@
     "main": [
       "me.shedaniel.architectury.utils.fabric.GameInstanceImpl::init"
     ],
+    "server": [
+      "me.shedaniel.architectury.init.fabric.ArchitecturyServer::init"
+    ],
     "client": [
       "me.shedaniel.architectury.init.fabric.ArchitecturyClient::init"
     ],
