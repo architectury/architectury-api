@@ -32,7 +32,9 @@
   "accessWidener": "architectury.accessWidener",
   "icon": "icon.png",
   "depends": {
-    "minecraft": ">=1.16.4"
+    "minecraft": ">=1.16.4",
+    "fabricloader": ">=0.12.0",
+    "fabric": ">=0.34.2"
   },
   "custom": {
     "modmenu:api": true
