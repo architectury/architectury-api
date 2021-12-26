@@ -88,6 +88,16 @@ public interface LifecycleEvent {
      * @see ServerLevelState#act(Level)
      */
     Event<ServerLevelState> SERVER_LEVEL_SAVE = EventFactory.createLoop();
+    /**
+     * Invoked once common setup has begun.
+     * <p> This happens during {@code FMLCommonSetupEvent} on Forge,
+     * or when Architectury API's client/server entrypoint initialises on Fabric.
+     * <p>
+     * Registries should have been initialised by this point, but there
+     * are no such guarantees, as you can modify the registry beyond this point
+     * on non-Forge environments.
+     */
+    Event<Runnable> SETUP = EventFactory.createLoop();
     
     interface InstanceState<T> {
         /**
