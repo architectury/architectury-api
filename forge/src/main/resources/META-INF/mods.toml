@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[39,)"
+loaderVersion = "[38,)"
 issueTrackerURL = "https://github.com/shedaniel/architectury/issues"
 license = "GNU LGPLv3"
 
@@ -17,13 +17,13 @@ license = "LGPL-3"
 [[dependencies.architectury]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.18.1,)"
+versionRange = "[1.18,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.architectury]]
 modId = "forge"
 mandatory = true
-versionRange = "[39.0.8,)"
+versionRange = "[38.0.17,)"
 ordering = "NONE"
 side = "BOTH"
