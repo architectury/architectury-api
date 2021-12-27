@@ -57,7 +57,7 @@ public abstract class MixinServerGamePacketListenerImpl {
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/server/players/PlayerList;broadcastMessage(Lnet/minecraft/network/chat/Component;Ljava/util/function/Function;Lnet/minecraft/network/chat/ChatType;Ljava/util/UUID;)V"),
             cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-    private void handleChat(TextFilter.FilteredText message, CallbackInfo ci, String string, Component component, Component component2) {
+    private void handleChat(TextFilter.FilteredText message, CallbackInfo ci, String string, String string2, Component component, Component component2) {
         var chatComponent = new ChatComponentImpl(component2, component);
         var process = ChatEvent.SERVER.invoker().process(this.player, message, chatComponent);
         if (process.isEmpty()) return;
