@@ -23,12 +23,10 @@ import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
 import dev.architectury.hooks.level.biome.*;
 import dev.architectury.registry.level.biome.BiomeModifications.BiomeContext;
-/*import net.fabricmc.fabric.api.biome.v1.BiomeModification;
+import net.fabricmc.fabric.api.biome.v1.BiomeModification;
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
-import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext.GenerationSettingsContext;
-import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext.SpawnSettingsContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
-import net.fabricmc.fabric.api.biome.v1.ModificationPhase;*/
+import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.Music;
 import net.minecraft.sounds.SoundEvent;
@@ -41,8 +39,7 @@ import net.minecraft.world.level.biome.Biome.TemperatureModifier;
 import net.minecraft.world.level.biome.BiomeSpecialEffects.GrassColorModifier;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
-import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -52,6 +49,8 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
+
+import static net.fabricmc.fabric.api.biome.v1.BiomeModificationContext.*;
 
 public class BiomeModificationsImpl {
     private static final ResourceLocation FABRIC_MODIFICATION = new ResourceLocation("architectury", "fabric_modification");
@@ -76,7 +75,7 @@ public class BiomeModificationsImpl {
         REPLACEMENTS.add(Pair.of(predicate, modifier));
     }
     
-    /*static {
+    static {
         var modification = net.fabricmc.fabric.api.biome.v1.BiomeModifications.create(FABRIC_MODIFICATION);
         registerModification(modification, ModificationPhase.ADDITIONS, ADDITIONS);
         registerModification(modification, ModificationPhase.POST_PROCESSING, POST_PROCESSING);
@@ -140,7 +139,7 @@ public class BiomeModificationsImpl {
         }
         
         @Override
-        public Mutable addFeature(GenerationStep.Decoration decoration, ConfiguredFeature<?, ?> feature) {
+        public Mutable addFeature(GenerationStep.Decoration decoration, PlacedFeature feature) {
             this.context.addBuiltInFeature(decoration, feature);
             return this;
         }
@@ -151,14 +150,14 @@ public class BiomeModificationsImpl {
             return this;
         }
         
-        @Override
+        /*@Override
         public Mutable addStructure(ConfiguredStructureFeature<?, ?> feature) {
             context.addBuiltInStructure(feature);
             return this;
-        }
+        }*/
         
         @Override
-        public Mutable removeFeature(GenerationStep.Decoration decoration, ConfiguredFeature<?, ?> feature) {
+        public Mutable removeFeature(GenerationStep.Decoration decoration, PlacedFeature feature) {
             context.removeBuiltInFeature(decoration, feature);
             return this;
         }
@@ -169,11 +168,11 @@ public class BiomeModificationsImpl {
             return this;
         }
         
-        @Override
+        /*@Override
         public Mutable removeStructure(ConfiguredStructureFeature<?, ?> feature) {
             context.removeBuiltInStructure(feature);
             return this;
-        }
+        }*/
     }
     
     private static class MutableSpawnProperties extends BiomeHooks.SpawnSettingsWrapped implements SpawnProperties.Mutable {
@@ -218,15 +217,9 @@ public class BiomeModificationsImpl {
             context.clearSpawnCost(entityType);
             return this;
         }
-        
-        @Override
-        public @NotNull Mutable setPlayerSpawnFriendly(boolean friendly) {
-            context.setPlayerSpawnFriendly(friendly);
-            return this;
-        }
     }
     
-    private static ClimateProperties.Mutable wrapWeather(Biome biome, BiomeModificationContext.WeatherContext context) {
+    private static ClimateProperties.Mutable wrapWeather(Biome biome, WeatherContext context) {
         return new BiomeHooks.ClimateWrapped(biome) {
             @Override
             @NotNull
@@ -258,7 +251,7 @@ public class BiomeModificationsImpl {
         };
     }
     
-    private static EffectsProperties.Mutable wrapEffects(Biome biome, BiomeModificationContext.EffectsContext context) {
+    private static EffectsProperties.Mutable wrapEffects(Biome biome, EffectsContext context) {
         return new BiomeHooks.EffectsWrapped(biome) {
             @Override
             @NotNull
@@ -344,6 +337,6 @@ public class BiomeModificationsImpl {
                 return this;
             }
         };
-    }*/
+    }
     
 }
