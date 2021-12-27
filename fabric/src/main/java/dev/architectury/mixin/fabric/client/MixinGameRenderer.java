@@ -39,7 +39,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import java.util.List;
 import java.util.function.Consumer;
 
-@Mixin(GameRenderer.class)
+@Mixin(value = GameRenderer.class, priority = 1100)
 public abstract class MixinGameRenderer {
     @Shadow
     @Final
