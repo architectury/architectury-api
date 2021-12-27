@@ -19,6 +19,7 @@
 
 package dev.architectury.mixin.fabric;
 
+import com.mojang.serialization.Codec;
 import dev.architectury.event.events.common.ChunkEvent;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
@@ -26,7 +27,14 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.village.poi.PoiManager;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.chunk.*;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.ChunkSource;
+import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.chunk.LevelChunkSection;
+import net.minecraft.world.level.chunk.PalettedContainer;
+import net.minecraft.world.level.chunk.ProtoChunk;
+import net.minecraft.world.level.chunk.UpgradeData;
 import net.minecraft.world.level.chunk.storage.ChunkSerializer;
 import net.minecraft.world.level.levelgen.blending.BlendingData;
 import net.minecraft.world.level.lighting.LevelLightEngine;
@@ -40,9 +48,9 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 public class MixinChunkSerializer {
     @Inject(method = "read", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
     private static void load(ServerLevel serverLevel, PoiManager poiManager, ChunkPos chunkPos, CompoundTag compoundTag,
-                             CallbackInfoReturnable<ProtoChunk> cir, UpgradeData upgradeData,
+                             CallbackInfoReturnable<ProtoChunk> cir, ChunkPos chunkPos2, UpgradeData upgradeData,
                              boolean bl, ListTag listTag, int i, LevelChunkSection levelChunkSections[], boolean bl2, ChunkSource chunkSource,
-                             LevelLightEngine levelLightEngine, Registry registry, long m, ChunkStatus.ChunkType chunkType,
+                             LevelLightEngine levelLightEngine, Registry registry, Codec<PalettedContainer<Biome>> codec, long m, ChunkStatus.ChunkType chunkType,
                              BlendingData blendingData, ChunkAccess chunkAccess2) {
         ChunkEvent.LOAD_DATA.invoker().load(chunkAccess2, serverLevel, compoundTag);
     }
