@@ -32,7 +32,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-@Mixin(GameRenderer.class)
+@Mixin(value = GameRenderer.class, priority = 1100)
 public abstract class MixinGameRenderer {
     @Shadow
     @Final

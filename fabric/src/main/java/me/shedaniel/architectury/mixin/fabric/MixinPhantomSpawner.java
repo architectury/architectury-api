@@ -23,12 +23,15 @@ import me.shedaniel.architectury.event.events.EntityEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.ServerStatsCounter;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.monster.Phantom;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.PhantomSpawner;
+import net.minecraft.world.level.material.FluidState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -52,9 +55,10 @@ public abstract class MixinPhantomSpawner {
             cancellable = true,
             locals = LocalCapture.CAPTURE_FAILSOFT // SOFT, because this will break in 2 seconds
     )
-    private void checkPhantomSpawn(ServerLevel level, boolean bl, boolean bl2, CallbackInfoReturnable<Integer> cir,
-                                   Random random, int i, Iterator<ServerPlayer> it, Player player, BlockPos pos, DifficultyInstance diff, BlockPos pos2,
-                                   SpawnGroupData sgd, int l, int m, Phantom entity) {
+    private void checkPhantomSpawn(ServerLevel level, boolean bl, boolean arg2, CallbackInfoReturnable<Integer> cir,
+                                   Random random, int i, Iterator var6, Player player, BlockPos blockPos, DifficultyInstance difficultyInstance,
+                                   ServerStatsCounter serverStatsCounter, int j, int k, BlockPos pos, BlockState blockState,
+                                   FluidState fluidState, SpawnGroupData spawnGroupData, int l, int m, Phantom entity) {
         if (EntityEvent.LIVING_CHECK_SPAWN.invoker().canSpawn(entity, level, pos.getX(), pos.getY(), pos.getZ(), MobSpawnType.NATURAL, null).value() == Boolean.FALSE) {
             cir.setReturnValue(0);
             cir.cancel();

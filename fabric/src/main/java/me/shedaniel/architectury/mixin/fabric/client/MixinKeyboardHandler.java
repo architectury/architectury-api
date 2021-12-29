@@ -100,7 +100,7 @@ public class MixinKeyboardHandler {
             target = "Lnet/minecraft/client/gui/screens/Screen;wrapScreenError(Ljava/lang/Runnable;Ljava/lang/String;Ljava/lang/String;)V",
             ordinal = 0, shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD,
             cancellable = true)
-    public void onKeyAfter(long long_1, int int_1, int int_2, int int_3, int int_4, CallbackInfo info, ContainerEventHandler containerEventHandler, boolean bls[]) {
+    public void onKeyAfter(long long_1, int int_1, int int_2, int int_3, int int_4, CallbackInfo info, ContainerEventHandler containerEventHandler, boolean bl, boolean bls[]) {
         if (!info.isCancelled() && !bls[0]) {
             InteractionResult result;
             if (int_3 != 1 && (int_3 != 2 || !this.sendRepeatsToGui)) {
