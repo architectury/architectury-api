@@ -23,7 +23,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 
 /**
- * Extension to attach additional spawn data to packets sent to client.
+ * This interface can be implemented on {@linkplain Entity entities} to attach additional spawn data to packets sent to client.
  * This is used in conjunction with {@link dev.architectury.networking.NetworkManager#createAddEntityPacket(Entity)}
  */
 public interface EntitySpawnExtension {
