@@ -99,7 +99,7 @@ public final class NetworkManager {
      * This packet is needed everytime any mod adds a non-living entity.
      * The entity should override {@link Entity#getAddEntityPacket()} to point to this method!
      * <p>
-     * Additionally, entities may extend {@link dev.architectury.extensions.network.EntitySpawnExtension}
+     * Additionally, entities may implement {@link dev.architectury.extensions.network.EntitySpawnExtension}
      * to load / save additional data to the client.
      *
      * @param entity The entity which should be spawned.
