@@ -17,13 +17,12 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.registry.level.entity.forge;
+package dev.architectury.registry.client.level.entity.forge;
 
 import dev.architectury.forge.ArchitecturyForge;
 import dev.architectury.platform.forge.EventBuses;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -31,23 +30,23 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
-public class EntityRendererRegistryImpl {
-    private static final Map<Supplier<EntityType<?>>, EntityRendererProvider<?>> RENDERERS = new ConcurrentHashMap<>();
-    
-    public static <T extends Entity> void register(Supplier<EntityType<? extends T>> type, EntityRendererProvider<T> factory) {
-        RENDERERS.put((Supplier<EntityType<?>>) (Supplier<? extends EntityType<?>>) type, factory);
-    }
+public class EntityModelLayerRegistryImpl {
+    private static final Map<ModelLayerLocation, Supplier<LayerDefinition>> DEFINITIONS = new ConcurrentHashMap<>();
     
     static {
         EventBuses.onRegistered(ArchitecturyForge.MOD_ID, bus -> {
-            bus.register(EntityRendererRegistryImpl.class);
+            bus.register(EntityModelLayerRegistryImpl.class);
         });
     }
     
+    public static void register(ModelLayerLocation location, Supplier<LayerDefinition> definition) {
+        DEFINITIONS.put(location, definition);
+    }
+    
     @SubscribeEvent
-    public static void event(EntityRenderersEvent.RegisterRenderers event) {
-        for (Map.Entry<Supplier<EntityType<?>>, EntityRendererProvider<?>> entry : RENDERERS.entrySet()) {
-            event.registerEntityRenderer(entry.getKey().get(), (EntityRendererProvider<Entity>) entry.getValue());
+    public static void event(EntityRenderersEvent.RegisterLayerDefinitions event) {
+        for (Map.Entry<ModelLayerLocation, Supplier<LayerDefinition>> entry : DEFINITIONS.entrySet()) {
+            event.registerLayerDefinition(entry.getKey(), entry.getValue());
         }
     }
 }

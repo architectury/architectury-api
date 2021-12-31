@@ -17,31 +17,20 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.event.events.client;
+package dev.architectury.registry.client.level.entity;
 
-import dev.architectury.event.Event;
-import dev.architectury.event.EventFactory;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.renderer.ShaderInstance;
-import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
 
-import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 @Environment(EnvType.CLIENT)
-@FunctionalInterface
-public interface ClientReloadShadersEvent {
-    /**
-     * Invoked when client reloads shaders.
-     *
-     * @see net.minecraft.client.renderer.GameRenderer#reloadShaders(ResourceManager)
-     */
-    Event<ClientReloadShadersEvent> EVENT = EventFactory.createLoop();
-    
-    void reload(ResourceManager manager, ShadersSink sink);
-    
-    @FunctionalInterface
-    interface ShadersSink {
-        void registerShader(ShaderInstance shader, Consumer<ShaderInstance> callback);
+public class EntityModelLayerRegistry {
+    @ExpectPlatform
+    public static void register(ModelLayerLocation location, Supplier<LayerDefinition> definition) {
+        throw new AssertionError();
     }
 }
