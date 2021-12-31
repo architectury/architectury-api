@@ -1,6 +1,6 @@
 /*
  * This file is part of architectury.
- * Copyright (C) 2020, 2021 architectury
+ * Copyright (C) 2020, 2021, 2022 architectury
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,15 +22,14 @@ package dev.architectury.hooks.fluid.fabric;
 import dev.architectury.fluid.FluidStack;
 import dev.architectury.platform.Platform;
 import dev.architectury.utils.Env;
-import dev.architectury.utils.NbtType;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -78,10 +77,10 @@ public class FluidStackHooksImpl {
     }
     
     public static FluidStack read(CompoundTag tag) {
-        if (tag == null || !tag.contains("id", NbtType.STRING)) {
+        if (tag == null || !tag.contains("id", Tag.TAG_STRING)) {
             return FluidStack.empty();
         }
-    
+        
         var fluid = Registry.FLUID.get(new ResourceLocation(tag.getString("id")));
         if (fluid == null || fluid == Fluids.EMPTY) {
             return FluidStack.empty();
@@ -89,7 +88,7 @@ public class FluidStackHooksImpl {
         var amount = tag.getLong("amount");
         var stack = FluidStack.create(fluid, amount);
         
-        if (tag.contains("tag", NbtType.COMPOUND)) {
+        if (tag.contains("tag", Tag.TAG_COMPOUND)) {
             stack.setTag(tag.getCompound("tag"));
         }
         return stack;

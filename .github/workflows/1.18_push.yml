@@ -16,17 +16,8 @@ on:
         default: 'false'
 
 jobs:
-  validate-gradle:
-    name: "Validate Gradle wrapper"
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - uses: gradle/wrapper-validation-action@v1
-  license:
-    name: "Verify License integrity"
+  build:
+    name: "Build and Release"
     runs-on: ubuntu-20.04
     if: |
       !contains(github.event.head_commit.message, '[ci skip]')
@@ -39,24 +30,13 @@ jobs:
           java-version: 17
           distribution: 'temurin'
 
-      - name: Setup Gradle and verify license using Licenser
+      - name: Validate Gradle Wrapper
+        uses: gradle/wrapper-validation-action@v1
+
+      - name: Verify license using Licenser
         uses: gradle/gradle-build-action@v2
         with:
           arguments: licenseCheck
-
-  build:
-    name: "Build"
-    runs-on: ubuntu-20.04
-    if: |
-      !contains(github.event.head_commit.message, '[ci skip]')
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v2
-        with:
-          java-version: 17
-          distribution: 'temurin'
 
       - name: Setup and Build with Gradle
         uses: gradle/gradle-build-action@v2
@@ -81,30 +61,15 @@ jobs:
             !**/*-transformProduction*.jar
             !**/testmod*/
 
-  publish:
-    needs:
-      - validate-gradle
-      - license
-      - build
-    runs-on: ubuntu-20.04
-    if: |
-      !contains(github.event.head_commit.message, '[norelease]') && github.event.inputs.norelease != 'true'
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v2
-        with:
-          java-version: 17
-          distribution: 'temurin'
-
-      - name: Setup Gradle and release to Maven and CurseForge
+      - name: Release to Maven and CurseForge
+        uses: gradle/gradle-build-action@v2
+        if: |
+          !contains(github.event.head_commit.message, '[norelease]') && github.event.inputs.norelease != 'true'
         env:
           # currently unused, may want to use these for changelogs though!
           # GIT_COMMIT: ${{ github.event.after }}
           # GIT_PREVIOUS_COMMIT: ${{ github.event.before }}
           MAVEN_PASS: ${{ secrets.MAVEN_PASS }}
           CURSE_API_KEY: ${{ secrets.CURSE_API_KEY }}
-        uses: gradle/gradle-build-action@v2
         with:
           arguments: publish curseforge --stacktrace --no-daemon

@@ -17,7 +17,14 @@
 package dev.architectury.utils;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import org.jetbrains.annotations.ApiStatus;
 
+/**
+ * @deprecated Use the vanilla constants (e.g. {@link Tag#TAG_END}) instead.
+ */
+@Deprecated
+@ApiStatus.ScheduledForRemoval
 public final class NbtType {
     public static final int END = 0;
     public static final int BYTE = 1;

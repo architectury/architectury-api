@@ -1,6 +1,6 @@
 /*
  * This file is part of architectury.
- * Copyright (C) 2020, 2021 architectury
+ * Copyright (C) 2020, 2021, 2022 architectury
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,6 +22,7 @@ package dev.architectury.fluid;
 import dev.architectury.hooks.fluid.FluidStackHooks;
 import dev.architectury.utils.NbtType;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.material.Fluid;
@@ -134,7 +135,7 @@ public final class FluidStack {
     public CompoundTag getOrCreateChildTag(String childName) {
         getOrCreateTag();
         var child = tag.getCompound(childName);
-        if (!tag.contains(childName, NbtType.COMPOUND)) {
+        if (!tag.contains(childName, Tag.TAG_COMPOUND)) {
             tag.put(childName, child);
         }
         return child;
