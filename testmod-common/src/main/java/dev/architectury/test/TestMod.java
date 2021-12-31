@@ -19,7 +19,7 @@
 
 package dev.architectury.test;
 
-import dev.architectury.registry.level.entity.EntityRendererRegistry;
+import dev.architectury.registry.client.level.entity.EntityRendererRegistry;
 import dev.architectury.test.debug.ConsoleMessageSink;
 import dev.architectury.test.debug.MessageSink;
 import dev.architectury.test.debug.client.ClientOverlayMessageSink;
@@ -62,8 +62,7 @@ public class TestMod {
         public static void initializeClient() {
             TestKeybinds.initialize();
             TestModNet.initializeClient();
-            EntityRendererRegistry.register(TestEntity.TYPE, context ->
-                    new MinecartRenderer<>(context, ModelLayers.MINECART));
+            EntityRendererRegistry.register(() -> TestEntity.TYPE, context -> new MinecartRenderer<>(context, ModelLayers.MINECART));
         }
     }
 }
