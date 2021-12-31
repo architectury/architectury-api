@@ -67,7 +67,7 @@ allprojects {
 
         ext {
             name = "architectury"
-            year = "2020, 2021"
+            year = "2020, 2021, 2022"
         }
 
         include "**/*.java"
