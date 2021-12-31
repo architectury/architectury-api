@@ -17,28 +17,16 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.registry.level.entity;
+package dev.architectury.registry.client.level.entity.fabric;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import org.jetbrains.annotations.ApiStatus;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
 
 import java.util.function.Supplier;
 
-@Environment(EnvType.CLIENT)
-public final class EntityRendererRegistry {
-    private EntityRendererRegistry() {
-    }
-    
-    /**
-     * @deprecated Migrate to {@link dev.architectury.registry.client.level.entity.EntityRendererRegistry}
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval
-    public static <T extends Entity> void register(Supplier<EntityType<? extends T>> type, EntityRendererProvider<T> provider) {
-        dev.architectury.registry.client.level.entity.EntityRendererRegistry.register(type, provider);
+public class EntityModelLayerRegistryImpl {
+    public static void register(ModelLayerLocation location, Supplier<LayerDefinition> definition) {
+        EntityModelLayerRegistry.registerModelLayer(location, definition::get);
     }
 }
