@@ -159,8 +159,8 @@ public class MixinMouseHandler {
         }
     }
     
-    @SuppressWarnings("UnresolvedMixinReference")
-    @Redirect(method = {"method_1602", "lambda$onMove$11"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;mouseDragged(DDIDD)Z"), remap = false)
+    @SuppressWarnings({"UnresolvedMixinReference", "DefaultAnnotationParam"})
+    @Redirect(method = {"method_1602", "lambda$onMove$11"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;mouseDragged(DDIDD)Z", remap = true), remap = false)
     private boolean onGuiMouseDraggedPost(Screen screen, double mouseX, double mouseY, int button, double deltaX, double deltaY) {
         if (screen.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)) {
             return true;
