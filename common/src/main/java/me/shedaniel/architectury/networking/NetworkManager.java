@@ -20,6 +20,7 @@
 package me.shedaniel.architectury.networking;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import me.shedaniel.architectury.extensions.network.EntitySpawnExtension;
 import me.shedaniel.architectury.networking.transformers.PacketCollector;
 import me.shedaniel.architectury.networking.transformers.PacketSink;
 import me.shedaniel.architectury.networking.transformers.PacketTransformer;
@@ -98,6 +99,9 @@ public final class NetworkManager {
      * Easy to use utility method to create an entity spawn packet.
      * This packet is needed everytime any mod adds a non-living entity.
      * The entity should override {@link Entity#getAddEntityPacket()} to point to this method!
+     * <p>
+     * Additionally, entities may implement {@link EntitySpawnExtension}
+     * to load / save additional data to the client.
      *
      * @param entity The entity which should be spawned.
      * @return The ready to use packet to spawn the entity on the client.
