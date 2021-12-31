@@ -98,6 +98,9 @@ public final class NetworkManager {
      * Easy to use utility method to create an entity spawn packet.
      * This packet is needed everytime any mod adds a non-living entity.
      * The entity should override {@link Entity#getAddEntityPacket()} to point to this method!
+     * <p>
+     * Additionally, entities may implement {@link dev.architectury.extensions.network.EntitySpawnExtension}
+     * to load / save additional data to the client.
      *
      * @param entity The entity which should be spawned.
      * @return The ready to use packet to spawn the entity on the client.

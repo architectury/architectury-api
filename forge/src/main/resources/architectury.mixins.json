@@ -11,6 +11,7 @@
     "MixinBlockEntity",
     "MixinBlockEntityExtension",
     "MixinChunkSerializer",
+    "MixinEntitySpawnExtension",
     "MixinFallingBlockEntity",
     "MixinItemExtension",
     "MixinRegistryEntry",
