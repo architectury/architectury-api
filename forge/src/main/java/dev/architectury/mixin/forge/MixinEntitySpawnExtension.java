@@ -21,7 +21,7 @@ package dev.architectury.mixin.forge;
 
 import dev.architectury.extensions.network.EntitySpawnExtension;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.entity.IEntityAdditionalSpawnData;
+import net.minecraftforge.fmllegacy.common.registry.IEntityAdditionalSpawnData;
 import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(EntitySpawnExtension.class)
