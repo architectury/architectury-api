@@ -20,6 +20,9 @@
 package dev.architectury.plugin.fabric;
 
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.SemanticVersion;
+import net.fabricmc.loader.api.Version;
+import net.fabricmc.loader.api.VersionParsingException;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -42,6 +45,28 @@ public class ArchitecturyMixinPlugin implements IMixinConfigPlugin {
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if ("dev.architectury.mixin.fabric.client.MixinEffectInstance".equals(mixinClassName)) {
             return !FabricLoader.getInstance().isModLoaded("satin");
+        } else if ("dev.architectury.mixin.fabric.client.MixinMinecraft118".equals(mixinClassName)) {
+            Version minecraft = FabricLoader.getInstance().getModContainer("minecraft").get().getMetadata().getVersion();
+            // is below 1.18.2
+            Version version = null;
+            try {
+                version = SemanticVersion.parse("1.18.2-");
+            } catch (VersionParsingException e) {
+                e.printStackTrace();
+                return false;
+            }
+            return minecraft.compareTo(version) < 0;
+        } else if ("dev.architectury.mixin.fabric.client.MixinMinecraft1182".equals(mixinClassName)) {
+            Version minecraft = FabricLoader.getInstance().getModContainer("minecraft").get().getMetadata().getVersion();
+            // is 1.18.2 or above
+            Version version = null;
+            try {
+                version = SemanticVersion.parse("1.18.2-");
+            } catch (VersionParsingException e) {
+                e.printStackTrace();
+                return false;
+            }
+            return minecraft.compareTo(version) >= 0;
         }
         return true;
     }

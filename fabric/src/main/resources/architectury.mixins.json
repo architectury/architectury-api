@@ -13,6 +13,8 @@
     "client.MixinIntegratedServer",
     "client.MixinKeyboardHandler",
     "client.MixinMinecraft",
+    "client.MixinMinecraft118",
+    "client.MixinMinecraft1182",
     "client.MixinMouseHandler",
     "client.MixinMultiPlayerGameMode",
     "client.MixinScreen",
