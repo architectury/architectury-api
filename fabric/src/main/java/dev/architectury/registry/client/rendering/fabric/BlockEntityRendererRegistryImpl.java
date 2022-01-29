@@ -19,13 +19,13 @@
 
 package dev.architectury.registry.client.rendering.fabric;
 
-import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class BlockEntityRendererRegistryImpl {
     public static <T extends BlockEntity> void register(BlockEntityType<T> type, BlockEntityRendererProvider<? super T> provider) {
-        BlockEntityRendererRegistry.INSTANCE.register(type, provider);
+        BlockEntityRendererRegistry.register(type, provider);
     }
 }

@@ -19,7 +19,7 @@
 
 package dev.architectury.hooks.tags.fabric;
 
-import net.fabricmc.fabric.api.tag.TagRegistry;
+import net.fabricmc.fabric.api.tag.TagFactory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagCollection;
@@ -28,6 +28,6 @@ import java.util.function.Supplier;
 
 public class TagHooksImpl {
     public static <T> Tag.Named<T> optional(ResourceLocation id, Supplier<TagCollection<T>> collection) {
-        return TagRegistry.create(id, collection);
+        return TagFactory.of(collection).create(id);
     }
 }
