@@ -27,7 +27,10 @@ import dev.architectury.utils.Env;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.ResourceLocation;
@@ -70,19 +73,23 @@ public class NetworkManagerImpl {
         C2S_TRANSFORMERS.put(id, transformer);
     }
     
+    @SuppressWarnings("Convert2Lambda")
     @Environment(EnvType.CLIENT)
     private static void registerS2CReceiver(ResourceLocation id, List<PacketTransformer> packetTransformers, NetworkReceiver receiver) {
         S2C_RECEIVER.put(id, receiver);
         PacketTransformer transformer = PacketTransformer.concat(packetTransformers);
-        ClientPlayNetworking.registerGlobalReceiver(id, (client, handler, buf, sender) -> {
-            var context = context(client.player, client, true);
-            transformer.inbound(NetworkManager.Side.S2C, id, buf, context, (side, id1, buf1) -> {
-                NetworkReceiver networkReceiver = side == NetworkManager.Side.C2S ? C2S_RECEIVER.get(id1) : S2C_RECEIVER.get(id1);
-                if (networkReceiver == null) {
-                    throw new IllegalArgumentException("Network Receiver not found! " + id1);
-                }
-                networkReceiver.receive(buf1, context);
-            });
+        ClientPlayNetworking.registerGlobalReceiver(id, new ClientPlayNetworking.PlayChannelHandler() {
+            @Override
+            public void receive(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buf, PacketSender sender) {
+                var context = context(client.player, client, true);
+                transformer.inbound(NetworkManager.Side.S2C, id, buf, context, (side, id1, buf1) -> {
+                    NetworkReceiver networkReceiver = side == NetworkManager.Side.C2S ? C2S_RECEIVER.get(id1) : S2C_RECEIVER.get(id1);
+                    if (networkReceiver == null) {
+                        throw new IllegalArgumentException("Network Receiver not found! " + id1);
+                    }
+                    networkReceiver.receive(buf1, context);
+                });
+            }
         });
         S2C_TRANSFORMERS.put(id, transformer);
     }
