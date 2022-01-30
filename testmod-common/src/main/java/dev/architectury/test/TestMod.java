@@ -19,6 +19,7 @@
 
 package dev.architectury.test;
 
+import dev.architectury.event.events.client.ClientLifecycleEvent;
 import dev.architectury.registry.client.level.entity.EntityRendererRegistry;
 import dev.architectury.test.debug.ConsoleMessageSink;
 import dev.architectury.test.debug.MessageSink;
@@ -60,6 +61,8 @@ public class TestMod {
     public static class Client {
         @Environment(EnvType.CLIENT)
         public static void initializeClient() {
+            ClientLifecycleEvent.CLIENT_STARTED.register((client) -> SINK.accept("Client started!"));
+            ClientLifecycleEvent.CLIENT_STOPPING.register((client) -> SINK.accept("Client stopping!"));
             TestKeybinds.initialize();
             TestModNet.initializeClient();
             EntityRendererRegistry.register(() -> TestEntity.TYPE, context ->
