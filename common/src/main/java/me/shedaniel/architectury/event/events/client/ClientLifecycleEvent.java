@@ -30,14 +30,14 @@ import net.minecraft.client.multiplayer.ClientLevel;
 @Environment(EnvType.CLIENT)
 public interface ClientLifecycleEvent {
     /**
-     * Invoked when client has been initialised, not available in forge.
+     * Invoked when client has been initialised.
+     * Equivalent to Fabric's {@code ClientLifecycleEvents.CLIENT_STARTING}.
      */
-    @Deprecated
     Event<ClientState> CLIENT_STARTED = EventFactory.createLoop();
     /**
-     * Invoked when client is stopping, not available in forge.
+     * Invoked when client is stopping.
+     * Equivalent to Fabric's {@code ClientLifecycleEvents.CLIENT_STOPPING}.
      */
-    @Deprecated
     Event<ClientState> CLIENT_STOPPING = EventFactory.createLoop();
     /**
      * Invoked after a world is loaded only on the client-side.

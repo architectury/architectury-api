@@ -19,6 +19,7 @@
 
 package me.shedaniel.architectury.test;
 
+import me.shedaniel.architectury.event.events.client.ClientLifecycleEvent;
 import me.shedaniel.architectury.registry.entity.EntityRenderers;
 import me.shedaniel.architectury.test.debug.ConsoleMessageSink;
 import me.shedaniel.architectury.test.debug.MessageSink;
@@ -59,6 +60,8 @@ public class TestMod {
     public static class Client {
         @Environment(EnvType.CLIENT)
         public static void initializeClient() {
+            ClientLifecycleEvent.CLIENT_STARTED.register((client) -> SINK.accept("Client started!"));
+            ClientLifecycleEvent.CLIENT_STOPPING.register((client) -> SINK.accept("Client stopping!"));
             TestKeybinds.initialize();
             TestModNet.initializeClient();
             EntityRenderers.register(TestEntity.TYPE, MinecartRenderer<TestEntity>::new);
