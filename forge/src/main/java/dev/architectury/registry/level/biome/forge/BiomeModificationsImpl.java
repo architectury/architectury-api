@@ -153,7 +153,12 @@ public class BiomeModificationsImpl {
         public @NotNull List<Supplier<ConfiguredWorldCarver<?>>> getCarvers(GenerationStep.Carving carving) {
             return generation.getCarvers(carving);
         }
-        
+    
+        @Override
+        public List<Supplier<PlacedFeature>> getFeatures(GenerationStep.Decoration decoration) {
+            return generation.getFeatures(decoration);
+        }
+    
         @Override
         public @NotNull List<List<Supplier<PlacedFeature>>> getFeatures() {
             return generation.features;
@@ -372,29 +377,29 @@ public class BiomeModificationsImpl {
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void applyAdditions(BiomeLoadingEvent event) {
-        modifyForPhase(event, ADDITIONS);
+    public static void processAdditions(BiomeLoadingEvent event) {
+        modifyBiome(event, ADDITIONS);
     }
     
     @SubscribeEvent(priority = EventPriority.NORMAL)
-    public static void applyRemovals(BiomeLoadingEvent event) {
-        modifyForPhase(event, REMOVALS);
+    public static void processRemovals(BiomeLoadingEvent event) {
+        modifyBiome(event, REMOVALS);
     }
     
     @SubscribeEvent(priority = EventPriority.LOW)
-    public static void applyReplacements(BiomeLoadingEvent event) {
-        modifyForPhase(event, REPLACEMENTS);
+    public static void processReplacements(BiomeLoadingEvent event) {
+        modifyBiome(event, REPLACEMENTS);
     }
     
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void applyPostProcessing(BiomeLoadingEvent event) {
-        modifyForPhase(event, POST_PROCESSING);
+    public static void postProcessBiomes(BiomeLoadingEvent event) {
+        modifyBiome(event, POST_PROCESSING);
     }
     
-    private static void modifyForPhase(BiomeLoadingEvent event, List<Pair<Predicate<BiomeContext>, BiConsumer<BiomeContext, BiomeProperties.Mutable>>> phase) {
+    private static void modifyBiome(BiomeLoadingEvent event, List<Pair<Predicate<BiomeContext>, BiConsumer<BiomeContext, BiomeProperties.Mutable>>> list) {
         BiomeContext biomeContext = wrapSelectionContext(event);
         BiomeProperties.Mutable mutableBiome = new MutableBiomeWrapped(event);
-        for (var pair : phase) {
+        for (var pair : list) {
             if (pair.getLeft().test(biomeContext)) {
                 pair.getRight().accept(biomeContext, mutableBiome);
             }

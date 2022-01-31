@@ -30,6 +30,8 @@ import java.util.function.Supplier;
 public interface GenerationProperties {
     List<Supplier<ConfiguredWorldCarver<?>>> getCarvers(GenerationStep.Carving carving);
     
+    List<Supplier<PlacedFeature>> getFeatures(GenerationStep.Decoration decoration);
+    
     List<List<Supplier<PlacedFeature>>> getFeatures();
     
     interface Mutable extends GenerationProperties {
