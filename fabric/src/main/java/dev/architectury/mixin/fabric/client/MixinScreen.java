@@ -32,6 +32,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -96,6 +97,16 @@ public abstract class MixinScreen implements ScreenInputDelegate {
                 return process.object();
         }
         return message;
+    }
+    
+    @Inject(method = "renderTooltip(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/item/ItemStack;II)V", at = @At("HEAD"))
+    private void preRenderTooltipItem(PoseStack poseStack, ItemStack stack, int x, int y, CallbackInfo ci) {
+        ClientTooltipEvent.additionalContexts().setItem(stack);
+    }
+    
+    @Inject(method = "renderTooltip(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/item/ItemStack;II)V", at = @At("RETURN"))
+    private void postRenderTooltipItem(PoseStack poseStack, ItemStack stack, int x, int y, CallbackInfo ci) {
+        ClientTooltipEvent.additionalContexts().setItem(null);
     }
     
     @Inject(method = "renderTooltipInternal", at = @At("HEAD"), cancellable = true)

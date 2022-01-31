@@ -23,12 +23,15 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
 import dev.architectury.event.EventResult;
+import dev.architectury.impl.TooltipAdditionalContextsImpl;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -50,6 +53,19 @@ public interface ClientTooltipEvent {
      * @see RenderModifyColor#renderTooltip(PoseStack, int, int, ColorContext)
      */
     Event<RenderModifyColor> RENDER_MODIFY_COLOR = EventFactory.createLoop();
+    
+    @ApiStatus.Internal
+    static AdditionalContexts additionalContexts() {
+        return TooltipAdditionalContextsImpl.get();
+    }
+    
+    @ApiStatus.NonExtendable
+    interface AdditionalContexts {
+        @Nullable
+        ItemStack getItem();
+        
+        void setItem(@Nullable ItemStack stack);
+    }
     
     @Environment(EnvType.CLIENT)
     interface Item {
