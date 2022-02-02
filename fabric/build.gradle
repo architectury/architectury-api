@@ -26,7 +26,12 @@ repositories {
 
 dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
+    modCompileOnly "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
+    modRuntimeOnly("net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}") {
+        // temp workaround to test arch
+        exclude module: "fabric-rendering-fluids-v1"
+        exclude module: "fabric-transfer-api-v1"
+    }
     modCompileOnly("com.terraformersmc:modmenu:${rootProject.mod_menu_version}") { transitive false }
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
