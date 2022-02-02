@@ -19,7 +19,7 @@
 
 package dev.architectury.plugin.fabric;
 
-import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.*;
 import net.fabricmc.loader.api.SemanticVersion;
 import net.fabricmc.loader.api.Version;
 import net.fabricmc.loader.api.VersionParsingException;
@@ -41,10 +41,29 @@ public class ArchitecturyMixinPlugin implements IMixinConfigPlugin {
         return null;
     }
     
+    private boolean isLoader013() {
+        ModContainer fabricLoader = FabricLoader.getInstance().getModContainer("fabricloader")
+                .orElseThrow(() -> new IllegalStateException("Where is fabricloader?"));
+        Version version = fabricLoader.getMetadata().getVersion();
+        if (version instanceof SemanticVersion) {
+            try {
+                return version.compareTo(SemanticVersion.parse("0.13-")) >= 0;
+            } catch (VersionParsingException e) {
+                throw new IllegalStateException("Failed to parse version", e);
+            }
+        }
+        System.err.println("FabricLoader is not a SemanticVersion, cannot determine if it is >= 0.13");
+        return true;
+    }
+    
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if ("dev.architectury.mixin.fabric.client.MixinEffectInstance".equals(mixinClassName)) {
             return !FabricLoader.getInstance().isModLoaded("satin");
+        } else if ("dev.architectury.mixin.fabric.client.MixinGameRenderer".equals(mixinClassName)) {
+            return !isLoader013();
+        } else if ("dev.architectury.mixin.fabric.client.MixinGameRenderer013".equals(mixinClassName)) {
+            return isLoader013();
         } else if ("dev.architectury.mixin.fabric.client.MixinMinecraft118".equals(mixinClassName)) {
             Version minecraft = FabricLoader.getInstance().getModContainer("minecraft").get().getMetadata().getVersion();
             // is below 1.18.2

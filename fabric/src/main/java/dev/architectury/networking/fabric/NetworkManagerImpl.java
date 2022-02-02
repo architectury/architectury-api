@@ -26,13 +26,16 @@ import dev.architectury.networking.transformers.PacketTransformer;
 import dev.architectury.utils.Env;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
-import net.fabricmc.fabric.api.network.PacketContext;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.thread.BlockableEventLoop;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
@@ -57,8 +60,8 @@ public class NetworkManagerImpl {
     private static void registerC2SReceiver(ResourceLocation id, List<PacketTransformer> packetTransformers, NetworkReceiver receiver) {
         C2S_RECEIVER.put(id, receiver);
         PacketTransformer transformer = PacketTransformer.concat(packetTransformers);
-        ServerSidePacketRegistry.INSTANCE.register(id, (packetContext, buf) -> {
-            NetworkManager.PacketContext context = to(packetContext);
+        ServerPlayNetworking.registerGlobalReceiver(id, (server, player, handler, buf, sender) -> {
+            var context = context(player, server, false);
             transformer.inbound(NetworkManager.Side.C2S, id, buf, context, (side, id1, buf1) -> {
                 NetworkReceiver networkReceiver = side == NetworkManager.Side.C2S ? C2S_RECEIVER.get(id1) : S2C_RECEIVER.get(id1);
                 if (networkReceiver == null) {
@@ -70,38 +73,42 @@ public class NetworkManagerImpl {
         C2S_TRANSFORMERS.put(id, transformer);
     }
     
+    @SuppressWarnings("Convert2Lambda")
     @Environment(EnvType.CLIENT)
     private static void registerS2CReceiver(ResourceLocation id, List<PacketTransformer> packetTransformers, NetworkReceiver receiver) {
         S2C_RECEIVER.put(id, receiver);
         PacketTransformer transformer = PacketTransformer.concat(packetTransformers);
-        ClientSidePacketRegistry.INSTANCE.register(id, (packetContext, buf) -> {
-            NetworkManager.PacketContext context = to(packetContext);
-            transformer.inbound(NetworkManager.Side.S2C, id, buf, context, (side, id1, buf1) -> {
-                NetworkReceiver networkReceiver = side == NetworkManager.Side.C2S ? C2S_RECEIVER.get(id1) : S2C_RECEIVER.get(id1);
-                if (networkReceiver == null) {
-                    throw new IllegalArgumentException("Network Receiver not found! " + id1);
-                }
-                networkReceiver.receive(buf1, context);
-            });
+        ClientPlayNetworking.registerGlobalReceiver(id, new ClientPlayNetworking.PlayChannelHandler() {
+            @Override
+            public void receive(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buf, PacketSender sender) {
+                var context = context(client.player, client, true);
+                transformer.inbound(NetworkManager.Side.S2C, id, buf, context, (side, id1, buf1) -> {
+                    NetworkReceiver networkReceiver = side == NetworkManager.Side.C2S ? C2S_RECEIVER.get(id1) : S2C_RECEIVER.get(id1);
+                    if (networkReceiver == null) {
+                        throw new IllegalArgumentException("Network Receiver not found! " + id1);
+                    }
+                    networkReceiver.receive(buf1, context);
+                });
+            }
         });
         S2C_TRANSFORMERS.put(id, transformer);
     }
     
-    private static NetworkManager.PacketContext to(PacketContext context) {
+    private static NetworkManager.PacketContext context(Player player, BlockableEventLoop<?> taskQueue, boolean client) {
         return new NetworkManager.PacketContext() {
             @Override
             public Player getPlayer() {
-                return context.getPlayer();
+                return player;
             }
             
             @Override
             public void queue(Runnable runnable) {
-                context.getTaskQueue().execute(runnable);
+                taskQueue.execute(runnable);
             }
             
             @Override
             public Env getEnvironment() {
-                return Env.fromPlatform(context.getPacketEnvironment());
+                return client ? Env.CLIENT : Env.SERVER;
             }
         };
     }
@@ -129,11 +136,11 @@ public class NetworkManagerImpl {
     
     @Environment(EnvType.CLIENT)
     public static boolean canServerReceive(ResourceLocation id) {
-        return ClientSidePacketRegistry.INSTANCE.canServerReceive(id);
+        return ClientPlayNetworking.canSend(id);
     }
     
     public static boolean canPlayerReceive(ServerPlayer player, ResourceLocation id) {
-        return ServerSidePacketRegistry.INSTANCE.canPlayerReceive(player, id);
+        return ServerPlayNetworking.canSend(player, id);
     }
     
     public static Packet<?> createAddEntityPacket(Entity entity) {
@@ -142,10 +149,10 @@ public class NetworkManagerImpl {
     
     @Environment(EnvType.CLIENT)
     private static Packet<?> toC2SPacket(ResourceLocation id, FriendlyByteBuf buf) {
-        return ClientSidePacketRegistry.INSTANCE.toPacket(id, buf);
+        return ClientPlayNetworking.createC2SPacket(id, buf);
     }
     
     private static Packet<?> toS2CPacket(ResourceLocation id, FriendlyByteBuf buf) {
-        return ServerSidePacketRegistry.INSTANCE.toPacket(id, buf);
+        return ServerPlayNetworking.createS2CPacket(id, buf);
     }
 }
