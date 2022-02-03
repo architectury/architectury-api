@@ -1,6 +1,6 @@
 /*
  * This file is part of architectury.
- * Copyright (C) 2020, 2021 architectury
+ * Copyright (C) 2020, 2021, 2022 architectury
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,7 +17,11 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.transfer;
+package dev.architectury.transfer.wrappers;
+
+import dev.architectury.transfer.ResourceView;
+import dev.architectury.transfer.TransferAction;
+import dev.architectury.transfer.TransferHandler;
 
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -25,9 +29,13 @@ import java.util.stream.Stream;
 public interface ForwardingTransferHandler<T> extends TransferHandler<T> {
     TransferHandler<T> forwardingTo();
     
+    default ResourceView<T> forwardResource(ResourceView<T> resource) {
+        return resource;
+    }
+    
     @Override
     default Stream<ResourceView<T>> getContents() {
-        return forwardingTo().getContents();
+        return forwardingTo().getContents().map(this::forwardResource);
     }
     
     @Override
@@ -39,7 +47,7 @@ public interface ForwardingTransferHandler<T> extends TransferHandler<T> {
     @Override
     @Deprecated
     default ResourceView<T> getContent(int index) {
-        return forwardingTo().getContent(index);
+        return forwardResource(forwardingTo().getContent(index));
     }
     
     @Override
@@ -60,5 +68,20 @@ public interface ForwardingTransferHandler<T> extends TransferHandler<T> {
     @Override
     default T blank() {
         return forwardingTo().blank();
+    }
+    
+    @Override
+    default T copyWithAmount(T resource, long amount) {
+        return forwardingTo().copyWithAmount(resource, amount);
+    }
+    
+    @Override
+    default Object saveState() {
+        return forwardingTo().saveState();
+    }
+    
+    @Override
+    default void loadState(Object state) {
+        forwardingTo().loadState(state);
     }
 }

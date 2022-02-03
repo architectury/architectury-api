@@ -1,6 +1,6 @@
 /*
  * This file is part of architectury.
- * Copyright (C) 2020, 2021 architectury
+ * Copyright (C) 2020, 2021, 2022 architectury
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -23,6 +23,8 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.transfer.TransferHandler;
 import dev.architectury.transfer.access.BlockLookupAccess;
 import net.minecraft.core.Direction;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,7 +43,7 @@ public class ItemTransfer {
     /**
      * Wraps a platform-specific item transfer handler into the architectury transfer handler.
      * This accepts {@code IItemHandler} on Forge.
-     * This accepts {@code Storage<ItemVariant>} or {@code ContainerItemContext} on Fabric.
+     * This accepts {@code Storage<ItemVariant>} on Fabric.
      *
      * @param object the handler to wrap
      * @return the wrapped handler, or {@code null} if {@code object} is null
@@ -50,6 +52,16 @@ public class ItemTransfer {
     @ExpectPlatform
     @Nullable
     public static TransferHandler<ItemStack> wrap(@Nullable Object object) {
+        throw new AssertionError();
+    }
+    
+    @ExpectPlatform
+    public static TransferHandler<ItemStack> container(Container container, @Nullable Direction direction) {
+        throw new AssertionError();
+    }
+    
+    @ExpectPlatform
+    public static TransferHandler<ItemStack> playerInv(Inventory inventory) {
         throw new AssertionError();
     }
 }

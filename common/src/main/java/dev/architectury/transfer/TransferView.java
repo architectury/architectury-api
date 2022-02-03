@@ -1,6 +1,6 @@
 /*
  * This file is part of architectury.
- * Copyright (C) 2020, 2021 architectury
+ * Copyright (C) 2020, 2021, 2022 architectury
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -49,6 +49,15 @@ public interface TransferView<T> {
      * @return a blank resource
      */
     T blank();
+    
+    /**
+     * Returns a copy of a resource with the given amount.
+     *
+     * @param resource the resource to copy
+     * @param amount   the amount to copy
+     * @return the copy
+     */
+    T copyWithAmount(T resource, long amount);
     
     /**
      * Returns the saved state of the handler, this method must not be called by the implementation.

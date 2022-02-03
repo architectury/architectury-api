@@ -1,6 +1,6 @@
 /*
  * This file is part of architectury.
- * Copyright (C) 2020, 2021 architectury
+ * Copyright (C) 2020, 2021, 2022 architectury
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,6 +20,7 @@
 package dev.architectury.transfer.fabric;
 
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Streams;
 import dev.architectury.transfer.ResourceView;
 import dev.architectury.transfer.TransferAction;
 import dev.architectury.transfer.TransferHandler;
@@ -34,7 +35,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.ToLongFunction;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 public class FabricStorageTransferHandler<F, S> implements TransferHandler<S> {
     private final Storage<F> storage;
@@ -55,7 +55,7 @@ public class FabricStorageTransferHandler<F, S> implements TransferHandler<S> {
     @Override
     public Stream<ResourceView<S>> getContents() {
         Transaction transaction = Transaction.openNested(this.transaction);
-        return StreamSupport.stream(storage.iterable(transaction).spliterator(), false)
+        return Streams.stream(storage.iterable(transaction))
                 .<ResourceView<S>>map(FabricStorageResourceView::new)
                 .onClose(transaction::close);
     }
@@ -66,11 +66,7 @@ public class FabricStorageTransferHandler<F, S> implements TransferHandler<S> {
             return ((InventoryStorage) storage).getSlots().size();
         }
         try (Transaction transaction = Transaction.openNested(this.transaction)) {
-            int size = 0;
-            for (StorageView<F> view : storage.iterable(transaction)) {
-                size++;
-            }
-            return size;
+            return Iterables.size(storage.iterable(transaction));
         }
     }
     
@@ -140,6 +136,11 @@ public class FabricStorageTransferHandler<F, S> implements TransferHandler<S> {
     }
     
     @Override
+    public S copyWithAmount(S stack, long amount) {
+        return typeAdapter.copyWithAmount.apply(stack, amount);
+    }
+    
+    @Override
     public Object saveState() {
         throw new UnsupportedOperationException();
     }
@@ -167,10 +168,6 @@ public class FabricStorageTransferHandler<F, S> implements TransferHandler<S> {
     
     private S fromFabric(F variant, long amount) {
         return typeAdapter.fromFabric.apply(variant, amount);
-    }
-    
-    private S copyWithAmount(S stack, long amount) {
-        return typeAdapter.copyWithAmount.apply(stack, amount);
     }
     
     public interface FunctionWithAmount<F, S> {

@@ -1,6 +1,6 @@
 /*
  * This file is part of architectury.
- * Copyright (C) 2020, 2021 architectury
+ * Copyright (C) 2020, 2021, 2022 architectury
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,15 +20,19 @@
 package dev.architectury.transfer.item.forge;
 
 import dev.architectury.fluid.FluidStack;
-import dev.architectury.hooks.item.ItemStackHooks;
 import dev.architectury.transfer.ResourceView;
 import dev.architectury.transfer.TransferAction;
 import dev.architectury.transfer.TransferHandler;
 import dev.architectury.transfer.access.BlockLookup;
 import dev.architectury.transfer.forge.ForgeBlockLookupRegistration;
+import dev.architectury.transfer.item.ItemResourceView;
 import dev.architectury.transfer.item.ItemTransfer;
+import dev.architectury.transfer.item.ItemTransferHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.Container;
+import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -37,6 +41,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.items.wrapper.InvWrapper;
+import net.minecraftforge.items.wrapper.PlayerInvWrapper;
+import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -55,6 +62,18 @@ public class ItemTransferImpl {
         } else {
             throw new IllegalArgumentException("Unsupported object type: " + object.getClass().getName());
         }
+    }
+    
+    public static TransferHandler<ItemStack> container(Container container, @Nullable Direction direction) {
+        if (container instanceof WorldlyContainer) {
+            return wrap(new SidedInvWrapper((WorldlyContainer) container, direction));
+        } else {
+            return wrap(new InvWrapper(container));
+        }
+    }
+    
+    public static TransferHandler<ItemStack> playerInv(Inventory inventory) {
+        return wrap(new PlayerInvWrapper(inventory));
     }
     
     public static void init() {
@@ -132,7 +151,7 @@ public class ItemTransferImpl {
         }
     }
     
-    private static class ForgeTransferHandler implements TransferHandler<ItemStack> {
+    private static class ForgeTransferHandler implements ItemTransferHandler {
         private IItemHandler handler;
         
         public ForgeTransferHandler(IItemHandler handler) {
@@ -163,33 +182,43 @@ public class ItemTransferImpl {
         
         @Override
         public ItemStack extract(ItemStack toExtract, TransferAction action) {
+            int toExtractCount = toExtract.getCount();
+            int extractedCount = 0;
+            
             for (int i = 0; i < handler.getSlots(); i++) {
                 ItemStack slot = handler.getStackInSlot(i);
                 
                 if (ItemHandlerHelper.canItemStacksStack(toExtract, slot)) {
-                    int toExtractCount = toExtract.getCount();
-                    ItemStack left = handler.extractItem(i, toExtractCount, action == TransferAction.SIMULATE);
-                    
-                    if (left.isEmpty()) {
-                        return toExtract;
+                    ItemStack extracted = handler.extractItem(i, toExtractCount - extractedCount, action == TransferAction.SIMULATE);
+                    extractedCount += extracted.getCount();
+                    if (extractedCount >= toExtractCount) {
+                        break;
                     }
-                    
-                    toExtract = left;
                 }
             }
             
-            return ItemStack.EMPTY;
+            return copyWithAmount(toExtract, extractedCount);
         }
         
         @Override
         public ItemStack extract(Predicate<ItemStack> toExtract, long maxAmount, TransferAction action) {
-            // TODO: implement
-            return null;
-        }
-        
-        @Override
-        public ItemStack blank() {
-            return ItemStack.EMPTY;
+            ItemStack type = null;
+            int extractedCount = 0;
+            
+            for (int i = 0; i < handler.getSlots(); i++) {
+                ItemStack slot = handler.getStackInSlot(i);
+                
+                if (type == null ? toExtract.test(slot) : ItemHandlerHelper.canItemStacksStack(type, slot)) {
+                    ItemStack extracted = handler.extractItem(i, (int) (maxAmount - extractedCount), action == TransferAction.SIMULATE);
+                    type = extracted;
+                    extractedCount += extracted.getCount();
+                    if (extractedCount >= maxAmount) {
+                        break;
+                    }
+                }
+            }
+            
+            return type == null ? blank() : copyWithAmount(type, extractedCount);
         }
         
         @Override
@@ -202,7 +231,7 @@ public class ItemTransferImpl {
             throw new UnsupportedOperationException();
         }
         
-        private class ForgeResourceView implements ResourceView<ItemStack> {
+        private class ForgeResourceView implements ItemResourceView {
             int index;
             
             public ForgeResourceView(int index) {
@@ -222,16 +251,6 @@ public class ItemTransferImpl {
             @Override
             public ItemStack extract(ItemStack toExtract, TransferAction action) {
                 return handler.extractItem(index, toExtract.getCount(), action == TransferAction.SIMULATE);
-            }
-            
-            @Override
-            public ItemStack blank() {
-                return ItemStack.EMPTY;
-            }
-            
-            @Override
-            public ItemStack copyWithAmount(ItemStack resource, long amount) {
-                return ItemStackHooks.copyWithCount(resource, (int) amount);
             }
             
             @Override

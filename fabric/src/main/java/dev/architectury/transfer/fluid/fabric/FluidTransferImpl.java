@@ -1,6 +1,6 @@
 /*
  * This file is part of architectury.
- * Copyright (C) 2020, 2021 architectury
+ * Copyright (C) 2020, 2021, 2022 architectury
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -27,18 +27,11 @@ import dev.architectury.transfer.fabric.FabricBlockLookupRegistration;
 import dev.architectury.transfer.fabric.FabricStorageTransferHandler;
 import dev.architectury.transfer.fabric.TransferHandlerStorage;
 import dev.architectury.transfer.fluid.FluidTransfer;
-import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
-import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -81,36 +74,5 @@ public class FluidTransferImpl {
 //        FluidTransfer.ITEM.addQueryHandler((stack, context) -> {
 //            return wrap(FluidStorage.ITEM.find(stack, fromTransfer(stack, context)));
 //        });
-    }
-    
-    public static ContainerItemContext fromTransfer(ItemStack stack, TransferHandler<ItemStack> transferHandler) {
-        SingleSlotStorage<ItemVariant> mainSlot = new SingleVariantStorage<ItemVariant>() {
-            @Override
-            protected ItemVariant getBlankVariant() {
-                return ItemVariant.blank();
-            }
-            
-            @Override
-            protected long getCapacity(ItemVariant variant) {
-                // TODO Revisit this
-                return variant.getItem().getMaxStackSize();
-            }
-        };
-        return new ContainerItemContext() {
-            @Override
-            public SingleSlotStorage<ItemVariant> getMainSlot() {
-                return mainSlot;
-            }
-            
-            @Override
-            public List<SingleSlotStorage<ItemVariant>> getAdditionalSlots() {
-                return null;
-            }
-            
-            @Override
-            public long insertOverflow(ItemVariant itemVariant, long maxAmount, TransactionContext transactionContext) {
-                return 0;
-            }
-        };
     }
 }

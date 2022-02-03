@@ -1,6 +1,6 @@
 /*
  * This file is part of architectury.
- * Copyright (C) 2020, 2021 architectury
+ * Copyright (C) 2020, 2021, 2022 architectury
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -42,7 +42,7 @@ public interface TransferHandler<T> extends TransferView<T> {
      * @return an empty item transfer handler
      */
     static TransferHandler<ItemStack> emptyItem() {
-        return EmptyTransferHandler.ITEM;
+        return EmptyTransferHandler.Item.INSTANCE;
     }
     
     /**
@@ -51,7 +51,7 @@ public interface TransferHandler<T> extends TransferView<T> {
      * @return an empty fluid transfer handler
      */
     static TransferHandler<FluidStack> emptyFluid() {
-        return EmptyTransferHandler.FLUID;
+        return EmptyTransferHandler.Fluid.INSTANCE;
     }
     
     /**

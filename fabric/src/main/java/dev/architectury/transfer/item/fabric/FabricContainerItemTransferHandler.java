@@ -1,6 +1,6 @@
 /*
  * This file is part of architectury.
- * Copyright (C) 2020, 2021 architectury
+ * Copyright (C) 2020, 2021, 2022 architectury
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -95,7 +95,7 @@ public class FabricContainerItemTransferHandler implements TransferHandler<ItemS
             }
         }
         
-        return ItemStackHooks.copyWithCount(toExtract, (int) extracted);
+        return ItemStackHooks.copyWithCount(toExtract, extracted);
     }
     
     @Override
@@ -120,6 +120,11 @@ public class FabricContainerItemTransferHandler implements TransferHandler<ItemS
     @Override
     public ItemStack blank() {
         return ItemStack.EMPTY;
+    }
+    
+    @Override
+    public ItemStack copyWithAmount(ItemStack resource, long amount) {
+        return ItemStackHooks.copyWithCount(resource, amount);
     }
     
     @Override
@@ -151,7 +156,7 @@ public class FabricContainerItemTransferHandler implements TransferHandler<ItemS
         
         @Override
         public ItemStack copyWithAmount(ItemStack resource, long amount) {
-            return ItemStackHooks.copyWithCount(resource, (int) amount);
+            return ItemStackHooks.copyWithCount(resource, amount);
         }
         
         @Override

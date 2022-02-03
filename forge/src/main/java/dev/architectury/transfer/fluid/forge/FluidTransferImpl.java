@@ -1,6 +1,6 @@
 /*
  * This file is part of architectury.
- * Copyright (C) 2020, 2021 architectury
+ * Copyright (C) 2020, 2021, 2022 architectury
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -26,7 +26,9 @@ import dev.architectury.transfer.TransferAction;
 import dev.architectury.transfer.TransferHandler;
 import dev.architectury.transfer.access.BlockLookup;
 import dev.architectury.transfer.access.ItemLookup;
+import dev.architectury.transfer.fluid.FluidResourceView;
 import dev.architectury.transfer.fluid.FluidTransfer;
+import dev.architectury.transfer.fluid.FluidTransferHandler;
 import dev.architectury.transfer.forge.ForgeBlockLookupRegistration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -178,7 +180,7 @@ public class FluidTransferImpl {
         }
     }
     
-    private static class ForgeTransferHandler implements TransferHandler<FluidStack> {
+    private static class ForgeTransferHandler implements FluidTransferHandler {
         private IFluidHandler handler;
         
         private ForgeTransferHandler(IFluidHandler handler) {
@@ -228,11 +230,6 @@ public class FluidTransferImpl {
         }
         
         @Override
-        public FluidStack blank() {
-            return FluidStack.empty();
-        }
-        
-        @Override
         public Object saveState() {
             throw new UnsupportedOperationException();
         }
@@ -276,7 +273,7 @@ public class FluidTransferImpl {
             }
         }
         
-        private class ForgeResourceView implements ResourceView<FluidStack> {
+        private class ForgeResourceView implements FluidResourceView {
             int index;
             
             public ForgeResourceView(int index) {
@@ -297,16 +294,6 @@ public class FluidTransferImpl {
             public FluidStack extract(FluidStack toExtract, TransferAction action) {
                 // impossible to extract from a forge handler with an index
                 return blank();
-            }
-            
-            @Override
-            public FluidStack blank() {
-                return FluidStack.empty();
-            }
-            
-            @Override
-            public FluidStack copyWithAmount(FluidStack resource, long amount) {
-                return resource.copyWithAmount(amount);
             }
             
             @Override

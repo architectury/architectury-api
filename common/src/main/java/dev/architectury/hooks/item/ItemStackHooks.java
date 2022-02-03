@@ -19,6 +19,8 @@
 
 package dev.architectury.hooks.item;
 
+import dev.architectury.transfer.TransferAction;
+import dev.architectury.transfer.item.ItemTransfer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -34,9 +36,21 @@ public final class ItemStackHooks {
         return copy;
     }
     
+    public static ItemStack copyWithCount(ItemStack stack, long count) {
+        return copyWithCount(stack, (int) count);
+    }
+    
     public static void giveItem(ServerPlayer player, ItemStack stack) {
-        var bl = player.getInventory().add(stack);
-        if (bl && stack.isEmpty()) {
+        var inserted = ItemTransfer.wrap(player).insert(stack, TransferAction.ACT);
+        var remaining = stack.getCount() - inserted;
+        if (remaining > 0) {
+            var entity = player.drop(stack, false);
+            if (entity != null) {
+                entity.setNoPickUpDelay();
+                entity.setOwner(player.getUUID());
+            }
+        } else {
+            stack = stack.copy();
             stack.setCount(1);
             var entity = player.drop(stack, false);
             if (entity != null) {
@@ -45,12 +59,6 @@ public final class ItemStackHooks {
             
             player.level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, ((player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F);
             player.inventoryMenu.broadcastChanges();
-        } else {
-            var entity = player.drop(stack, false);
-            if (entity != null) {
-                entity.setNoPickUpDelay();
-                entity.setOwner(player.getUUID());
-            }
         }
     }
 }

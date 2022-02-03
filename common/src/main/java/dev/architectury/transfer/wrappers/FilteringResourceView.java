@@ -17,37 +17,36 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.transfer;
+package dev.architectury.transfer.wrappers;
+
+import dev.architectury.transfer.ResourceView;
+import dev.architectury.transfer.TransferAction;
 
 import java.util.function.Predicate;
 
-/**
- * Represents an <b>immutable</b> view of a resource.
- *
- * @param <T> the type of resource
- */
-public interface ResourceView<T> extends TransferView<T> {
-    /**
-     * Returns the resource that this view represents.
-     * The returned resource is <b>immutable</b>.
-     *
-     * @return the resource
-     */
-    T getResource();
+public interface FilteringResourceView<T> extends ForwardingResourceView<T> {
+    static <T> FilteringResourceView<T> of(ResourceView<T> delegate, Predicate<T> canExtract) {
+        return new FilteringResourceView<T>() {
+            @Override
+            public ResourceView<T> forwardingTo() {
+                return delegate;
+            }
+            
+            @Override
+            public boolean canExtract(T toExtract) {
+                return canExtract.test(toExtract);
+            }
+        };
+    }
     
-    /**
-     * Returns the capacity of this view.
-     *
-     * @return the capacity
-     */
-    long getCapacity();
+    boolean canExtract(T toExtract);
     
     @Override
-    default T extract(Predicate<T> toExtract, long maxAmount, TransferAction action) {
-        if (toExtract.test(getResource())) {
-            return extract(copyWithAmount(getResource(), maxAmount), action);
+    default T extract(T toExtract, TransferAction action) {
+        if (canExtract(toExtract)) {
+            return ForwardingResourceView.super.extract(toExtract, action);
+        } else {
+            return blank();
         }
-        
-        return blank();
     }
 }

@@ -17,19 +17,19 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.transfer.access;
+package dev.architectury.transfer.fluid;
 
-import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
+import dev.architectury.fluid.FluidStack;
+import dev.architectury.transfer.ResourceView;
 
-public interface ItemLookup<T, Context> {
-    /**
-     * Queries the api for the given item stack.
-     *
-     * @param stack   the item stack
-     * @param context the context
-     * @return the transfer handler, or null if none was found
-     */
-    @Nullable
-    T get(ItemStack stack, Context context);
+public interface FluidResourceView extends ResourceView<FluidStack> {
+    @Override
+    default FluidStack blank() {
+        return FluidStack.empty();
+    }
+    
+    @Override
+    default FluidStack copyWithAmount(FluidStack resource, long amount) {
+        return resource.copyWithAmount(amount);
+    }
 }

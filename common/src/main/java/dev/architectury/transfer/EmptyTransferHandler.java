@@ -1,6 +1,6 @@
 /*
  * This file is part of architectury.
- * Copyright (C) 2020, 2021 architectury
+ * Copyright (C) 2020, 2021, 2022 architectury
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,21 +20,14 @@
 package dev.architectury.transfer;
 
 import dev.architectury.fluid.FluidStack;
+import dev.architectury.transfer.fluid.FluidTransferHandler;
+import dev.architectury.transfer.item.ItemTransferHandler;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-class EmptyTransferHandler<T> implements TransferHandler<T> {
-    static final TransferHandler<ItemStack> ITEM = new EmptyTransferHandler<>(() -> ItemStack.EMPTY);
-    static final TransferHandler<FluidStack> FLUID = new EmptyTransferHandler<>(FluidStack::empty);
-    private final Supplier<T> blank;
-    
-    protected EmptyTransferHandler(Supplier<T> blank) {
-        this.blank = blank;
-    }
-    
+abstract class EmptyTransferHandler<T> implements TransferHandler<T> {
     @Override
     public Stream<ResourceView<T>> getContents() {
         return Stream.empty();
@@ -66,17 +59,19 @@ class EmptyTransferHandler<T> implements TransferHandler<T> {
     }
     
     @Override
-    public T blank() {
-        return blank.get();
-    }
-    
-    @Override
     public Object saveState() {
-        throw new UnsupportedOperationException();
+        return null;
     }
     
     @Override
     public void loadState(Object state) {
-        throw new UnsupportedOperationException();
+    }
+    
+    static class Item extends EmptyTransferHandler<ItemStack> implements ItemTransferHandler {
+        static final Item INSTANCE = new Item();
+    }
+    
+    static class Fluid extends EmptyTransferHandler<FluidStack> implements FluidTransferHandler {
+        static final Fluid INSTANCE = new Fluid();
     }
 }

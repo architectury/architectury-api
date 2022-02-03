@@ -17,19 +17,20 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.transfer.access;
+package dev.architectury.transfer.item;
 
+import dev.architectury.hooks.item.ItemStackHooks;
+import dev.architectury.transfer.ResourceView;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
 
-public interface ItemLookup<T, Context> {
-    /**
-     * Queries the api for the given item stack.
-     *
-     * @param stack   the item stack
-     * @param context the context
-     * @return the transfer handler, or null if none was found
-     */
-    @Nullable
-    T get(ItemStack stack, Context context);
+public interface ItemResourceView extends ResourceView<ItemStack> {
+    @Override
+    default ItemStack blank() {
+        return ItemStack.EMPTY;
+    }
+    
+    @Override
+    default ItemStack copyWithAmount(ItemStack resource, long amount) {
+        return ItemStackHooks.copyWithCount(resource, amount);
+    }
 }

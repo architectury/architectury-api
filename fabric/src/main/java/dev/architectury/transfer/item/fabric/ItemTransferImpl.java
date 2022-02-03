@@ -1,6 +1,6 @@
 /*
  * This file is part of architectury.
- * Copyright (C) 2020, 2021 architectury
+ * Copyright (C) 2020, 2021, 2022 architectury
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -26,10 +26,14 @@ import dev.architectury.transfer.fabric.FabricBlockLookupRegistration;
 import dev.architectury.transfer.fabric.FabricStorageTransferHandler;
 import dev.architectury.transfer.fabric.TransferHandlerStorage;
 import dev.architectury.transfer.item.ItemTransfer;
-import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
+import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.minecraft.core.Direction;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,7 +45,7 @@ import java.util.function.ToLongFunction;
 public class ItemTransferImpl {
     private static final Function<ItemStack, ItemVariant> TO_FABRIC = ItemVariant::of;
     private static final FabricStorageTransferHandler.FunctionWithAmount<ItemVariant, ItemStack> FROM_FABRIC = (variant, amount) -> variant.toStack((int) amount);
-    private static final FabricStorageTransferHandler.FunctionWithAmount<ItemStack, ItemStack> COPY_WITH_AMOUNT = (stack, amount) -> ItemStackHooks.copyWithCount(stack, (int) amount);
+    private static final FabricStorageTransferHandler.FunctionWithAmount<ItemStack, ItemStack> COPY_WITH_AMOUNT = ItemStackHooks::copyWithCount;
     private static final Supplier<ItemStack> BLANK = () -> ItemStack.EMPTY;
     private static final Predicate<ItemStack> IS_EMPTY = ItemStack::isEmpty;
     private static final ToLongFunction<ItemStack> TO_AMOUNT = ItemStack::getCount;
@@ -53,11 +57,19 @@ public class ItemTransferImpl {
         
         if (object instanceof Storage) {
             return new FabricStorageTransferHandler<>((Storage) object, null, TYPE_ADAPTER);
-        } else if (object instanceof ContainerItemContext) {
-            return new FabricContainerItemTransferHandler((ContainerItemContext) object, null);
+//        } else if (object instanceof ContainerItemContext) {
+//            return new FabricContainerItemTransferHandler((ContainerItemContext) object, null);
         } else {
             throw new IllegalArgumentException("Unsupported object type: " + object.getClass().getName());
         }
+    }
+    
+    public static TransferHandler<ItemStack> container(Container container, @Nullable Direction direction) {
+        return wrap(InventoryStorage.of(container, direction));
+    }
+    
+    public static TransferHandler<ItemStack> playerInv(Inventory inventory) {
+        return wrap(PlayerInventoryStorage.of(inventory));
     }
     
     @Nullable
