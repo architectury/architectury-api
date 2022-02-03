@@ -40,6 +40,10 @@ public interface FilteringTransferHandler<T> extends ForwardingTransferHandler<T
         return FilteringTransferHandler.of(delegate, Predicates.alwaysFalse(), Predicates.alwaysTrue());
     }
     
+    static <T> FilteringTransferHandler<T> predicate(TransferHandler<T> delegate, Predicate<T> predicate) {
+        return FilteringTransferHandler.of(delegate, predicate, predicate);
+    }
+    
     static <T> FilteringTransferHandler<T> of(TransferHandler<T> delegate, Predicate<T> canInsert, Predicate<T> canExtract) {
         return new FilteringTransferHandler<T>() {
             @Override

@@ -46,6 +46,10 @@ public class ContainerTransferHandler implements CombinedItemTransferHandler {
         return handlers;
     }
     
+    protected TransferHandler<ItemStack> asTransfer(int index) {
+        return new SlotTransferHandler(container, index);
+    }
+    
     protected class Handlers extends AbstractList<TransferHandler<ItemStack>> {
         @Override
         public TransferHandler<ItemStack> get(int index) {
@@ -53,10 +57,6 @@ public class ContainerTransferHandler implements CombinedItemTransferHandler {
                 throw new IndexOutOfBoundsException("Index " + index + " is out of bounds for size " + size());
             }
             return asTransfer(index);
-        }
-        
-        protected TransferHandler<ItemStack> asTransfer(int index) {
-            return new SlotTransferHandler(container, index);
         }
         
         @Override
