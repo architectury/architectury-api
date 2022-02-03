@@ -74,7 +74,9 @@ public interface TransferHandler<T> extends TransferView<T> {
     
     /**
      * Returns the resource in a particular index.
-     * This may be extremely expensive to compute, avoid if you can.
+     * This may be extremely expensive to compute, avoid if you can.<br>
+     * <b>Please properly close this stream.</b> Failure to do so will result in a potential
+     * crash in conflicting transactions.
      *
      * @param index the index of the resource
      * @return the resource in the given index

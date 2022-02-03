@@ -19,6 +19,7 @@
 
 package dev.architectury.transfer;
 
+import java.io.Closeable;
 import java.util.function.Predicate;
 
 /**
@@ -26,7 +27,7 @@ import java.util.function.Predicate;
  *
  * @param <T> the type of resource
  */
-public interface ResourceView<T> extends TransferView<T> {
+public interface ResourceView<T> extends TransferView<T>, Closeable {
     /**
      * Returns the resource that this view represents.
      * The returned resource is <b>immutable</b>.
@@ -50,4 +51,7 @@ public interface ResourceView<T> extends TransferView<T> {
         
         return blank();
     }
+    
+    @Override
+    void close();
 }

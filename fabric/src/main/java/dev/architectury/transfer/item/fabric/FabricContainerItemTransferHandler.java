@@ -189,5 +189,9 @@ public class FabricContainerItemTransferHandler implements TransferHandler<ItemS
         public void loadState(Object state) {
             throw new UnsupportedOperationException();
         }
+        
+        @Override
+        public void close() {
+        }
     }
 }

@@ -42,6 +42,11 @@ public interface FilteringResourceView<T> extends ForwardingResourceView<T>, Ext
             public boolean canExtract(T toExtract) {
                 return canExtract.test(toExtract);
             }
+            
+            @Override
+            public void close() {
+                delegate.close();
+            }
         };
     }
     

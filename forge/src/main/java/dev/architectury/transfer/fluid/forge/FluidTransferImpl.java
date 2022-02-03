@@ -133,17 +133,24 @@ public class FluidTransferImpl {
         @NotNull
         @Override
         public net.minecraftforge.fluids.FluidStack getFluidInTank(int index) {
-            return FluidStackHooksForge.toForge(handler.getContent(index).getResource());
+            try (var resource = handler.getContent(index)) {
+                return FluidStackHooksForge.toForge(resource.getResource());
+            }
         }
         
         @Override
         public int getTankCapacity(int index) {
-            return (int) handler.getContent(index).getCapacity();
+            try (var resource = handler.getContent(index)) {
+                return (int) resource.getCapacity();
+            }
         }
         
         @Override
         public boolean isFluidValid(int index, @NotNull net.minecraftforge.fluids.FluidStack stack) {
-            FluidStack content = handler.getContent(index).getResource();
+            FluidStack content;
+            try (var resource = handler.getContent(index)) {
+                content = resource.getResource();
+            }
             return content.getFluid() == stack.getFluid() && Objects.equals(content.getTag(), stack.getTag());
         }
         
@@ -304,6 +311,10 @@ public class FluidTransferImpl {
             @Override
             public void loadState(Object state) {
                 throw new UnsupportedOperationException();
+            }
+            
+            @Override
+            public void close() {
             }
         }
     }

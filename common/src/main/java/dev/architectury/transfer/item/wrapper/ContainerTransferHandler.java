@@ -88,5 +88,9 @@ public class ContainerTransferHandler implements CombinedItemTransferHandler {
         public long getCapacity() {
             return Math.min(container.getMaxStackSize(), getResource().getMaxStackSize());
         }
+    
+        @Override
+        public void close() {
+        }
     }
 }

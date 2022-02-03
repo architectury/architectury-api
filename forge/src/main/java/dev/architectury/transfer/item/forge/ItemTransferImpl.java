@@ -106,12 +106,16 @@ public class ItemTransferImpl {
         @NotNull
         @Override
         public ItemStack getStackInSlot(int index) {
-            return handler.getContent(index).getResource();
+            try (var resource = handler.getContent(index)) {
+                return resource.getResource();
+            }
         }
         
         @Override
         public int getSlotLimit(int index) {
-            return (int) handler.getContent(index).getCapacity();
+            try (var resource = handler.getContent(index)) {
+                return (int) resource.getCapacity();
+            }
         }
         
         @NotNull
@@ -128,7 +132,11 @@ public class ItemTransferImpl {
         
         @Override
         public boolean isItemValid(int index, @NotNull ItemStack stack) {
-            ItemStack content = handler.getContent(index).getResource();
+            ItemStack content;
+    
+            try (var resource = handler.getContent(index)) {
+                content = resource.getResource();
+            }
             return content.getItem() == stack.getItem() && Objects.equals(content.getTag(), stack.getTag());
         }
     }
@@ -246,6 +254,10 @@ public class ItemTransferImpl {
             @Override
             public void loadState(Object state) {
                 throw new UnsupportedOperationException();
+            }
+            
+            @Override
+            public void close() {
             }
         }
     }
