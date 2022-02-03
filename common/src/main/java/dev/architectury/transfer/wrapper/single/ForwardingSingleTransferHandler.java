@@ -17,13 +17,22 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.transfer.wrapper;
+package dev.architectury.transfer.wrapper.single;
 
 import dev.architectury.transfer.ResourceView;
 import dev.architectury.transfer.TransferAction;
+import dev.architectury.transfer.wrapper.ForwardingTransferHandler;
 
-public interface ForwardingResourceView<T> extends ResourceView<T> {
-    ResourceView<T> forwardingTo();
+import java.util.function.Predicate;
+
+public interface ForwardingSingleTransferHandler<T> extends ForwardingTransferHandler<T>, ResourceView<T> {
+    @Override
+    SingleTransferHandler<T> forwardingTo();
+    
+    @Override
+    default T extract(Predicate<T> toExtract, long maxAmount, TransferAction action) {
+        return ForwardingTransferHandler.super.extract(toExtract, maxAmount, action);
+    }
     
     @Override
     default T getResource() {
@@ -33,31 +42,6 @@ public interface ForwardingResourceView<T> extends ResourceView<T> {
     @Override
     default long getCapacity() {
         return forwardingTo().getCapacity();
-    }
-    
-    @Override
-    default T extract(T toExtract, TransferAction action) {
-        return forwardingTo().extract(toExtract, action);
-    }
-    
-    @Override
-    default T blank() {
-        return forwardingTo().blank();
-    }
-    
-    @Override
-    default T copyWithAmount(T resource, long amount) {
-        return forwardingTo().copyWithAmount(resource, amount);
-    }
-    
-    @Override
-    default Object saveState() {
-        return forwardingTo().saveState();
-    }
-    
-    @Override
-    default void loadState(Object state) {
-        forwardingTo().loadState(state);
     }
     
     @Override

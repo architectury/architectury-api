@@ -17,33 +17,28 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.transfer.wrapper.single;
+package dev.architectury.transfer.energy;
 
-import dev.architectury.transfer.ResourceView;
-import dev.architectury.transfer.TransferHandler;
-import dev.architectury.transfer.view.ModifiableView;
-import dev.architectury.transfer.view.VariantView;
+import dev.architectury.transfer.wrapper.single.SingleTransferHandler;
 
-import java.util.stream.Stream;
-
-public interface SingleTransferHandler<T> extends TransferHandler<T>, ResourceView<T>, ModifiableView<T>, VariantView<T> {
+public interface EnergyTransferHandler extends SingleTransferHandler<Long> {
     @Override
-    default Stream<ResourceView<T>> getContents() {
-        return Stream.of(this);
+    default Long blank() {
+        return 0L;
     }
     
     @Override
-    default int getContentsSize() {
-        return 1;
+    default Long copyWithAmount(Long resource, long amount) {
+        return amount;
     }
     
     @Override
-    default ResourceView<T> getContent(int index) {
-        if (index != 0) throw new IndexOutOfBoundsException("Index must be 0, got " + index);
-        return this;
+    default long getAmount(Long resource) {
+        return resource;
     }
     
-    default long getAmount() {
-        return getAmount(getResource());
+    @Override
+    default boolean isSameVariant(Long first, Long second) {
+        return true;
     }
 }

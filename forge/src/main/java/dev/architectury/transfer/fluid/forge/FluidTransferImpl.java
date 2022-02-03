@@ -19,6 +19,7 @@
 
 package dev.architectury.transfer.fluid.forge;
 
+import com.google.common.collect.Streams;
 import dev.architectury.fluid.FluidStack;
 import dev.architectury.hooks.fluid.forge.FluidStackHooksForge;
 import dev.architectury.transfer.ResourceView;
@@ -196,7 +197,7 @@ public class FluidTransferImpl {
         
         @Override
         public Stream<ResourceView<FluidStack>> getContents() {
-            return StreamSupport.stream(Spliterators.spliteratorUnknownSize(new Itr(), 0), false);
+            return Streams.stream(new Itr());
         }
         
         @Override

@@ -21,9 +21,9 @@ package dev.architectury.transfer.fluid.wrapper;
 
 import dev.architectury.fluid.FluidStack;
 import dev.architectury.transfer.fluid.FluidTransferHandler;
-import dev.architectury.transfer.wrapper.single.SingleTransferHandler;
+import dev.architectury.transfer.wrapper.single.BaseSingleTransferHandler;
 
-public interface SingleFluidTransferHandler extends SingleTransferHandler<FluidStack>, FluidTransferHandler, FluidVariantView {
+public interface BaseSingleFluidTransferHandler extends BaseSingleTransferHandler<FluidStack>, FluidTransferHandler, FluidVariantView {
     @Override
     default FluidStack copy(FluidStack resource) {
         return resource.copy();

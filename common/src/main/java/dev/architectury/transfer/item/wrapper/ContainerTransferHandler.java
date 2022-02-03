@@ -65,7 +65,7 @@ public class ContainerTransferHandler implements CombinedItemTransferHandler {
         }
     }
     
-    protected static class SlotTransferHandler implements SingleItemTransferHandler {
+    protected static class SlotTransferHandler implements BaseSingleItemTransferHandler {
         protected final Container container;
         protected final int index;
         

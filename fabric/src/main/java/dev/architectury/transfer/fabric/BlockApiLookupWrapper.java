@@ -30,24 +30,24 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 
-public class BlockApiLookupWrapper<T, F, C> implements BlockLookup<TransferHandler<T>, C> {
+public class BlockApiLookupWrapper<T, F, C, H extends TransferHandler<T>> implements BlockLookup<H, C> {
     private final BlockApiLookup<F, C> lookup;
-    private final Function<@Nullable F, @Nullable TransferHandler<T>> wrapper;
+    private final Function<@Nullable F, @Nullable H> wrapper;
     
-    public BlockApiLookupWrapper(BlockApiLookup<F, C> lookup, Function<@Nullable F, @Nullable TransferHandler<T>> wrapper) {
+    public BlockApiLookupWrapper(BlockApiLookup<F, C> lookup, Function<@Nullable F, @Nullable H> wrapper) {
         this.lookup = lookup;
         this.wrapper = wrapper;
     }
     
     @Override
     @Nullable
-    public TransferHandler<T> get(Level level, BlockPos pos, C context) {
+    public H get(Level level, BlockPos pos, C context) {
         return wrapper.apply(lookup.find(level, pos, context));
     }
     
     @Override
     @Nullable
-    public TransferHandler<T> get(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, C context) {
+    public H get(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, C context) {
         if (blockEntity != null) {
             return wrapper.apply(lookup.find(level, pos, state, blockEntity, context));
         } else {

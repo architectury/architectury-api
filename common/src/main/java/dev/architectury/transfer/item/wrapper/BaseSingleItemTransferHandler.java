@@ -20,10 +20,10 @@
 package dev.architectury.transfer.item.wrapper;
 
 import dev.architectury.transfer.item.ItemTransferHandler;
-import dev.architectury.transfer.wrapper.single.SingleTransferHandler;
+import dev.architectury.transfer.wrapper.single.BaseSingleTransferHandler;
 import net.minecraft.world.item.ItemStack;
 
-public interface SingleItemTransferHandler extends SingleTransferHandler<ItemStack>, ItemTransferHandler, ItemVariantView {
+public interface BaseSingleItemTransferHandler extends BaseSingleTransferHandler<ItemStack>, ItemTransferHandler, ItemVariantView {
     @Override
     default ItemStack copy(ItemStack resource) {
         return resource.copy();
