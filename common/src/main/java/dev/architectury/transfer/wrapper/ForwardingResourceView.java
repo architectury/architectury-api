@@ -17,52 +17,27 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.transfer.wrappers;
+package dev.architectury.transfer.wrapper;
 
 import dev.architectury.transfer.ResourceView;
 import dev.architectury.transfer.TransferAction;
-import dev.architectury.transfer.TransferHandler;
 
-import java.util.function.Predicate;
-import java.util.stream.Stream;
-
-public interface ForwardingTransferHandler<T> extends TransferHandler<T> {
-    TransferHandler<T> forwardingTo();
+public interface ForwardingResourceView<T> extends ResourceView<T> {
+    ResourceView<T> forwardingTo();
     
-    default ResourceView<T> forwardResource(ResourceView<T> resource) {
-        return resource;
+    @Override
+    default T getResource() {
+        return forwardingTo().getResource();
     }
     
     @Override
-    default Stream<ResourceView<T>> getContents() {
-        return forwardingTo().getContents().map(this::forwardResource);
-    }
-    
-    @Override
-    @Deprecated
-    default int getContentsSize() {
-        return forwardingTo().getContentsSize();
-    }
-    
-    @Override
-    @Deprecated
-    default ResourceView<T> getContent(int index) {
-        return forwardResource(forwardingTo().getContent(index));
-    }
-    
-    @Override
-    default long insert(T toInsert, TransferAction action) {
-        return forwardingTo().insert(toInsert, action);
+    default long getCapacity() {
+        return forwardingTo().getCapacity();
     }
     
     @Override
     default T extract(T toExtract, TransferAction action) {
         return forwardingTo().extract(toExtract, action);
-    }
-    
-    @Override
-    default T extract(Predicate<T> toExtract, long maxAmount, TransferAction action) {
-        return forwardingTo().extract(toExtract, maxAmount, action);
     }
     
     @Override

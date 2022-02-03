@@ -30,9 +30,6 @@ import dev.architectury.transfer.item.ItemTransfer;
 import dev.architectury.transfer.item.ItemTransferHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.Container;
-import net.minecraft.world.WorldlyContainer;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -41,9 +38,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.items.wrapper.InvWrapper;
-import net.minecraftforge.items.wrapper.PlayerInvWrapper;
-import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,18 +56,6 @@ public class ItemTransferImpl {
         } else {
             throw new IllegalArgumentException("Unsupported object type: " + object.getClass().getName());
         }
-    }
-    
-    public static TransferHandler<ItemStack> container(Container container, @Nullable Direction direction) {
-        if (container instanceof WorldlyContainer) {
-            return wrap(new SidedInvWrapper((WorldlyContainer) container, direction));
-        } else {
-            return wrap(new InvWrapper(container));
-        }
-    }
-    
-    public static TransferHandler<ItemStack> playerInv(Inventory inventory) {
-        return wrap(new PlayerInvWrapper(inventory));
     }
     
     public static void init() {
@@ -182,43 +164,46 @@ public class ItemTransferImpl {
         
         @Override
         public ItemStack extract(ItemStack toExtract, TransferAction action) {
-            int toExtractCount = toExtract.getCount();
-            int extractedCount = 0;
+            int toExtractAmount = toExtract.getCount();
+            if (toExtractAmount == 0) return ItemStack.EMPTY;
+            int extractedAmount = 0;
             
             for (int i = 0; i < handler.getSlots(); i++) {
                 ItemStack slot = handler.getStackInSlot(i);
                 
                 if (ItemHandlerHelper.canItemStacksStack(toExtract, slot)) {
-                    ItemStack extracted = handler.extractItem(i, toExtractCount - extractedCount, action == TransferAction.SIMULATE);
-                    extractedCount += extracted.getCount();
-                    if (extractedCount >= toExtractCount) {
+                    ItemStack extracted = handler.extractItem(i, toExtractAmount - extractedAmount, action == TransferAction.SIMULATE);
+                    extractedAmount += extracted.getCount();
+                    if (extractedAmount >= toExtractAmount) {
                         break;
                     }
                 }
             }
             
-            return copyWithAmount(toExtract, extractedCount);
+            return copyWithAmount(toExtract, extractedAmount);
         }
         
         @Override
         public ItemStack extract(Predicate<ItemStack> toExtract, long maxAmount, TransferAction action) {
             ItemStack type = null;
-            int extractedCount = 0;
+            int extractedAmount = 0;
             
             for (int i = 0; i < handler.getSlots(); i++) {
                 ItemStack slot = handler.getStackInSlot(i);
                 
                 if (type == null ? toExtract.test(slot) : ItemHandlerHelper.canItemStacksStack(type, slot)) {
-                    ItemStack extracted = handler.extractItem(i, (int) (maxAmount - extractedCount), action == TransferAction.SIMULATE);
-                    type = extracted;
-                    extractedCount += extracted.getCount();
-                    if (extractedCount >= maxAmount) {
+                    ItemStack extracted = handler.extractItem(i, (int) (maxAmount - extractedAmount), action == TransferAction.SIMULATE);
+                    if (type == null && !extracted.isEmpty()) {
+                        type = extracted;
+                    }
+                    extractedAmount += extracted.getCount();
+                    if (extractedAmount >= maxAmount) {
                         break;
                     }
                 }
             }
             
-            return type == null ? blank() : copyWithAmount(type, extractedCount);
+            return type == null ? blank() : copyWithAmount(type, extractedAmount);
         }
         
         @Override

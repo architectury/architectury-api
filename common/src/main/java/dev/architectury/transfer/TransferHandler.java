@@ -78,6 +78,7 @@ public interface TransferHandler<T> extends TransferView<T> {
      *
      * @param index the index of the resource
      * @return the resource in the given index
+     * @throws IndexOutOfBoundsException if the index is out of bounds
      */
     @Deprecated
     ResourceView<T> getContent(int index);

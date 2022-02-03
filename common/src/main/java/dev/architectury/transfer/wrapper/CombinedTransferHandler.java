@@ -17,18 +17,19 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.transfer.wrappers;
+package dev.architectury.transfer.wrapper;
 
 import com.google.common.collect.Streams;
 import dev.architectury.transfer.ResourceView;
 import dev.architectury.transfer.TransferAction;
 import dev.architectury.transfer.TransferHandler;
+import dev.architectury.transfer.view.VariantView;
 
 import java.util.Collection;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-public interface CombinedTransferHandler<T> extends TransferHandler<T> {
+public interface CombinedTransferHandler<T> extends TransferHandler<T>, VariantView<T> {
     Iterable<TransferHandler<T>> getHandlers();
     
     @Override
@@ -76,17 +77,44 @@ public interface CombinedTransferHandler<T> extends TransferHandler<T> {
     
     @Override
     default T extract(T toExtract, TransferAction action) {
-        // TODO: Implement
-        throw new UnsupportedOperationException();
+        long toExtractAmount = getAmount(toExtract);
+        if (toExtractAmount == 0) return blank();
+        else if (toExtractAmount <= 0)
+            throw new IllegalArgumentException("Cannot extract negative amount, got " + toExtractAmount);
+        long extractedAmount = 0;
+        
+        for (TransferHandler<T> part : getHandlers()) {
+            T extracted = part.extract(copyWithAmount(toExtract, toExtractAmount - extractedAmount), action);
+            extractedAmount += getAmount(extracted);
+            if (extractedAmount >= toExtractAmount) break;
+        }
+        
+        return copyWithAmount(toExtract, extractedAmount);
     }
     
     @Override
     default T extract(Predicate<T> toExtract, long maxAmount, TransferAction action) {
-        // TODO: Implement
-        throw new UnsupportedOperationException();
+        if (maxAmount == 0) return blank();
+        else if (maxAmount <= 0)
+            throw new IllegalArgumentException("Cannot extract negative amount, got " + maxAmount);
+        long extractedAmount = 0;
+        T type = null;
+        
+        for (TransferHandler<T> part : getHandlers()) {
+            T extracted;
+            
+            if (type == null) {
+                extracted = part.extract(toExtract, maxAmount - extractedAmount, action);
+            } else {
+                extracted = part.extract(copyWithAmount(type, maxAmount - extractedAmount), action);
+            }
+            
+            extractedAmount += getAmount(extracted);
+            if (extractedAmount >= maxAmount) break;
+        }
+        
+        return type == null ? blank() : copyWithAmount(type, extractedAmount);
     }
-    
-    long getAmount(T resource);
     
     @Override
     default Object saveState() {

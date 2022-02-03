@@ -17,16 +17,17 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.transfer.wrappers;
+package dev.architectury.transfer.wrapper;
 
 import com.google.common.base.Predicates;
 import dev.architectury.transfer.ResourceView;
 import dev.architectury.transfer.TransferAction;
 import dev.architectury.transfer.TransferHandler;
+import dev.architectury.transfer.view.ModifiableView;
 
 import java.util.function.Predicate;
 
-public interface FilteringTransferHandler<T> extends ForwardingTransferHandler<T> {
+public interface FilteringTransferHandler<T> extends ForwardingTransferHandler<T>, ModifiableView<T> {
     static <T> FilteringTransferHandler<T> unmodifiable(TransferHandler<T> delegate) {
         return FilteringTransferHandler.of(delegate, Predicates.alwaysFalse(), Predicates.alwaysFalse());
     }
@@ -57,10 +58,6 @@ public interface FilteringTransferHandler<T> extends ForwardingTransferHandler<T
             }
         };
     }
-    
-    boolean canInsert(T toInsert);
-    
-    boolean canExtract(T toExtract);
     
     @Override
     default long insert(T toInsert, TransferAction action) {

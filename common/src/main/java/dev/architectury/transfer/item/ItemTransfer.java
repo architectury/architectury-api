@@ -22,9 +22,11 @@ package dev.architectury.transfer.item;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.transfer.TransferHandler;
 import dev.architectury.transfer.access.BlockLookupAccess;
+import dev.architectury.transfer.item.wrapper.ContainerTransferHandler;
+import dev.architectury.transfer.item.wrapper.WorldlyContainerTransferHandler;
 import net.minecraft.core.Direction;
 import net.minecraft.world.Container;
-import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -55,13 +57,11 @@ public class ItemTransfer {
         throw new AssertionError();
     }
     
-    @ExpectPlatform
     public static TransferHandler<ItemStack> container(Container container, @Nullable Direction direction) {
-        throw new AssertionError();
-    }
-    
-    @ExpectPlatform
-    public static TransferHandler<ItemStack> playerInv(Inventory inventory) {
-        throw new AssertionError();
+        if (container instanceof WorldlyContainer && direction != null) {
+            return new WorldlyContainerTransferHandler((WorldlyContainer) container, direction);
+        }
+        
+        return new ContainerTransferHandler(container);
     }
 }

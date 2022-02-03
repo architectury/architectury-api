@@ -34,6 +34,7 @@ import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -111,16 +112,16 @@ public final class FluidStack {
         return FluidStackHooks.bucketAmount();
     }
     
-    public final Fluid getFluid() {
+    public Fluid getFluid() {
         return isEmpty() ? Fluids.EMPTY : getRawFluid();
     }
     
     @Nullable
-    public final Fluid getRawFluid() {
+    public Fluid getRawFluid() {
         return ADAPTER.getFluid(value);
     }
     
-    public final Supplier<Fluid> getRawFluidSupplier() {
+    public Supplier<Fluid> getRawFluidSupplier() {
         return ADAPTER.getRawFluidSupplier(value);
     }
     
@@ -203,12 +204,12 @@ public final class FluidStack {
     }
     
     @Override
-    public final int hashCode() {
+    public int hashCode() {
         return ADAPTER.hashCode(value);
     }
     
     @Override
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         if (!(o instanceof FluidStack)) {
             return false;
         }
@@ -223,10 +224,10 @@ public final class FluidStack {
         return getFluid() == other.getFluid();
     }
     
-    private boolean isTagEqual(FluidStack other) {
+    public boolean isTagEqual(FluidStack other) {
         var tag = getTag();
         var otherTag = other.getTag();
-        return tag == null ? otherTag == null : otherTag != null && tag.equals(otherTag);
+        return Objects.equals(tag, otherTag);
     }
     
     public static FluidStack read(FriendlyByteBuf buf) {

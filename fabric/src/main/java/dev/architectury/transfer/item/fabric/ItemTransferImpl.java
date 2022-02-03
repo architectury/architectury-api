@@ -26,14 +26,9 @@ import dev.architectury.transfer.fabric.FabricBlockLookupRegistration;
 import dev.architectury.transfer.fabric.FabricStorageTransferHandler;
 import dev.architectury.transfer.fabric.TransferHandlerStorage;
 import dev.architectury.transfer.item.ItemTransfer;
-import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.minecraft.core.Direction;
-import net.minecraft.world.Container;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,14 +57,6 @@ public class ItemTransferImpl {
         } else {
             throw new IllegalArgumentException("Unsupported object type: " + object.getClass().getName());
         }
-    }
-    
-    public static TransferHandler<ItemStack> container(Container container, @Nullable Direction direction) {
-        return wrap(InventoryStorage.of(container, direction));
-    }
-    
-    public static TransferHandler<ItemStack> playerInv(Inventory inventory) {
-        return wrap(PlayerInventoryStorage.of(inventory));
     }
     
     @Nullable

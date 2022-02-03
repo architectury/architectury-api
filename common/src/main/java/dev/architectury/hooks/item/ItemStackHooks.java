@@ -41,7 +41,7 @@ public final class ItemStackHooks {
     }
     
     public static void giveItem(ServerPlayer player, ItemStack stack) {
-        var inserted = ItemTransfer.wrap(player).insert(stack, TransferAction.ACT);
+        var inserted = ItemTransfer.container(player.getInventory(), null).insert(stack, TransferAction.ACT);
         var remaining = stack.getCount() - inserted;
         if (remaining > 0) {
             var entity = player.drop(stack, false);
@@ -60,5 +60,10 @@ public final class ItemStackHooks {
             player.level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, ((player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F);
             player.inventoryMenu.broadcastChanges();
         }
+    }
+    
+    public static boolean isStackable(ItemStack first, ItemStack second) {
+        // TODO check caps?
+        return ItemStack.matches(first, second);
     }
 }

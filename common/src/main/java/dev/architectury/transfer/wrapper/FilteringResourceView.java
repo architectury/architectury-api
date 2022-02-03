@@ -17,14 +17,20 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.transfer.wrappers;
+package dev.architectury.transfer.wrapper;
 
+import com.google.common.base.Predicates;
 import dev.architectury.transfer.ResourceView;
 import dev.architectury.transfer.TransferAction;
+import dev.architectury.transfer.view.ExtractableView;
 
 import java.util.function.Predicate;
 
-public interface FilteringResourceView<T> extends ForwardingResourceView<T> {
+public interface FilteringResourceView<T> extends ForwardingResourceView<T>, ExtractableView<T> {
+    static <T> FilteringResourceView<T> unmodifiable(ResourceView<T> delegate) {
+        return FilteringResourceView.of(delegate, Predicates.alwaysFalse());
+    }
+    
     static <T> FilteringResourceView<T> of(ResourceView<T> delegate, Predicate<T> canExtract) {
         return new FilteringResourceView<T>() {
             @Override
@@ -39,6 +45,7 @@ public interface FilteringResourceView<T> extends ForwardingResourceView<T> {
         };
     }
     
+    @Override
     boolean canExtract(T toExtract);
     
     @Override
