@@ -22,14 +22,9 @@ package dev.architectury.transfer.access.forge;
 import dev.architectury.transfer.access.BlockLookup;
 import dev.architectury.transfer.access.BlockLookupAccess;
 import dev.architectury.transfer.forge.ForgeBlockLookupRegistration;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -51,28 +46,18 @@ public class PlatformLookupImpl {
     }
     
     public static <O, T> BlockLookup<T, Direction> instantiateBlockLookup(Capability<O> capability, Function<O, T> wrapper) {
-        return new BlockLookup<T, Direction>() {
-            @Override
-            @Nullable
-            public T get(Level level, BlockPos pos, Direction direction) {
-                return get(level, pos, level.getBlockState(pos), null, direction);
-            }
-            
-            @Override
-            @Nullable
-            public T get(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, Direction direction) {
-                Block block = state.getBlock();
-                O handler = null;
-                if (state.hasBlockEntity()) {
-                    if (blockEntity == null) {
-                        blockEntity = level.getBlockEntity(pos);
-                    }
-                    if (blockEntity != null) {
-                        handler = blockEntity.getCapability(capability, direction).resolve().orElse(null);
-                    }
+        return BlockLookup.of((level, pos, state, blockEntity, direction) -> {
+            Block block = state.getBlock();
+            O handler = null;
+            if (state.hasBlockEntity()) {
+                if (blockEntity == null) {
+                    blockEntity = level.getBlockEntity(pos);
                 }
-                return wrapper.apply(handler);
+                if (blockEntity != null) {
+                    handler = blockEntity.getCapability(capability, direction).resolve().orElse(null);
+                }
             }
-        };
+            return wrapper.apply(handler);
+        });
     }
 }

@@ -36,6 +36,8 @@ import java.util.Collections;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import static dev.architectury.utils.Amount.toInt;
+
 public class FabricContainerItemTransferHandler implements TransferHandler<ItemStack> {
     private final ContainerItemContext context;
     @Nullable
@@ -102,14 +104,14 @@ public class FabricContainerItemTransferHandler implements TransferHandler<ItemS
     public ItemStack extract(Predicate<ItemStack> toExtract, long maxAmount, TransferAction action) {
         try (Transaction nested = Transaction.openNested(this.transaction)) {
             for (StorageView<ItemVariant> view : Iterables.concat(Collections.singletonList(context.getMainSlot()), context.getAdditionalSlots())) {
-                if (toExtract.test(view.getResource().toStack((int) view.getAmount()))) {
+                if (!view.isResourceBlank() && toExtract.test(view.getResource().toStack(toInt(view.getAmount())))) {
                     long extracted = view.extract(view.getResource(), maxAmount, nested);
                     
                     if (action == TransferAction.ACT) {
                         nested.commit();
                     }
                     
-                    return view.getResource().toStack((int) extracted);
+                    return view.getResource().toStack(toInt(extracted));
                 }
             }
         }
@@ -146,7 +148,7 @@ public class FabricContainerItemTransferHandler implements TransferHandler<ItemS
         
         @Override
         public ItemStack getResource() {
-            return storage.getResource().toStack((int) storage.getAmount());
+            return storage.getResource().toStack(toInt(storage.getAmount()));
         }
         
         @Override

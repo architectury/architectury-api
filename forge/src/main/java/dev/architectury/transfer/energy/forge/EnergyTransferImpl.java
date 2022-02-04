@@ -26,6 +26,8 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import org.jetbrains.annotations.Nullable;
 
+import static dev.architectury.utils.Amount.toInt;
+
 public class EnergyTransferImpl {
     @Nullable
     public static SingleTransferHandler<Long> wrap(@Nullable Object object) {
@@ -108,22 +110,22 @@ public class EnergyTransferImpl {
         
         @Override
         public int receiveEnergy(int toInsert, boolean simulate) {
-            return (int) handler.insert((long) toInsert, simulate ? TransferAction.SIMULATE : TransferAction.ACT);
+            return toInt(handler.insert((long) toInsert, simulate ? TransferAction.SIMULATE : TransferAction.ACT));
         }
         
         @Override
         public int extractEnergy(int toExtract, boolean simulate) {
-            return handler.extract((long) toExtract, simulate ? TransferAction.SIMULATE : TransferAction.ACT).intValue();
+            return toInt(handler.extract(toExtract, simulate ? TransferAction.SIMULATE : TransferAction.ACT).intValue());
         }
         
         @Override
         public int getEnergyStored() {
-            return (int) handler.getAmount();
+            return toInt(handler.getAmount());
         }
         
         @Override
         public int getMaxEnergyStored() {
-            return (int) handler.getCapacity();
+            return toInt(handler.getCapacity());
         }
         
         @Override

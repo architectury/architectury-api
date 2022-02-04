@@ -30,14 +30,10 @@ import dev.architectury.transfer.access.ItemLookup;
 import dev.architectury.transfer.fluid.FluidTransfer;
 import dev.architectury.transfer.fluid.FluidTransferHandler;
 import dev.architectury.transfer.fluid.FluidTransferView;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BucketPickup;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -53,6 +49,8 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+
+import static dev.architectury.utils.Amount.toInt;
 
 public class FluidTransferImpl {
     @Nullable
@@ -83,26 +81,16 @@ public class FluidTransferImpl {
     }
     
     public static BlockLookup<TransferHandler<FluidStack>, Direction> instantiateBlockLookup() {
-        return new BlockLookup<TransferHandler<FluidStack>, Direction>() {
-            @Override
-            @Nullable
-            public TransferHandler<FluidStack> get(Level level, BlockPos pos, Direction direction) {
-                return get(level, pos, level.getBlockState(pos), null, direction);
+        return BlockLookup.of((level, pos, state, blockEntity, direction) -> {
+            Block block = state.getBlock();
+            IFluidHandler handler = null;
+            if (block instanceof IFluidBlock) {
+                handler = new FluidBlockWrapper((IFluidBlock) block, level, pos);
+            } else if (block instanceof BucketPickup) {
+                handler = new BucketPickupHandlerWrapper((BucketPickup) block, level, pos);
             }
-            
-            @Override
-            @Nullable
-            public TransferHandler<FluidStack> get(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, Direction direction) {
-                Block block = state.getBlock();
-                IFluidHandler handler = null;
-                if (block instanceof IFluidBlock) {
-                    handler = new FluidBlockWrapper((IFluidBlock) block, level, pos);
-                } else if (block instanceof BucketPickup) {
-                    handler = new BucketPickupHandlerWrapper((BucketPickup) block, level, pos);
-                }
-                return wrap(handler);
-            }
-        };
+            return wrap(handler);
+        });
     }
     
     public static ItemLookup<TransferHandler<FluidStack>, TransferHandler<ItemStack>> instantiateItemLookup() {
@@ -140,7 +128,7 @@ public class FluidTransferImpl {
         @Override
         public int getTankCapacity(int index) {
             try (var resource = handler.getContent(index)) {
-                return (int) resource.getCapacity();
+                return toInt(resource.getCapacity());
             }
         }
         
@@ -155,7 +143,7 @@ public class FluidTransferImpl {
         
         @Override
         public int fill(net.minecraftforge.fluids.FluidStack stack, FluidAction action) {
-            return (int) handler.insert(FluidStackHooksForge.fromForge(stack), getFluidAction(action));
+            return toInt(handler.insert(FluidStackHooksForge.fromForge(stack), getFluidAction(action)));
         }
         
         @NotNull
@@ -219,6 +207,7 @@ public class FluidTransferImpl {
         
         @Override
         public FluidStack extract(FluidStack toExtract, TransferAction action) {
+            if (toExtract.isEmpty()) return blank();
             return FluidStackHooksForge.fromForge(handler.drain(FluidStackHooksForge.toForge(toExtract), getFluidAction(action)));
         }
         
@@ -227,9 +216,9 @@ public class FluidTransferImpl {
             for (int i = 0; i < handler.getTanks(); i++) {
                 net.minecraftforge.fluids.FluidStack forgeStack = handler.getFluidInTank(i);
                 FluidStack stack = FluidStackHooksForge.fromForge(forgeStack);
-                if (toExtract.test(stack)) {
+                if (!stack.isEmpty() && toExtract.test(stack)) {
                     net.minecraftforge.fluids.FluidStack copy = forgeStack.copy();
-                    copy.setAmount((int) maxAmount);
+                    copy.setAmount(toInt(maxAmount));
                     net.minecraftforge.fluids.FluidStack extracted = handler.drain(copy, getFluidAction(action));
                     stack.setAmount(extracted.getAmount());
                     return stack;

@@ -53,5 +53,10 @@ public interface ResourceView<T> extends TransferView<T>, Closeable {
     }
     
     @Override
+    default T extract(long maxAmount, TransferAction action) {
+        return extract(copyWithAmount(getResource(), maxAmount), action);
+    }
+    
+    @Override
     void close();
 }

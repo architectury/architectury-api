@@ -23,16 +23,9 @@ import dev.architectury.fluid.FluidStack;
 import dev.architectury.transfer.ResourceView;
 import dev.architectury.transfer.TransferAction;
 import dev.architectury.transfer.TransferHandler;
-import dev.architectury.transfer.access.BlockLookup;
 import dev.architectury.transfer.item.ItemTransferHandler;
 import dev.architectury.transfer.item.ItemTransferView;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -43,6 +36,8 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
+import static dev.architectury.utils.Amount.toInt;
 
 public class ItemTransferImpl {
     @Nullable
@@ -71,32 +66,6 @@ public class ItemTransferImpl {
         return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
     }
     
-    public static BlockLookup<TransferHandler<ItemStack>, Direction> instantiateBlockLookup() {
-        return new BlockLookup<TransferHandler<ItemStack>, Direction>() {
-            @Override
-            @Nullable
-            public TransferHandler<ItemStack> get(Level level, BlockPos pos, Direction direction) {
-                return get(level, pos, level.getBlockState(pos), null, direction);
-            }
-            
-            @Override
-            @Nullable
-            public TransferHandler<ItemStack> get(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, Direction direction) {
-                Block block = state.getBlock();
-                IItemHandler handler = null;
-                if (state.hasBlockEntity()) {
-                    if (blockEntity == null) {
-                        blockEntity = level.getBlockEntity(pos);
-                    }
-                    if (blockEntity != null) {
-                        handler = blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, direction).resolve().orElse(null);
-                    }
-                }
-                return wrap(handler);
-            }
-        };
-    }
-    
     public static class ArchItemHandler implements IItemHandler {
         private static final Predicate<FluidStack> TRUE = stack -> true;
         private TransferHandler<ItemStack> handler;
@@ -121,7 +90,7 @@ public class ItemTransferImpl {
         @Override
         public int getSlotLimit(int index) {
             try (var resource = handler.getContent(index)) {
-                return (int) resource.getCapacity();
+                return toInt(resource.getCapacity());
             }
         }
         
@@ -209,9 +178,10 @@ public class ItemTransferImpl {
             
             for (int i = 0; i < handler.getSlots(); i++) {
                 ItemStack slot = handler.getStackInSlot(i);
+                if (slot.isEmpty()) continue;
                 
                 if (type == null ? toExtract.test(slot) : ItemHandlerHelper.canItemStacksStack(type, slot)) {
-                    ItemStack extracted = handler.extractItem(i, (int) (maxAmount - extractedAmount), action == TransferAction.SIMULATE);
+                    ItemStack extracted = handler.extractItem(i, toInt(maxAmount - extractedAmount), action == TransferAction.SIMULATE);
                     if (type == null && !extracted.isEmpty()) {
                         type = extracted;
                     }
@@ -254,6 +224,7 @@ public class ItemTransferImpl {
             
             @Override
             public ItemStack extract(ItemStack toExtract, TransferAction action) {
+                if (toExtract.isEmpty()) return blank();
                 return handler.extractItem(index, toExtract.getCount(), action == TransferAction.SIMULATE);
             }
             

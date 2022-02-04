@@ -34,9 +34,11 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.ToLongFunction;
 
+import static dev.architectury.utils.Amount.toInt;
+
 public class ItemTransferImpl {
     private static final Function<ItemStack, ItemVariant> TO_FABRIC = ItemVariant::of;
-    private static final FabricStorageTransferHandler.FunctionWithAmount<ItemVariant, ItemStack> FROM_FABRIC = (variant, amount) -> variant.toStack((int) amount);
+    private static final FabricStorageTransferHandler.FunctionWithAmount<ItemVariant, ItemStack> FROM_FABRIC = (variant, amount) -> variant.toStack(toInt(amount));
     private static final FabricStorageTransferHandler.FunctionWithAmount<ItemStack, ItemStack> COPY_WITH_AMOUNT = ItemStackHooks::copyWithCount;
     private static final Supplier<ItemStack> BLANK = () -> ItemStack.EMPTY;
     private static final Predicate<ItemStack> IS_EMPTY = ItemStack::isEmpty;

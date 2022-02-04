@@ -26,6 +26,22 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 public interface BlockLookup<T, Context> {
+    static <T, Context> BlockLookup<T, Context> of(Simple<T, Context> simple) {
+        return new BlockLookup<T, Context>() {
+            @Override
+            @Nullable
+            public T get(Level level, BlockPos pos, Context context) {
+                return get(level, pos, level.getBlockState(pos), null, context);
+            }
+            
+            @Override
+            @Nullable
+            public T get(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, Context context) {
+                return simple.get(level, pos, state, blockEntity, context);
+            }
+        };
+    }
+    
     /**
      * Queries the api for the given block.
      * If you need the block state or block entity, you must query it yourself,
@@ -51,4 +67,19 @@ public interface BlockLookup<T, Context> {
      */
     @Nullable
     T get(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, Context context);
+    
+    interface Simple<T, Context> {
+        /**
+         * Queries the api for the given block.
+         *
+         * @param level       the level
+         * @param pos         the position of the block
+         * @param state       the state of the block
+         * @param blockEntity the block entity, or null if none
+         * @param context     the context
+         * @return the transfer handler, or null if none was found
+         */
+        @Nullable
+        T get(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, Context context);
+    }
 }

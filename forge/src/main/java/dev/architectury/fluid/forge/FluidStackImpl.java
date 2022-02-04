@@ -27,6 +27,8 @@ import org.jetbrains.annotations.ApiStatus;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static dev.architectury.utils.Amount.toInt;
+
 @ApiStatus.Internal
 public enum FluidStackImpl implements dev.architectury.fluid.FluidStack.FluidStackAdapter {
     INSTANCE;
@@ -42,7 +44,7 @@ public enum FluidStackImpl implements dev.architectury.fluid.FluidStack.FluidSta
     
     @Override
     public Object create(Supplier<Fluid> fluid, long amount, CompoundTag tag) {
-        return new FluidStack(fluid.get(), (int) amount, tag);
+        return new FluidStack(fluid.get(), toInt(amount), tag);
     }
     
     @Override
@@ -69,7 +71,7 @@ public enum FluidStackImpl implements dev.architectury.fluid.FluidStack.FluidSta
     
     @Override
     public void setAmount(Object object, long amount) {
-        ((FluidStack) object).setAmount((int) amount);
+        ((FluidStack) object).setAmount(toInt(amount));
     }
     
     @Override

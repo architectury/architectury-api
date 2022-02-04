@@ -26,6 +26,8 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 
+import static dev.architectury.utils.Amount.toInt;
+
 public final class ItemStackHooks {
     private ItemStackHooks() {
     }
@@ -37,7 +39,7 @@ public final class ItemStackHooks {
     }
     
     public static ItemStack copyWithCount(ItemStack stack, long count) {
-        return copyWithCount(stack, (int) count);
+        return copyWithCount(stack, toInt(count));
     }
     
     public static void giveItem(ServerPlayer player, ItemStack stack) {

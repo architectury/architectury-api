@@ -19,6 +19,7 @@
 
 package dev.architectury.transfer;
 
+import com.google.common.base.Predicates;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.function.Predicate;
@@ -42,6 +43,18 @@ public interface TransferView<T> {
      * @return the stack that was extracted
      */
     T extract(Predicate<T> toExtract, long maxAmount, TransferAction action);
+    
+    /**
+     * Extracts the any resource from the handler, returning the stack that was extracted.
+     *
+     * @param maxAmount the maximum amount of resources to extract
+     * @param action    whether to simulate or actually extract the resource
+     * @return the stack that was extracted
+     */
+    default T extract(long maxAmount, TransferAction action) {
+        return extract(Predicates.alwaysTrue(), maxAmount, action);
+    }
+    
     
     /**
      * Returns a blank resource.

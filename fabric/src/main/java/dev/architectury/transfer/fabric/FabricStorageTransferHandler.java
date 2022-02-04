@@ -114,7 +114,7 @@ public class FabricStorageTransferHandler<F, S> implements TransferHandler<S> {
     public S extract(Predicate<S> toExtract, long maxAmount, TransferAction action) {
         try (Transaction nested = Transaction.openNested(this.transaction)) {
             for (StorageView<F> view : this.storage.iterable(nested)) {
-                if (toExtract.test(fromFabric(view))) {
+                if (!view.isResourceBlank() && toExtract.test(fromFabric(view))) {
                     long extracted = view.extract(view.getResource(), maxAmount, nested);
                     
                     if (action == TransferAction.ACT) {
