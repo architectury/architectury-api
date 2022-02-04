@@ -50,8 +50,8 @@ public abstract class MixinGameRenderer013 {
     @Inject(method = "render(FJZ)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;render(Lcom/mojang/blaze3d/vertex/PoseStack;IIF)V",
                     ordinal = 0), locals = LocalCapture.CAPTURE_FAILEXCEPTION, cancellable = true)
-    public void renderScreenPre(float tickDelta, long startTime, boolean tick, CallbackInfo ci, int mouseX, int mouseY, Window window, Matrix4f matrix, PoseStack matrices) {
-        if (ClientGuiEvent.RENDER_PRE.invoker().render(minecraft.screen, matrices, mouseX, mouseY, minecraft.getDeltaFrameTime()).isFalse()) {
+    public void renderScreenPre(float tickDelta, long startTime, boolean tick, CallbackInfo ci, int mouseX, int mouseY, Window window, Matrix4f matrix, PoseStack matrices, PoseStack matrices2) {
+        if (ClientGuiEvent.RENDER_PRE.invoker().render(minecraft.screen, matrices2, mouseX, mouseY, minecraft.getDeltaFrameTime()).isFalse()) {
             ci.cancel();
         }
     }
@@ -59,8 +59,8 @@ public abstract class MixinGameRenderer013 {
     @Inject(method = "render(FJZ)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;render(Lcom/mojang/blaze3d/vertex/PoseStack;IIF)V",
                     shift = At.Shift.AFTER, ordinal = 0), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-    public void renderScreenPost(float tickDelta, long startTime, boolean tick, CallbackInfo ci, int mouseX, int mouseY, Window window, Matrix4f matrix, PoseStack matrices) {
-        ClientGuiEvent.RENDER_POST.invoker().render(minecraft.screen, matrices, mouseX, mouseY, minecraft.getDeltaFrameTime());
+    public void renderScreenPost(float tickDelta, long startTime, boolean tick, CallbackInfo ci, int mouseX, int mouseY, Window window, Matrix4f matrix, PoseStack matrices, PoseStack matrices2) {
+        ClientGuiEvent.RENDER_POST.invoker().render(minecraft.screen, matrices2, mouseX, mouseY, minecraft.getDeltaFrameTime());
     }
     
     @Inject(method = "reloadShaders",
