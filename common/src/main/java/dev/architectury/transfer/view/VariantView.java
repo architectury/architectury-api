@@ -19,8 +19,15 @@
 
 package dev.architectury.transfer.view;
 
+import org.jetbrains.annotations.Nullable;
+
 public interface VariantView<T> {
     long getAmount(T resource);
+    
+    @Nullable
+    default Long getCapacityNullable(T resource) {
+        return null;
+    }
     
     boolean isSameVariant(T first, T second);
 }

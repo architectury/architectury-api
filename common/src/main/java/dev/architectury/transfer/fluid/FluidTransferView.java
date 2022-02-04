@@ -17,32 +17,20 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.transfer;
+package dev.architectury.transfer.fluid;
 
-/**
- * The base interface for all lookup accesses.
- *
- * @param <T> the type of the API
- * @param <H> the type of the query handler
- * @param <R> the type of the registration handler
- */
-public interface ApiLookupAccess<T, H, R> {
-    /**
-     * Adds a handler for querying the api, this will
-     * only be called by architectury mods.
-     * <p>
-     * For adding interop with platform APIs, use the
-     * register methods for linking and attaching to fabric's
-     * api lookup or forge's capability system.
-     *
-     * @param handler the query handler to add
-     */
-    void addQueryHandler(H handler);
+import dev.architectury.fluid.FluidStack;
+import dev.architectury.transfer.ResourceView;
+import dev.architectury.transfer.TransferView;
+
+public interface FluidTransferView extends TransferView<FluidStack> {
+    @Override
+    default FluidStack blank() {
+        return FluidStack.empty();
+    }
     
-    /**
-     * Adds a lookup registration.
-     *
-     * @param registration the registration handler to add
-     */
-    void addRegistrationHandler(R registration);
+    @Override
+    default FluidStack copyWithAmount(FluidStack resource, long amount) {
+        return resource.copyWithAmount(amount);
+    }
 }

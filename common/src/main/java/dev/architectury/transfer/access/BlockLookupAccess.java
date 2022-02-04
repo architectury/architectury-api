@@ -20,7 +20,6 @@
 package dev.architectury.transfer.access;
 
 import dev.architectury.impl.transfer.access.BlockLookupAccessImpl;
-import dev.architectury.transfer.ApiLookupAccess;
 
 /**
  * An API lookup for blocks.

@@ -20,6 +20,7 @@
 package dev.architectury.transfer.wrapper.single;
 
 import dev.architectury.transfer.TransferAction;
+import org.jetbrains.annotations.Nullable;
 
 public interface BaseSingleTransferHandler<T> extends SingleTransferHandler<T> {
     @Override
@@ -34,9 +35,9 @@ public interface BaseSingleTransferHandler<T> extends SingleTransferHandler<T> {
     
     void setResource(T resource);
     
-    T copy(T resource);
-    
-    long getCapacity(T resource);
+    default T copy(T resource) {
+        return copyWithAmount(resource, getAmount(resource));
+    }
     
     @Override
     default long insert(T toInsert, TransferAction action) {
@@ -44,8 +45,10 @@ public interface BaseSingleTransferHandler<T> extends SingleTransferHandler<T> {
         long currentAmount = getAmount(resource);
         boolean isEmpty = currentAmount <= 0;
         if ((isEmpty || isSameVariant(resource, toInsert)) && canInsert(toInsert)) {
-            long slotSpace = isEmpty ? getCapacity(toInsert) : getCapacity() - currentAmount;
-            long inserted = Math.min(slotSpace, getAmount(toInsert));
+            @Nullable
+            Long slotSpace = isEmpty ? getCapacityNullable(toInsert) : Long.valueOf(getCapacity() - currentAmount);
+            long toInsertAmount = getAmount(toInsert);
+            long inserted = slotSpace == null ? toInsertAmount : Math.min(slotSpace, toInsertAmount);
             
             if (inserted > 0) {
                 if (isEmpty) {

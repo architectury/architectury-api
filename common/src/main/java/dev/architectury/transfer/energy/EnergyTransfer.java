@@ -20,8 +20,8 @@
 package dev.architectury.transfer.energy;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
-import dev.architectury.transfer.TransferHandler;
 import dev.architectury.transfer.access.BlockLookupAccess;
+import dev.architectury.transfer.access.PlatformLookup;
 import dev.architectury.transfer.wrapper.single.SingleTransferHandler;
 import net.minecraft.core.Direction;
 import org.jetbrains.annotations.Nullable;
@@ -30,17 +30,17 @@ public class EnergyTransfer {
     public static final BlockLookupAccess<SingleTransferHandler<Long>, Direction> BLOCK = BlockLookupAccess.create();
     
     static {
-        init();
+        PlatformLookup.attachBlock(BLOCK, platformBlockLookup(), EnergyTransfer::wrap, (handler, direction) -> unwrap(handler));
     }
     
     @ExpectPlatform
-    private static void init() {
+    private static Object platformBlockLookup() {
         throw new AssertionError();
     }
     
     /**
-     * Wraps a platform-specific item transfer handler into the architectury transfer handler.
-     * This accepts {@code IEnergyStorage} on Forge.
+     * Wraps a platform-specific item transfer handler into the architectury transfer handler.<br><br>
+     * This accepts {@code IEnergyStorage} on Forge.<br>
      * This accepts {@code EnergyStorage} on Fabric.
      *
      * @param object the handler to wrap
@@ -50,6 +50,12 @@ public class EnergyTransfer {
     @ExpectPlatform
     @Nullable
     public static SingleTransferHandler<Long> wrap(@Nullable Object object) {
+        throw new AssertionError();
+    }
+    
+    @ExpectPlatform
+    @Nullable
+    public static Object unwrap(@Nullable SingleTransferHandler<Long> handler) {
         throw new AssertionError();
     }
 }

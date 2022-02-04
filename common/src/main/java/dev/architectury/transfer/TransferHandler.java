@@ -77,10 +77,10 @@ public interface TransferHandler<T> extends TransferView<T> {
     /**
      * Returns the resource in a particular index.
      * This may be extremely expensive to compute, avoid if you can.<br>
-     * <b>Please properly close this stream.</b> Failure to do so will result in a potential
+     * <b>Please properly close this resource.</b> Failure to do so will result in a potential
      * crash in conflicting transactions.<br><br>
      * You can easily ensure that this is closed by using try-with-resources, otherwise
-     * you will have to manually close the stream by calling {@link Stream#close()}.
+     * you will have to manually close the stream by calling {@link ResourceView#close()}.
      *
      * @param index the index of the resource
      * @return the resource in the given index

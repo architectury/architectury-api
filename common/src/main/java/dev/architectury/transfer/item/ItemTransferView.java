@@ -17,20 +17,20 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.transfer.item.wrapper;
+package dev.architectury.transfer.item;
 
 import dev.architectury.hooks.item.ItemStackHooks;
-import dev.architectury.transfer.view.VariantView;
+import dev.architectury.transfer.TransferView;
 import net.minecraft.world.item.ItemStack;
 
-public interface ItemVariantView extends VariantView<ItemStack> {
+public interface ItemTransferView extends TransferView<ItemStack> {
     @Override
-    default long getAmount(ItemStack resource) {
-        return resource.getCount();
+    default ItemStack blank() {
+        return ItemStack.EMPTY;
     }
     
     @Override
-    default boolean isSameVariant(ItemStack first, ItemStack second) {
-        return ItemStackHooks.isStackable(first, second);
+    default ItemStack copyWithAmount(ItemStack resource, long amount) {
+        return ItemStackHooks.copyWithCount(resource, amount);
     }
 }

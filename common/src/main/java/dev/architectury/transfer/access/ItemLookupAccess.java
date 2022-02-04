@@ -20,7 +20,6 @@
 package dev.architectury.transfer.access;
 
 import dev.architectury.impl.transfer.access.ItemLookupAccessImpl;
-import dev.architectury.transfer.ApiLookupAccess;
 
 public interface ItemLookupAccess<T, Context> extends ApiLookupAccess<T, ItemLookup<T, Context>, ItemLookupRegistration<T, Context>>, ItemLookup<T, Context>, ItemLookupRegistration<T, Context> {
     static <T, Context> ItemLookupAccess<T, Context> create() {

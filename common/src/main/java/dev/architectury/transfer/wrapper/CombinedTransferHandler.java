@@ -29,6 +29,11 @@ import java.util.Collection;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+/**
+ * A {@link TransferHandler} that combines multiple {@link TransferHandler}s.
+ *
+ * @param <T> the type of resource
+ */
 public interface CombinedTransferHandler<T> extends TransferHandler<T>, VariantView<T> {
     Iterable<TransferHandler<T>> getHandlers();
     
@@ -38,6 +43,7 @@ public interface CombinedTransferHandler<T> extends TransferHandler<T>, VariantV
     }
     
     @Override
+    @Deprecated
     default int getContentsSize() {
         int size = 0;
         for (TransferHandler<T> handler : getHandlers()) {
@@ -47,6 +53,7 @@ public interface CombinedTransferHandler<T> extends TransferHandler<T>, VariantV
     }
     
     @Override
+    @Deprecated
     default ResourceView<T> getContent(int index) {
         if (index < 0) {
             throw new IllegalArgumentException("Index must be non-negative");

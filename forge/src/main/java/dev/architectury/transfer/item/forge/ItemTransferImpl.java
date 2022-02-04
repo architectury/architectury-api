@@ -24,10 +24,8 @@ import dev.architectury.transfer.ResourceView;
 import dev.architectury.transfer.TransferAction;
 import dev.architectury.transfer.TransferHandler;
 import dev.architectury.transfer.access.BlockLookup;
-import dev.architectury.transfer.forge.ForgeBlockLookupRegistration;
-import dev.architectury.transfer.item.ItemResourceView;
-import dev.architectury.transfer.item.ItemTransfer;
 import dev.architectury.transfer.item.ItemTransferHandler;
+import dev.architectury.transfer.item.ItemTransferView;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -58,10 +56,19 @@ public class ItemTransferImpl {
         }
     }
     
-    public static void init() {
-        ItemTransfer.BLOCK.addQueryHandler(instantiateBlockLookup());
-        ItemTransfer.BLOCK.addRegistrationHandler(ForgeBlockLookupRegistration.create(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
-                (level, pos, state, blockEntity) -> (direction, handler) -> new ArchItemHandler(handler)));
+    @Nullable
+    public static Object unwrap(@Nullable TransferHandler<ItemStack> handler) {
+        if (handler == null) return null;
+        
+        if (handler instanceof ForgeTransferHandler) {
+            return ((ForgeTransferHandler) handler).getHandler();
+        } else {
+            return new ArchItemHandler(handler);
+        }
+    }
+    
+    public static Object platformBlockLookup() {
+        return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
     }
     
     public static BlockLookup<TransferHandler<ItemStack>, Direction> instantiateBlockLookup() {
@@ -133,7 +140,7 @@ public class ItemTransferImpl {
         @Override
         public boolean isItemValid(int index, @NotNull ItemStack stack) {
             ItemStack content;
-    
+            
             try (var resource = handler.getContent(index)) {
                 content = resource.getResource();
             }
@@ -146,6 +153,10 @@ public class ItemTransferImpl {
         
         public ForgeTransferHandler(IItemHandler handler) {
             this.handler = handler;
+        }
+        
+        public IItemHandler getHandler() {
+            return handler;
         }
         
         @Override
@@ -224,7 +235,7 @@ public class ItemTransferImpl {
             throw new UnsupportedOperationException();
         }
         
-        private class ForgeResourceView implements ItemResourceView {
+        private class ForgeResourceView implements ResourceView<ItemStack>, ItemTransferView {
             int index;
             
             public ForgeResourceView(int index) {

@@ -39,7 +39,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public interface ForgeBlockLookupRegistration<T, Cap> extends BlockLookupRegistration<T, Direction> {
-    static <T, Cap> ForgeBlockLookupRegistration<T, Cap> create(Capability<Cap> capability, BlockAccessProvider<BiFunction<Direction, T, Cap>, BlockEntity> transformer) {
+    static <T, Cap> ForgeBlockLookupRegistration<T, Cap> create(Capability<Cap> capability, BlockAccessProvider<BiFunction<T, Direction, Cap>, BlockEntity> transformer) {
         return new ForgeBlockLookupRegistration<T, Cap>() {
             @Override
             public Capability<Cap> getCapability() {
@@ -48,7 +48,7 @@ public interface ForgeBlockLookupRegistration<T, Cap> extends BlockLookupRegistr
             
             @Override
             public Cap from(Level level, BlockPos blockPos, BlockState blockState, BlockEntity blockEntity, Direction direction, T handler) {
-                return transformer.get(level, blockPos, blockState, blockEntity).apply(direction, handler);
+                return transformer.get(level, blockPos, blockState, blockEntity).apply(handler, direction);
             }
         };
     }

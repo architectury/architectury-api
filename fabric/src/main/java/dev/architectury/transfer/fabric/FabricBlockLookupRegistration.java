@@ -27,18 +27,19 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class FabricBlockLookupRegistration<T, A, Context> implements BlockLookupRegistration<T, Context> {
-    private final Function<T, A> unwrapper;
+    private final BiFunction<T, Context, A> unwrapper;
     private final BlockApiLookup<A, Context> lookup;
     
-    public static <T, A, Context> FabricBlockLookupRegistration<T, A, Context> create(BlockApiLookup<A, Context> lookup, Function<T, A> unwrapper) {
+    public static <T, A, Context> FabricBlockLookupRegistration<T, A, Context> create(BlockApiLookup<A, Context> lookup, BiFunction<T, Context, A> unwrapper) {
         return new FabricBlockLookupRegistration<>(unwrapper, lookup);
     }
     
-    private FabricBlockLookupRegistration(Function<T, A> unwrapper, BlockApiLookup<A, Context> lookup) {
+    private FabricBlockLookupRegistration(BiFunction<T, Context, A> unwrapper, BlockApiLookup<A, Context> lookup) {
         this.unwrapper = unwrapper;
         this.lookup = lookup;
     }
@@ -47,7 +48,7 @@ public class FabricBlockLookupRegistration<T, A, Context> implements BlockLookup
         return (level, pos, state, blockEntity, context) -> {
             Function<Context, T> function = provider.get(level, pos, state, blockEntity);
             if (function != null) {
-                return unwrapper.apply(function.apply(context));
+                return unwrapper.apply(function.apply(context), context);
             }
             
             return null;
@@ -63,7 +64,7 @@ public class FabricBlockLookupRegistration<T, A, Context> implements BlockLookup
             
             Function<Context, T> function = provider.get(blockEntity.getLevel(), blockEntity.getBlockPos(), blockEntity.getBlockState(), (B) blockEntity);
             if (function != null) {
-                return unwrapper.apply(function.apply(context));
+                return unwrapper.apply(function.apply(context), context);
             }
             
             return null;

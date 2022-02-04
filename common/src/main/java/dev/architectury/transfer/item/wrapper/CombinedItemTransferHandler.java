@@ -19,9 +19,14 @@
 
 package dev.architectury.transfer.item.wrapper;
 
+import dev.architectury.transfer.TransferHandler;
 import dev.architectury.transfer.item.ItemTransferHandler;
 import dev.architectury.transfer.wrapper.CombinedTransferHandler;
 import net.minecraft.world.item.ItemStack;
 
-public interface CombinedItemTransferHandler extends CombinedTransferHandler<ItemStack>, ItemTransferHandler, ItemVariantView {
+/**
+ * A {@link TransferHandler} that combines multiple {@link TransferHandler}s.<br>
+ * This is a convenience class that implements methods for {@link ItemStack}s.
+ */
+public interface CombinedItemTransferHandler extends CombinedTransferHandler<ItemStack>, ItemTransferHandler {
 }

@@ -21,11 +21,8 @@ package dev.architectury.transfer.item.fabric;
 
 import dev.architectury.hooks.item.ItemStackHooks;
 import dev.architectury.transfer.TransferHandler;
-import dev.architectury.transfer.fabric.BlockApiLookupWrapper;
-import dev.architectury.transfer.fabric.FabricBlockLookupRegistration;
 import dev.architectury.transfer.fabric.FabricStorageTransferHandler;
 import dev.architectury.transfer.fabric.TransferHandlerStorage;
-import dev.architectury.transfer.item.ItemTransfer;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -60,7 +57,7 @@ public class ItemTransferImpl {
     }
     
     @Nullable
-    public static Storage<ItemVariant> unwrap(@Nullable TransferHandler<ItemStack> handler) {
+    public static Object unwrap(@Nullable TransferHandler<ItemStack> handler) {
         if (handler == null) return null;
         
         if (handler instanceof FabricStorageTransferHandler) {
@@ -70,8 +67,7 @@ public class ItemTransferImpl {
         }
     }
     
-    public static void init() {
-        ItemTransfer.BLOCK.addQueryHandler(new BlockApiLookupWrapper<>(ItemStorage.SIDED, ItemTransferImpl::wrap));
-        ItemTransfer.BLOCK.addRegistrationHandler(FabricBlockLookupRegistration.create(ItemStorage.SIDED, ItemTransferImpl::unwrap));
+    public static Object platformBlockLookup() {
+        return ItemStorage.SIDED;
     }
 }

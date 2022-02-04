@@ -22,11 +22,8 @@ package dev.architectury.transfer.fluid.fabric;
 import dev.architectury.fluid.FluidStack;
 import dev.architectury.hooks.fluid.fabric.FluidStackHooksFabric;
 import dev.architectury.transfer.TransferHandler;
-import dev.architectury.transfer.fabric.BlockApiLookupWrapper;
-import dev.architectury.transfer.fabric.FabricBlockLookupRegistration;
 import dev.architectury.transfer.fabric.FabricStorageTransferHandler;
 import dev.architectury.transfer.fabric.TransferHandlerStorage;
-import dev.architectury.transfer.fluid.FluidTransfer;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -58,7 +55,7 @@ public class FluidTransferImpl {
     }
     
     @Nullable
-    public static Storage<FluidVariant> unwrap(@Nullable TransferHandler<FluidStack> handler) {
+    public static Object unwrap(@Nullable TransferHandler<FluidStack> handler) {
         if (handler == null) return null;
         
         if (handler instanceof FabricStorageTransferHandler) {
@@ -68,11 +65,7 @@ public class FluidTransferImpl {
         }
     }
     
-    public static void init() {
-        FluidTransfer.BLOCK.addQueryHandler(new BlockApiLookupWrapper<>(FluidStorage.SIDED, FluidTransferImpl::wrap));
-        FluidTransfer.BLOCK.addRegistrationHandler(FabricBlockLookupRegistration.create(FluidStorage.SIDED, FluidTransferImpl::unwrap));
-//        FluidTransfer.ITEM.addQueryHandler((stack, context) -> {
-//            return wrap(FluidStorage.ITEM.find(stack, fromTransfer(stack, context)));
-//        });
+    public static Object platformBlockLookup() {
+        return FluidStorage.SIDED;
     }
 }

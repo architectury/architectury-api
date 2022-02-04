@@ -21,15 +21,19 @@ package dev.architectury.transfer.fluid;
 
 import dev.architectury.fluid.FluidStack;
 import dev.architectury.transfer.TransferHandler;
+import dev.architectury.transfer.view.VariantView;
 
-public interface FluidTransferHandler extends TransferHandler<FluidStack> {
+/**
+ * This is a convenience class that implements methods for {@link FluidStack}s.
+ */
+public interface FluidTransferHandler extends FluidTransferView, TransferHandler<FluidStack>, VariantView<FluidStack> {
     @Override
-    default FluidStack blank() {
-        return FluidStack.empty();
+    default long getAmount(FluidStack resource) {
+        return resource.getAmount();
     }
     
     @Override
-    default FluidStack copyWithAmount(FluidStack resource, long amount) {
-        return resource.copyWithAmount(amount);
+    default boolean isSameVariant(FluidStack first, FluidStack second) {
+        return first.isFluidEqual(second) && first.isTagEqual(second);
     }
 }

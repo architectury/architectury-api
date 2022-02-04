@@ -27,10 +27,9 @@ import dev.architectury.transfer.TransferAction;
 import dev.architectury.transfer.TransferHandler;
 import dev.architectury.transfer.access.BlockLookup;
 import dev.architectury.transfer.access.ItemLookup;
-import dev.architectury.transfer.fluid.FluidResourceView;
 import dev.architectury.transfer.fluid.FluidTransfer;
 import dev.architectury.transfer.fluid.FluidTransferHandler;
-import dev.architectury.transfer.forge.ForgeBlockLookupRegistration;
+import dev.architectury.transfer.fluid.FluidTransferView;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -51,11 +50,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.Spliterators;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 public class FluidTransferImpl {
     @Nullable
@@ -69,13 +66,20 @@ public class FluidTransferImpl {
         }
     }
     
-    public static void init() {
+    @Nullable
+    public static Object unwrap(@Nullable TransferHandler<FluidStack> handler) {
+        if (handler == null) return null;
+        
+        if (handler instanceof ForgeTransferHandler) {
+            return ((ForgeTransferHandler) handler).getHandler();
+        } else {
+            return new ArchFluidHandler(handler);
+        }
+    }
+    
+    public static Object platformBlockLookup() {
         FluidTransfer.BLOCK.addQueryHandler(instantiateBlockLookup());
-        FluidTransfer.BLOCK.addRegistrationHandler(ForgeBlockLookupRegistration.create(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
-                (level, pos, state, blockEntity) -> (direction, handler) -> new ArchFluidHandler(handler)));
-//        FluidTransfer.ITEM.addQueryHandler(instantiateItemLookup());
-//        FluidTransfer.ITEM.addRegistrationHandler(ForgeItemLookupRegistration.create(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY,
-//                stack -> (direction, handler) -> new ArchFluidHandlerItem(handler, stack)));
+        return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
     }
     
     public static BlockLookup<TransferHandler<FluidStack>, Direction> instantiateBlockLookup() {
@@ -95,13 +99,6 @@ public class FluidTransferImpl {
                     handler = new FluidBlockWrapper((IFluidBlock) block, level, pos);
                 } else if (block instanceof BucketPickup) {
                     handler = new BucketPickupHandlerWrapper((BucketPickup) block, level, pos);
-                } else if (state.hasBlockEntity()) {
-                    if (blockEntity == null) {
-                        blockEntity = level.getBlockEntity(pos);
-                    }
-                    if (blockEntity != null) {
-                        handler = blockEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction).resolve().orElse(null);
-                    }
                 }
                 return wrap(handler);
             }
@@ -120,6 +117,7 @@ public class FluidTransferImpl {
     
     public static class ArchFluidHandler implements IFluidHandler {
         private static final Predicate<FluidStack> TRUE = stack -> true;
+        
         private TransferHandler<FluidStack> handler;
         
         public ArchFluidHandler(TransferHandler<FluidStack> handler) {
@@ -193,6 +191,10 @@ public class FluidTransferImpl {
         
         private ForgeTransferHandler(IFluidHandler handler) {
             this.handler = handler;
+        }
+        
+        public IFluidHandler getHandler() {
+            return handler;
         }
         
         @Override
@@ -281,7 +283,7 @@ public class FluidTransferImpl {
             }
         }
         
-        private class ForgeResourceView implements FluidResourceView {
+        private class ForgeResourceView implements ResourceView<FluidStack>, FluidTransferView {
             int index;
             
             public ForgeResourceView(int index) {

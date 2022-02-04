@@ -20,17 +20,8 @@
 package dev.architectury.transfer.energy.forge;
 
 import dev.architectury.transfer.TransferAction;
-import dev.architectury.transfer.access.BlockLookup;
-import dev.architectury.transfer.energy.EnergyTransfer;
 import dev.architectury.transfer.energy.EnergyTransferHandler;
-import dev.architectury.transfer.forge.ForgeBlockLookupRegistration;
 import dev.architectury.transfer.wrapper.single.SingleTransferHandler;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import org.jetbrains.annotations.Nullable;
@@ -47,36 +38,19 @@ public class EnergyTransferImpl {
         }
     }
     
-    public static void init() {
-        EnergyTransfer.BLOCK.addQueryHandler(instantiateBlockLookup());
-        EnergyTransfer.BLOCK.addRegistrationHandler(ForgeBlockLookupRegistration.create(CapabilityEnergy.ENERGY,
-                (level, pos, state, blockEntity) -> (direction, handler) -> new ArchEnergyStorage(handler)));
+    @Nullable
+    private static Object unwrap(@Nullable SingleTransferHandler<Long> handler) {
+        if (handler == null) return null;
+        
+        if (handler instanceof ForgeTransferHandler) {
+            return ((ForgeTransferHandler) handler).getStorage();
+        } else {
+            return new ArchEnergyStorage(handler);
+        }
     }
     
-    public static BlockLookup<SingleTransferHandler<Long>, Direction> instantiateBlockLookup() {
-        return new BlockLookup<SingleTransferHandler<Long>, Direction>() {
-            @Override
-            @Nullable
-            public SingleTransferHandler<Long> get(Level level, BlockPos pos, Direction direction) {
-                return get(level, pos, level.getBlockState(pos), null, direction);
-            }
-            
-            @Override
-            @Nullable
-            public SingleTransferHandler<Long> get(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, Direction direction) {
-                Block block = state.getBlock();
-                IEnergyStorage handler = null;
-                if (state.hasBlockEntity()) {
-                    if (blockEntity == null) {
-                        blockEntity = level.getBlockEntity(pos);
-                    }
-                    if (blockEntity != null) {
-                        handler = blockEntity.getCapability(CapabilityEnergy.ENERGY, direction).resolve().orElse(null);
-                    }
-                }
-                return wrap(handler);
-            }
-        };
+    public static Object platformBlockLookup() {
+        return CapabilityEnergy.ENERGY;
     }
     
     private static class ForgeTransferHandler implements EnergyTransferHandler {
@@ -84,6 +58,10 @@ public class EnergyTransferImpl {
         
         private ForgeTransferHandler(IEnergyStorage storage) {
             this.storage = storage;
+        }
+        
+        public IEnergyStorage getStorage() {
+            return storage;
         }
         
         @Override

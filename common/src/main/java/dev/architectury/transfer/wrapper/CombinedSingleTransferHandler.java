@@ -17,40 +17,44 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.transfer.wrapper.single;
+package dev.architectury.transfer.wrapper;
 
 import dev.architectury.transfer.ResourceView;
 import dev.architectury.transfer.TransferHandler;
-import dev.architectury.transfer.view.ModifiableView;
-import dev.architectury.transfer.view.VariantView;
+import dev.architectury.transfer.wrapper.single.SingleTransferHandler;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 /**
- * A {@link TransferHandler} that only has one slot, this is also
- * an implementation of {@link ResourceView}.
+ * A {@link TransferHandler} that combines multiple {@link SingleTransferHandler}s.<br>
+ * This is faster than using {@link CombinedTransferHandler} directly, as the size of
+ * each {@link SingleTransferHandler} is known in advance.
  *
  * @param <T> the type of resource
- * @see BaseSingleTransferHandler for a simple implementation
  */
-public interface SingleTransferHandler<T> extends TransferHandler<T>, ResourceView<T>, ModifiableView<T>, VariantView<T> {
+public interface CombinedSingleTransferHandler<T> extends CombinedTransferHandler<T> {
+    @Override
+    default Iterable<TransferHandler<T>> getHandlers() {
+        return (Iterable<TransferHandler<T>>) (Iterable<? super SingleTransferHandler<T>>) getParts();
+    }
+    
+    List<SingleTransferHandler<T>> getParts();
+    
     @Override
     default Stream<ResourceView<T>> getContents() {
-        return Stream.of(this);
+        return (Stream<ResourceView<T>>) (Stream<? super SingleTransferHandler<T>>) getParts().stream();
     }
     
     @Override
+    @Deprecated
     default int getContentsSize() {
-        return 1;
+        return getParts().size();
     }
     
     @Override
+    @Deprecated
     default ResourceView<T> getContent(int index) {
-        if (index != 0) throw new IndexOutOfBoundsException("Index must be 0, got " + index);
-        return this;
-    }
-    
-    default long getAmount() {
-        return getAmount(getResource());
+        return getParts().get(index);
     }
 }

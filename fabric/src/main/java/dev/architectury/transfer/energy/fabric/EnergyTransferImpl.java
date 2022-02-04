@@ -20,10 +20,7 @@
 package dev.architectury.transfer.energy.fabric;
 
 import dev.architectury.transfer.TransferAction;
-import dev.architectury.transfer.energy.EnergyTransfer;
 import dev.architectury.transfer.energy.EnergyTransferHandler;
-import dev.architectury.transfer.fabric.BlockApiLookupWrapper;
-import dev.architectury.transfer.fabric.FabricBlockLookupRegistration;
 import dev.architectury.transfer.wrapper.single.SingleTransferHandler;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
@@ -44,7 +41,7 @@ public class EnergyTransferImpl {
     }
     
     @Nullable
-    public static EnergyStorage unwrap(@Nullable SingleTransferHandler<Long> handler) {
+    public static Object unwrap(@Nullable SingleTransferHandler<Long> handler) {
         if (handler == null) return null;
         
         if (handler instanceof FabricTransferHandler) {
@@ -54,9 +51,8 @@ public class EnergyTransferImpl {
         }
     }
     
-    public static void init() {
-        EnergyTransfer.BLOCK.addQueryHandler(new BlockApiLookupWrapper<>(EnergyStorage.SIDED, EnergyTransferImpl::wrap));
-        EnergyTransfer.BLOCK.addRegistrationHandler(FabricBlockLookupRegistration.create(EnergyStorage.SIDED, EnergyTransferImpl::unwrap));
+    public static Object platformBlockLookup() {
+        return EnergyStorage.SIDED;
     }
     
     private static class FabricTransferHandler implements EnergyTransferHandler {

@@ -19,7 +19,6 @@
 
 package dev.architectury.transfer.fabric;
 
-import dev.architectury.transfer.TransferHandler;
 import dev.architectury.transfer.access.BlockLookup;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.minecraft.core.BlockPos;
@@ -30,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 
-public class BlockApiLookupWrapper<T, F, C, H extends TransferHandler<T>> implements BlockLookup<H, C> {
+public class BlockApiLookupWrapper<F, C, H> implements BlockLookup<H, C> {
     private final BlockApiLookup<F, C> lookup;
     private final Function<@Nullable F, @Nullable H> wrapper;
     

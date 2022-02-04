@@ -22,6 +22,7 @@ package dev.architectury.transfer.item;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.transfer.TransferHandler;
 import dev.architectury.transfer.access.BlockLookupAccess;
+import dev.architectury.transfer.access.PlatformLookup;
 import dev.architectury.transfer.item.wrapper.ContainerTransferHandler;
 import dev.architectury.transfer.item.wrapper.WorldlyContainerTransferHandler;
 import net.minecraft.core.Direction;
@@ -31,20 +32,30 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 public class ItemTransfer {
+    /**
+     * A lookup access for item transfer handlers, the direction context is
+     * only required on fabric.
+     * <p>
+     * This is the equivalent to getting the item transfer handler for a
+     * block entity on Forge, or the storage with the lookup api on Fabric.
+     * <p>
+     * There are performance implications for using the architectury lookups,
+     * please keep your implementations as simple as possible.
+     */
     public static final BlockLookupAccess<TransferHandler<ItemStack>, Direction> BLOCK = BlockLookupAccess.create();
     
     static {
-        init();
+        PlatformLookup.attachBlock(BLOCK, platformBlockLookup(), ItemTransfer::wrap, (handler, direction) -> unwrap(handler));
     }
     
     @ExpectPlatform
-    private static void init() {
+    private static Object platformBlockLookup() {
         throw new AssertionError();
     }
     
     /**
-     * Wraps a platform-specific item transfer handler into the architectury transfer handler.
-     * This accepts {@code IItemHandler} on Forge.
+     * Wraps a platform-specific item transfer handler into the architectury transfer handler.<br><br>
+     * This accepts {@code IItemHandler} on Forge.<br>
      * This accepts {@code Storage<ItemVariant>} on Fabric.
      *
      * @param object the handler to wrap
@@ -63,5 +74,11 @@ public class ItemTransfer {
         }
         
         return new ContainerTransferHandler(container);
+    }
+    
+    @ExpectPlatform
+    @Nullable
+    public static Object unwrap(@Nullable TransferHandler<ItemStack> handler) {
+        throw new AssertionError();
     }
 }

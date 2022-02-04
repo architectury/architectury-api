@@ -24,14 +24,40 @@ import dev.architectury.transfer.TransferAction;
 import dev.architectury.transfer.wrapper.ForwardingTransferHandler;
 
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
-public interface ForwardingSingleTransferHandler<T> extends ForwardingTransferHandler<T>, ResourceView<T> {
+public interface ForwardingSingleTransferHandler<T> extends SingleTransferHandler<T>, ForwardingTransferHandler<T>, ResourceView<T> {
     @Override
     SingleTransferHandler<T> forwardingTo();
     
     @Override
+    default Stream<ResourceView<T>> getContents() {
+        return forwardingTo().getContents();
+    }
+    
+    @Override
+    default int getContentsSize() {
+        return forwardingTo().getContentsSize();
+    }
+    
+    @Override
+    default ResourceView<T> getContent(int index) {
+        return forwardingTo().getContent(index);
+    }
+    
+    @Override
     default T extract(Predicate<T> toExtract, long maxAmount, TransferAction action) {
         return ForwardingTransferHandler.super.extract(toExtract, maxAmount, action);
+    }
+    
+    @Override
+    default long getAmount(T resource) {
+        return forwardingTo().getAmount(resource);
+    }
+    
+    @Override
+    default boolean isSameVariant(T first, T second) {
+        return forwardingTo().isSameVariant(first, second);
     }
     
     @Override

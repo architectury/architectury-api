@@ -21,16 +21,27 @@ package dev.architectury.transfer.item;
 
 import dev.architectury.hooks.item.ItemStackHooks;
 import dev.architectury.transfer.TransferHandler;
+import dev.architectury.transfer.view.VariantView;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
-public interface ItemTransferHandler extends TransferHandler<ItemStack> {
+/**
+ * This is a convenience class that implements methods for {@link ItemStack}s.
+ */
+public interface ItemTransferHandler extends ItemTransferView, TransferHandler<ItemStack>, VariantView<ItemStack> {
     @Override
-    default ItemStack blank() {
-        return ItemStack.EMPTY;
+    default long getAmount(ItemStack resource) {
+        return resource.getCount();
     }
     
     @Override
-    default ItemStack copyWithAmount(ItemStack resource, long amount) {
-        return ItemStackHooks.copyWithCount(resource, amount);
+    @Nullable
+    default Long getCapacityNullable(ItemStack resource) {
+        return (long) resource.getMaxStackSize();
+    }
+    
+    @Override
+    default boolean isSameVariant(ItemStack first, ItemStack second) {
+        return ItemStackHooks.isStackable(first, second);
     }
 }

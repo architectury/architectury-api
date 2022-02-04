@@ -19,26 +19,30 @@
 
 package dev.architectury.transfer.item.wrapper;
 
-import dev.architectury.transfer.TransferHandler;
+import dev.architectury.transfer.item.ItemTransferHandler;
+import dev.architectury.transfer.wrapper.CombinedSingleTransferHandler;
+import dev.architectury.transfer.wrapper.single.BaseSingleTransferHandler;
+import dev.architectury.transfer.wrapper.single.SingleTransferHandler;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.AbstractList;
+import java.util.List;
 
-public class ContainerTransferHandler implements CombinedItemTransferHandler {
+public class ContainerTransferHandler implements CombinedItemTransferHandler, CombinedSingleTransferHandler<ItemStack> {
     protected final Container container;
-    private Iterable<TransferHandler<ItemStack>> handlers = null;
+    private List<SingleTransferHandler<ItemStack>> handlers = null;
     
     public ContainerTransferHandler(Container container) {
         this.container = container;
     }
     
-    protected Iterable<TransferHandler<ItemStack>> createHandlers() {
+    protected List<SingleTransferHandler<ItemStack>> createHandlers() {
         return new Handlers();
     }
     
     @Override
-    public Iterable<TransferHandler<ItemStack>> getHandlers() {
+    public List<SingleTransferHandler<ItemStack>> getParts() {
         if (handlers == null) {
             handlers = createHandlers();
         }
@@ -46,13 +50,13 @@ public class ContainerTransferHandler implements CombinedItemTransferHandler {
         return handlers;
     }
     
-    protected TransferHandler<ItemStack> asTransfer(int index) {
+    protected SingleTransferHandler<ItemStack> asTransfer(int index) {
         return new SlotTransferHandler(container, index);
     }
     
-    protected class Handlers extends AbstractList<TransferHandler<ItemStack>> {
+    protected class Handlers extends AbstractList<SingleTransferHandler<ItemStack>> {
         @Override
-        public TransferHandler<ItemStack> get(int index) {
+        public SingleTransferHandler<ItemStack> get(int index) {
             if (index < 0 || index >= size()) {
                 throw new IndexOutOfBoundsException("Index " + index + " is out of bounds for size " + size());
             }
@@ -65,7 +69,7 @@ public class ContainerTransferHandler implements CombinedItemTransferHandler {
         }
     }
     
-    protected static class SlotTransferHandler implements BaseSingleItemTransferHandler {
+    protected static class SlotTransferHandler implements BaseSingleTransferHandler<ItemStack>, ItemTransferHandler {
         protected final Container container;
         protected final int index;
         
@@ -88,7 +92,7 @@ public class ContainerTransferHandler implements CombinedItemTransferHandler {
         public long getCapacity() {
             return Math.min(container.getMaxStackSize(), getResource().getMaxStackSize());
         }
-    
+        
         @Override
         public void close() {
         }

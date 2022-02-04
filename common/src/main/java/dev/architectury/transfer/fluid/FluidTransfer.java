@@ -23,15 +23,11 @@ import dev.architectury.fluid.FluidStack;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.transfer.TransferHandler;
 import dev.architectury.transfer.access.BlockLookupAccess;
-import dev.architectury.transfer.access.ItemLookupAccess;
+import dev.architectury.transfer.access.PlatformLookup;
 import net.minecraft.core.Direction;
-import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 public class FluidTransfer {
-    private FluidTransfer() {
-    }
-    
     /**
      * A lookup access for fluid transfer handlers, the direction context is
      * only required on fabric.
@@ -46,17 +42,17 @@ public class FluidTransfer {
     // public static final ItemLookupAccess<TransferHandler<FluidStack>, TransferHandler<ItemStack>> ITEM = ItemLookupAccess.create();
     
     static {
-        init();
+        PlatformLookup.attachBlock(BLOCK, platformBlockLookup(), FluidTransfer::wrap, (handler, direction) -> unwrap(handler));
     }
     
     @ExpectPlatform
-    private static void init() {
+    private static Object platformBlockLookup() {
         throw new AssertionError();
     }
     
     /**
-     * Wraps a platform-specific fluid transfer handler into the architectury transfer handler.
-     * This accepts {@code IFluidHandler} on Forge.
+     * Wraps a platform-specific fluid transfer handler into the architectury transfer handler.<br><br>
+     * This accepts {@code IFluidHandler} on Forge.<br>
      * This accepts {@code Storage<FluidVariant>} on Fabric.
      *
      * @param object the handler to wrap
@@ -66,6 +62,12 @@ public class FluidTransfer {
     @ExpectPlatform
     @Nullable
     public static TransferHandler<FluidStack> wrap(@Nullable Object object) {
+        throw new AssertionError();
+    }
+    
+    @ExpectPlatform
+    @Nullable
+    public static Object unwrap(@Nullable TransferHandler<FluidStack> handler) {
         throw new AssertionError();
     }
 }
