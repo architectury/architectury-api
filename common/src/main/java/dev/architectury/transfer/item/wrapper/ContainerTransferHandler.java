@@ -29,11 +29,11 @@ import net.minecraft.world.item.ItemStack;
 import java.util.AbstractList;
 import java.util.List;
 
-public class ContainerTransferHandler implements CombinedItemTransferHandler, CombinedSingleTransferHandler<ItemStack> {
-    protected final Container container;
+public class ContainerTransferHandler<C extends Container> implements CombinedItemTransferHandler, CombinedSingleTransferHandler<ItemStack> {
+    public final C container;
     private List<SingleTransferHandler<ItemStack>> handlers = null;
     
-    public ContainerTransferHandler(Container container) {
+    public ContainerTransferHandler(C container) {
         this.container = container;
     }
     

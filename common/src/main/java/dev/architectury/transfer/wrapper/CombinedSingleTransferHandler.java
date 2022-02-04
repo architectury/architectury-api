@@ -24,6 +24,7 @@ import dev.architectury.transfer.TransferHandler;
 import dev.architectury.transfer.wrapper.single.SingleTransferHandler;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 /**
@@ -47,6 +48,11 @@ public interface CombinedSingleTransferHandler<T> extends CombinedTransferHandle
     }
     
     @Override
+    default void withContents(Consumer<Iterable<ResourceView<T>>> consumer) {
+        consumer.accept((Iterable<ResourceView<T>>) (Iterable<? super SingleTransferHandler<T>>) getParts());
+    }
+    
+    @Override
     @Deprecated
     default int getContentsSize() {
         return getParts().size();
@@ -54,7 +60,7 @@ public interface CombinedSingleTransferHandler<T> extends CombinedTransferHandle
     
     @Override
     @Deprecated
-    default ResourceView<T> getContent(int index) {
+    default SingleTransferHandler<T> getContent(int index) {
         return getParts().get(index);
     }
 }

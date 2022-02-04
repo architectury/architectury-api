@@ -23,6 +23,7 @@ import dev.architectury.fluid.FluidStack;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 /**
@@ -64,6 +65,13 @@ public interface TransferHandler<T> extends TransferView<T> {
      * @return the iterable of resources that are currently in the handler
      */
     Stream<ResourceView<T>> getContents();
+    
+    default void withContents(Consumer<Iterable<ResourceView<T>>> consumer) {
+        try (Stream<ResourceView<T>> stream = getContents()) {
+            Iterable<ResourceView<T>> iterable = stream::iterator;
+            consumer.accept(iterable);
+        }
+    }
     
     /**
      * Returns the size of the handler.

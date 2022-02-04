@@ -28,17 +28,16 @@ import net.minecraft.world.item.ItemStack;
 import java.util.Arrays;
 import java.util.List;
 
-public class WorldlyContainerTransferHandler extends ContainerTransferHandler {
+public class WorldlyContainerTransferHandler<C extends WorldlyContainer> extends ContainerTransferHandler<C> {
     protected final Direction direction;
     
-    public WorldlyContainerTransferHandler(WorldlyContainer container, Direction direction) {
+    public WorldlyContainerTransferHandler(C container, Direction direction) {
         super(container);
         this.direction = direction;
     }
     
     @Override
     protected List<SingleTransferHandler<ItemStack>> createHandlers() {
-        WorldlyContainer container = (WorldlyContainer) this.container;
         int[] slots = container.getSlotsForFace(this.direction);
         SingleTransferHandler<ItemStack>[] handlers = new SingleTransferHandler[slots.length];
         for (int i = 0; i < slots.length; ++i) {
