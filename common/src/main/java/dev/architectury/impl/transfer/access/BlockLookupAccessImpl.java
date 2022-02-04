@@ -65,6 +65,12 @@ public class BlockLookupAccessImpl<T, C> implements BlockLookupAccess<T, C> {
     @Override
     @Nullable
     public T get(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, C context) {
+        if (state.hasBlockEntity()) {
+            if (blockEntity == null) {
+                blockEntity = level.getBlockEntity(pos);
+            }
+        }
+        
         for (BlockLookup<T, C> handler : lookups) {
             T result = handler.get(level, pos, state, blockEntity, context);
             if (result != null) {

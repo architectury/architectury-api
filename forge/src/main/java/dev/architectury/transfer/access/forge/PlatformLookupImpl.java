@@ -49,13 +49,8 @@ public class PlatformLookupImpl {
         return BlockLookup.of((level, pos, state, blockEntity, direction) -> {
             Block block = state.getBlock();
             O handler = null;
-            if (state.hasBlockEntity()) {
-                if (blockEntity == null) {
-                    blockEntity = level.getBlockEntity(pos);
-                }
-                if (blockEntity != null) {
-                    handler = blockEntity.getCapability(capability, direction).resolve().orElse(null);
-                }
+            if (blockEntity != null) {
+                handler = blockEntity.getCapability(capability, direction).resolve().orElse(null);
             }
             return wrapper.apply(handler);
         });
