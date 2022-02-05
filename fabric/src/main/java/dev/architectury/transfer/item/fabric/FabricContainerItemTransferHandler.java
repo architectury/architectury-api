@@ -162,6 +162,22 @@ public class FabricContainerItemTransferHandler implements TransferHandler<ItemS
         }
         
         @Override
+        public long insert(ItemStack toInsert, TransferAction action) {
+            if (toInsert.isEmpty()) return 0;
+            long inserted;
+            
+            try (Transaction nested = Transaction.openNested(FabricContainerItemTransferHandler.this.transaction)) {
+                inserted = this.storage.insert(ItemVariant.of(toInsert), toInsert.getCount(), nested);
+                
+                if (action == TransferAction.ACT) {
+                    nested.commit();
+                }
+            }
+            
+            return inserted;
+        }
+        
+        @Override
         public ItemStack extract(ItemStack toExtract, TransferAction action) {
             if (toExtract.isEmpty()) return blank();
             long extracted;

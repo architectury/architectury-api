@@ -17,36 +17,48 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.transfer.wrapper.filtering;
+package dev.architectury.transfer.wrapper.forwarding;
 
-import dev.architectury.transfer.ResourceView;
 import dev.architectury.transfer.TransferAction;
-import dev.architectury.transfer.wrapper.forwarding.ForwardingResourceView;
+import dev.architectury.transfer.TransferView;
 
 import java.util.function.Predicate;
 
-public interface FilteringResourceView<T> extends ForwardingResourceView<T>, FilteringTransferView<T> {
-    static <T> FilteringResourceView<T> of(ResourceView<T> delegate, Predicate<T> canInsert, Predicate<T> canExtract) {
-        return new FilteringResourceView<T>() {
-            @Override
-            public ResourceView<T> forwardingTo() {
-                return delegate;
-            }
-            
-            @Override
-            public boolean canInsert(T toInsert) {
-                return canInsert.test(toInsert);
-            }
-            
-            @Override
-            public boolean canExtract(T toExtract) {
-                return canExtract.test(toExtract);
-            }
-        };
+public interface ForwardingTransferView<T> extends TransferView<T> {
+    TransferView<T> forwardingTo();
+    
+    @Override
+    default long insert(T toInsert, TransferAction action) {
+        return forwardingTo().insert(toInsert, action);
     }
     
     @Override
     default T extract(Predicate<T> toExtract, long maxAmount, TransferAction action) {
-        return ForwardingResourceView.super.extract(toExtract, maxAmount, action);
+        return forwardingTo().extract(toExtract, maxAmount, action);
+    }
+    
+    @Override
+    default T extract(T toExtract, TransferAction action) {
+        return forwardingTo().extract(toExtract, action);
+    }
+    
+    @Override
+    default T blank() {
+        return forwardingTo().blank();
+    }
+    
+    @Override
+    default T copyWithAmount(T resource, long amount) {
+        return forwardingTo().copyWithAmount(resource, amount);
+    }
+    
+    @Override
+    default Object saveState() {
+        return forwardingTo().saveState();
+    }
+    
+    @Override
+    default void loadState(Object state) {
+        forwardingTo().loadState(state);
     }
 }

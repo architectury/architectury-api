@@ -20,11 +20,22 @@
 package dev.architectury.transfer;
 
 import com.google.common.base.Predicates;
+import dev.architectury.transfer.wrapper.filtering.FilteringTransferHandler;
+import dev.architectury.transfer.wrapper.filtering.FilteringTransferView;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.function.Predicate;
 
 public interface TransferView<T> {
+    /**
+     * Inserts the given resource into the handler, returning the amount that was inserted.
+     *
+     * @param toInsert the resource to insert
+     * @param action   whether to simulate or actually insert the resource
+     * @return the amount that was inserted
+     */
+    long insert(T toInsert, TransferAction action);
+    
     /**
      * Extracts the given resource from the handler, returning the stack that was extracted.
      *
@@ -93,4 +104,24 @@ public interface TransferView<T> {
      */
     @ApiStatus.OverrideOnly
     void loadState(Object state);
+    
+    default TransferView<T> unmodifiable() {
+        return filter(Predicates.alwaysFalse());
+    }
+    
+    default TransferView<T> onlyInsert() {
+        return filter(Predicates.alwaysTrue(), Predicates.alwaysFalse());
+    }
+    
+    default TransferView<T> onlyExtract() {
+        return filter(Predicates.alwaysFalse(), Predicates.alwaysTrue());
+    }
+    
+    default TransferView<T> filter(Predicate<T> filter) {
+        return filter(filter, filter);
+    }
+    
+    default TransferView<T> filter(Predicate<T> insert, Predicate<T> extract) {
+        return FilteringTransferView.of(this, insert, extract);
+    }
 }

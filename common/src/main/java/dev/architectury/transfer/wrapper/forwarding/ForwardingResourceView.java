@@ -22,7 +22,10 @@ package dev.architectury.transfer.wrapper.forwarding;
 import dev.architectury.transfer.ResourceView;
 import dev.architectury.transfer.TransferAction;
 
-public interface ForwardingResourceView<T> extends ResourceView<T> {
+import java.util.function.Predicate;
+
+public interface ForwardingResourceView<T> extends ResourceView<T>, ForwardingTransferView<T> {
+    @Override
     ResourceView<T> forwardingTo();
     
     @Override
@@ -36,28 +39,8 @@ public interface ForwardingResourceView<T> extends ResourceView<T> {
     }
     
     @Override
-    default T extract(T toExtract, TransferAction action) {
-        return forwardingTo().extract(toExtract, action);
-    }
-    
-    @Override
-    default T blank() {
-        return forwardingTo().blank();
-    }
-    
-    @Override
-    default T copyWithAmount(T resource, long amount) {
-        return forwardingTo().copyWithAmount(resource, amount);
-    }
-    
-    @Override
-    default Object saveState() {
-        return forwardingTo().saveState();
-    }
-    
-    @Override
-    default void loadState(Object state) {
-        forwardingTo().loadState(state);
+    default T extract(Predicate<T> toExtract, long maxAmount, TransferAction action) {
+        return ResourceView.super.extract(toExtract, maxAmount, action);
     }
     
     @Override

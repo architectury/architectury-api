@@ -290,6 +290,12 @@ public class FluidTransferImpl {
             }
             
             @Override
+            public long insert(FluidStack toInsert, TransferAction action) {
+                // impossible to insert to a forge handler with an index
+                return 0;
+            }
+            
+            @Override
             public FluidStack extract(FluidStack toExtract, TransferAction action) {
                 // impossible to extract from a forge handler with an index
                 return blank();

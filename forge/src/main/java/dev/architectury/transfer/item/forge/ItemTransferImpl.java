@@ -145,9 +145,10 @@ public class ItemTransferImpl {
         
         @Override
         public long insert(ItemStack toInsert, TransferAction action) {
+            if (toInsert.isEmpty()) return 0;
             int toInsertCount = toInsert.getCount();
-            ItemStack left = ItemHandlerHelper.insertItemStacked(handler, toInsert, action == TransferAction.SIMULATE);
-            return toInsertCount - left.getCount();
+            ItemStack remaining = ItemHandlerHelper.insertItemStacked(handler, toInsert, action == TransferAction.SIMULATE);
+            return toInsertCount - remaining.getCount();
         }
         
         @Override
@@ -220,6 +221,15 @@ public class ItemTransferImpl {
             @Override
             public long getCapacity() {
                 return handler.getSlotLimit(index);
+            }
+            
+            @Override
+            public long insert(ItemStack toInsert, TransferAction action) {
+                if (toInsert.isEmpty()) return 0;
+                
+                int toInsertCount = toInsert.getCount();
+                ItemStack remaining = handler.insertItem(index, toInsert, action == TransferAction.SIMULATE);
+                return toInsertCount - remaining.getCount();
             }
             
             @Override

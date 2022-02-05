@@ -107,13 +107,18 @@ public interface TransferHandler<T> extends TransferView<T> {
     }
     
     /**
-     * Inserts the given resource into the handler, returning the amount that was inserted.
+     * Inserts the given resource into a given resource index, returning the amount that was inserted.
      *
+     * @param index    the index of the resource
      * @param toInsert the resource to insert
      * @param action   whether to simulate or actually insert the resource
      * @return the amount that was inserted
      */
-    long insert(T toInsert, TransferAction action);
+    default long insert(int index, T toInsert, TransferAction action) {
+        try (ResourceView<T> resource = getContent(index)) {
+            return resource.insert(toInsert, action);
+        }
+    }
     
     /**
      * Extracts the given resource from a given resource index, returning the stack that was extracted.
@@ -158,22 +163,27 @@ public interface TransferHandler<T> extends TransferView<T> {
         }
     }
     
+    @Override
     default TransferHandler<T> unmodifiable() {
         return filter(Predicates.alwaysFalse());
     }
     
+    @Override
     default TransferHandler<T> onlyInsert() {
         return filter(Predicates.alwaysTrue(), Predicates.alwaysFalse());
     }
     
+    @Override
     default TransferHandler<T> onlyExtract() {
         return filter(Predicates.alwaysFalse(), Predicates.alwaysTrue());
     }
     
+    @Override
     default TransferHandler<T> filter(Predicate<T> filter) {
         return filter(filter, filter);
     }
     
+    @Override
     default TransferHandler<T> filter(Predicate<T> insert, Predicate<T> extract) {
         return FilteringTransferHandler.of(this, insert, extract);
     }

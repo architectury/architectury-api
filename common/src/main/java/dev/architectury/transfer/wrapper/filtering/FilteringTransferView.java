@@ -20,22 +20,23 @@
 package dev.architectury.transfer.wrapper.filtering;
 
 import dev.architectury.transfer.TransferAction;
-import dev.architectury.transfer.wrapper.forwarding.ForwardingSingleTransferHandler;
-import dev.architectury.transfer.wrapper.single.SingleTransferHandler;
+import dev.architectury.transfer.TransferView;
+import dev.architectury.transfer.view.ModifiableView;
+import dev.architectury.transfer.wrapper.forwarding.ForwardingTransferView;
 
 import java.util.function.Predicate;
 
-public interface FilteringSingleTransferHandler<T> extends ForwardingSingleTransferHandler<T>, FilteringTransferHandler<T> {
-    static <T> FilteringSingleTransferHandler<T> of(SingleTransferHandler<T> delegate, Predicate<T> canInsert, Predicate<T> canExtract) {
-        return new FilteringSingleTransferHandler<T>() {
+public interface FilteringTransferView<T> extends ForwardingTransferView<T>, ModifiableView<T> {
+    static <T> FilteringTransferView<T> of(TransferView<T> delegate, Predicate<T> canInsert, Predicate<T> canExtract) {
+        return new FilteringTransferView<T>() {
             @Override
-            public SingleTransferHandler<T> forwardingTo() {
+            public TransferView<T> forwardingTo() {
                 return delegate;
             }
             
             @Override
             public boolean canInsert(T toInsert) {
-                return canInsert.test(toInsert);
+                return canExtract.test(toInsert);
             }
             
             @Override
@@ -46,7 +47,25 @@ public interface FilteringSingleTransferHandler<T> extends ForwardingSingleTrans
     }
     
     @Override
+    default long insert(T toInsert, TransferAction action) {
+        if (canInsert(toInsert)) {
+            return ForwardingTransferView.super.insert(toInsert, action);
+        } else {
+            return 0;
+        }
+    }
+    
+    @Override
+    default T extract(T toExtract, TransferAction action) {
+        if (canExtract(toExtract)) {
+            return ForwardingTransferView.super.extract(toExtract, action);
+        } else {
+            return blank();
+        }
+    }
+    
+    @Override
     default T extract(Predicate<T> toExtract, long maxAmount, TransferAction action) {
-        return FilteringTransferHandler.super.extract(toExtract, maxAmount, action);
+        return ForwardingTransferView.super.extract(toExtract.and(this::canExtract), maxAmount, action);
     }
 }

@@ -203,6 +203,26 @@ public class FabricStorageTransferHandler<F, S> implements TransferHandler<S> {
         }
         
         @Override
+        public long insert(S toInsert, TransferAction action) {
+            if (view instanceof Storage) {
+                long inserted;
+                
+                try (Transaction nested = Transaction.openNested(this.transaction)) {
+                    inserted = ((Storage<F>) this.view).insert(toFabric(toInsert), getAmount(toInsert), nested);
+                    
+                    if (action == TransferAction.ACT) {
+                        nested.commit();
+                    }
+                }
+                
+                return inserted;
+            }
+            
+            // impossible to insert to a fabric storage view with an index
+            return 0;
+        }
+        
+        @Override
         public S extract(S toExtract, TransferAction action) {
             if (isEmpty(toExtract)) return blank();
             long extracted;

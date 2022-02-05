@@ -19,8 +19,12 @@
 
 package dev.architectury.transfer.view;
 
-public interface ModifiableView<T> extends ExtractableView<T> {
+public interface ModifiableView<T> {
     default boolean canInsert(T toInsert) {
+        return true;
+    }
+    
+    default boolean canExtract(T toExtract) {
         return true;
     }
 }

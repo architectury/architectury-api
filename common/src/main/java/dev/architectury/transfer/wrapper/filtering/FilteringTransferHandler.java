@@ -20,14 +20,12 @@
 package dev.architectury.transfer.wrapper.filtering;
 
 import dev.architectury.transfer.ResourceView;
-import dev.architectury.transfer.TransferAction;
 import dev.architectury.transfer.TransferHandler;
-import dev.architectury.transfer.view.ModifiableView;
 import dev.architectury.transfer.wrapper.forwarding.ForwardingTransferHandler;
 
 import java.util.function.Predicate;
 
-public interface FilteringTransferHandler<T> extends ForwardingTransferHandler<T>, ModifiableView<T> {
+public interface FilteringTransferHandler<T> extends ForwardingTransferHandler<T>, FilteringTransferView<T> {
     static <T> FilteringTransferHandler<T> of(TransferHandler<T> delegate, Predicate<T> canInsert, Predicate<T> canExtract) {
         return new FilteringTransferHandler<T>() {
             @Override
@@ -48,30 +46,7 @@ public interface FilteringTransferHandler<T> extends ForwardingTransferHandler<T
     }
     
     @Override
-    default long insert(T toInsert, TransferAction action) {
-        if (canInsert(toInsert)) {
-            return ForwardingTransferHandler.super.insert(toInsert, action);
-        } else {
-            return 0;
-        }
-    }
-    
-    @Override
-    default T extract(T toExtract, TransferAction action) {
-        if (canExtract(toExtract)) {
-            return ForwardingTransferHandler.super.extract(toExtract, action);
-        } else {
-            return blank();
-        }
-    }
-    
-    @Override
-    default T extract(Predicate<T> toExtract, long maxAmount, TransferAction action) {
-        return ForwardingTransferHandler.super.extract(toExtract.and(this::canExtract), maxAmount, action);
-    }
-    
-    @Override
     default ResourceView<T> forwardResource(ResourceView<T> resource) {
-        return FilteringResourceView.of(ForwardingTransferHandler.super.forwardResource(resource), this::canExtract);
+        return FilteringResourceView.of(ForwardingTransferHandler.super.forwardResource(resource), this::canInsert, this::canExtract);
     }
 }

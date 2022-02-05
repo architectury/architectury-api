@@ -63,11 +63,28 @@ public interface ResourceView<T> extends TransferView<T>, Closeable {
     @Override
     void close();
     
+    @Override
     default ResourceView<T> unmodifiable() {
         return filter(Predicates.alwaysFalse());
     }
     
+    @Override
+    default ResourceView<T> onlyInsert() {
+        return filter(Predicates.alwaysTrue(), Predicates.alwaysFalse());
+    }
+    
+    @Override
+    default ResourceView<T> onlyExtract() {
+        return filter(Predicates.alwaysFalse(), Predicates.alwaysTrue());
+    }
+    
+    @Override
     default ResourceView<T> filter(Predicate<T> filter) {
-        return FilteringResourceView.of(this, filter);
+        return filter(filter, filter);
+    }
+    
+    @Override
+    default ResourceView<T> filter(Predicate<T> insert, Predicate<T> extract) {
+        return FilteringResourceView.of(this, insert, extract);
     }
 }
