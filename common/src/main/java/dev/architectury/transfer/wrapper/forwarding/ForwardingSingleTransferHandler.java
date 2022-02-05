@@ -17,11 +17,11 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.transfer.wrapper.single;
+package dev.architectury.transfer.wrapper.forwarding;
 
 import dev.architectury.transfer.ResourceView;
 import dev.architectury.transfer.TransferAction;
-import dev.architectury.transfer.wrapper.ForwardingTransferHandler;
+import dev.architectury.transfer.wrapper.single.SingleTransferHandler;
 
 import java.util.function.Predicate;
 import java.util.stream.Stream;

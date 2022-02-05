@@ -20,7 +20,7 @@
 package dev.architectury.transfer.item.wrapper;
 
 import dev.architectury.transfer.item.ItemTransferHandler;
-import dev.architectury.transfer.wrapper.CombinedSingleTransferHandler;
+import dev.architectury.transfer.wrapper.combined.CombinedSingleTransferHandler;
 import dev.architectury.transfer.wrapper.single.BaseSingleTransferHandler;
 import dev.architectury.transfer.wrapper.single.SingleTransferHandler;
 import net.minecraft.world.Container;

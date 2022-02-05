@@ -19,7 +19,7 @@
 
 package dev.architectury.transfer.item.wrapper;
 
-import dev.architectury.transfer.wrapper.single.FilteringSingleTransferHandler;
+import dev.architectury.transfer.wrapper.filtering.FilteringSingleTransferHandler;
 import dev.architectury.transfer.wrapper.single.SingleTransferHandler;
 import net.minecraft.core.Direction;
 import net.minecraft.world.WorldlyContainer;

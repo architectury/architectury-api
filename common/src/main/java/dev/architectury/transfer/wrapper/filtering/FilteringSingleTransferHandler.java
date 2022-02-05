@@ -17,31 +17,15 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.transfer.wrapper.single;
+package dev.architectury.transfer.wrapper.filtering;
 
-import com.google.common.base.Predicates;
 import dev.architectury.transfer.TransferAction;
-import dev.architectury.transfer.wrapper.FilteringTransferHandler;
+import dev.architectury.transfer.wrapper.forwarding.ForwardingSingleTransferHandler;
+import dev.architectury.transfer.wrapper.single.SingleTransferHandler;
 
 import java.util.function.Predicate;
 
 public interface FilteringSingleTransferHandler<T> extends FilteringTransferHandler<T>, ForwardingSingleTransferHandler<T> {
-    static <T> FilteringSingleTransferHandler<T> unmodifiable(SingleTransferHandler<T> delegate) {
-        return FilteringSingleTransferHandler.of(delegate, Predicates.alwaysFalse(), Predicates.alwaysFalse());
-    }
-    
-    static <T> FilteringSingleTransferHandler<T> onlyInsert(SingleTransferHandler<T> delegate) {
-        return FilteringSingleTransferHandler.of(delegate, Predicates.alwaysTrue(), Predicates.alwaysFalse());
-    }
-    
-    static <T> FilteringSingleTransferHandler<T> onlyExtract(SingleTransferHandler<T> delegate) {
-        return FilteringSingleTransferHandler.of(delegate, Predicates.alwaysFalse(), Predicates.alwaysTrue());
-    }
-    
-    static <T> FilteringSingleTransferHandler<T> predicate(SingleTransferHandler<T> delegate, Predicate<T> predicate) {
-        return FilteringSingleTransferHandler.of(delegate, predicate, predicate);
-    }
-    
     static <T> FilteringSingleTransferHandler<T> of(SingleTransferHandler<T> delegate, Predicate<T> canInsert, Predicate<T> canExtract) {
         return new FilteringSingleTransferHandler<T>() {
             @Override

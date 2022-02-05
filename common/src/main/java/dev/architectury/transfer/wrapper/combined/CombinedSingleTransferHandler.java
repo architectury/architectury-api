@@ -17,7 +17,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.transfer.wrapper;
+package dev.architectury.transfer.wrapper.combined;
 
 import dev.architectury.transfer.ResourceView;
 import dev.architectury.transfer.TransferHandler;
@@ -53,13 +53,11 @@ public interface CombinedSingleTransferHandler<T> extends CombinedTransferHandle
     }
     
     @Override
-    @Deprecated
     default int getContentsSize() {
         return getParts().size();
     }
     
     @Override
-    @Deprecated
     default SingleTransferHandler<T> getContent(int index) {
         return getParts().get(index);
     }

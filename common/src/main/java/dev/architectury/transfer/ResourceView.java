@@ -19,6 +19,9 @@
 
 package dev.architectury.transfer;
 
+import com.google.common.base.Predicates;
+import dev.architectury.transfer.wrapper.filtering.FilteringResourceView;
+
 import java.io.Closeable;
 import java.util.function.Predicate;
 
@@ -59,4 +62,12 @@ public interface ResourceView<T> extends TransferView<T>, Closeable {
     
     @Override
     void close();
+    
+    default ResourceView<T> unmodifiable() {
+        return filter(Predicates.alwaysFalse());
+    }
+    
+    default ResourceView<T> filter(Predicate<T> filter) {
+        return FilteringResourceView.of(this, filter);
+    }
 }

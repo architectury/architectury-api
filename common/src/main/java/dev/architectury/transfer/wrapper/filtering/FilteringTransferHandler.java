@@ -17,33 +17,17 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.transfer.wrapper;
+package dev.architectury.transfer.wrapper.filtering;
 
-import com.google.common.base.Predicates;
 import dev.architectury.transfer.ResourceView;
 import dev.architectury.transfer.TransferAction;
 import dev.architectury.transfer.TransferHandler;
 import dev.architectury.transfer.view.ModifiableView;
+import dev.architectury.transfer.wrapper.forwarding.ForwardingTransferHandler;
 
 import java.util.function.Predicate;
 
 public interface FilteringTransferHandler<T> extends ForwardingTransferHandler<T>, ModifiableView<T> {
-    static <T> FilteringTransferHandler<T> unmodifiable(TransferHandler<T> delegate) {
-        return FilteringTransferHandler.of(delegate, Predicates.alwaysFalse(), Predicates.alwaysFalse());
-    }
-    
-    static <T> FilteringTransferHandler<T> onlyInsert(TransferHandler<T> delegate) {
-        return FilteringTransferHandler.of(delegate, Predicates.alwaysTrue(), Predicates.alwaysFalse());
-    }
-    
-    static <T> FilteringTransferHandler<T> onlyExtract(TransferHandler<T> delegate) {
-        return FilteringTransferHandler.of(delegate, Predicates.alwaysFalse(), Predicates.alwaysTrue());
-    }
-    
-    static <T> FilteringTransferHandler<T> predicate(TransferHandler<T> delegate, Predicate<T> predicate) {
-        return FilteringTransferHandler.of(delegate, predicate, predicate);
-    }
-    
     static <T> FilteringTransferHandler<T> of(TransferHandler<T> delegate, Predicate<T> canInsert, Predicate<T> canExtract) {
         return new FilteringTransferHandler<T>() {
             @Override

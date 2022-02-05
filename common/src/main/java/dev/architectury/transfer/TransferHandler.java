@@ -19,11 +19,14 @@
 
 package dev.architectury.transfer;
 
+import com.google.common.base.Predicates;
 import dev.architectury.fluid.FluidStack;
+import dev.architectury.transfer.wrapper.filtering.FilteringTransferHandler;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
@@ -97,6 +100,12 @@ public interface TransferHandler<T> extends TransferView<T> {
     @Deprecated
     ResourceView<T> getContent(int index);
     
+    default void withContent(int index, Consumer<ResourceView<T>> consumer) {
+        try (ResourceView<T> resource = getContent(index)) {
+            consumer.accept(resource);
+        }
+    }
+    
     /**
      * Inserts the given resource into the handler, returning the amount that was inserted.
      *
@@ -105,4 +114,67 @@ public interface TransferHandler<T> extends TransferView<T> {
      * @return the amount that was inserted
      */
     long insert(T toInsert, TransferAction action);
+    
+    /**
+     * Extracts the given resource from a given resource index, returning the stack that was extracted.
+     *
+     * @param index     the index of the resource
+     * @param toExtract the resource to extract
+     * @param action    whether to simulate or actually extract the resource
+     * @return the stack that was extracted
+     */
+    default T extract(int index, T toExtract, TransferAction action) {
+        try (ResourceView<T> resource = getContent(index)) {
+            return resource.extract(toExtract, action);
+        }
+    }
+    
+    /**
+     * Extracts the given resource from a given resource index, returning the stack that was extracted.
+     *
+     * @param index     the index of the resource
+     * @param toExtract the predicates to use to filter the resources to extract
+     * @param maxAmount the maximum amount of resources to extract
+     * @param action    whether to simulate or actually extract the resource
+     * @return the stack that was extracted
+     */
+    default T extract(int index, Predicate<T> toExtract, long maxAmount, TransferAction action) {
+        try (ResourceView<T> resource = getContent(index)) {
+            return resource.extract(toExtract, maxAmount, action);
+        }
+    }
+    
+    /**
+     * Extracts the any resource from a given resource index, returning the stack that was extracted.
+     *
+     * @param index     the index of the resource
+     * @param maxAmount the maximum amount of resources to extract
+     * @param action    whether to simulate or actually extract the resource
+     * @return the stack that was extracted
+     */
+    default T extract(int index, long maxAmount, TransferAction action) {
+        try (ResourceView<T> resource = getContent(index)) {
+            return resource.extract(maxAmount, action);
+        }
+    }
+    
+    default TransferHandler<T> unmodifiable() {
+        return filter(Predicates.alwaysFalse());
+    }
+    
+    default TransferHandler<T> onlyInsert() {
+        return filter(Predicates.alwaysTrue(), Predicates.alwaysFalse());
+    }
+    
+    default TransferHandler<T> onlyExtract() {
+        return filter(Predicates.alwaysFalse(), Predicates.alwaysTrue());
+    }
+    
+    default TransferHandler<T> filter(Predicate<T> filter) {
+        return filter(filter, filter);
+    }
+    
+    default TransferHandler<T> filter(Predicate<T> insert, Predicate<T> extract) {
+        return FilteringTransferHandler.of(this, insert, extract);
+    }
 }

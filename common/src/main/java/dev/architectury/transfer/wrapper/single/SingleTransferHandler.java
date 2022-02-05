@@ -19,11 +19,14 @@
 
 package dev.architectury.transfer.wrapper.single;
 
+import com.google.common.base.Predicates;
 import dev.architectury.transfer.ResourceView;
 import dev.architectury.transfer.TransferHandler;
 import dev.architectury.transfer.view.ModifiableView;
 import dev.architectury.transfer.view.VariantView;
+import dev.architectury.transfer.wrapper.filtering.FilteringSingleTransferHandler;
 
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
@@ -52,5 +55,30 @@ public interface SingleTransferHandler<T> extends TransferHandler<T>, ResourceVi
     
     default long getAmount() {
         return getAmount(getResource());
+    }
+    
+    @Override
+    default SingleTransferHandler<T> unmodifiable() {
+        return filter(Predicates.alwaysFalse());
+    }
+    
+    @Override
+    default SingleTransferHandler<T> onlyInsert() {
+        return filter(Predicates.alwaysTrue(), Predicates.alwaysFalse());
+    }
+    
+    @Override
+    default SingleTransferHandler<T> onlyExtract() {
+        return filter(Predicates.alwaysFalse(), Predicates.alwaysTrue());
+    }
+    
+    @Override
+    default SingleTransferHandler<T> filter(Predicate<T> filter) {
+        return filter(filter, filter);
+    }
+    
+    @Override
+    default SingleTransferHandler<T> filter(Predicate<T> insert, Predicate<T> extract) {
+        return FilteringSingleTransferHandler.of(this, insert, extract);
     }
 }

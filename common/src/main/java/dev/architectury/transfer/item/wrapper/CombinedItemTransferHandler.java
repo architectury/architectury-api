@@ -21,7 +21,7 @@ package dev.architectury.transfer.item.wrapper;
 
 import dev.architectury.transfer.TransferHandler;
 import dev.architectury.transfer.item.ItemTransferHandler;
-import dev.architectury.transfer.wrapper.CombinedTransferHandler;
+import dev.architectury.transfer.wrapper.combined.CombinedTransferHandler;
 import net.minecraft.world.item.ItemStack;
 
 /**

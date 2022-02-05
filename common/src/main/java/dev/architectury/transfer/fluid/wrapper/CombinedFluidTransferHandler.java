@@ -22,7 +22,7 @@ package dev.architectury.transfer.fluid.wrapper;
 import dev.architectury.fluid.FluidStack;
 import dev.architectury.transfer.TransferHandler;
 import dev.architectury.transfer.fluid.FluidTransferHandler;
-import dev.architectury.transfer.wrapper.CombinedTransferHandler;
+import dev.architectury.transfer.wrapper.combined.CombinedTransferHandler;
 
 /**
  * A {@link TransferHandler} that combines multiple {@link TransferHandler}s.<br>

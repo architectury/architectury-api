@@ -17,7 +17,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.transfer.wrapper;
+package dev.architectury.transfer.wrapper.combined;
 
 import com.google.common.collect.Streams;
 import dev.architectury.transfer.ResourceView;
@@ -58,12 +58,13 @@ public interface CombinedTransferHandler<T> extends TransferHandler<T>, VariantV
         if (index < 0) {
             throw new IllegalArgumentException("Index must be non-negative");
         }
-        int i = 0;
+        int i = index;
         for (TransferHandler<T> handler : getHandlers()) {
-            if (i == index) {
-                return handler.getContent(0);
+            int contentsSize = handler.getContentsSize();
+            if (i < contentsSize) {
+                return handler.getContent(i);
             }
-            i += handler.getContentsSize();
+            i -= contentsSize;
         }
         throw new IndexOutOfBoundsException("Index " + index + " is out of bounds");
     }
