@@ -22,17 +22,17 @@ package me.shedaniel.architectury.registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.LazyLoadedValue;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Supplier;
 
-public class DeferredRegister<T> {
+public class DeferredRegister<T> implements Iterable<RegistrySupplier<T>> {
     private final Supplier<Registries> registriesSupplier;
     private final ResourceKey<net.minecraft.core.Registry<T>> key;
     private final List<Entry<T>> entries = new ArrayList<>();
+    private final List<RegistrySupplier<T>> entryView = Collections.unmodifiableList(entries);
     private boolean registered = false;
     @Nullable
     private String modId;
@@ -90,6 +90,12 @@ public class DeferredRegister<T> {
         for (Entry<T> entry : entries) {
             entry.value = registry.registerSupplied(entry.id, entry.supplier);
         }
+    }
+    
+    @NotNull
+    @Override
+    public Iterator<RegistrySupplier<T>> iterator() {
+        return entryView.iterator();
     }
     
     private class Entry<R> implements RegistrySupplier<R> {
