@@ -23,17 +23,17 @@ import com.google.common.base.Suppliers;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Supplier;
 
-public class DeferredRegister<T> {
+public class DeferredRegister<T> implements Iterable<RegistrySupplier<T>> {
     private final Supplier<Registries> registriesSupplier;
     private final ResourceKey<Registry<T>> key;
     private final List<Entry<T>> entries = new ArrayList<>();
+    private final List<RegistrySupplier<T>> entryView = Collections.unmodifiableList(this.entries);
     private boolean registered = false;
     @Nullable
     private String modId;
@@ -78,6 +78,12 @@ public class DeferredRegister<T> {
         }
     }
     
+    @NotNull
+    @Override
+    public Iterator<RegistrySupplier<T>> iterator() {
+        return entryView.iterator();
+    }
+    
     private class Entry<R> implements RegistrySupplier<R> {
         private final ResourceLocation id;
         private final Supplier<R> supplier;
@@ -113,7 +119,7 @@ public class DeferredRegister<T> {
         
         @Override
         public int hashCode() {
-            return com.google.common.base.Objects.hashCode(getRegistryId(), getId());
+            return Objects.hash(getRegistryId(), getId());
         }
         
         @Override
