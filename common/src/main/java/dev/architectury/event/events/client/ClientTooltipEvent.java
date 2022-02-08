@@ -54,7 +54,6 @@ public interface ClientTooltipEvent {
      */
     Event<RenderModifyColor> RENDER_MODIFY_COLOR = EventFactory.createLoop();
     
-    @ApiStatus.Internal
     static AdditionalContexts additionalContexts() {
         return TooltipAdditionalContextsImpl.get();
     }
