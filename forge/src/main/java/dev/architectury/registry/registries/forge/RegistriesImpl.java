@@ -362,7 +362,6 @@ public class RegistriesImpl {
             RegistryObject registryObject = RegistryObject.of(id, delegate);
             registry.computeIfAbsent(delegate.getRegistrySuperType(), type -> new Data())
                     .register(delegate, registryObject, () -> supplier.get().setRegistryName(id));
-            registry.put(delegate.getRegistrySuperType(), registryObject, () -> supplier.get().setRegistryName(id));
             return new RegistrySupplier<E>() {
                 @Override
                 public @NotNull ResourceLocation getRegistryId() {
