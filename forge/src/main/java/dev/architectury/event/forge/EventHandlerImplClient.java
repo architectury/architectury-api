@@ -328,5 +328,10 @@ public class EventHandlerImplClient {
         public static void event(RegisterShadersEvent event) {
             ClientReloadShadersEvent.EVENT.invoker().reload(event.getResourceManager(), event::registerShader);
         }
+        
+        @SubscribeEvent(priority = EventPriority.HIGH)
+        public static void event(ParticleFactoryRegisterEvent event) {
+            ClientParticleFactoryRegisterEvent.REGISTER.invoker().run();
+        }
     }
 }

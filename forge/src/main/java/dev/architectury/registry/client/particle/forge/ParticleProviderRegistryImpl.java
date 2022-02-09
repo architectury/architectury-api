@@ -19,6 +19,7 @@
 
 package dev.architectury.registry.client.particle.forge;
 
+import dev.architectury.event.events.client.ClientParticleFactoryRegisterEvent;
 import dev.architectury.forge.ArchitecturyForge;
 import dev.architectury.registry.client.particle.ParticleProviderRegistry;
 import net.minecraft.client.Minecraft;
@@ -30,11 +31,8 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -70,42 +68,13 @@ public class ParticleProviderRegistryImpl {
         }
     }
     
-    private static ArrayList<Runnable> deferred = new ArrayList<>();
-    
-    private static <T extends ParticleOptions> void _register(ParticleType<T> type, ParticleProvider<T> provider) {
-        Minecraft.getInstance().particleEngine.register(type, provider);
-    }
-    
-    private static <T extends ParticleOptions> void _register(ParticleType<T> type, ParticleProviderRegistry.DeferredParticleProvider<T> provider) {
-        Minecraft.getInstance().particleEngine.register(type, sprites ->
-                provider.create(new ExtendedSpriteSetImpl(Minecraft.getInstance().particleEngine, sprites)));
-    }
-    
     public static <T extends ParticleOptions> void register(ParticleType<T> type, ParticleProvider<T> provider) {
-        if (deferred == null) {
-            _register(type, provider);
-        } else {
-            deferred.add(() -> _register(type, provider));
-        }
+        ClientParticleFactoryRegisterEvent.REGISTER.register(() -> Minecraft.getInstance().particleEngine.register(type, provider));
+        
     }
     
     public static <T extends ParticleOptions> void register(ParticleType<T> type, ParticleProviderRegistry.DeferredParticleProvider<T> provider) {
-        if (deferred == null) {
-            _register(type, provider);
-        } else {
-            deferred.add(() -> _register(type, provider));
-        }
-    }
-    
-    @SubscribeEvent
-    public static void onParticleFactoryRegister(ParticleFactoryRegisterEvent unused) {
-        if (deferred != null) {
-            // run all deferred registrations
-            for (Runnable runnable : deferred) {
-                runnable.run();
-            }
-            // yeet deferred list - register immediately from now on
-            deferred = null;
-        }
+        ClientParticleFactoryRegisterEvent.REGISTER.register(() -> Minecraft.getInstance().particleEngine.register(type, sprites ->
+                provider.create(new ExtendedSpriteSetImpl(Minecraft.getInstance().particleEngine, sprites))));
     }
 }
