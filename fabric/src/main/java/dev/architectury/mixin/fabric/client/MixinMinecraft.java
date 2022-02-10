@@ -71,6 +71,11 @@ public abstract class MixinMinecraft {
         }
     }
     
+    @Inject(method = "startAttack", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;resetAttackStrengthTicker()V", ordinal = 0))
+    private void leftClickAir(CallbackInfoReturnable<Boolean> ci) {
+        InteractionEvent.CLIENT_LEFT_CLICK_AIR.invoker().click(player, InteractionHand.MAIN_HAND);
+    }
+    
     @ModifyVariable(
             method = "setScreen",
             at = @At(value = "FIELD",

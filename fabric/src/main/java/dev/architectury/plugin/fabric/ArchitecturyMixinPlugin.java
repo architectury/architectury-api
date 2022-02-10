@@ -53,21 +53,6 @@ public class ArchitecturyMixinPlugin implements IMixinConfigPlugin {
         return true;
     }
     
-    private boolean isMinecraft1182() {
-        ModContainer minecraft = FabricLoader.getInstance().getModContainer("minecraft")
-                .orElseThrow(() -> new IllegalStateException("Where is minecraft?"));
-        Version version = minecraft.getMetadata().getVersion();
-        if (version instanceof SemanticVersion) {
-            try {
-                return version.compareTo(SemanticVersion.parse("1.18.2-")) >= 0;
-            } catch (VersionParsingException e) {
-                throw new IllegalStateException("Failed to parse version", e);
-            }
-        }
-        System.err.println("Minecraft is not a SemanticVersion, cannot determine if it is >= 1.18.2");
-        return true;
-    }
-    
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if ("dev.architectury.mixin.fabric.client.MixinEffectInstance".equals(mixinClassName)) {
@@ -76,10 +61,6 @@ public class ArchitecturyMixinPlugin implements IMixinConfigPlugin {
             return !isLoader013();
         } else if ("dev.architectury.mixin.fabric.client.MixinGameRenderer013".equals(mixinClassName)) {
             return isLoader013();
-        } else if ("dev.architectury.mixin.fabric.client.MixinMinecraft118".equals(mixinClassName)) {
-            return !isMinecraft1182();
-        } else if ("dev.architectury.mixin.fabric.client.MixinMinecraft1182".equals(mixinClassName)) {
-            return isMinecraft1182();
         }
         return true;
     }

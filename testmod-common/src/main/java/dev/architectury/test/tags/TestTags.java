@@ -21,20 +21,19 @@ package dev.architectury.test.tags;
 
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.BlockEvent;
-import dev.architectury.hooks.tags.TagHooks;
 import dev.architectury.test.TestMod;
+import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.Tag;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.tags.TagKey;
 
 public class TestTags {
     public static void initialize() {
         // This will not be present, but it should return an empty tag
-        var heartParticles = TagHooks.optionalBlock(new ResourceLocation(TestMod.MOD_ID, "heart_particles"));
+        var heartParticles = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(TestMod.MOD_ID, "heart_particles"));
         // This will act like a normal tag, we have emerald block here
-        var heartParticles2 = TagHooks.optionalBlock(new ResourceLocation(TestMod.MOD_ID, "heart_particles2"));
+        var heartParticles2 = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(TestMod.MOD_ID, "heart_particles2"));
         
         BlockEvent.BREAK.register((world, pos, state, player, xp) -> {
             if (player != null && !world.isClientSide() && (state.is(heartParticles) || state.is(heartParticles2))) {

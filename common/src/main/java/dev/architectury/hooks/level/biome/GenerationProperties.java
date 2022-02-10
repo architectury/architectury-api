@@ -19,20 +19,21 @@
 
 package dev.architectury.hooks.level.biome;
 
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.List;
-import java.util.function.Supplier;
 
 public interface GenerationProperties {
-    List<Supplier<ConfiguredWorldCarver<?>>> getCarvers(GenerationStep.Carving carving);
+    Iterable<Holder<ConfiguredWorldCarver<?>>> getCarvers(GenerationStep.Carving carving);
     
-    List<Supplier<PlacedFeature>> getFeatures(GenerationStep.Decoration decoration);
+    Iterable<Holder<PlacedFeature>> getFeatures(GenerationStep.Decoration decoration);
     
-    List<List<Supplier<PlacedFeature>>> getFeatures();
+    List<HolderSet<PlacedFeature>> getFeatures();
     
     interface Mutable extends GenerationProperties {
         @ApiStatus.Experimental

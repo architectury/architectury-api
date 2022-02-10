@@ -19,6 +19,8 @@
 
 package dev.architectury.hooks.level.biome;
 
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.sounds.Music;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
@@ -358,17 +360,17 @@ public final class BiomeHooks {
         }
         
         @Override
-        public List<Supplier<ConfiguredWorldCarver<?>>> getCarvers(GenerationStep.Carving carving) {
+        public Iterable<Holder<ConfiguredWorldCarver<?>>> getCarvers(GenerationStep.Carving carving) {
             return settings.getCarvers(carving);
         }
         
         @Override
-        public List<Supplier<PlacedFeature>> getFeatures(GenerationStep.Decoration decoration) {
+        public Iterable<Holder<PlacedFeature>> getFeatures(GenerationStep.Decoration decoration) {
             return settings.features().get(decoration.ordinal());
         }
         
         @Override
-        public List<List<Supplier<PlacedFeature>>> getFeatures() {
+        public List<HolderSet<PlacedFeature>> getFeatures() {
             return settings.features();
         }
     }
