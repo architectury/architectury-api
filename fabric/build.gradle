@@ -26,12 +26,7 @@ repositories {
 
 dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
-    modCompileOnly "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
-    modRuntimeOnly("net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}") {
-        // temp workaround to test arch
-        exclude module: "fabric-rendering-fluids-v1"
-        exclude module: "fabric-transfer-api-v1"
-    }
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
     modCompileOnly("com.terraformersmc:modmenu:${rootProject.mod_menu_version}") { transitive false }
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
@@ -110,8 +105,7 @@ curseforge {
             releaseType = "$rootProject.cf_type"
             changelogType = "html"
             changelog = releaseChangelog()
-            addGameVersion "1.18.1"
-            addGameVersion "1.18"
+            // addGameVersion "1.18.1"
             addGameVersion "1.18-Snapshot"
             addGameVersion "Java 17"
             addGameVersion "Fabric"

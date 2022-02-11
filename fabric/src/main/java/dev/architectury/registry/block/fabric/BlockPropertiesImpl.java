@@ -20,7 +20,6 @@
 package dev.architectury.registry.block.fabric;
 
 import dev.architectury.registry.block.BlockProperties;
-import net.fabricmc.fabric.impl.object.builder.BlockSettingsInternals;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
@@ -57,11 +56,6 @@ public class BlockPropertiesImpl {
         properties.canOcclude = old.canOcclude;
         properties.isAir = old.isAir;
         properties.requiresCorrectToolForDrops = old.requiresCorrectToolForDrops;
-        var otherInternals = (BlockSettingsInternals) old;
-        var extraData = otherInternals.getExtraData();
-        if (extraData != null) {
-            ((BlockSettingsInternals) properties).setExtraData(extraData);
-        }
         return properties;
     }
     
