@@ -140,7 +140,6 @@ public final class Platform {
      * @throws NoSuchElementException if no mod with the given ID exists
      */
     @ExpectPlatform
-    @NotNull
     public static Mod getMod(String id) {
         throw new AssertionError();
     }
