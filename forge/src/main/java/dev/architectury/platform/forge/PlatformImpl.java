@@ -92,11 +92,11 @@ public class PlatformImpl {
         private final IModInfo info;
         
         public ModImpl(String id) {
-            this.container = ModList.get().getModContainerById(id).get();
+            this.container = ModList.get().getModContainerById(id).orElseThrow();
             this.info = ModList.get().getMods().stream()
                     .filter(modInfo -> Objects.equals(modInfo.getModId(), id))
                     .findAny()
-                    .get();
+                    .orElseThrow();
         }
         
         @Override

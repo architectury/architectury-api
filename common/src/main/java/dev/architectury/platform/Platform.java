@@ -24,9 +24,11 @@ import dev.architectury.injectables.targets.ArchitecturyTarget;
 import dev.architectury.utils.Env;
 import net.fabricmc.api.EnvType;
 import net.minecraft.SharedConstants;
+import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public final class Platform {
@@ -60,54 +62,119 @@ public final class Platform {
         return SharedConstants.getCurrentVersion().getId();
     }
     
+    /**
+     * Gets the root directory for the current instance of Minecraft.
+     * <p>
+     * The returned path is guaranteed to be <b>absolute</b>.
+     */
     @ExpectPlatform
     public static Path getGameFolder() {
         throw new AssertionError();
     }
     
+    /**
+     * Gets the main <code>config</code> folder for the current instance of Minecraft.
+     * <p>
+     * The returned path is guaranteed to be <b>absolute</b>.
+     */
     @ExpectPlatform
     public static Path getConfigFolder() {
         throw new AssertionError();
     }
     
+    /**
+     * Gets the <code>mods</code> folder of the current instance of Minecraft.
+     * <p>
+     * The returned path is guaranteed to be <b>absolute</b>.
+     */
     @ExpectPlatform
     public static Path getModsFolder() {
         throw new AssertionError();
     }
     
+    /**
+     * Returns the current Environment the game is running in,
+     * being one of either <code>CLIENT</code> or <code>SERVER</code>.
+     * <p>
+     * The class returned is a platform-agnostic wrapper around the
+     * <code>EnvType</code> and <code>Dist</code> enums, respectively.
+     *
+     * @return The current Environment, as an instance of {@link Env}
+     * @see Env
+     * @see #getEnv()
+     */
     @ExpectPlatform
     public static Env getEnvironment() {
         throw new AssertionError();
     }
     
+    /**
+     * Returns the current Environment the game is running in,
+     * as a member of the {@link EnvType} enum. This is remapped
+     * on Forge to be the <code>Dist</code> enum, instead.
+     *
+     * @return The current Environment, as an instance of {@link EnvType}
+     * (or <code>Dist</code> on Forge)
+     */
     @ExpectPlatform
     public static EnvType getEnv() {
         throw new AssertionError();
     }
     
+    /**
+     * Checks whether a mod with the given mod ID is present.
+     *
+     * @param id The mod ID to check.
+     * @return <code>true</code> if the mod is loaded, <code>false</code> otherwise.
+     */
     @ExpectPlatform
     public static boolean isModLoaded(String id) {
         throw new AssertionError();
     }
     
+    /**
+     * Gets a {@link Mod} container by its mod ID.
+     *
+     * @param id The mod ID to look for.
+     * @return The mod container, if found.
+     * @throws NoSuchElementException if no mod with the given ID exists
+     */
     @ExpectPlatform
+    @NotNull
     public static Mod getMod(String id) {
         throw new AssertionError();
     }
     
+    /**
+     * Optionally gets a {@link Mod} container by its mod ID if it exists.
+     *
+     * @param id The mod ID to look for.
+     * @return An optional representing the mod container, if found,
+     * or an empty optional otherwise.
+     */
     public static Optional<Mod> getOptionalMod(String id) {
         try {
             return Optional.of(getMod(id));
-        } catch (NullPointerException e) {
+        } catch (NoSuchElementException e) {
             return Optional.empty();
         }
     }
     
+    /**
+     * Gets a collection of {@link Mod} containers for all currently-loaded mods.
+     *
+     * @return A collection of mod containers.
+     */
     @ExpectPlatform
     public static Collection<Mod> getMods() {
         throw new AssertionError();
     }
     
+    /**
+     * Gets a collection of Strings representing the mod IDs of all currently-loaded mods.
+     *
+     * @return A collection of all loaded mod IDs.
+     */
     @ExpectPlatform
     public static Collection<String> getModIds() {
         throw new AssertionError();
