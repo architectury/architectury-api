@@ -19,10 +19,13 @@
 
 package dev.architectury.hooks.level.entity.fabric;
 
+import dev.architectury.event.Event;
+import dev.architectury.event.EventFactory;
+import dev.architectury.event.EventResult;
 import net.minecraft.world.entity.player.Player;
 
-public class PlayerHooksImpl {
-    public static boolean isFake(Player player) {
-        return !FakePlayers.EVENT.invoker().isFakePlayer(player).isTrue();
-    }
+public interface FakePlayers {
+    Event<FakePlayers> EVENT = EventFactory.createEventResult();
+    
+    EventResult isFakePlayer(Player player);
 }
