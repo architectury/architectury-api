@@ -32,6 +32,7 @@ import org.jetbrains.annotations.Nullable;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -88,7 +89,7 @@ public class PlatformImpl {
         private final ModMetadata metadata;
         
         public ModImpl(String id) {
-            this.container = FabricLoader.getInstance().getModContainer(id).orElseThrow();
+            this.container = FabricLoader.getInstance().getModContainer(id).orElseThrow(() -> new NoSuchElementException("No value present"));
             this.metadata = this.container.getMetadata();
         }
         

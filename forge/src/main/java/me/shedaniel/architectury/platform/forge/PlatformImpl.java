@@ -91,11 +91,11 @@ public class PlatformImpl {
         private final ModInfo info;
         
         public ModImpl(String id) {
-            this.container = ModList.get().getModContainerById(id).orElseThrow();
+            this.container = ModList.get().getModContainerById(id).orElseThrow(() -> new NoSuchElementException("No value present"));
             this.info = ModList.get().getMods().stream()
                     .filter(modInfo -> Objects.equals(modInfo.getModId(), id))
                     .findAny()
-                    .orElseThrow();
+                    .orElseThrow(() -> new NoSuchElementException("No value present"));
         }
         
         @Override
