@@ -41,11 +41,11 @@ public class PlatformImpl {
     private static final Map<String, Mod> mods = new ConcurrentHashMap<>();
     
     public static Path getGameFolder() {
-        return FabricLoader.getInstance().getGameDir();
+        return FabricLoader.getInstance().getGameDir().toAbsolutePath();
     }
     
     public static Path getConfigFolder() {
-        return FabricLoader.getInstance().getConfigDir();
+        return FabricLoader.getInstance().getConfigDir().toAbsolutePath();
     }
     
     public static Path getModsFolder() {
@@ -88,7 +88,7 @@ public class PlatformImpl {
         private final ModMetadata metadata;
         
         public ModImpl(String id) {
-            this.container = FabricLoader.getInstance().getModContainer(id).get();
+            this.container = FabricLoader.getInstance().getModContainer(id).orElseThrow();
             this.metadata = this.container.getMetadata();
         }
         
