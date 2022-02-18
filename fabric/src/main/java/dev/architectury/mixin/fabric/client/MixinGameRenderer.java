@@ -19,9 +19,11 @@
 
 package dev.architectury.mixin.fabric.client;
 
+import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.shaders.Program;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.math.Matrix4f;
 import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.event.events.client.ClientReloadShadersEvent;
 import net.minecraft.client.Minecraft;
@@ -48,8 +50,8 @@ public abstract class MixinGameRenderer {
     @Inject(method = "render(FJZ)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;render(Lcom/mojang/blaze3d/vertex/PoseStack;IIF)V",
                     ordinal = 0), locals = LocalCapture.CAPTURE_FAILEXCEPTION, cancellable = true)
-    public void renderScreenPre(float tickDelta, long startTime, boolean tick, CallbackInfo ci, int mouseX, int mouseY, PoseStack matrices) {
-        if (ClientGuiEvent.RENDER_PRE.invoker().render(minecraft.screen, matrices, mouseX, mouseY, minecraft.getDeltaFrameTime()).isFalse()) {
+    public void renderScreenPre(float tickDelta, long startTime, boolean tick, CallbackInfo ci, int mouseX, int mouseY, Window window, Matrix4f matrix, PoseStack matrices, PoseStack matrices2) {
+        if (ClientGuiEvent.RENDER_PRE.invoker().render(minecraft.screen, matrices2, mouseX, mouseY, minecraft.getDeltaFrameTime()).isFalse()) {
             ci.cancel();
         }
     }
@@ -57,8 +59,8 @@ public abstract class MixinGameRenderer {
     @Inject(method = "render(FJZ)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;render(Lcom/mojang/blaze3d/vertex/PoseStack;IIF)V",
                     shift = At.Shift.AFTER, ordinal = 0), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-    public void renderScreenPost(float tickDelta, long startTime, boolean tick, CallbackInfo ci, int mouseX, int mouseY, PoseStack matrices) {
-        ClientGuiEvent.RENDER_POST.invoker().render(minecraft.screen, matrices, mouseX, mouseY, minecraft.getDeltaFrameTime());
+    public void renderScreenPost(float tickDelta, long startTime, boolean tick, CallbackInfo ci, int mouseX, int mouseY, Window window, Matrix4f matrix, PoseStack matrices, PoseStack matrices2) {
+        ClientGuiEvent.RENDER_POST.invoker().render(minecraft.screen, matrices2, mouseX, mouseY, minecraft.getDeltaFrameTime());
     }
     
     @Inject(method = "reloadShaders",
