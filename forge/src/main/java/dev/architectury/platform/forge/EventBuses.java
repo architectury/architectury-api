@@ -32,9 +32,7 @@ public final class EventBuses {
     private static final Map<String, List<Consumer<IEventBus>>> ON_REGISTERED = new HashMap<>();
     
     public static void registerModEventBus(String modId, IEventBus bus) {
-        IEventBus previous = EVENT_BUS_MAP.put(modId, bus);
-        if (previous != null) {
-            EVENT_BUS_MAP.put(modId, previous);
+        if (EVENT_BUS_MAP.putIfAbsent(modId, bus) != bus) {
             throw new IllegalStateException("Can't register event bus for mod '" + modId + "' because it was previously registered!");
         }
         

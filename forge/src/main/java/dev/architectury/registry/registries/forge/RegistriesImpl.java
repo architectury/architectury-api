@@ -21,10 +21,8 @@ package dev.architectury.registry.registries.forge;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Suppliers;
-import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import com.google.common.collect.Table;
 import dev.architectury.platform.forge.EventBuses;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarBuilder;
@@ -43,10 +41,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -67,10 +62,24 @@ public class RegistriesImpl {
         return null;
     }
     
+    public static class Data {
+        private boolean collected = false;
+        private final Map<RegistryObject<?>, Supplier<? extends IForgeRegistryEntry<?>>> objects = new LinkedHashMap<>();
+        
+        public void register(IForgeRegistry registry, RegistryObject object, Supplier<? extends IForgeRegistryEntry<?>> reference) {
+            if (!collected) {
+                objects.put(object, reference);
+            } else {
+                registry.register(reference.get());
+                object.updateReference(registry);
+            }
+        }
+    }
+    
     public static class RegistryProviderImpl implements Registries.RegistryProvider {
         private final String modId;
         private final Supplier<IEventBus> eventBus;
-        private final Table<Type, RegistryObject<?>, Supplier<? extends IForgeRegistryEntry<?>>> registry = HashBasedTable.create();
+        private final Map<Type, Data> registry = new HashMap<>();
         private final Multimap<ResourceKey<Registry<?>>, Consumer<Registrar<?>>> listeners = HashMultimap.create();
         
         public RegistryProviderImpl(String modId) {
@@ -125,12 +134,18 @@ public class RegistriesImpl {
                 IForgeRegistry registry = event.getRegistry();
                 Registrar<Object> archRegistry = get(registry);
                 
-                for (Map.Entry<Type, Map<RegistryObject<?>, Supplier<? extends IForgeRegistryEntry<?>>>> row : RegistryProviderImpl.this.registry.rowMap().entrySet()) {
-                    if (row.getKey() == event.getGenericType()) {
-                        for (Map.Entry<RegistryObject<?>, Supplier<? extends IForgeRegistryEntry<?>>> entry : row.getValue().entrySet()) {
+                for (Map.Entry<Type, Data> typeDataEntry : RegistryProviderImpl.this.registry.entrySet()) {
+                    if (typeDataEntry.getKey() == registry.getRegistrySuperType()) {
+                        Data data = typeDataEntry.getValue();
+                        
+                        data.collected = true;
+                        
+                        for (Map.Entry<RegistryObject<?>, Supplier<? extends IForgeRegistryEntry<?>>> entry : data.objects.entrySet()) {
                             registry.register(entry.getValue().get());
                             entry.getKey().updateReference(registry);
                         }
+                        
+                        data.objects.clear();
                     }
                 }
                 
@@ -291,9 +306,9 @@ public class RegistriesImpl {
     
     public static class ForgeBackedRegistryImpl<T extends IForgeRegistryEntry<T>> implements Registrar<T> {
         private IForgeRegistry<T> delegate;
-        private Table<Type, RegistryObject<?>, Supplier<? extends IForgeRegistryEntry<?>>> registry;
+        private Map<Type, Data> registry;
         
-        public ForgeBackedRegistryImpl(Table<Type, RegistryObject<?>, Supplier<? extends IForgeRegistryEntry<?>>> registry, IForgeRegistry<T> delegate) {
+        public ForgeBackedRegistryImpl(Map<Type, Data> registry, IForgeRegistry<T> delegate) {
             this.registry = registry;
             this.delegate = delegate;
         }
@@ -345,7 +360,8 @@ public class RegistriesImpl {
         @Override
         public @NotNull <E extends T> RegistrySupplier<E> register(ResourceLocation id, Supplier<E> supplier) {
             RegistryObject registryObject = RegistryObject.of(id, delegate);
-            registry.put(delegate.getRegistrySuperType(), registryObject, () -> supplier.get().setRegistryName(id));
+            registry.computeIfAbsent(delegate.getRegistrySuperType(), type -> new Data())
+                    .register(delegate, registryObject, () -> supplier.get().setRegistryName(id));
             return new RegistrySupplier<E>() {
                 @Override
                 public @NotNull ResourceLocation getRegistryId() {
