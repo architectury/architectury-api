@@ -19,6 +19,7 @@
 
 package dev.architectury.registry.level.biome.fabric;
 
+/*
 import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
 import dev.architectury.hooks.level.biome.*;
@@ -150,12 +151,6 @@ public class BiomeModificationsImpl {
             return this;
         }
         
-        /*@Override
-        public Mutable addStructure(ConfiguredStructureFeature<?, ?> feature) {
-            context.addBuiltInStructure(feature);
-            return this;
-        }*/
-        
         @Override
         public Mutable removeFeature(GenerationStep.Decoration decoration, PlacedFeature feature) {
             context.removeBuiltInFeature(decoration, feature);
@@ -167,12 +162,6 @@ public class BiomeModificationsImpl {
             context.removeBuiltInCarver(carving, feature);
             return this;
         }
-        
-        /*@Override
-        public Mutable removeStructure(ConfiguredStructureFeature<?, ?> feature) {
-            context.removeBuiltInStructure(feature);
-            return this;
-        }*/
     }
     
     private static class MutableSpawnProperties extends BiomeHooks.SpawnSettingsWrapped implements SpawnProperties.Mutable {
@@ -340,3 +329,4 @@ public class BiomeModificationsImpl {
     }
     
 }
+*/
