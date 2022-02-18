@@ -59,7 +59,7 @@ public class MixinChunkSerializer {
             ChunkDataEvent.Load load = (ChunkDataEvent.Load) event;
             ((EventHandlerImplCommon.WorldEventAttachment) load).architectury$attachLevel(levelRef.get());
         }
-        level.set(null);
+        level.remove();
         return event;
     }
 }

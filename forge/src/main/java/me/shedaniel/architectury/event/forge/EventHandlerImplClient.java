@@ -171,29 +171,41 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(RenderTooltipEvent.Pre event) {
-        if (TooltipEvent.RENDER_FORGE_PRE.invoker().renderTooltip(event.getMatrixStack(), event.getLines(), event.getX(), event.getY()) == InteractionResult.FAIL) {
-            event.setCanceled(true);
-            return;
-        }
+        TooltipEvent.additionalContexts().setItem(event.getStack());
         
-        TooltipEventPositionContextImpl positionContext = tooltipPositionContext.get();
-        positionContext.reset(event.getX(), event.getY());
-        TooltipEvent.RENDER_MODIFY_POSITION.invoker().renderTooltip(event.getMatrixStack(), positionContext);
-        event.setX(positionContext.getTooltipX());
-        event.setY(positionContext.getTooltipY());
+        try {
+            if (TooltipEvent.RENDER_FORGE_PRE.invoker().renderTooltip(event.getMatrixStack(), event.getLines(), event.getX(), event.getY()) == InteractionResult.FAIL) {
+                event.setCanceled(true);
+                return;
+            }
+            
+            TooltipEventPositionContextImpl positionContext = tooltipPositionContext.get();
+            positionContext.reset(event.getX(), event.getY());
+            TooltipEvent.RENDER_MODIFY_POSITION.invoker().renderTooltip(event.getMatrixStack(), positionContext);
+            event.setX(positionContext.getTooltipX());
+            event.setY(positionContext.getTooltipY());
+        } finally {
+            TooltipEvent.additionalContexts().setItem(null);
+        }
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(RenderTooltipEvent.Color event) {
-        TooltipEventColorContextImpl colorContext = tooltipColorContext.get();
-        colorContext.reset();
-        colorContext.setBackgroundColor(event.getBackground());
-        colorContext.setOutlineGradientTopColor(event.getBorderStart());
-        colorContext.setOutlineGradientBottomColor(event.getBorderEnd());
-        TooltipEvent.RENDER_MODIFY_COLOR.invoker().renderTooltip(event.getMatrixStack(), event.getX(), event.getY(), colorContext);
-        event.setBackground(colorContext.getBackgroundColor());
-        event.setBorderEnd(colorContext.getOutlineGradientBottomColor());
-        event.setBorderStart(colorContext.getOutlineGradientTopColor());
+        TooltipEvent.additionalContexts().setItem(event.getStack());
+        
+        try {
+            TooltipEventColorContextImpl colorContext = tooltipColorContext.get();
+            colorContext.reset();
+            colorContext.setBackgroundColor(event.getBackground());
+            colorContext.setOutlineGradientTopColor(event.getBorderStart());
+            colorContext.setOutlineGradientBottomColor(event.getBorderEnd());
+            TooltipEvent.RENDER_MODIFY_COLOR.invoker().renderTooltip(event.getMatrixStack(), event.getX(), event.getY(), colorContext);
+            event.setBackground(colorContext.getBackgroundColor());
+            event.setBorderEnd(colorContext.getOutlineGradientBottomColor());
+            event.setBorderStart(colorContext.getOutlineGradientTopColor());
+        } finally {
+            TooltipEvent.additionalContexts().setItem(null);
+        }
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
