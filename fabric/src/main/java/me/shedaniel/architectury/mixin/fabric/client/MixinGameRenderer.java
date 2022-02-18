@@ -19,6 +19,7 @@
 
 package me.shedaniel.architectury.mixin.fabric.client;
 
+import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.vertex.PoseStack;
 import me.shedaniel.architectury.event.events.GuiEvent;
 import net.minecraft.client.Minecraft;
@@ -41,7 +42,7 @@ public abstract class MixinGameRenderer {
     @Inject(method = "render(FJZ)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;render(Lcom/mojang/blaze3d/vertex/PoseStack;IIF)V",
                     ordinal = 0), locals = LocalCapture.CAPTURE_FAILEXCEPTION, cancellable = true)
-    public void renderScreenPre(float tickDelta, long startTime, boolean tick, CallbackInfo ci, int mouseX, int mouseY, PoseStack matrices) {
+    public void renderScreenPre(float tickDelta, long startTime, boolean tick, CallbackInfo ci, int mouseX, int mouseY, Window window, PoseStack matrices) {
         if (GuiEvent.RENDER_PRE.invoker().render(minecraft.screen, matrices, mouseX, mouseY, minecraft.getDeltaFrameTime()) == InteractionResult.FAIL) {
             ci.cancel();
         }
@@ -50,7 +51,7 @@ public abstract class MixinGameRenderer {
     @Inject(method = "render(FJZ)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;render(Lcom/mojang/blaze3d/vertex/PoseStack;IIF)V",
                     shift = At.Shift.AFTER, ordinal = 0), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-    public void renderScreenPost(float tickDelta, long startTime, boolean tick, CallbackInfo ci, int mouseX, int mouseY, PoseStack matrices) {
+    public void renderScreenPost(float tickDelta, long startTime, boolean tick, CallbackInfo ci, int mouseX, int mouseY, Window window, PoseStack matrices) {
         GuiEvent.RENDER_POST.invoker().render(minecraft.screen, matrices, mouseX, mouseY, minecraft.getDeltaFrameTime());
     }
 }

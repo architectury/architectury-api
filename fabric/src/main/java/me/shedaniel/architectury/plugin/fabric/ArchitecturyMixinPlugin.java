@@ -19,7 +19,7 @@
 
 package me.shedaniel.architectury.plugin.fabric;
 
-import net.fabricmc.loader.api.*;
+import net.fabricmc.loader.api.FabricLoader;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -39,30 +39,11 @@ public class ArchitecturyMixinPlugin implements IMixinConfigPlugin {
         return null;
     }
     
-    private boolean isLoader013() {
-        ModContainer fabricLoader = FabricLoader.getInstance().getModContainer("fabricloader")
-                .orElseThrow(() -> new IllegalStateException("Where is fabricloader?"));
-        Version version = fabricLoader.getMetadata().getVersion();
-        if (version instanceof SemanticVersion) {
-            try {
-                return version.compareTo(SemanticVersion.parse("0.13-")) >= 0;
-            } catch (VersionParsingException e) {
-                throw new IllegalStateException("Failed to parse version", e);
-            }
-        }
-        System.err.println("FabricLoader is not a SemanticVersion, cannot determine if it is >= 0.13");
-        return true;
-    }
-    
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         switch (mixinClassName) {
             case "me.shedaniel.architectury.mixin.fabric.client.MixinEffectInstance":
                 return !FabricLoader.getInstance().isModLoaded("satin");
-            case "me.shedaniel.architectury.mixin.fabric.client.MixinGameRenderer":
-                return !isLoader013();
-            case "me.shedaniel.architectury.mixin.fabric.client.MixinGameRenderer013":
-                return isLoader013();
             default:
                 return true;
         }
