@@ -19,7 +19,6 @@
 
 package dev.architectury.registry.level.biome.fabric;
 
-/*
 import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
 import dev.architectury.hooks.level.biome.*;
@@ -329,4 +328,4 @@ public class BiomeModificationsImpl {
     }
     
 }
-*/
+
