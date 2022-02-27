@@ -39,6 +39,9 @@
     "fabricloader": ">=0.13.0",
     "fabric": ">=0.44.0"
   },
+  "breaks": {
+    "optifabric": "*"
+  },
   "custom": {
     "modmenu:api": true
   }
