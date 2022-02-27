@@ -81,7 +81,7 @@ public final class Platform {
     /**
      * Gets the root directory for the current instance of Minecraft.
      * <p>
-     * The returned path is guaranteed to be <b>absolute</b>.
+     * The returned path is guaranteed to be <b>absolute</b> and <b>normalized</b>.
      */
     @ExpectPlatform
     public static Path getGameFolder() {
@@ -91,7 +91,7 @@ public final class Platform {
     /**
      * Gets the main <code>config</code> folder for the current instance of Minecraft.
      * <p>
-     * The returned path is guaranteed to be <b>absolute</b>.
+     * The returned path is guaranteed to be <b>absolute</b> and <b>normalized</b>.
      */
     @ExpectPlatform
     public static Path getConfigFolder() {
@@ -101,7 +101,7 @@ public final class Platform {
     /**
      * Gets the <code>mods</code> folder of the current instance of Minecraft.
      * <p>
-     * The returned path is guaranteed to be <b>absolute</b>.
+     * The returned path is guaranteed to be <b>absolute</b> and <b>normalized</b>.
      */
     @ExpectPlatform
     public static Path getModsFolder() {
