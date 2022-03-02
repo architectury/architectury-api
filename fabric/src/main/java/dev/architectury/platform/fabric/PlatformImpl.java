@@ -41,11 +41,17 @@ public class PlatformImpl {
     private static final Map<String, Mod> mods = new ConcurrentHashMap<>();
     
     public static Path getGameFolder() {
-        return FabricLoader.getInstance().getGameDir().toAbsolutePath();
+        return FabricLoader.getInstance()
+                .getGameDir()
+                .toAbsolutePath()
+                .normalize();
     }
     
     public static Path getConfigFolder() {
-        return FabricLoader.getInstance().getConfigDir().toAbsolutePath();
+        return FabricLoader.getInstance()
+                .getConfigDir()
+                .toAbsolutePath()
+                .normalize();
     }
     
     public static Path getModsFolder() {
