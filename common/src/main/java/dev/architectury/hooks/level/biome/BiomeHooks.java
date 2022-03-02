@@ -20,7 +20,6 @@
 package dev.architectury.hooks.level.biome;
 
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet;
 import net.minecraft.sounds.Music;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
@@ -30,7 +29,6 @@ import net.minecraft.world.level.biome.Biome.BiomeCategory;
 import net.minecraft.world.level.biome.BiomeSpecialEffects.GrassColorModifier;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
-import java.util.function.Supplier;
 
 public final class BiomeHooks {
     public static BiomeProperties getBiomeProperties(Biome biome) {
@@ -370,8 +367,8 @@ public final class BiomeHooks {
         }
         
         @Override
-        public List<HolderSet<PlacedFeature>> getFeatures() {
-            return settings.features();
+        public List<Iterable<Holder<PlacedFeature>>> getFeatures() {
+            return (List<Iterable<Holder<PlacedFeature>>>) (List<?>) settings.features();
         }
     }
     

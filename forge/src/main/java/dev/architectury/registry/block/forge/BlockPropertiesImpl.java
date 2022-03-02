@@ -20,7 +20,6 @@
 package dev.architectury.registry.block.forge;
 
 import dev.architectury.registry.block.BlockProperties;
-import dev.architectury.registry.block.ToolType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;

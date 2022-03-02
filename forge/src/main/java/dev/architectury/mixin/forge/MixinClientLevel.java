@@ -21,6 +21,7 @@ package dev.architectury.mixin.forge;
 
 import dev.architectury.event.events.client.ClientTickEvent;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.Level;
@@ -35,7 +36,7 @@ import java.util.function.Supplier;
 
 @Mixin(ClientLevel.class)
 public abstract class MixinClientLevel extends Level {
-    protected MixinClientLevel(WritableLevelData worldInfo, ResourceKey<Level> dimension, DimensionType dimensionType, Supplier<ProfilerFiller> profiler, boolean isRemote, boolean isDebug, long seed) {
+    protected MixinClientLevel(WritableLevelData worldInfo, ResourceKey<Level> dimension, Holder<DimensionType> dimensionType, Supplier<ProfilerFiller> profiler, boolean isRemote, boolean isDebug, long seed) {
         super(worldInfo, dimension, dimensionType, profiler, isRemote, isDebug, seed);
     }
     

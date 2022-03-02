@@ -21,12 +21,15 @@ package dev.architectury.registry.level.biome.fabric;
 
 import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
+import com.mojang.datafixers.util.Either;
 import dev.architectury.hooks.level.biome.*;
 import dev.architectury.registry.level.biome.BiomeModifications.BiomeContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeModification;
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
 import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.Music;
 import net.minecraft.sounds.SoundEvent;
@@ -139,26 +142,36 @@ public class BiomeModificationsImpl {
         }
         
         @Override
-        public Mutable addFeature(GenerationStep.Decoration decoration, PlacedFeature feature) {
-            this.context.addBuiltInFeature(decoration, feature);
+        public Mutable addFeature(GenerationStep.Decoration decoration, Holder<PlacedFeature> feature) {
+            Either<ResourceKey<PlacedFeature>, PlacedFeature> unwrap = feature.unwrap();
+            if (unwrap.left().isPresent()) {
+                this.context.addFeature(decoration, unwrap.left().get());
+            } else {
+                this.context.addBuiltInFeature(decoration, unwrap.right().get());
+            }
             return this;
         }
         
         @Override
-        public Mutable addCarver(GenerationStep.Carving carving, ConfiguredWorldCarver<?> feature) {
-            context.addBuiltInCarver(carving, feature);
+        public Mutable addCarver(GenerationStep.Carving carving, Holder<ConfiguredWorldCarver<?>> feature) {
+            Either<ResourceKey<ConfiguredWorldCarver<?>>, ConfiguredWorldCarver<?>> unwrap = feature.unwrap();
+            if (unwrap.left().isPresent()) {
+                this.context.addCarver(carving, unwrap.left().get());
+            } else {
+                this.context.addBuiltInCarver(carving, unwrap.right().get());
+            }
             return this;
         }
         
         @Override
-        public Mutable removeFeature(GenerationStep.Decoration decoration, PlacedFeature feature) {
-            context.removeBuiltInFeature(decoration, feature);
+        public Mutable removeFeature(GenerationStep.Decoration decoration, ResourceKey<PlacedFeature> feature) {
+            context.removeFeature(decoration, feature);
             return this;
         }
         
         @Override
-        public Mutable removeCarver(GenerationStep.Carving carving, ConfiguredWorldCarver<?> feature) {
-            context.removeBuiltInCarver(carving, feature);
+        public Mutable removeCarver(GenerationStep.Carving carving, ResourceKey<ConfiguredWorldCarver<?>> feature) {
+            context.removeCarver(carving, feature);
             return this;
         }
     }

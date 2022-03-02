@@ -20,30 +20,73 @@
 package dev.architectury.hooks.level.biome;
 
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet;
+import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-import org.jetbrains.annotations.ApiStatus;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface GenerationProperties {
     Iterable<Holder<ConfiguredWorldCarver<?>>> getCarvers(GenerationStep.Carving carving);
     
     Iterable<Holder<PlacedFeature>> getFeatures(GenerationStep.Decoration decoration);
     
-    List<HolderSet<PlacedFeature>> getFeatures();
+    List<Iterable<Holder<PlacedFeature>>> getFeatures();
     
     interface Mutable extends GenerationProperties {
-        @ApiStatus.Experimental
-        Mutable addFeature(GenerationStep.Decoration decoration, PlacedFeature feature);
+        @Deprecated
+        default Mutable addFeature(GenerationStep.Decoration decoration, PlacedFeature feature) {
+            Optional<ResourceKey<PlacedFeature>> key = BuiltinRegistries.PLACED_FEATURE.getResourceKey(feature);
+            if (key.isPresent()) {
+                return addFeature(decoration, BuiltinRegistries.PLACED_FEATURE.getHolderOrThrow(key.get()));
+            } else {
+                return addFeature(decoration, Holder.direct(feature));
+            }
+        }
         
-        Mutable addCarver(GenerationStep.Carving carving, ConfiguredWorldCarver<?> feature);
+        Mutable addFeature(GenerationStep.Decoration decoration, Holder<PlacedFeature> feature);
         
-        @ApiStatus.Experimental
-        Mutable removeFeature(GenerationStep.Decoration decoration, PlacedFeature feature);
+        @Deprecated
+        default Mutable addCarver(GenerationStep.Carving carving, ConfiguredWorldCarver<?> feature) {
+            Optional<ResourceKey<ConfiguredWorldCarver<?>>> key = BuiltinRegistries.CONFIGURED_CARVER.getResourceKey(feature);
+            if (key.isPresent()) {
+                return addCarver(carving, BuiltinRegistries.CONFIGURED_CARVER.getHolderOrThrow(key.get()));
+            } else {
+                return addCarver(carving, Holder.direct(feature));
+            }
+        }
         
-        Mutable removeCarver(GenerationStep.Carving carving, ConfiguredWorldCarver<?> feature);
+        Mutable addCarver(GenerationStep.Carving carving, Holder<ConfiguredWorldCarver<?>> feature);
+        
+        @Deprecated
+        default Mutable removeFeature(GenerationStep.Decoration decoration, PlacedFeature feature) {
+            Optional<ResourceKey<PlacedFeature>> key = BuiltinRegistries.PLACED_FEATURE.getResourceKey(feature);
+            if (key.isPresent()) {
+                return removeFeature(decoration, key.get());
+            } else {
+                // This is dumb
+                System.err.println("Attempted to remove a dynamic feature with a deprecated builtin method!");
+                return this;
+            }
+        }
+        
+        Mutable removeFeature(GenerationStep.Decoration decoration, ResourceKey<PlacedFeature> feature);
+        
+        @Deprecated
+        default Mutable removeCarver(GenerationStep.Carving carving, ConfiguredWorldCarver<?> feature) {
+            Optional<ResourceKey<ConfiguredWorldCarver<?>>> key = BuiltinRegistries.CONFIGURED_CARVER.getResourceKey(feature);
+            if (key.isPresent()) {
+                return removeCarver(carving, key.get());
+            } else {
+                // This is dumb
+                System.err.println("Attempted to remove a dynamic carver with a deprecated builtin method!");
+                return this;
+            }
+        }
+        
+        Mutable removeCarver(GenerationStep.Carving carving, ResourceKey<ConfiguredWorldCarver<?>> feature);
     }
 }

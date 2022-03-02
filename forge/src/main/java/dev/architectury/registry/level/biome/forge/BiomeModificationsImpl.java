@@ -23,6 +23,8 @@ import com.google.common.collect.Lists;
 import dev.architectury.forge.ArchitecturyForge;
 import dev.architectury.hooks.level.biome.*;
 import dev.architectury.registry.level.biome.BiomeModifications.BiomeContext;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -45,7 +47,6 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(modid = ArchitecturyForge.MOD_ID)
 public class BiomeModificationsImpl {
@@ -150,18 +151,18 @@ public class BiomeModificationsImpl {
         }
         
         @Override
-        public @NotNull List<Supplier<ConfiguredWorldCarver<?>>> getCarvers(GenerationStep.Carving carving) {
+        public Iterable<Holder<ConfiguredWorldCarver<?>>> getCarvers(GenerationStep.Carving carving) {
             return generation.getCarvers(carving);
         }
-    
+        
         @Override
-        public List<Supplier<PlacedFeature>> getFeatures(GenerationStep.Decoration decoration) {
+        public Iterable<Holder<PlacedFeature>> getFeatures(GenerationStep.Decoration decoration) {
             return generation.getFeatures(decoration);
         }
-    
+        
         @Override
-        public @NotNull List<List<Supplier<PlacedFeature>>> getFeatures() {
-            return generation.features;
+        public List<Iterable<Holder<PlacedFeature>>> getFeatures() {
+            return (List<Iterable<Holder<PlacedFeature>>>) (List<?>) generation.features;
         }
     }
     
@@ -305,26 +306,26 @@ public class BiomeModificationsImpl {
         }
         
         @Override
-        public Mutable addFeature(GenerationStep.Decoration decoration, PlacedFeature feature) {
+        public Mutable addFeature(GenerationStep.Decoration decoration, Holder<PlacedFeature> feature) {
             generation.addFeature(decoration, feature);
             return this;
         }
         
         @Override
-        public Mutable addCarver(GenerationStep.Carving carving, ConfiguredWorldCarver<?> feature) {
+        public Mutable addCarver(GenerationStep.Carving carving, Holder<ConfiguredWorldCarver<?>> feature) {
             generation.addCarver(carving, feature);
             return this;
         }
         
         @Override
-        public Mutable removeFeature(GenerationStep.Decoration decoration, PlacedFeature feature) {
-            generation.getFeatures(decoration).removeIf(supplier -> supplier.get() == feature);
+        public Mutable removeFeature(GenerationStep.Decoration decoration, ResourceKey<PlacedFeature> feature) {
+            generation.getFeatures(decoration).removeIf(supplier -> supplier.is(feature));
             return this;
         }
         
         @Override
-        public Mutable removeCarver(GenerationStep.Carving carving, ConfiguredWorldCarver<?> feature) {
-            generation.getCarvers(carving).removeIf(supplier -> supplier.get() == feature);
+        public Mutable removeCarver(GenerationStep.Carving carving, ResourceKey<ConfiguredWorldCarver<?>> feature) {
+            generation.getCarvers(carving).removeIf(supplier -> supplier.is(feature));
             return this;
         }
     }
