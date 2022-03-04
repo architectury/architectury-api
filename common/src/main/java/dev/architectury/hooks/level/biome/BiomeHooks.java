@@ -32,10 +32,7 @@ import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.OptionalInt;
+import java.util.*;
 import java.util.function.Supplier;
 
 public final class BiomeHooks {
@@ -364,6 +361,9 @@ public final class BiomeHooks {
         
         @Override
         public List<Supplier<PlacedFeature>> getFeatures(GenerationStep.Decoration decoration) {
+            if (decoration.ordinal() >= settings.features().size()) {
+                return Collections.emptyList();
+            }
             return settings.features().get(decoration.ordinal());
         }
         
