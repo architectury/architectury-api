@@ -33,10 +33,7 @@ import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.level.levelgen.surfacebuilders.ConfiguredSurfaceBuilder;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.OptionalInt;
+import java.util.*;
 import java.util.function.Supplier;
 
 public final class BiomeHooks {
@@ -392,6 +389,9 @@ public final class BiomeHooks {
         
         @Override
         public List<Supplier<ConfiguredFeature<?, ?>>> getFeatures(GenerationStep.Decoration decoration) {
+            if (decoration.ordinal() >= settings.features().size()) {
+                return Collections.emptyList();
+            }
             return settings.features().get(decoration.ordinal());
         }
         
