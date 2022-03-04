@@ -32,10 +32,7 @@ import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.OptionalInt;
+import java.util.*;
 
 public final class BiomeHooks {
     public static BiomeProperties getBiomeProperties(Biome biome) {
@@ -363,6 +360,9 @@ public final class BiomeHooks {
         
         @Override
         public Iterable<Holder<PlacedFeature>> getFeatures(GenerationStep.Decoration decoration) {
+            if (decoration.ordinal() >= settings.features().size()) {
+                return Collections.emptyList();
+            }
             return settings.features().get(decoration.ordinal());
         }
         
