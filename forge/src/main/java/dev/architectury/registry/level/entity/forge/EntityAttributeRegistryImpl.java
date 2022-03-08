@@ -32,9 +32,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 public class EntityAttributeRegistryImpl {
-    private static final Map<Supplier<EntityType<? extends LivingEntity>>, Supplier<AttributeSupplier.Builder>> ATTRIBUTES = new ConcurrentHashMap<>();
+    private static final Map<Supplier<? extends EntityType<? extends LivingEntity>>, Supplier<AttributeSupplier.Builder>> ATTRIBUTES = new ConcurrentHashMap<>();
     
-    public static void register(Supplier<EntityType<? extends LivingEntity>> type, Supplier<AttributeSupplier.Builder> attribute) {
+    public static void register(Supplier<? extends EntityType<? extends LivingEntity>> type, Supplier<AttributeSupplier.Builder> attribute) {
         ATTRIBUTES.put(type, attribute);
     }
     
@@ -46,7 +46,7 @@ public class EntityAttributeRegistryImpl {
     
     @SubscribeEvent
     public static void event(EntityAttributeCreationEvent event) {
-        for (Map.Entry<Supplier<EntityType<? extends LivingEntity>>, Supplier<AttributeSupplier.Builder>> entry : ATTRIBUTES.entrySet()) {
+        for (Map.Entry<Supplier<? extends EntityType<? extends LivingEntity>>, Supplier<AttributeSupplier.Builder>> entry : ATTRIBUTES.entrySet()) {
             event.put(entry.getKey().get(), entry.getValue().get().build());
         }
     }

@@ -40,7 +40,6 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.tuple.Pair;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
@@ -76,13 +75,11 @@ public class BiomeModificationsImpl {
             BiomeProperties properties = new BiomeWrapped(event);
             
             @Override
-            @NotNull
             public ResourceLocation getKey() {
                 return event.getName();
             }
             
             @Override
-            @NotNull
             public BiomeProperties getProperties() {
                 return properties;
             }
@@ -113,32 +110,28 @@ public class BiomeModificationsImpl {
             this.spawnProperties = spawnProperties;
         }
         
-        @NotNull
         @Override
         public ClimateProperties getClimateProperties() {
             return climateProperties;
         }
         
-        @NotNull
         @Override
         public EffectsProperties getEffectsProperties() {
             return effectsProperties;
         }
         
-        @NotNull
         @Override
         public GenerationProperties getGenerationProperties() {
             return generationProperties;
         }
         
-        @NotNull
         @Override
         public SpawnProperties getSpawnProperties() {
             return spawnProperties;
         }
         
         @Override
-        public Biome.@NotNull BiomeCategory getCategory() {
+        public Biome.BiomeCategory getCategory() {
             return event.getCategory();
         }
     }
@@ -179,12 +172,12 @@ public class BiomeModificationsImpl {
         }
         
         @Override
-        public @NotNull Map<MobCategory, List<MobSpawnSettings.SpawnerData>> getSpawners() {
+        public Map<MobCategory, List<MobSpawnSettings.SpawnerData>> getSpawners() {
             return builder.spawners;
         }
         
         @Override
-        public @NotNull Map<EntityType<?>, MobSpawnSettings.MobSpawnCost> getMobSpawnCosts() {
+        public Map<EntityType<?>, MobSpawnSettings.MobSpawnCost> getMobSpawnCosts() {
             return builder.mobSpawnCosts;
         }
     }
@@ -200,27 +193,27 @@ public class BiomeModificationsImpl {
         }
         
         @Override
-        public @NotNull ClimateProperties.Mutable getClimateProperties() {
+        public ClimateProperties.Mutable getClimateProperties() {
             return (ClimateProperties.Mutable) super.getClimateProperties();
         }
         
         @Override
-        public @NotNull EffectsProperties.Mutable getEffectsProperties() {
+        public EffectsProperties.Mutable getEffectsProperties() {
             return (EffectsProperties.Mutable) super.getEffectsProperties();
         }
         
         @Override
-        public @NotNull GenerationProperties.Mutable getGenerationProperties() {
+        public GenerationProperties.Mutable getGenerationProperties() {
             return (GenerationProperties.Mutable) super.getGenerationProperties();
         }
         
         @Override
-        public @NotNull SpawnProperties.Mutable getSpawnProperties() {
+        public SpawnProperties.Mutable getSpawnProperties() {
             return (SpawnProperties.Mutable) super.getSpawnProperties();
         }
         
         @Override
-        public @NotNull Mutable setCategory(Biome.@NotNull BiomeCategory category) {
+        public Mutable setCategory(Biome.BiomeCategory category) {
             event.setCategory(category);
             return this;
         }
@@ -248,7 +241,6 @@ public class BiomeModificationsImpl {
             this.downfall = downfall;
         }
         
-        @NotNull
         @Override
         public Biome.Precipitation getPrecipitation() {
             return precipitation;
@@ -259,7 +251,6 @@ public class BiomeModificationsImpl {
             return temperature;
         }
         
-        @NotNull
         @Override
         public Biome.TemperatureModifier getTemperatureModifier() {
             return temperatureModifier;
@@ -271,28 +262,28 @@ public class BiomeModificationsImpl {
         }
         
         @Override
-        public @NotNull Mutable setPrecipitation(Biome.@NotNull Precipitation precipitation) {
+        public Mutable setPrecipitation(Biome.Precipitation precipitation) {
             this.precipitation = precipitation;
             this.dirty = true;
             return this;
         }
         
         @Override
-        public @NotNull Mutable setTemperature(float temperature) {
+        public Mutable setTemperature(float temperature) {
             this.temperature = temperature;
             this.dirty = true;
             return this;
         }
         
         @Override
-        public @NotNull Mutable setTemperatureModifier(Biome.@NotNull TemperatureModifier temperatureModifier) {
+        public Mutable setTemperatureModifier(Biome.TemperatureModifier temperatureModifier) {
             this.temperatureModifier = temperatureModifier;
             this.dirty = true;
             return this;
         }
         
         @Override
-        public @NotNull Mutable setDownfall(float downfall) {
+        public Mutable setDownfall(float downfall) {
             this.downfall = downfall;
             this.dirty = true;
             return this;
@@ -336,7 +327,7 @@ public class BiomeModificationsImpl {
         }
         
         @Override
-        public @NotNull Mutable setCreatureProbability(float probability) {
+        public Mutable setCreatureProbability(float probability) {
             builder.creatureGenerationProbability(probability);
             return this;
         }

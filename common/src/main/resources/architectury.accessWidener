@@ -49,14 +49,14 @@ accessible field net/minecraft/world/level/block/state/BlockBehaviour$Properties
 mutable field net/minecraft/world/level/block/state/BlockBehaviour$Properties emissiveRendering Lnet/minecraft/world/level/block/state/BlockBehaviour$StatePredicate;
 accessible field net/minecraft/world/level/block/state/BlockBehaviour$Properties dynamicShape Z
 mutable field net/minecraft/world/level/block/state/BlockBehaviour$Properties dynamicShape Z
+accessible method net/minecraft/world/level/block/state/BlockBehaviour$Properties <init> (Lnet/minecraft/world/level/material/Material;Ljava/util/function/Function;)V
+transitive-accessible method net/minecraft/world/entity/player/Player closeContainer ()V
+transitive-accessible method net/minecraft/advancements/CriteriaTriggers register (Lnet/minecraft/advancements/CriterionTrigger;)Lnet/minecraft/advancements/CriterionTrigger;
+accessible method net/minecraft/world/inventory/MenuType <init> (Lnet/minecraft/world/inventory/MenuType$MenuSupplier;)V
+accessible class net/minecraft/world/inventory/MenuType$MenuSupplier
 accessible method net/minecraft/world/entity/Entity getEncodeId ()Ljava/lang/String;
 accessible field net/minecraft/server/packs/repository/PackRepository sources Ljava/util/Set;
 mutable field net/minecraft/server/packs/repository/PackRepository sources Ljava/util/Set;
-accessible method net/minecraft/world/entity/player/Player closeContainer ()V
-accessible method net/minecraft/advancements/CriteriaTriggers register (Lnet/minecraft/advancements/CriterionTrigger;)Lnet/minecraft/advancements/CriterionTrigger;
-accessible method net/minecraft/world/inventory/MenuType <init> (Lnet/minecraft/world/inventory/MenuType$MenuSupplier;)V
-accessible class net/minecraft/world/inventory/MenuType$MenuSupplier
-accessible method net/minecraft/world/level/block/state/BlockBehaviour$Properties <init> (Lnet/minecraft/world/level/material/Material;Ljava/util/function/Function;)V
 accessible field net/minecraft/world/level/biome/Biome climateSettings Lnet/minecraft/world/level/biome/Biome$ClimateSettings;
 accessible field net/minecraft/world/level/biome/Biome biomeCategory Lnet/minecraft/world/level/biome/Biome$BiomeCategory;
 mutable field net/minecraft/world/level/biome/Biome biomeCategory Lnet/minecraft/world/level/biome/Biome$BiomeCategory;
@@ -92,19 +92,33 @@ accessible field net/minecraft/world/level/biome/BiomeSpecialEffects ambientAddi
 mutable field net/minecraft/world/level/biome/BiomeSpecialEffects ambientAdditionsSettings Ljava/util/Optional;
 accessible field net/minecraft/world/level/biome/BiomeSpecialEffects backgroundMusic Ljava/util/Optional;
 mutable field net/minecraft/world/level/biome/BiomeSpecialEffects backgroundMusic Ljava/util/Optional;
-accessible method net/minecraft/world/level/storage/LevelResource <init> (Ljava/lang/String;)V
-accessible class net/minecraft/world/level/block/entity/BlockEntityType$BlockEntitySupplier
+accessible field net/minecraft/world/level/biome/BiomeGenerationSettings$Builder features Ljava/util/List;
+accessible field net/minecraft/world/level/biome/MobSpawnSettings$Builder spawners Ljava/util/Map;
+accessible field net/minecraft/world/level/biome/MobSpawnSettings$Builder mobSpawnCosts Ljava/util/Map;
+accessible field net/minecraft/world/level/biome/MobSpawnSettings$Builder creatureGenerationProbability F
+transitive-accessible method net/minecraft/world/level/GameRules register (Ljava/lang/String;Lnet/minecraft/world/level/GameRules$Category;Lnet/minecraft/world/level/GameRules$Type;)Lnet/minecraft/world/level/GameRules$Key;
+transitive-accessible method net/minecraft/world/level/GameRules$BooleanValue create (ZLjava/util/function/BiConsumer;)Lnet/minecraft/world/level/GameRules$Type;
+transitive-accessible method net/minecraft/world/level/GameRules$BooleanValue create (Z)Lnet/minecraft/world/level/GameRules$Type;
+transitive-accessible method net/minecraft/world/level/GameRules$IntegerValue create (ILjava/util/function/BiConsumer;)Lnet/minecraft/world/level/GameRules$Type;
+transitive-accessible method net/minecraft/world/level/GameRules$IntegerValue create (I)Lnet/minecraft/world/level/GameRules$Type;
+transitive-accessible method net/minecraft/world/level/storage/LevelResource <init> (Ljava/lang/String;)V
+transitive-accessible class net/minecraft/world/level/block/entity/BlockEntityType$BlockEntitySupplier
 accessible field net/minecraft/world/item/AxeItem STRIPPABLES Ljava/util/Map;
 mutable field net/minecraft/world/item/AxeItem STRIPPABLES Ljava/util/Map;
 accessible field net/minecraft/world/item/ShovelItem FLATTENABLES Ljava/util/Map;
 mutable field net/minecraft/world/item/ShovelItem FLATTENABLES Ljava/util/Map;
 accessible field net/minecraft/world/item/HoeItem TILLABLES Ljava/util/Map;
 mutable field net/minecraft/world/item/HoeItem TILLABLES Ljava/util/Map;
-accessible method net/minecraft/client/renderer/item/ItemProperties registerGeneric (Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/client/renderer/item/ClampedItemPropertyFunction;)Lnet/minecraft/client/renderer/item/ClampedItemPropertyFunction;
-accessible method net/minecraft/client/renderer/item/ItemProperties register (Lnet/minecraft/world/item/Item;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/client/renderer/item/ClampedItemPropertyFunction;)V
-accessible field net/minecraft/world/level/Explosion source Lnet/minecraft/world/entity/Entity;
-mutable field net/minecraft/world/level/Explosion source Lnet/minecraft/world/entity/Entity;
-accessible field net/minecraft/world/level/Explosion radius F
-mutable field net/minecraft/world/level/Explosion radius F
-accessible method net/minecraft/client/renderer/RenderType create (Ljava/lang/String;Lcom/mojang/blaze3d/vertex/VertexFormat;Lcom/mojang/blaze3d/vertex/VertexFormat$Mode;IZZLnet/minecraft/client/renderer/RenderType$CompositeState;)Lnet/minecraft/client/renderer/RenderType$CompositeRenderType;
-accessible class net/minecraft/client/renderer/RenderType$CompositeState
+transitive-accessible method net/minecraft/client/renderer/item/ItemProperties registerGeneric (Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/client/renderer/item/ClampedItemPropertyFunction;)Lnet/minecraft/client/renderer/item/ClampedItemPropertyFunction;
+transitive-accessible method net/minecraft/client/renderer/item/ItemProperties register (Lnet/minecraft/world/item/Item;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/client/renderer/item/ClampedItemPropertyFunction;)V
+transitive-accessible field net/minecraft/world/level/Explosion source Lnet/minecraft/world/entity/Entity;
+transitive-mutable field net/minecraft/world/level/Explosion source Lnet/minecraft/world/entity/Entity;
+transitive-accessible field net/minecraft/world/level/Explosion radius F
+transitive-mutable field net/minecraft/world/level/Explosion radius F
+transitive-accessible method net/minecraft/world/entity/player/Player closeContainer ()V
+transitive-accessible method net/minecraft/client/renderer/RenderType create (Ljava/lang/String;Lcom/mojang/blaze3d/vertex/VertexFormat;Lcom/mojang/blaze3d/vertex/VertexFormat$Mode;IZZLnet/minecraft/client/renderer/RenderType$CompositeState;)Lnet/minecraft/client/renderer/RenderType$CompositeRenderType;
+transitive-accessible class net/minecraft/client/renderer/RenderType$CompositeState
+accessible field net/minecraft/world/item/SpawnEggItem BY_ID Ljava/util/Map;
+accessible field net/minecraft/client/particle/ParticleEngine textureAtlas Lnet/minecraft/client/renderer/texture/TextureAtlas;
+accessible class net/minecraft/client/particle/ParticleEngine$MutableSpriteSet
+accessible field net/minecraft/client/particle/ParticleEngine$MutableSpriteSet sprites Ljava/util/List;

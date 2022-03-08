@@ -23,7 +23,6 @@ import com.google.common.base.Suppliers;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -61,7 +60,7 @@ public class DeferredRegister<T> implements Iterable<RegistrySupplier<T>> {
         var entry = new Entry<T>(id, (Supplier<T>) supplier);
         this.entries.add(entry);
         if (registered) {
-            var registrar = registriesSupplier.get().get(key);
+            var registrar = getRegistrar();
             entry.value = registrar.register(entry.id, entry.supplier);
         }
         return (RegistrySupplier<R>) entry;
@@ -72,16 +71,23 @@ public class DeferredRegister<T> implements Iterable<RegistrySupplier<T>> {
             throw new IllegalStateException("Cannot register a deferred register twice!");
         }
         registered = true;
-        var registrar = registriesSupplier.get().get(key);
+        var registrar = getRegistrar();
         for (var entry : entries) {
             entry.value = registrar.register(entry.id, entry.supplier);
         }
     }
     
-    @NotNull
     @Override
     public Iterator<RegistrySupplier<T>> iterator() {
         return entryView.iterator();
+    }
+    
+    public Registries getRegistries() {
+        return registriesSupplier.get();
+    }
+    
+    public Registrar<T> getRegistrar() {
+        return registriesSupplier.get().get(key);
     }
     
     private class Entry<R> implements RegistrySupplier<R> {
@@ -92,6 +98,16 @@ public class DeferredRegister<T> implements Iterable<RegistrySupplier<T>> {
         public Entry(ResourceLocation id, Supplier<R> supplier) {
             this.id = id;
             this.supplier = supplier;
+        }
+        
+        @Override
+        public Registries getRegistries() {
+            return DeferredRegister.this.getRegistries();
+        }
+        
+        @Override
+        public Registrar<R> getRegistrar() {
+            return (Registrar<R>) DeferredRegister.this.getRegistrar();
         }
         
         @Override

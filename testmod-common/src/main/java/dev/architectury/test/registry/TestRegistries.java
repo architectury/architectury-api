@@ -19,9 +19,11 @@
 
 package dev.architectury.test.registry;
 
+import dev.architectury.core.item.ArchitecturySpawnEggItem;
 import dev.architectury.hooks.item.food.FoodPropertiesHooks;
 import dev.architectury.hooks.level.entity.EntityHooks;
 import dev.architectury.registry.block.BlockProperties;
+import dev.architectury.registry.level.entity.EntityAttributeRegistry;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 import dev.architectury.test.TestMod;
@@ -35,6 +37,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.animal.Pig;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -69,6 +72,9 @@ public class TestRegistries {
         FoodPropertiesHooks.effect(fpBuilder, () -> new MobEffectInstance(TEST_EFFECT.get(), 100), 1);
         return new Item(new Item.Properties().tab(TestCreativeTabs.TEST_TAB).food(fpBuilder.build()));
     });
+    public static final RegistrySupplier<Item> TEST_SPAWN_EGG = ITEMS.register("test_spawn_egg", () ->
+            new ArchitecturySpawnEggItem(TestRegistries.TEST_ENTITY, 0xFF000000, 0xFFFFFFFF,
+                    new Item.Properties().tab(TestCreativeTabs.TEST_TAB)));
     
     public static final RegistrySupplier<Block> TEST_BLOCK = BLOCKS.register("test_block", () ->
             new Block(BlockProperties.copy(Blocks.STONE)));
@@ -96,5 +102,6 @@ public class TestRegistries {
         ITEMS.register();
         ENTITY_TYPES.register();
         RECIPE_SERIALIZERS.register();
+        EntityAttributeRegistry.register(TEST_ENTITY, Pig::createAttributes);
     }
 }

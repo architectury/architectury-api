@@ -1,5 +1,5 @@
 loom {
-    accessWidenerPath = file("src/main/resources/architectury-common.accessWidener")
+    accessWidenerPath = file("src/main/resources/architectury.accessWidener")
 }
 
 dependencies {

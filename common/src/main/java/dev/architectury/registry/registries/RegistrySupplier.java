@@ -19,7 +19,10 @@
 
 package dev.architectury.registry.registries;
 
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -27,11 +30,23 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+@ApiStatus.NonExtendable
 public interface RegistrySupplier<T> extends Supplier<T> {
+    Registries getRegistries();
+    
+    Registrar<T> getRegistrar();
+    
     /**
      * @return the identifier of the registry
      */
     ResourceLocation getRegistryId();
+    
+    /**
+     * @return the identifier of the registry
+     */
+    default ResourceKey<Registry<T>> getRegistryKey() {
+        return ResourceKey.createRegistryKey(getRegistryId());
+    }
     
     /**
      * @return the identifier of the entry
@@ -83,5 +98,15 @@ public interface RegistrySupplier<T> extends Supplier<T> {
     
     default T orElseGet(Supplier<? extends T> supplier) {
         return isPresent() ? get() : supplier.get();
+    }
+    
+    /**
+     * Listens to when the registry entry is registered, and calls the given action.
+     * Evaluates immediately if the entry is already registered.
+     *
+     * @param callback the action to call when the registry entry is registered
+     */
+    default void listen(Consumer<T> callback) {
+        getRegistrar().listen(this, callback);
     }
 }

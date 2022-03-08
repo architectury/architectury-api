@@ -34,7 +34,6 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class FluidStackHooksImpl {
@@ -68,7 +67,7 @@ public class FluidStackHooksImpl {
     
     @OnlyIn(Dist.CLIENT)
     @Nullable
-    public static TextureAtlasSprite getStillTexture(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, @NotNull FluidState state) {
+    public static TextureAtlasSprite getStillTexture(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, FluidState state) {
         if (state.getType() == Fluids.EMPTY) return null;
         ResourceLocation texture = state.getType().getAttributes().getStillTexture(level, pos);
         return Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(texture);
@@ -76,7 +75,7 @@ public class FluidStackHooksImpl {
     
     @OnlyIn(Dist.CLIENT)
     @Nullable
-    public static TextureAtlasSprite getStillTexture(@NotNull FluidStack stack) {
+    public static TextureAtlasSprite getStillTexture(FluidStack stack) {
         if (stack.getFluid() == Fluids.EMPTY) return null;
         ResourceLocation texture = stack.getFluid().getAttributes().getStillTexture(FluidStackHooksForge.toForge(stack));
         return Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(texture);
@@ -84,7 +83,7 @@ public class FluidStackHooksImpl {
     
     @OnlyIn(Dist.CLIENT)
     @Nullable
-    public static TextureAtlasSprite getStillTexture(@NotNull Fluid fluid) {
+    public static TextureAtlasSprite getStillTexture(Fluid fluid) {
         if (fluid == Fluids.EMPTY) return null;
         ResourceLocation texture = fluid.getAttributes().getStillTexture();
         return Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(texture);
@@ -92,7 +91,7 @@ public class FluidStackHooksImpl {
     
     @OnlyIn(Dist.CLIENT)
     @Nullable
-    public static TextureAtlasSprite getFlowingTexture(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, @NotNull FluidState state) {
+    public static TextureAtlasSprite getFlowingTexture(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, FluidState state) {
         if (state.getType() == Fluids.EMPTY) return null;
         ResourceLocation texture = state.getType().getAttributes().getFlowingTexture(level, pos);
         return Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(texture);
@@ -100,7 +99,7 @@ public class FluidStackHooksImpl {
     
     @OnlyIn(Dist.CLIENT)
     @Nullable
-    public static TextureAtlasSprite getFlowingTexture(@NotNull FluidStack stack) {
+    public static TextureAtlasSprite getFlowingTexture(FluidStack stack) {
         if (stack.getFluid() == Fluids.EMPTY) return null;
         ResourceLocation texture = stack.getFluid().getAttributes().getFlowingTexture(FluidStackHooksForge.toForge(stack));
         return Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(texture);
@@ -108,26 +107,26 @@ public class FluidStackHooksImpl {
     
     @OnlyIn(Dist.CLIENT)
     @Nullable
-    public static TextureAtlasSprite getFlowingTexture(@NotNull Fluid fluid) {
+    public static TextureAtlasSprite getFlowingTexture(Fluid fluid) {
         if (fluid == Fluids.EMPTY) return null;
         ResourceLocation texture = fluid.getAttributes().getFlowingTexture();
         return Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(texture);
     }
     
     @OnlyIn(Dist.CLIENT)
-    public static int getColor(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, @NotNull FluidState state) {
+    public static int getColor(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, FluidState state) {
         if (state.getType() == Fluids.EMPTY) return -1;
         return state.getType().getAttributes().getColor(level, pos);
     }
     
     @OnlyIn(Dist.CLIENT)
-    public static int getColor(@NotNull FluidStack stack) {
+    public static int getColor(FluidStack stack) {
         if (stack.getFluid() == Fluids.EMPTY) return -1;
         return stack.getFluid().getAttributes().getColor(FluidStackHooksForge.toForge(stack));
     }
     
     @OnlyIn(Dist.CLIENT)
-    public static int getColor(@NotNull Fluid fluid) {
+    public static int getColor(Fluid fluid) {
         if (fluid == Fluids.EMPTY) return -1;
         return fluid.getAttributes().getColor();
     }

@@ -44,7 +44,6 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import org.apache.commons.lang3.tuple.Pair;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -103,13 +102,11 @@ public class BiomeModificationsImpl {
             BiomeProperties properties = BiomeHooks.getBiomeProperties(context.getBiome());
             
             @Override
-            @NotNull
             public ResourceLocation getKey() {
                 return context.getBiomeKey().location();
             }
             
             @Override
-            @NotNull
             public BiomeProperties getProperties() {
                 return properties;
             }
@@ -125,8 +122,7 @@ public class BiomeModificationsImpl {
                 new MutableSpawnProperties(biome, context.getSpawnSettings())
         ) {
             @Override
-            @NotNull
-            public BiomeProperties.Mutable setCategory(@NotNull BiomeCategory category) {
+            public BiomeProperties.Mutable setCategory(BiomeCategory category) {
                 context.setCategory(category);
                 return this;
             }
@@ -185,7 +181,7 @@ public class BiomeModificationsImpl {
         }
         
         @Override
-        public @NotNull Mutable setCreatureProbability(float probability) {
+        public Mutable setCreatureProbability(float probability) {
             context.setCreatureSpawnProbability(probability);
             return this;
         }
@@ -223,28 +219,24 @@ public class BiomeModificationsImpl {
     private static ClimateProperties.Mutable wrapWeather(Biome biome, WeatherContext context) {
         return new BiomeHooks.ClimateWrapped(biome) {
             @Override
-            @NotNull
-            public ClimateProperties.Mutable setPrecipitation(@NotNull Precipitation precipitation) {
+            public ClimateProperties.Mutable setPrecipitation(Precipitation precipitation) {
                 context.setPrecipitation(precipitation);
                 return this;
             }
             
             @Override
-            @NotNull
             public ClimateProperties.Mutable setTemperature(float temperature) {
                 context.setTemperature(temperature);
                 return this;
             }
             
             @Override
-            @NotNull
-            public ClimateProperties.Mutable setTemperatureModifier(@NotNull TemperatureModifier temperatureModifier) {
+            public ClimateProperties.Mutable setTemperatureModifier(TemperatureModifier temperatureModifier) {
                 context.setTemperatureModifier(temperatureModifier);
                 return this;
             }
             
             @Override
-            @NotNull
             public ClimateProperties.Mutable setDownfall(float downfall) {
                 context.setDownfall(downfall);
                 return this;
@@ -255,84 +247,72 @@ public class BiomeModificationsImpl {
     private static EffectsProperties.Mutable wrapEffects(Biome biome, EffectsContext context) {
         return new BiomeHooks.EffectsWrapped(biome) {
             @Override
-            @NotNull
             public EffectsProperties.Mutable setFogColor(int color) {
                 context.setFogColor(color);
                 return this;
             }
             
             @Override
-            @NotNull
             public EffectsProperties.Mutable setWaterColor(int color) {
                 context.setWaterColor(color);
                 return this;
             }
             
             @Override
-            @NotNull
             public EffectsProperties.Mutable setWaterFogColor(int color) {
                 context.setWaterFogColor(color);
                 return this;
             }
             
             @Override
-            @NotNull
             public EffectsProperties.Mutable setSkyColor(int color) {
                 context.setSkyColor(color);
                 return this;
             }
             
             @Override
-            @NotNull
             public EffectsProperties.Mutable setFoliageColorOverride(@Nullable Integer colorOverride) {
                 context.setFoliageColor(Optional.ofNullable(colorOverride));
                 return this;
             }
             
             @Override
-            @NotNull
             public EffectsProperties.Mutable setGrassColorOverride(@Nullable Integer colorOverride) {
                 context.setGrassColor(Optional.ofNullable(colorOverride));
                 return this;
             }
             
             @Override
-            @NotNull
-            public EffectsProperties.Mutable setGrassColorModifier(@NotNull GrassColorModifier modifier) {
+            public EffectsProperties.Mutable setGrassColorModifier(GrassColorModifier modifier) {
                 context.setGrassColorModifier(modifier);
                 return this;
             }
             
             @Override
-            @NotNull
             public EffectsProperties.Mutable setAmbientParticle(@Nullable AmbientParticleSettings settings) {
                 context.setParticleConfig(Optional.ofNullable(settings));
                 return this;
             }
             
             @Override
-            @NotNull
             public EffectsProperties.Mutable setAmbientLoopSound(@Nullable SoundEvent sound) {
                 context.setAmbientSound(Optional.ofNullable(sound));
                 return this;
             }
             
             @Override
-            @NotNull
             public EffectsProperties.Mutable setAmbientMoodSound(@Nullable AmbientMoodSettings settings) {
                 context.setMoodSound(Optional.ofNullable(settings));
                 return this;
             }
             
             @Override
-            @NotNull
             public EffectsProperties.Mutable setAmbientAdditionsSound(@Nullable AmbientAdditionsSettings settings) {
                 context.setAdditionsSound(Optional.ofNullable(settings));
                 return this;
             }
             
             @Override
-            @NotNull
             public EffectsProperties.Mutable setBackgroundMusic(@Nullable Music music) {
                 context.setMusic(Optional.ofNullable(music));
                 return this;
