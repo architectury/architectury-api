@@ -15,6 +15,7 @@ architectury {
 /**
  * The following code to generate the access widener is based on the following pull request by Juuxel;
  * https://github.com/Juuxel/
+ * https://github.com/FabricMC/fabric/pull/2044/
  * Copyright (c) 2016, 2017, 2018, 2019 FabricMC and Juuxel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
