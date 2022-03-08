@@ -12,6 +12,108 @@ architectury {
     common(rootProject.forgeEnabled.toBoolean())
 }
 
+
+import org.objectweb.asm.ClassReader
+import org.objectweb.asm.Opcodes
+import org.objectweb.asm.Type
+import org.objectweb.asm.tree.ClassNode
+
+import java.nio.file.FileSystem
+import java.nio.file.FileSystems
+import java.nio.file.Files
+import java.nio.file.Path
+
+task generateAccessWidener {
+    doLast {
+        List<String> lines = ["", "##############################", "# This section is generated automatically with Gradle task generateAccessWidener!!!", "##############################", ""]
+        Path inputJar = loom.namedMinecraftProvider.parentMinecraftProvider.mergedJar
+
+        try (def fs = FileSystems.newFileSystem(URI.create("jar:${inputJar.toUri()}"), [create: false])) {
+            generateItemConstructors(lines, fs)
+            lines.add("")
+            generateBlockConstructors(lines, fs)
+            lines.add("")
+            generateRenderTypeRelated(lines, fs)
+        }
+
+        file('.gradle/generated.accesswidener').text = String.join('\n', lines) + '\n'
+    }
+}
+
+static def generateBlockConstructors(List<String> lines, FileSystem fs) {
+    lines.add("# Constructors of non-abstract block classes")
+    Files.list(fs.getPath("net/minecraft/world/level/block"))
+            .filter { Files.isRegularFile(it) && it.toString().endsWith(".class") }
+            .map { loadClass(it) }
+            .sorted(Comparator.comparing { it.name })
+            .filter { (it.access & Opcodes.ACC_ABSTRACT) == 0 }
+            .forEach { node ->
+                for (def method : node.methods) {
+                    // Checklist for finding block constructors as of 1.18.2:
+                    //  - class directly in net.minecraft.world.level.block (excluding subpackages)
+                    //  - method name == <init> (by definition)
+                    //  - contains an BlockBehaviour$Properties parameter
+                    //  - only taking into account non-abstract classes and non-public constructors
+
+                    // Block constructor...
+                    if (method.name == "<init>" && Type.getArgumentTypes(method.desc).any { it.internalName == 'net/minecraft/world/level/block/state/BlockBehaviour$Properties' }) {
+                        // ...and non-public
+                        if ((method.access & Opcodes.ACC_PUBLIC) == 0) {
+                            lines.add("transitive-accessible method $node.name <init> $method.desc")
+                        }
+                    }
+                }
+            }
+}
+
+static def generateItemConstructors(List<String> lines, FileSystem fs) {
+    lines.add("# Constructors of non-abstract item classes")
+    Files.list(fs.getPath("net/minecraft/world/item"))
+            .filter { Files.isRegularFile(it) && it.toString().endsWith(".class") }
+            .map { loadClass(it) }
+            .sorted(Comparator.comparing { it.name })
+            .filter { (it.access & Opcodes.ACC_ABSTRACT) == 0 }
+            .forEach { node ->
+                for (def method : node.methods) {
+                    // Checklist for finding block constructors as of 1.18.2:
+                    //  - class directly in net.minecraft.world.item (excluding subpackages)
+                    //  - method name == <init> (by definition)
+                    //  - contains an Item$Properties parameter
+                    //  - only taking into account non-abstract classes and non-public constructors
+
+                    // Item constructor...
+                    if (method.name == "<init>" && Type.getArgumentTypes(method.desc).any { it.internalName == 'net/minecraft/world/item/Item$Properties' }) {
+                        // ...and non-public
+                        if ((method.access & Opcodes.ACC_PUBLIC) == 0) {
+                            lines.add("transitive-accessible method $node.name <init> $method.desc")
+                        }
+                    }
+                }
+            }
+}
+
+static def generateRenderTypeRelated(List<String> lines, FileSystem fs) {
+    lines.add("# RenderStateShard fields")
+    def node = loadClass(fs.getPath("net/minecraft/client/renderer/RenderStateShard.class"))
+    for (def field : node.fields) {
+        if ((field.access & Opcodes.ACC_STATIC) != 0 && (field.access & Opcodes.ACC_FINAL) != 0) {
+            if ((field.access & Opcodes.ACC_PUBLIC) == 0) {
+                lines.add("transitive-accessible field $node.name $field.name $field.desc")
+            }
+        }
+    }
+}
+
+static ClassNode loadClass(Path path) {
+    def node = new ClassNode()
+
+    try (def is = Files.newInputStream(path)) {
+        new ClassReader(is).accept(node, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES)
+    }
+
+    return node
+}
+
 publishing {
     publications {
         mavenCommon(MavenPublication) {

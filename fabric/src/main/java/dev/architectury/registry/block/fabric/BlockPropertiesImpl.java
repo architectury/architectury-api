@@ -24,9 +24,12 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.function.Function;
 
+@Deprecated
+@ApiStatus.ScheduledForRemoval
 public class BlockPropertiesImpl {
     public static BlockProperties of(Material material, MaterialColor color) {
         return new Impl(material, (state) -> color);
