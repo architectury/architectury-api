@@ -109,8 +109,6 @@ accessible field net/minecraft/world/item/ShovelItem FLATTENABLES Ljava/util/Map
 mutable field net/minecraft/world/item/ShovelItem FLATTENABLES Ljava/util/Map;
 accessible field net/minecraft/world/item/HoeItem TILLABLES Ljava/util/Map;
 mutable field net/minecraft/world/item/HoeItem TILLABLES Ljava/util/Map;
-transitive-accessible method net/minecraft/client/renderer/item/ItemProperties registerGeneric (Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/client/renderer/item/ClampedItemPropertyFunction;)Lnet/minecraft/client/renderer/item/ClampedItemPropertyFunction;
-transitive-accessible method net/minecraft/client/renderer/item/ItemProperties register (Lnet/minecraft/world/item/Item;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/client/renderer/item/ClampedItemPropertyFunction;)V
 transitive-accessible field net/minecraft/world/level/Explosion source Lnet/minecraft/world/entity/Entity;
 transitive-mutable field net/minecraft/world/level/Explosion source Lnet/minecraft/world/entity/Entity;
 transitive-accessible field net/minecraft/world/level/Explosion radius F
