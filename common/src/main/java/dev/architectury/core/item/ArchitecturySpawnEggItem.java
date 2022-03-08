@@ -75,6 +75,7 @@ public class ArchitecturySpawnEggItem extends SpawnEggItem {
         SpawnEggItem.BY_ID.remove(null);
         entityType.listen(type -> {
             SpawnEggItem.BY_ID.put(type, this);
+            this.defaultType = entityType.get();
         });
     }
     
