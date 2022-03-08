@@ -19,5 +19,9 @@
 
 package dev.architectury.registry.block;
 
+import org.jetbrains.annotations.ApiStatus;
+
+@Deprecated
+@ApiStatus.ScheduledForRemoval
 public interface BlockPropertiesExtension {
 }
