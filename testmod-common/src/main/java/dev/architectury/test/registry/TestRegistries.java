@@ -43,6 +43,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -58,6 +59,7 @@ public class TestRegistries {
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(TestMod.MOD_ID, Registry.ENTITY_TYPE_REGISTRY);
     public static final DeferredRegister<MobEffect> MOB_EFFECTS = DeferredRegister.create(TestMod.MOD_ID, Registry.MOB_EFFECT_REGISTRY);
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(TestMod.MOD_ID, Registry.RECIPE_SERIALIZER_REGISTRY);
+    public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(TestMod.MOD_ID, Registry.RECIPE_TYPE_REGISTRY);
     
     public static final RegistrySupplier<MobEffect> TEST_EFFECT = MOB_EFFECTS.register("test_effect", () ->
             new MobEffect(MobEffectCategory.NEUTRAL, 0x123456) {
@@ -96,12 +98,29 @@ public class TestRegistries {
     
     public static final RegistrySupplier<RecipeSerializer<CustomRecipe>> TEST_SERIALIZER = RECIPE_SERIALIZERS.register("test_serializer", TestRecipeSerializer::new);
     
+    public static final RegistrySupplier<RecipeType<CustomRecipe>> TEST_RECIPE_TYPE = RECIPE_TYPES.register("test_recipe_type", () -> new RecipeType<CustomRecipe>() {
+        @Override
+        public String toString() {
+            return TestMod.MOD_ID + ":test_recipe_type";
+        }
+    });
+    
     public static void initialize() {
         MOB_EFFECTS.register();
         BLOCKS.register();
         ITEMS.register();
         ENTITY_TYPES.register();
+        RECIPE_TYPES.register();
         RECIPE_SERIALIZERS.register();
         EntityAttributeRegistry.register(TEST_ENTITY, Pig::createAttributes);
+        TEST_BLOCK_ITEM.listen(item -> {
+            System.out.println("Registered item!");
+        });
+        TEST_SERIALIZER.listen(type -> {
+            System.out.println("Registered recipe serializer!");
+        });
+        TEST_RECIPE_TYPE.listen(type -> {
+            System.out.println("Registered recipe type!");
+        });
     }
 }
