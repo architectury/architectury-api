@@ -19,9 +19,11 @@
 
 package dev.architectury.test.registry;
 
+import dev.architectury.core.item.ArchitecturySpawnEggItem;
 import dev.architectury.hooks.item.food.FoodPropertiesHooks;
 import dev.architectury.hooks.level.entity.EntityHooks;
 import dev.architectury.registry.block.BlockProperties;
+import dev.architectury.registry.level.entity.EntityAttributeRegistry;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 import dev.architectury.test.TestMod;
@@ -35,11 +37,13 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.animal.Pig;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -55,6 +59,7 @@ public class TestRegistries {
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(TestMod.MOD_ID, Registry.ENTITY_TYPE_REGISTRY);
     public static final DeferredRegister<MobEffect> MOB_EFFECTS = DeferredRegister.create(TestMod.MOD_ID, Registry.MOB_EFFECT_REGISTRY);
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(TestMod.MOD_ID, Registry.RECIPE_SERIALIZER_REGISTRY);
+    public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(TestMod.MOD_ID, Registry.RECIPE_TYPE_REGISTRY);
     
     public static final RegistrySupplier<MobEffect> TEST_EFFECT = MOB_EFFECTS.register("test_effect", () ->
             new MobEffect(MobEffectCategory.NEUTRAL, 0x123456) {
@@ -69,6 +74,9 @@ public class TestRegistries {
         FoodPropertiesHooks.effect(fpBuilder, () -> new MobEffectInstance(TEST_EFFECT.get(), 100), 1);
         return new Item(new Item.Properties().tab(TestCreativeTabs.TEST_TAB).food(fpBuilder.build()));
     });
+    public static final RegistrySupplier<Item> TEST_SPAWN_EGG = ITEMS.register("test_spawn_egg", () ->
+            new ArchitecturySpawnEggItem(TestRegistries.TEST_ENTITY, 0xFF000000, 0xFFFFFFFF,
+                    new Item.Properties().tab(TestCreativeTabs.TEST_TAB)));
     
     public static final RegistrySupplier<Block> TEST_BLOCK = BLOCKS.register("test_block", () ->
             new Block(BlockProperties.copy(Blocks.STONE)));
@@ -90,11 +98,29 @@ public class TestRegistries {
     
     public static final RegistrySupplier<RecipeSerializer<CustomRecipe>> TEST_SERIALIZER = RECIPE_SERIALIZERS.register("test_serializer", TestRecipeSerializer::new);
     
+    public static final RegistrySupplier<RecipeType<CustomRecipe>> TEST_RECIPE_TYPE = RECIPE_TYPES.register("test_recipe_type", () -> new RecipeType<CustomRecipe>() {
+        @Override
+        public String toString() {
+            return TestMod.MOD_ID + ":test_recipe_type";
+        }
+    });
+    
     public static void initialize() {
         MOB_EFFECTS.register();
         BLOCKS.register();
         ITEMS.register();
         ENTITY_TYPES.register();
+        RECIPE_TYPES.register();
         RECIPE_SERIALIZERS.register();
+        EntityAttributeRegistry.register(TEST_ENTITY, Pig::createAttributes);
+        TEST_BLOCK_ITEM.listen(item -> {
+            System.out.println("Registered item!");
+        });
+        TEST_SERIALIZER.listen(type -> {
+            System.out.println("Registered recipe serializer!");
+        });
+        TEST_RECIPE_TYPE.listen(type -> {
+            System.out.println("Registered recipe type!");
+        });
     }
 }

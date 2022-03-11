@@ -38,7 +38,6 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -109,7 +108,7 @@ public class FluidStackHooksImpl {
     
     @Environment(EnvType.CLIENT)
     @Nullable
-    public static TextureAtlasSprite getStillTexture(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, @NotNull FluidState state) {
+    public static TextureAtlasSprite getStillTexture(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, FluidState state) {
         if (state.getType() == Fluids.EMPTY) return null;
         var handler = FluidRenderHandlerRegistry.INSTANCE.get(state.getType());
         if (handler == null) return null;
@@ -120,7 +119,7 @@ public class FluidStackHooksImpl {
     
     @Environment(EnvType.CLIENT)
     @Nullable
-    public static TextureAtlasSprite getStillTexture(@NotNull FluidStack stack) {
+    public static TextureAtlasSprite getStillTexture(FluidStack stack) {
         if (stack.getFluid() == Fluids.EMPTY) return null;
         var handler = FluidRenderHandlerRegistry.INSTANCE.get(stack.getFluid());
         if (handler == null) return null;
@@ -131,7 +130,7 @@ public class FluidStackHooksImpl {
     
     @Environment(EnvType.CLIENT)
     @Nullable
-    public static TextureAtlasSprite getStillTexture(@NotNull Fluid fluid) {
+    public static TextureAtlasSprite getStillTexture(Fluid fluid) {
         if (fluid == Fluids.EMPTY) return null;
         var handler = FluidRenderHandlerRegistry.INSTANCE.get(fluid);
         if (handler == null) return null;
@@ -142,7 +141,7 @@ public class FluidStackHooksImpl {
     
     @Environment(EnvType.CLIENT)
     @Nullable
-    public static TextureAtlasSprite getFlowingTexture(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, @NotNull FluidState state) {
+    public static TextureAtlasSprite getFlowingTexture(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, FluidState state) {
         if (state.getType() == Fluids.EMPTY) return null;
         var handler = FluidRenderHandlerRegistry.INSTANCE.get(state.getType());
         if (handler == null) return null;
@@ -153,7 +152,7 @@ public class FluidStackHooksImpl {
     
     @Environment(EnvType.CLIENT)
     @Nullable
-    public static TextureAtlasSprite getFlowingTexture(@NotNull FluidStack stack) {
+    public static TextureAtlasSprite getFlowingTexture(FluidStack stack) {
         if (stack.getFluid() == Fluids.EMPTY) return null;
         var handler = FluidRenderHandlerRegistry.INSTANCE.get(stack.getFluid());
         if (handler == null) return null;
@@ -164,7 +163,7 @@ public class FluidStackHooksImpl {
     
     @Environment(EnvType.CLIENT)
     @Nullable
-    public static TextureAtlasSprite getFlowingTexture(@NotNull Fluid fluid) {
+    public static TextureAtlasSprite getFlowingTexture(Fluid fluid) {
         if (fluid == Fluids.EMPTY) return null;
         var handler = FluidRenderHandlerRegistry.INSTANCE.get(fluid);
         if (handler == null) return null;
@@ -174,7 +173,7 @@ public class FluidStackHooksImpl {
     }
     
     @Environment(EnvType.CLIENT)
-    public static int getColor(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, @NotNull FluidState state) {
+    public static int getColor(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, FluidState state) {
         if (state.getType() == Fluids.EMPTY) return -1;
         var handler = FluidRenderHandlerRegistry.INSTANCE.get(state.getType());
         if (handler == null) return -1;
@@ -182,7 +181,7 @@ public class FluidStackHooksImpl {
     }
     
     @Environment(EnvType.CLIENT)
-    public static int getColor(@NotNull FluidStack stack) {
+    public static int getColor(FluidStack stack) {
         if (stack.getFluid() == Fluids.EMPTY) return -1;
         var handler = FluidRenderHandlerRegistry.INSTANCE.get(stack.getFluid());
         if (handler == null) return -1;
@@ -190,7 +189,7 @@ public class FluidStackHooksImpl {
     }
     
     @Environment(EnvType.CLIENT)
-    public static int getColor(@NotNull Fluid fluid) {
+    public static int getColor(Fluid fluid) {
         if (fluid == Fluids.EMPTY) return -1;
         var handler = FluidRenderHandlerRegistry.INSTANCE.get(fluid);
         if (handler == null) return -1;

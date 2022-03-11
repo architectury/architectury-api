@@ -24,7 +24,6 @@ import dev.architectury.injectables.targets.ArchitecturyTarget;
 import dev.architectury.utils.Env;
 import net.fabricmc.api.EnvType;
 import net.minecraft.SharedConstants;
-import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
 import java.util.Collection;

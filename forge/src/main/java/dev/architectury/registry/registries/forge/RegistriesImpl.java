@@ -33,19 +33,29 @@ import dev.architectury.registry.registries.options.StandardRegistrarOption;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.minecraftforge.common.world.ForgeWorldPreset;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.*;
-import org.jetbrains.annotations.NotNull;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
-import java.lang.reflect.Type;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class RegistriesImpl {
+    private static final Logger LOGGER = LogManager.getLogger(RegistriesImpl.class);
+    private static final Multimap<RegistryEntryId<?>, Consumer<?>> LISTENERS = HashMultimap.create();
+    
+    private static void listen(ResourceKey<?> resourceKey, ResourceLocation id, Consumer<?> listener, boolean vanilla) {
+        LISTENERS.put(new RegistryEntryId<>(resourceKey, id), listener);
+    }
+    
     public static Registries.RegistryProvider _get(String modId) {
         return new RegistryProviderImpl(modId);
     }
@@ -65,21 +75,68 @@ public class RegistriesImpl {
     public static class Data {
         private boolean collected = false;
         private final Map<RegistryObject<?>, Supplier<? extends IForgeRegistryEntry<?>>> objects = new LinkedHashMap<>();
+        private final Map<ResourceLocation, Supplier<?>> vanillaObjects = new LinkedHashMap<>();
         
         public void register(IForgeRegistry registry, RegistryObject object, Supplier<? extends IForgeRegistryEntry<?>> reference) {
             if (!collected) {
                 objects.put(object, reference);
             } else {
-                registry.register(reference.get());
+                ResourceKey<? extends Registry<Object>> resourceKey = ResourceKey.createRegistryKey(registry.getRegistryName());
+                IForgeRegistryEntry<?> value = reference.get();
+                registry.register(value);
                 object.updateReference(registry);
+                
+                RegistryEntryId<?> registryEntryId = new RegistryEntryId<>(resourceKey, object.getId());
+                for (Consumer<?> consumer : LISTENERS.get(registryEntryId)) {
+                    ((Consumer<Object>) consumer).accept(value);
+                }
+                LISTENERS.removeAll(registryEntryId);
             }
+        }
+        
+        public <T> void register(Registry<T> registry, ResourceLocation id, Supplier<? extends T> reference) {
+            if (!collected) {
+                vanillaObjects.put(id, reference);
+            } else {
+                T value = reference.get();
+                Registry.register(registry, id, value);
+                
+                RegistryEntryId<?> registryEntryId = new RegistryEntryId<>(registry.key(), id);
+                for (Consumer<?> consumer : LISTENERS.get(registryEntryId)) {
+                    ((Consumer<Object>) consumer).accept(value);
+                }
+                LISTENERS.removeAll(registryEntryId);
+            }
+        }
+    }
+    
+    public static class RegistryEntryId<T> {
+        private final ResourceKey<T> registryKey;
+        private final ResourceLocation id;
+        
+        public RegistryEntryId(ResourceKey<T> registryKey, ResourceLocation id) {
+            this.registryKey = registryKey;
+            this.id = id;
+        }
+        
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof RegistryEntryId)) return false;
+            RegistryEntryId<?> that = (RegistryEntryId<?>) o;
+            return java.util.Objects.equals(registryKey, that.registryKey) && java.util.Objects.equals(id, that.id);
+        }
+        
+        @Override
+        public int hashCode() {
+            return java.util.Objects.hash(registryKey, id);
         }
     }
     
     public static class RegistryProviderImpl implements Registries.RegistryProvider {
         private final String modId;
         private final Supplier<IEventBus> eventBus;
-        private final Map<Type, Data> registry = new HashMap<>();
+        private final Map<ResourceKey<? extends Registry<?>>, Data> registry = new HashMap<>();
         private final Multimap<ResourceKey<Registry<?>>, Consumer<Registrar<?>>> listeners = HashMultimap.create();
         
         public RegistryProviderImpl(String modId) {
@@ -101,18 +158,27 @@ public class RegistriesImpl {
         @Override
         public <T> Registrar<T> get(ResourceKey<net.minecraft.core.Registry<T>> registryKey) {
             updateEventBus();
-            return get(RegistryManager.ACTIVE.getRegistry(registryKey.location()));
+            ForgeRegistry registry = RegistryManager.ACTIVE.getRegistry(registryKey.location());
+            if (registry == null) {
+                Registry<T> ts = (Registry<T>) Registry.REGISTRY.get(registryKey.location());
+                if (ts == null) {
+                    throw new IllegalArgumentException("Registry " + registryKey + " does not exist!");
+                } else {
+                    return get(ts);
+                }
+            }
+            return get(registry);
         }
         
         public <T> Registrar<T> get(IForgeRegistry registry) {
             updateEventBus();
-            return new ForgeBackedRegistryImpl<>(this.registry, registry);
+            return new ForgeBackedRegistryImpl<>(modId, this.registry, registry);
         }
         
         @Override
         public <T> Registrar<T> get(net.minecraft.core.Registry<T> registry) {
             updateEventBus();
-            return new VanillaBackedRegistryImpl<>(registry);
+            return new VanillaBackedRegistryImpl<>(modId, this.registry, registry);
         }
         
         @Override
@@ -129,20 +195,96 @@ public class RegistriesImpl {
         }
         
         public class EventListener {
+            public void handleVanillaRegistries() {
+                for (Registry<?> vanillaRegistry : Registry.REGISTRY) {
+                    if (RegistryManager.ACTIVE.getRegistry(vanillaRegistry.key().location()) == null) {
+                        // Must be vanilla
+                        Registrar<?> archRegistry = get(vanillaRegistry);
+                        
+                        for (Map.Entry<ResourceKey<? extends Registry<?>>, Data> typeDataEntry : RegistryProviderImpl.this.registry.entrySet()) {
+                            ResourceKey<? extends Registry<?>> resourceKey = archRegistry.key();
+                            if (typeDataEntry.getKey().equals(resourceKey)) {
+                                Data data = typeDataEntry.getValue();
+                                data.collected = true;
+                                
+                                for (Map.Entry<ResourceLocation, Supplier<?>> entry : data.vanillaObjects.entrySet()) {
+                                    Object value = entry.getValue().get();
+                                    Registry.register((Registry<Object>) vanillaRegistry, entry.getKey(), value);
+                                    
+                                    RegistryEntryId<?> registryEntryId = new RegistryEntryId<>(resourceKey, entry.getKey());
+                                    for (Consumer<?> consumer : LISTENERS.get(registryEntryId)) {
+                                        ((Consumer<Object>) consumer).accept(value);
+                                    }
+                                    LISTENERS.removeAll(registryEntryId);
+                                }
+                                
+                                data.objects.clear();
+                            }
+                        }
+                        
+                        for (Map.Entry<ResourceKey<net.minecraft.core.Registry<?>>, Consumer<Registrar<?>>> entry : listeners.entries()) {
+                            if (entry.getKey().equals(vanillaRegistry.key())) {
+                                entry.getValue().accept(archRegistry);
+                            }
+                        }
+                    }
+                }
+            }
+            
+            public void handleVanillaRegistriesPost() {
+                for (Registry<?> vanillaRegistry : Registry.REGISTRY) {
+                    if (RegistryManager.ACTIVE.getRegistry(vanillaRegistry.key().location()) == null) {
+                        // Must be vanilla
+                        Registrar<?> archRegistry = get(vanillaRegistry);
+                        
+                        List<RegistryEntryId<?>> toRemove = new ArrayList<>();
+                        for (Map.Entry<RegistryEntryId<?>, Collection<Consumer<?>>> entry : LISTENERS.asMap().entrySet()) {
+                            if (entry.getKey().registryKey.equals(archRegistry.key())) {
+                                if (vanillaRegistry.containsKey(entry.getKey().id)) {
+                                    Object value = vanillaRegistry.get(entry.getKey().id);
+                                    for (Consumer<?> consumer : entry.getValue()) {
+                                        ((Consumer<Object>) consumer).accept(value);
+                                    }
+                                    toRemove.add(entry.getKey());
+                                } else {
+                                    LOGGER.warn("Registry entry listened {} was not realized!", entry.getKey());
+                                }
+                            }
+                        }
+                        
+                        for (RegistryEntryId<?> entryId : toRemove) {
+                            LISTENERS.removeAll(entryId);
+                        }
+                    }
+                }
+            }
+            
             @SubscribeEvent
             public void handleEvent(RegistryEvent.Register event) {
+                if (event.getGenericType() == Block.class) {
+                    handleVanillaRegistries();
+                }
+                
                 IForgeRegistry registry = event.getRegistry();
                 Registrar<Object> archRegistry = get(registry);
                 
-                for (Map.Entry<Type, Data> typeDataEntry : RegistryProviderImpl.this.registry.entrySet()) {
-                    if (typeDataEntry.getKey() == registry.getRegistrySuperType()) {
+                for (Map.Entry<ResourceKey<? extends Registry<?>>, Data> typeDataEntry : RegistryProviderImpl.this.registry.entrySet()) {
+                    ResourceKey<? extends Registry<Object>> resourceKey = archRegistry.key();
+                    if (typeDataEntry.getKey().equals(resourceKey)) {
                         Data data = typeDataEntry.getValue();
                         
                         data.collected = true;
                         
                         for (Map.Entry<RegistryObject<?>, Supplier<? extends IForgeRegistryEntry<?>>> entry : data.objects.entrySet()) {
-                            registry.register(entry.getValue().get());
+                            IForgeRegistryEntry<?> value = entry.getValue().get();
+                            registry.register(value);
                             entry.getKey().updateReference(registry);
+                            
+                            RegistryEntryId<?> registryEntryId = new RegistryEntryId<>(resourceKey, entry.getKey().getId());
+                            for (Consumer<?> consumer : LISTENERS.get(registryEntryId)) {
+                                ((Consumer<Object>) consumer).accept(value);
+                            }
+                            LISTENERS.removeAll(registryEntryId);
                         }
                         
                         data.objects.clear();
@@ -155,31 +297,57 @@ public class RegistriesImpl {
                     }
                 }
             }
+            
+            @SubscribeEvent(priority = EventPriority.LOWEST)
+            public void handleEventPost(RegistryEvent.Register event) {
+                if (event.getGenericType() == ForgeWorldPreset.class) {
+                    handleVanillaRegistriesPost();
+                }
+                
+                IForgeRegistry registry = event.getRegistry();
+                Registrar<Object> archRegistry = get(registry);
+                ResourceKey<? extends Registry<Object>> resourceKey = archRegistry.key();
+                List<RegistryEntryId<?>> toRemove = new ArrayList<>();
+                for (Map.Entry<RegistryEntryId<?>, Collection<Consumer<?>>> entry : LISTENERS.asMap().entrySet()) {
+                    if (entry.getKey().registryKey.equals(resourceKey)) {
+                        if (registry.containsKey(entry.getKey().id)) {
+                            IForgeRegistryEntry value = registry.getValue(entry.getKey().id);
+                            for (Consumer<?> consumer : entry.getValue()) {
+                                ((Consumer<Object>) consumer).accept(value);
+                            }
+                            toRemove.add(entry.getKey());
+                        } else {
+                            LOGGER.warn("Registry entry listened {} was not realized!", entry.getKey());
+                        }
+                    }
+                }
+                for (RegistryEntryId<?> id : toRemove) {
+                    LISTENERS.removeAll(id);
+                }
+            }
         }
     }
     
     public static class RegistryBuilderWrapper<T> implements RegistrarBuilder<T> {
-        @NotNull
         private final RegistryProviderImpl provider;
-        @NotNull
         private final net.minecraftforge.registries.RegistryBuilder<?> builder;
         private boolean saveToDisk = false;
         private boolean syncToClients = false;
         
-        public RegistryBuilderWrapper(@NotNull RegistryProviderImpl provider, @NotNull net.minecraftforge.registries.RegistryBuilder<?> builder) {
+        public RegistryBuilderWrapper(RegistryProviderImpl provider, net.minecraftforge.registries.RegistryBuilder<?> builder) {
             this.provider = provider;
             this.builder = builder;
         }
         
         @Override
-        public @NotNull Registrar<T> build() {
+        public Registrar<T> build() {
             if (!syncToClients) builder.disableSync();
             if (!saveToDisk) builder.disableSaving();
             return provider.get(builder.create());
         }
         
         @Override
-        public @NotNull RegistrarBuilder<T> option(@NotNull RegistrarOption option) {
+        public RegistrarBuilder<T> option(RegistrarOption option) {
             if (option == StandardRegistrarOption.SAVE_TO_DISC) {
                 this.saveToDisk = true;
             } else if (option == StandardRegistrarOption.SYNC_TO_CLIENTS) {
@@ -190,23 +358,38 @@ public class RegistriesImpl {
     }
     
     public static class VanillaBackedRegistryImpl<T> implements Registrar<T> {
+        private final String modId;
         private net.minecraft.core.Registry<T> delegate;
+        private Map<ResourceKey<? extends Registry<?>>, Data> registry;
         
-        public VanillaBackedRegistryImpl(net.minecraft.core.Registry<T> delegate) {
+        public VanillaBackedRegistryImpl(String modId, Map<ResourceKey<? extends Registry<?>>, Data> registry, net.minecraft.core.Registry<T> delegate) {
+            this.modId = modId;
+            this.registry = registry;
             this.delegate = delegate;
         }
         
         @Override
-        public @NotNull RegistrySupplier<T> delegate(ResourceLocation id) {
+        public RegistrySupplier<T> delegate(ResourceLocation id) {
             Supplier<T> value = Suppliers.memoize(() -> get(id));
+            Registrar<T> registrar = this;
             return new RegistrySupplier<T>() {
                 @Override
-                public @NotNull ResourceLocation getRegistryId() {
+                public Registries getRegistries() {
+                    return Registries.get(modId);
+                }
+                
+                @Override
+                public Registrar<T> getRegistrar() {
+                    return registrar;
+                }
+                
+                @Override
+                public ResourceLocation getRegistryId() {
                     return delegate.key().location();
                 }
                 
                 @Override
-                public @NotNull ResourceLocation getId() {
+                public ResourceLocation getId() {
                     return id;
                 }
                 
@@ -241,8 +424,9 @@ public class RegistriesImpl {
         }
         
         @Override
-        public @NotNull <E extends T> RegistrySupplier<E> register(ResourceLocation id, Supplier<E> supplier) {
-            net.minecraft.core.Registry.register(delegate, id, supplier.get());
+        public <E extends T> RegistrySupplier<E> register(ResourceLocation id, Supplier<E> supplier) {
+            registry.computeIfAbsent(key(), type -> new Data())
+                    .register(delegate, id, supplier);
             return (RegistrySupplier<E>) delegate(id);
         }
         
@@ -302,28 +486,51 @@ public class RegistriesImpl {
         public Iterator<T> iterator() {
             return delegate.iterator();
         }
+        
+        @Override
+        public void listen(ResourceLocation id, Consumer<T> callback) {
+            T value = get(id);
+            if (value != null) {
+                callback.accept(value);
+            } else {
+                RegistriesImpl.listen(key(), id, callback, true);
+            }
+        }
     }
     
     public static class ForgeBackedRegistryImpl<T extends IForgeRegistryEntry<T>> implements Registrar<T> {
+        private final String modId;
         private IForgeRegistry<T> delegate;
-        private Map<Type, Data> registry;
+        private Map<ResourceKey<? extends Registry<?>>, Data> registry;
         
-        public ForgeBackedRegistryImpl(Map<Type, Data> registry, IForgeRegistry<T> delegate) {
+        public ForgeBackedRegistryImpl(String modId, Map<ResourceKey<? extends Registry<?>>, Data> registry, IForgeRegistry<T> delegate) {
+            this.modId = modId;
             this.registry = registry;
             this.delegate = delegate;
         }
         
         @Override
-        public @NotNull RegistrySupplier<T> delegate(ResourceLocation id) {
+        public RegistrySupplier<T> delegate(ResourceLocation id) {
             Supplier<T> value = Suppliers.memoize(() -> get(id));
+            Registrar<T> registrar = this;
             return new RegistrySupplier<T>() {
                 @Override
-                public @NotNull ResourceLocation getRegistryId() {
+                public Registries getRegistries() {
+                    return Registries.get(modId);
+                }
+                
+                @Override
+                public Registrar<T> getRegistrar() {
+                    return registrar;
+                }
+                
+                @Override
+                public ResourceLocation getRegistryId() {
                     return delegate.getRegistryName();
                 }
                 
                 @Override
-                public @NotNull ResourceLocation getId() {
+                public ResourceLocation getId() {
                     return id;
                 }
                 
@@ -358,18 +565,29 @@ public class RegistriesImpl {
         }
         
         @Override
-        public @NotNull <E extends T> RegistrySupplier<E> register(ResourceLocation id, Supplier<E> supplier) {
+        public <E extends T> RegistrySupplier<E> register(ResourceLocation id, Supplier<E> supplier) {
             RegistryObject registryObject = RegistryObject.of(id, delegate);
-            registry.computeIfAbsent(delegate.getRegistrySuperType(), type -> new Data())
+            registry.computeIfAbsent(key(), type -> new Data())
                     .register(delegate, registryObject, () -> supplier.get().setRegistryName(id));
+            Registrar<T> registrar = this;
             return new RegistrySupplier<E>() {
                 @Override
-                public @NotNull ResourceLocation getRegistryId() {
+                public Registries getRegistries() {
+                    return Registries.get(modId);
+                }
+                
+                @Override
+                public Registrar<E> getRegistrar() {
+                    return (Registrar<E>) registrar;
+                }
+                
+                @Override
+                public ResourceLocation getRegistryId() {
                     return delegate.getRegistryName();
                 }
                 
                 @Override
-                public @NotNull ResourceLocation getId() {
+                public ResourceLocation getId() {
                     return registryObject.getId();
                 }
                 
@@ -458,6 +676,16 @@ public class RegistriesImpl {
         @Override
         public Iterator<T> iterator() {
             return delegate.iterator();
+        }
+        
+        @Override
+        public void listen(ResourceLocation id, Consumer<T> callback) {
+            T value = get(id);
+            if (value != null) {
+                callback.accept(value);
+            } else {
+                RegistriesImpl.listen(key(), id, callback, false);
+            }
         }
     }
 }

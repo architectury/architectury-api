@@ -26,7 +26,6 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.fabricmc.loader.api.metadata.Person;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
@@ -99,37 +98,37 @@ public class PlatformImpl {
         }
         
         @Override
-        public @NotNull String getModId() {
+        public String getModId() {
             return metadata.getId();
         }
         
         @Override
-        public @NotNull String getVersion() {
+        public String getVersion() {
             return metadata.getVersion().getFriendlyString();
         }
         
         @Override
-        public @NotNull String getName() {
+        public String getName() {
             return metadata.getName();
         }
         
         @Override
-        public @NotNull String getDescription() {
+        public String getDescription() {
             return metadata.getDescription();
         }
         
         @Override
-        public @NotNull Optional<String> getLogoFile(int preferredSize) {
+        public Optional<String> getLogoFile(int preferredSize) {
             return metadata.getIconPath(preferredSize);
         }
         
         @Override
-        public @NotNull Path getFilePath() {
+        public Path getFilePath() {
             return container.getRootPath();
         }
         
         @Override
-        public @NotNull Collection<String> getAuthors() {
+        public Collection<String> getAuthors() {
             return metadata.getAuthors().stream()
                     .map(Person::getName)
                     .collect(Collectors.toList());
@@ -141,17 +140,17 @@ public class PlatformImpl {
         }
         
         @Override
-        public @NotNull Optional<String> getHomepage() {
+        public Optional<String> getHomepage() {
             return metadata.getContact().get("homepage");
         }
         
         @Override
-        public @NotNull Optional<String> getSources() {
+        public Optional<String> getSources() {
             return metadata.getContact().get("issues");
         }
         
         @Override
-        public @NotNull Optional<String> getIssueTracker() {
+        public Optional<String> getIssueTracker() {
             return metadata.getContact().get("sources");
         }
         

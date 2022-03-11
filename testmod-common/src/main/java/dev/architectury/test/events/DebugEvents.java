@@ -218,10 +218,10 @@ public class DebugEvents {
             TestMod.SINK.accept(bolt.getScoreboardName() + " struck at " + toShortString(pos) + logSide(level));
         });
         ChunkEvent.LOAD_DATA.register((chunk, level, nbt) -> {
-            TestMod.SINK.accept("Chunk loaded at x=" + chunk.getPos().x + ", z=" + chunk.getPos().z + " in dimension '" + level.dimension().location() + "'");
+//            TestMod.SINK.accept("Chunk loaded at x=" + chunk.getPos().x + ", z=" + chunk.getPos().z + " in dimension '" + level.dimension().location() + "'");
         });
         ChunkEvent.SAVE_DATA.register((chunk, level, nbt) -> {
-            TestMod.SINK.accept("Chunk saved at x=" + chunk.getPos().x + ", z=" + chunk.getPos().z + " in dimension '" + level.dimension().location() + "'");
+//            TestMod.SINK.accept("Chunk saved at x=" + chunk.getPos().x + ", z=" + chunk.getPos().z + " in dimension '" + level.dimension().location() + "'");
         });
     }
     

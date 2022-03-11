@@ -24,7 +24,6 @@ import dev.architectury.annotations.ForgeEvent;
 import dev.architectury.annotations.ForgeEventCancellable;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
@@ -58,7 +57,7 @@ public final class EventFactory {
     public static <T> Event<T> createLoop(Class<T> clazz) {
         return of(listeners -> (T) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{clazz}, new AbstractInvocationHandler() {
             @Override
-            protected Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {
+            protected Object handleInvocation(Object proxy, Method method, Object[] args) throws Throwable {
                 for (var listener : listeners) {
                     invokeMethod(listener, method, args);
                 }
@@ -77,7 +76,7 @@ public final class EventFactory {
     public static <T> Event<T> createEventResult(Class<T> clazz) {
         return of(listeners -> (T) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{clazz}, new AbstractInvocationHandler() {
             @Override
-            protected Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {
+            protected Object handleInvocation(Object proxy, Method method, Object[] args) throws Throwable {
                 for (var listener : listeners) {
                     var result = (EventResult) Objects.requireNonNull(invokeMethod(listener, method, args));
                     if (result.interruptsFurtherEvaluation()) {
@@ -99,7 +98,7 @@ public final class EventFactory {
     public static <T> Event<T> createCompoundEventResult(Class<T> clazz) {
         return of(listeners -> (T) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{clazz}, new AbstractInvocationHandler() {
             @Override
-            protected Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {
+            protected Object handleInvocation(Object proxy, Method method, Object[] args) throws Throwable {
                 for (var listener : listeners) {
                     var result = (CompoundEventResult) Objects.requireNonNull(invokeMethod(listener, method, args));
                     if (result.interruptsFurtherEvaluation()) {
@@ -121,7 +120,7 @@ public final class EventFactory {
     public static <T> Event<Consumer<T>> createConsumerLoop(Class<T> clazz) {
         Event<Consumer<T>> event = of(listeners -> (Consumer<T>) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{Consumer.class}, new AbstractInvocationHandler() {
             @Override
-            protected Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {
+            protected Object handleInvocation(Object proxy, Method method, Object[] args) throws Throwable {
                 for (var listener : listeners) {
                     invokeMethod(listener, method, args);
                 }
@@ -148,7 +147,7 @@ public final class EventFactory {
     public static <T> Event<EventActor<T>> createEventActorLoop(Class<T> clazz) {
         Event<EventActor<T>> event = of(listeners -> (EventActor<T>) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{EventActor.class}, new AbstractInvocationHandler() {
             @Override
-            protected Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {
+            protected Object handleInvocation(Object proxy, Method method, Object[] args) throws Throwable {
                 for (var listener : listeners) {
                     var result = (EventResult) invokeMethod(listener, method, args);
                     if (result.interruptsFurtherEvaluation()) {

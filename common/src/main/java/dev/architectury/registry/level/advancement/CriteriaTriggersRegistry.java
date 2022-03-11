@@ -19,8 +19,9 @@
 
 package dev.architectury.registry.level.advancement;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.CriterionTrigger;
+import org.jetbrains.annotations.ApiStatus;
 
 public final class CriteriaTriggersRegistry {
     private CriteriaTriggersRegistry() {
@@ -32,9 +33,11 @@ public final class CriteriaTriggersRegistry {
      * @param trigger The trigger to register
      * @param <T>     The type of trigger
      * @return The trigger registered
+     * @deprecated Use the method directly.
      */
-    @ExpectPlatform
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval
     public static <T extends CriterionTrigger<?>> T register(T trigger) {
-        throw new AssertionError();
+        return CriteriaTriggers.register(trigger);
     }
 }

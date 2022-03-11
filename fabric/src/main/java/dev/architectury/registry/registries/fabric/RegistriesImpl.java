@@ -21,6 +21,8 @@ package dev.architectury.registry.registries.fabric;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Suppliers;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarBuilder;
 import dev.architectury.registry.registries.Registries;
@@ -29,48 +31,66 @@ import dev.architectury.registry.registries.options.RegistrarOption;
 import dev.architectury.registry.registries.options.StandardRegistrarOption;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
+import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class RegistriesImpl {
+    private static final Multimap<RegistryEntryId<?>, Consumer<?>> LISTENERS = HashMultimap.create();
+    private static final Set<ResourceKey<?>> LISTENED_REGISTRIES = new HashSet<>();
+    
+    private static void listen(ResourceKey<?> resourceKey, ResourceLocation id, Consumer<?> listener) {
+        if (LISTENED_REGISTRIES.add(resourceKey)) {
+            RegistryEntryAddedCallback.event(Registry.REGISTRY.get(resourceKey.location())).register((rawId, entryId, object) -> {
+                RegistryEntryId<?> registryEntryId = new RegistryEntryId<>(resourceKey, entryId);
+                for (Consumer<?> consumer : LISTENERS.get(registryEntryId)) {
+                    ((Consumer<Object>) consumer).accept(object);
+                }
+                LISTENERS.removeAll(registryEntryId);
+            });
+        }
+        
+        LISTENERS.put(new RegistryEntryId<>(resourceKey, id), listener);
+    }
+    
     public static Registries.RegistryProvider _get(String modId) {
-        return RegistryProviderImpl.INSTANCE;
+        return new RegistryProviderImpl(modId);
     }
     
     public static <T> ResourceLocation getId(T object, ResourceKey<Registry<T>> fallback) {
         if (fallback == null)
             return null;
-        return RegistryProviderImpl.INSTANCE.get(fallback).getId(object);
+        return getId(object, (Registry<T>) Registry.REGISTRY.get(fallback.location()));
     }
     
     public static <T> ResourceLocation getId(T object, Registry<T> fallback) {
         if (fallback == null)
             return null;
-        return RegistryProviderImpl.INSTANCE.get(fallback).getId(object);
+        return fallback.getKey(object);
     }
     
-    public enum RegistryProviderImpl implements Registries.RegistryProvider {
-        INSTANCE;
+    public static class RegistryProviderImpl implements Registries.RegistryProvider {
+        private final String modId;
+        
+        public RegistryProviderImpl(String modId) {
+            this.modId = modId;
+        }
         
         @Override
         public <T> Registrar<T> get(ResourceKey<Registry<T>> key) {
-            return new RegistrarImpl<>((Registry<T>) Registry.REGISTRY.get(key.location()));
+            return new RegistrarImpl<>(modId, (Registry<T>) Registry.REGISTRY.get(key.location()));
         }
         
         @Override
         public <T> Registrar<T> get(Registry<T> registry) {
-            return new RegistrarImpl<>(registry);
+            return new RegistrarImpl<>(modId, registry);
         }
         
         @Override
@@ -79,27 +99,50 @@ public class RegistriesImpl {
         }
         
         @Override
-        @NotNull
         public <T> RegistrarBuilder<T> builder(Class<T> type, ResourceLocation registryId) {
-            return new RegistrarBuilderWrapper<>(FabricRegistryBuilder.createSimple(type, registryId));
+            return new RegistrarBuilderWrapper<>(modId, FabricRegistryBuilder.createSimple(type, registryId));
+        }
+    }
+    
+    public static class RegistryEntryId<T> {
+        private final ResourceKey<T> registryKey;
+        private final ResourceLocation id;
+        
+        public RegistryEntryId(ResourceKey<T> registryKey, ResourceLocation id) {
+            this.registryKey = registryKey;
+            this.id = id;
+        }
+        
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof RegistryEntryId)) return false;
+            RegistryEntryId<?> that = (RegistryEntryId<?>) o;
+            return java.util.Objects.equals(registryKey, that.registryKey) && java.util.Objects.equals(id, that.id);
+        }
+        
+        @Override
+        public int hashCode() {
+            return java.util.Objects.hash(registryKey, id);
         }
     }
     
     public static class RegistrarBuilderWrapper<T> implements RegistrarBuilder<T> {
-        @NotNull
+        private final String modId;
         private FabricRegistryBuilder<T, MappedRegistry<T>> builder;
         
-        public RegistrarBuilderWrapper(@NotNull FabricRegistryBuilder<T, MappedRegistry<T>> builder) {
+        public RegistrarBuilderWrapper(String modId, FabricRegistryBuilder<T, MappedRegistry<T>> builder) {
+            this.modId = modId;
             this.builder = builder;
         }
         
         @Override
-        public @NotNull Registrar<T> build() {
-            return RegistryProviderImpl.INSTANCE.get(builder.buildAndRegister());
+        public Registrar<T> build() {
+            return Registries.get(modId).get(builder.buildAndRegister());
         }
         
         @Override
-        public @NotNull RegistrarBuilder<T> option(@NotNull RegistrarOption option) {
+        public RegistrarBuilder<T> option(RegistrarOption option) {
             if (option == StandardRegistrarOption.SAVE_TO_DISC) {
                 this.builder.attribute(RegistryAttribute.PERSISTED);
             } else if (option == StandardRegistrarOption.SYNC_TO_CLIENTS) {
@@ -110,23 +153,36 @@ public class RegistriesImpl {
     }
     
     public static class RegistrarImpl<T> implements Registrar<T> {
+        private final String modId;
         private Registry<T> delegate;
         
-        public RegistrarImpl(Registry<T> delegate) {
+        public RegistrarImpl(String modId, Registry<T> delegate) {
+            this.modId = modId;
             this.delegate = delegate;
         }
         
         @Override
-        public @NotNull RegistrySupplier<T> delegate(ResourceLocation id) {
+        public RegistrySupplier<T> delegate(ResourceLocation id) {
             Supplier<T> value = Suppliers.memoize(() -> get(id));
+            RegistrarImpl<T> registrar = this;
             return new RegistrySupplier<>() {
                 @Override
-                public @NotNull ResourceLocation getRegistryId() {
+                public Registries getRegistries() {
+                    return Registries.get(modId);
+                }
+                
+                @Override
+                public Registrar<T> getRegistrar() {
+                    return registrar;
+                }
+                
+                @Override
+                public ResourceLocation getRegistryId() {
                     return delegate.key().location();
                 }
                 
                 @Override
-                public @NotNull ResourceLocation getId() {
+                public ResourceLocation getId() {
                     return id;
                 }
                 
@@ -160,7 +216,7 @@ public class RegistriesImpl {
         }
         
         @Override
-        public @NotNull <E extends T> RegistrySupplier<E> register(ResourceLocation id, Supplier<E> supplier) {
+        public <E extends T> RegistrySupplier<E> register(ResourceLocation id, Supplier<E> supplier) {
             Registry.register(delegate, id, supplier.get());
             return (RegistrySupplier<E>) delegate(id);
         }
@@ -215,10 +271,19 @@ public class RegistriesImpl {
             return delegate.key();
         }
         
-        @NotNull
         @Override
         public Iterator<T> iterator() {
             return delegate.iterator();
+        }
+        
+        @Override
+        public void listen(ResourceLocation id, Consumer<T> callback) {
+            T value = get(id);
+            if (value != null) {
+                callback.accept(value);
+            } else {
+                RegistriesImpl.listen(key(), id, callback);
+            }
         }
     }
 }

@@ -4,7 +4,7 @@ plugins {
 }
 
 loom {
-    accessWidenerPath = file("src/main/resources/architectury.accessWidener")
+    accessWidenerPath = project(":common").loom.accessWidenerPath
 }
 
 architectury {
@@ -49,6 +49,7 @@ shadowJar {
 }
 
 remapJar {
+    injectAccessWidener = true
     input.set shadowJar.archiveFile
     dependsOn shadowJar
     classifier null

@@ -31,7 +31,6 @@ import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.fml.loading.moddiscovery.ModFileInfo;
 import net.minecraftforge.forgespi.language.IModFileInfo;
 import net.minecraftforge.forgespi.language.IModInfo;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
@@ -124,17 +123,17 @@ public class PlatformImpl {
         }
         
         @Override
-        public @NotNull Optional<String> getLogoFile(int i) {
+        public Optional<String> getLogoFile(int i) {
             return this.info.getLogoFile();
         }
         
         @Override
-        public @NotNull Path getFilePath() {
+        public Path getFilePath() {
             return this.info.getOwningFile().getFile().getFilePath();
         }
         
         @Override
-        public @NotNull Collection<String> getAuthors() {
+        public Collection<String> getAuthors() {
             Optional<String> optional = this.info.getConfig().getConfigElement("authors")
                     .map(String::valueOf);
             return optional.isPresent() ? Collections.singleton(optional.get()) : Collections.emptyList();
@@ -146,18 +145,18 @@ public class PlatformImpl {
         }
         
         @Override
-        public @NotNull Optional<String> getHomepage() {
+        public Optional<String> getHomepage() {
             return this.info.getConfig().getConfigElement("displayURL")
                     .map(String::valueOf);
         }
         
         @Override
-        public @NotNull Optional<String> getSources() {
+        public Optional<String> getSources() {
             return Optional.empty();
         }
         
         @Override
-        public @NotNull Optional<String> getIssueTracker() {
+        public Optional<String> getIssueTracker() {
             IModFileInfo owningFile = this.info.getOwningFile();
             if (owningFile instanceof ModFileInfo info) {
                 return Optional.ofNullable(info.getIssueURL())

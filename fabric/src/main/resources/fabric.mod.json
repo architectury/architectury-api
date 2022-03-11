@@ -32,7 +32,6 @@
       "dev.architectury.compat.fabric.ModMenuCompatibility"
     ]
   },
-  "accessWidener": "architectury.accessWidener",
   "icon": "icon.png",
   "depends": {
     "minecraft": "~1.18-",

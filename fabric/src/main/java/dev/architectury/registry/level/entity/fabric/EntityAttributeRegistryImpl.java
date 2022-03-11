@@ -27,7 +27,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import java.util.function.Supplier;
 
 public class EntityAttributeRegistryImpl {
-    public static void register(Supplier<EntityType<? extends LivingEntity>> type, Supplier<AttributeSupplier.Builder> attribute) {
+    public static void register(Supplier<? extends EntityType<? extends LivingEntity>> type, Supplier<AttributeSupplier.Builder> attribute) {
         FabricDefaultAttributeRegistry.register(type.get(), attribute.get());
     }
 }

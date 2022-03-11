@@ -4,9 +4,14 @@ plugins {
 }
 
 loom {
+    accessWidenerPath = project(":common").loom.accessWidenerPath
+
     forge {
         mixinConfig "architectury.mixins.json"
         mixinConfig "architectury-common.mixins.json"
+
+        convertAccessWideners = true
+        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
     }
 }
 

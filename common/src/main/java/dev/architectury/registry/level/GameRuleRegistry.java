@@ -19,8 +19,8 @@
 
 package dev.architectury.registry.level;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.world.level.GameRules;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * A registry for registering game rules.
@@ -37,9 +37,11 @@ public final class GameRuleRegistry {
      * @param type     the type of the rule
      * @param <T>      the type of the rule value
      * @return a key for the registered rule
+     * @deprecated Use the method directly.
      */
-    @ExpectPlatform
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval
     public static <T extends GameRules.Value<T>> GameRules.Key<T> register(String name, GameRules.Category category, GameRules.Type<T> type) {
-        throw new AssertionError();
+        return GameRules.register(name, category, type);
     }
 }

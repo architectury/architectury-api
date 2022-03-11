@@ -38,7 +38,7 @@ public final class EntityAttributeRegistry {
      * @see net.minecraft.world.entity.ai.attributes.DefaultAttributes
      */
     @ExpectPlatform
-    public static void register(Supplier<EntityType<? extends LivingEntity>> type, Supplier<AttributeSupplier.Builder> attribute) {
+    public static void register(Supplier<? extends EntityType<? extends LivingEntity>> type, Supplier<AttributeSupplier.Builder> attribute) {
         throw new AssertionError();
     }
 }
