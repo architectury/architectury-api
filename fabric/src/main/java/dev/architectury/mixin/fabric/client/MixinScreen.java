@@ -74,9 +74,8 @@ public abstract class MixinScreen implements ScreenInputDelegate {
         return inputDelegate;
     }
     
-    @Inject(method = "init(Lnet/minecraft/client/Minecraft;II)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;clearWidgets()V", ordinal = 0),
-            cancellable = true)
-    private void preInit(Minecraft minecraft, int i, int j, CallbackInfo ci) {
+    @Inject(method = "rebuildWidgets", at = @At(value = "HEAD"), cancellable = true)
+    private void preInit(CallbackInfo ci) {
         if (ClientGuiEvent.INIT_PRE.invoker().init((Screen) (Object) this, getAccess()).isFalse()) {
             ci.cancel();
         }

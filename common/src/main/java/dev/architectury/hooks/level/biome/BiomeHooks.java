@@ -25,7 +25,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.*;
-import net.minecraft.world.level.biome.Biome.BiomeCategory;
 import net.minecraft.world.level.biome.BiomeSpecialEffects.GrassColorModifier;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
@@ -85,11 +84,6 @@ public final class BiomeHooks {
         public SpawnProperties getSpawnProperties() {
             return spawnProperties;
         }
-        
-        @Override
-        public BiomeCategory getCategory() {
-            return biome.biomeCategory;
-        }
     }
     
     public static class MutableBiomeWrapped extends BiomeWrapped implements BiomeProperties.Mutable {
@@ -133,12 +127,6 @@ public final class BiomeHooks {
         @Override
         public SpawnProperties.Mutable getSpawnProperties() {
             return (SpawnProperties.Mutable) super.getSpawnProperties();
-        }
-        
-        @Override
-        public Mutable setCategory(BiomeCategory category) {
-            biome.biomeCategory = category;
-            return this;
         }
     }
     

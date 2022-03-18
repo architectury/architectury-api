@@ -19,8 +19,6 @@
 
 package dev.architectury.hooks.level.biome;
 
-import net.minecraft.world.level.biome.Biome.BiomeCategory;
-
 public interface BiomeProperties {
     ClimateProperties getClimateProperties();
     
@@ -29,8 +27,6 @@ public interface BiomeProperties {
     GenerationProperties getGenerationProperties();
     
     SpawnProperties getSpawnProperties();
-    
-    BiomeCategory getCategory();
     
     interface Mutable extends BiomeProperties {
         @Override
@@ -44,7 +40,5 @@ public interface BiomeProperties {
         
         @Override
         SpawnProperties.Mutable getSpawnProperties();
-        
-        Mutable setCategory(BiomeCategory category);
     }
 }
