@@ -21,6 +21,7 @@ package dev.architectury.networking.fabric;
 
 import dev.architectury.extensions.network.EntitySpawnExtension;
 import dev.architectury.networking.NetworkManager;
+import io.netty.buffer.Unpooled;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -84,6 +85,7 @@ public class SpawnEntityPacket {
             var deltaX = buf.readDouble();
             var deltaY = buf.readDouble();
             var deltaZ = buf.readDouble();
+            var extBuf = new FriendlyByteBuf(Unpooled.buffer().writeBytes(buf));
             context.queue(() -> {
                 var entityType = Registry.ENTITY_TYPE.byId(entityTypeId);
                 if (entityType == null) {
@@ -103,7 +105,7 @@ public class SpawnEntityPacket {
                 entity.setYHeadRot(yHeadRot);
                 entity.setYBodyRot(yHeadRot);
                 if (entity instanceof EntitySpawnExtension ext) {
-                    ext.loadAdditionalSpawnData(buf);
+                    ext.loadAdditionalSpawnData(extBuf);
                 }
                 Minecraft.getInstance().level.putNonPlayerEntity(id, entity);
                 entity.lerpMotion(deltaX, deltaY, deltaZ);
