@@ -22,7 +22,6 @@ configurations {
 
 repositories {
     maven { url "https://maven.terraformersmc.com/releases/" }
-    mavenLocal() // TODO remove
 }
 
 dependencies {
