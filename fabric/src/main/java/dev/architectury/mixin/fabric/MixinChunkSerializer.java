@@ -21,6 +21,7 @@ package dev.architectury.mixin.fabric;
 
 import com.mojang.serialization.Codec;
 import dev.architectury.event.events.common.ChunkEvent;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -49,9 +50,10 @@ public class MixinChunkSerializer {
     @Inject(method = "read", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
     private static void load(ServerLevel serverLevel, PoiManager poiManager, ChunkPos chunkPos, CompoundTag compoundTag,
                              CallbackInfoReturnable<ProtoChunk> cir, ChunkPos chunkPos2, UpgradeData upgradeData,
-                             boolean bl, ListTag listTag, int i, LevelChunkSection levelChunkSections[], boolean bl2, ChunkSource chunkSource,
-                             LevelLightEngine levelLightEngine, Registry registry, Codec<PalettedContainer<Biome>> codec, long m, ChunkStatus.ChunkType chunkType,
-                             BlendingData blendingData, ChunkAccess chunkAccess2) {
-        ChunkEvent.LOAD_DATA.invoker().load(chunkAccess2, serverLevel, compoundTag);
+                             boolean bl, ListTag listTag, int i, LevelChunkSection[] levelChunkSections, boolean bl2,
+                             ChunkSource chunkSource, LevelLightEngine levelLightEngine, Registry<Biome> registry,
+                             Codec<PalettedContainer<Holder<Biome>>> codec, boolean bl3, long m,
+                             ChunkStatus.ChunkType chunkType, BlendingData blendingData, ChunkAccess chunkAccess) {
+        ChunkEvent.LOAD_DATA.invoker().load(chunkAccess, serverLevel, compoundTag);
     }
 }

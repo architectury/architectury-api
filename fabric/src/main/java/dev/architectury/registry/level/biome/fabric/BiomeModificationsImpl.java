@@ -36,7 +36,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.*;
-import net.minecraft.world.level.biome.Biome.BiomeCategory;
 import net.minecraft.world.level.biome.Biome.Precipitation;
 import net.minecraft.world.level.biome.Biome.TemperatureModifier;
 import net.minecraft.world.level.biome.BiomeSpecialEffects.GrassColorModifier;
@@ -121,11 +120,6 @@ public class BiomeModificationsImpl {
                 new MutableGenerationProperties(biome, context.getGenerationSettings()),
                 new MutableSpawnProperties(biome, context.getSpawnSettings())
         ) {
-            @Override
-            public BiomeProperties.Mutable setCategory(BiomeCategory category) {
-                context.setCategory(category);
-                return this;
-            }
         };
     }
     

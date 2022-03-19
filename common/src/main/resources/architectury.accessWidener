@@ -58,8 +58,6 @@ accessible method net/minecraft/world/entity/Entity getEncodeId ()Ljava/lang/Str
 accessible field net/minecraft/server/packs/repository/PackRepository sources Ljava/util/Set;
 mutable field net/minecraft/server/packs/repository/PackRepository sources Ljava/util/Set;
 accessible field net/minecraft/world/level/biome/Biome climateSettings Lnet/minecraft/world/level/biome/Biome$ClimateSettings;
-accessible field net/minecraft/world/level/biome/Biome biomeCategory Lnet/minecraft/world/level/biome/Biome$BiomeCategory;
-mutable field net/minecraft/world/level/biome/Biome biomeCategory Lnet/minecraft/world/level/biome/Biome$BiomeCategory;
 accessible field net/minecraft/world/level/biome/Biome$ClimateSettings precipitation Lnet/minecraft/world/level/biome/Biome$Precipitation;
 mutable field net/minecraft/world/level/biome/Biome$ClimateSettings precipitation Lnet/minecraft/world/level/biome/Biome$Precipitation;
 accessible field net/minecraft/world/level/biome/Biome$ClimateSettings temperature F
