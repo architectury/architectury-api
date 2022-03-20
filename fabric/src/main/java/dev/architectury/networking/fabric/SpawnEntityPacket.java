@@ -84,6 +84,8 @@ public class SpawnEntityPacket {
             var deltaX = buf.readDouble();
             var deltaY = buf.readDouble();
             var deltaZ = buf.readDouble();
+            // Retain this buffer so we can use it in the queued task (EntitySpawnExtension)
+            buf.retain();
             context.queue(() -> {
                 var entityType = Registry.ENTITY_TYPE.byId(entityTypeId);
                 if (entityType == null) {
@@ -105,6 +107,7 @@ public class SpawnEntityPacket {
                 if (entity instanceof EntitySpawnExtension ext) {
                     ext.loadAdditionalSpawnData(buf);
                 }
+                buf.release();
                 Minecraft.getInstance().level.putNonPlayerEntity(id, entity);
                 entity.lerpMotion(deltaX, deltaY, deltaZ);
             });
