@@ -107,6 +107,7 @@ public class SpawnEntityPacket {
                 if (entity instanceof EntitySpawnExtension ext) {
                     ext.loadAdditionalSpawnData(extBuf);
                 }
+                extBuf.release();
                 Minecraft.getInstance().level.putNonPlayerEntity(id, entity);
                 entity.lerpMotion(deltaX, deltaY, deltaZ);
             });
