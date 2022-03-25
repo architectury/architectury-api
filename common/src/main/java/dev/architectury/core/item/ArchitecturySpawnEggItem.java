@@ -58,7 +58,7 @@ public class ArchitecturySpawnEggItem extends SpawnEggItem {
                 }
                 
                 stack.shrink(1);
-                source.getLevel().gameEvent(GameEvent.ENTITY_PLACE, source.getPos());
+                source.getLevel().gameEvent(null, GameEvent.ENTITY_PLACE, source.getPos());
                 return stack;
             }
         };

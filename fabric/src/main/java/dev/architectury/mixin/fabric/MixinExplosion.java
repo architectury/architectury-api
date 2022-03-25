@@ -53,7 +53,7 @@ public class MixinExplosion implements ExplosionHooksImpl.ExplosionExtensions {
     @Unique
     Vec3 position;
     
-    @Inject(method = "explode", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/Vec3;<init>(DDD)V", ordinal = 0),
+    @Inject(method = "explode", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/Vec3;<init>(DDD)V", ordinal = 1),
             locals = LocalCapture.CAPTURE_FAILHARD)
     private void explodePost(CallbackInfo ci, Set<BlockPos> set, int i, float q, int r, int s, int t, int u, int v, int w, List<Entity> list) {
         ExplosionEvent.DETONATE.invoker().explode(level, (Explosion) (Object) this, list);
