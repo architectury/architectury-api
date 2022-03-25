@@ -34,7 +34,7 @@ import java.util.function.Supplier;
 public class EntityRendererRegistryImpl {
     private static final Map<Supplier<EntityType<?>>, EntityRendererProvider<?>> RENDERERS = new ConcurrentHashMap<>();
     
-    public static <T extends Entity> void register(Supplier<EntityType<? extends T>> type, EntityRendererProvider<T> factory) {
+    public static <T extends Entity> void register(Supplier<? extends EntityType<? extends T>> type, EntityRendererProvider<T> factory) {
         RENDERERS.put((Supplier<EntityType<?>>) (Supplier<? extends EntityType<?>>) type, factory);
     }
     

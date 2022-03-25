@@ -278,9 +278,8 @@ public class RegistriesImpl {
         
         @Override
         public void listen(ResourceLocation id, Consumer<T> callback) {
-            T value = get(id);
-            if (value != null) {
-                callback.accept(value);
+            if (contains(id)) {
+                callback.accept(get(id));
             } else {
                 RegistriesImpl.listen(key(), id, callback);
             }

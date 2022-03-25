@@ -38,7 +38,9 @@ import dev.architectury.utils.Env;
 import dev.architectury.utils.EnvExecutor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.renderer.entity.CowRenderer;
 import net.minecraft.client.renderer.entity.PigRenderer;
+import net.minecraft.world.entity.animal.Cow;
 
 public class TestMod {
     public static final MessageSink SINK = EnvExecutor.getEnvSpecific(() -> ClientOverlayMessageSink::new, () -> ConsoleMessageSink::new);
@@ -64,7 +66,8 @@ public class TestMod {
             ClientLifecycleEvent.CLIENT_STOPPING.register((client) -> SINK.accept("Client stopping!"));
             TestKeybinds.initialize();
             TestModNet.initializeClient();
-            EntityRendererRegistry.register(() -> TestEntity.TYPE, PigRenderer::new);
+            EntityRendererRegistry.register(TestRegistries.TEST_ENTITY, CowRenderer::new);
+            EntityRendererRegistry.register(TestRegistries.TEST_ENTITY_2, CowRenderer::new);
         }
     }
 }
