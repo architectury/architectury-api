@@ -37,7 +37,6 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.animal.Pig;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -77,6 +76,9 @@ public class TestRegistries {
     public static final RegistrySupplier<Item> TEST_SPAWN_EGG = ITEMS.register("test_spawn_egg", () ->
             new ArchitecturySpawnEggItem(TestRegistries.TEST_ENTITY, 0xFF000000, 0xFFFFFFFF,
                     new Item.Properties().tab(TestCreativeTabs.TEST_TAB)));
+    public static final RegistrySupplier<Item> TEST_SPAWN_EGG_2 = ITEMS.register("test_spawn_egg_2", () ->
+            new ArchitecturySpawnEggItem(TestRegistries.TEST_ENTITY_2, 0xFFFFFFFF, 0xFF000000,
+                    new Item.Properties().tab(TestCreativeTabs.TEST_TAB)));
     
     public static final RegistrySupplier<Block> TEST_BLOCK = BLOCKS.register("test_block", () ->
             new Block(BlockProperties.copy(Blocks.STONE)));
@@ -94,7 +96,8 @@ public class TestRegistries {
     public static final RegistrySupplier<Item> COLLISION_BLOCK_ITEM = ITEMS.register("collision_block", () ->
             new BlockItem(COLLISION_BLOCK.get(), new Item.Properties().tab(TestCreativeTabs.TEST_TAB)));
     
-    public static final RegistrySupplier<EntityType<TestEntity>> TEST_ENTITY = ENTITY_TYPES.register("test_entity", () -> TestEntity.TYPE);
+    public static final RegistrySupplier<EntityType<TestEntity>> TEST_ENTITY = ENTITY_TYPES.register("test_entity", TestEntity.TYPE);
+    public static final RegistrySupplier<EntityType<TestEntity>> TEST_ENTITY_2 = ENTITY_TYPES.register("test_entity_2", TestEntity.TYPE_2);
     
     public static final RegistrySupplier<RecipeSerializer<CustomRecipe>> TEST_SERIALIZER = RECIPE_SERIALIZERS.register("test_serializer", TestRecipeSerializer::new);
     
@@ -112,7 +115,8 @@ public class TestRegistries {
         ENTITY_TYPES.register();
         RECIPE_TYPES.register();
         RECIPE_SERIALIZERS.register();
-        EntityAttributeRegistry.register(TEST_ENTITY, Pig::createAttributes);
+        EntityAttributeRegistry.register(TEST_ENTITY, TestEntity::createAttributes);
+        EntityAttributeRegistry.register(TEST_ENTITY_2, TestEntity::createAttributes);
         TEST_BLOCK_ITEM.listen(item -> {
             System.out.println("Registered item!");
         });
