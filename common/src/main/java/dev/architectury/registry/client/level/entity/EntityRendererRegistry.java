@@ -34,7 +34,7 @@ public final class EntityRendererRegistry {
     }
     
     @ExpectPlatform
-    public static <T extends Entity> void register(Supplier<EntityType<? extends T>> type, EntityRendererProvider<T> provider) {
+    public static <T extends Entity> void register(Supplier<? extends EntityType<? extends T>> type, EntityRendererProvider<T> provider) {
         throw new AssertionError();
     }
 }

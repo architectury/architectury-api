@@ -27,7 +27,7 @@ import net.minecraft.world.entity.EntityType;
 import java.util.function.Supplier;
 
 public class EntityRendererRegistryImpl {
-    public static <T extends Entity> void register(Supplier<EntityType<? extends T>> type, EntityRendererProvider<T> provider) {
+    public static <T extends Entity> void register(Supplier<? extends EntityType<? extends T>> type, EntityRendererProvider<T> provider) {
         EntityRendererRegistry.register(type.get(), provider);
     }
 }

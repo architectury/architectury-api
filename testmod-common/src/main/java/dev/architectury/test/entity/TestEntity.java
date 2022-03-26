@@ -19,17 +19,21 @@
 
 package dev.architectury.test.entity;
 
+import com.google.common.base.Suppliers;
 import dev.architectury.networking.NetworkManager;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.entity.animal.Pig;
+import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.level.Level;
 
-public class TestEntity extends Pig {
-    public static final EntityType<TestEntity> TYPE = EntityType.Builder.of(TestEntity::new, MobCategory.MISC).sized(0.98F, 0.7F).clientTrackingRange(8).build("test_entity");
+import java.util.function.Supplier;
+
+public class TestEntity extends Cow {
+    public static final Supplier<EntityType<TestEntity>> TYPE = Suppliers.memoize(() -> EntityType.Builder.of(TestEntity::new, MobCategory.MISC).sized(0.98F, 0.7F).clientTrackingRange(8).build("test_entity"));
+    public static final Supplier<EntityType<TestEntity>> TYPE_2 = Suppliers.memoize(() -> EntityType.Builder.of(TestEntity::new, MobCategory.MISC).sized(0.98F, 0.7F).clientTrackingRange(8).build("test_entity_2"));
     
-    public TestEntity(EntityType<? extends Pig> entityType, Level level) {
+    public TestEntity(EntityType<? extends Cow> entityType, Level level) {
         super(entityType, level);
     }
     
