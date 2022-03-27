@@ -40,7 +40,7 @@
     "fabric": ">=0.44.0"
   },
   "breaks": {
-    "optifabric": "*"
+    "optifabric": "<1.13.0"
   },
   "custom": {
     "modmenu:api": true
