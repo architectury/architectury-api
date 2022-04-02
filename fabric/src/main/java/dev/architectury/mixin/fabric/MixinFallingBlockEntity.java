@@ -27,6 +27,8 @@ import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -46,7 +48,7 @@ public abstract class MixinFallingBlockEntity extends Entity {
     @Inject(method = "tick", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/level/block/Fallable;onLand(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/entity/item/FallingBlockEntity;)V"),
             locals = LocalCapture.CAPTURE_FAILHARD)
-    public void handleLand(CallbackInfo ci, Block block, BlockPos blockPos2, boolean bl, boolean bl2, double d, BlockState blockState) {
-        BlockEvent.FALLING_LAND.invoker().onLand(this.level, blockPos2, this.blockState, blockState, (FallingBlockEntity) (Object) this);
+    public void handleLand(CallbackInfo ci, Block block, Vec3 vec, double d, BlockPos blockPos, FluidState fluidState, boolean bl, boolean bl2, double d2, BlockState blockState) {
+        BlockEvent.FALLING_LAND.invoker().onLand(this.level, blockPos, this.blockState, blockState, (FallingBlockEntity) (Object) this);
     }
 }

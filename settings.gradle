@@ -14,9 +14,9 @@ if (JavaVersion.current().ordinal() + 1 < 17) {
 
 include("common")
 include("fabric")
-include("forge")
+//include("forge")
 include("testmod-common")
 include("testmod-fabric")
-include("testmod-forge")
+//include("testmod-forge")
 
 rootProject.name = "architectury"

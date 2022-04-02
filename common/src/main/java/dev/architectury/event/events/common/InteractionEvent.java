@@ -50,7 +50,7 @@ public interface InteractionEvent {
      */
     Event<ClientLeftClickAir> CLIENT_LEFT_CLICK_AIR = EventFactory.createLoop();
     /**
-     * @see ClientRightClickAir#click(Player, InteractionHand)
+     * @see ClientRightClickAir#click(Player, ItemStack)
      */
     Event<ClientRightClickAir> CLIENT_RIGHT_CLICK_AIR = EventFactory.createLoop();
     /**
@@ -112,9 +112,9 @@ public interface InteractionEvent {
          * Equivalent to Forge's {@code PlayerInteractEvent.RightClickEmpty} event.
          *
          * @param player The player. Always {@link net.minecraft.client.player.LocalPlayer}
-         * @param hand   The hand used.
+         * @param stack  The item stack in the player's hand.
          */
-        void click(Player player, InteractionHand hand);
+        void click(Player player, ItemStack stack);
     }
     
     interface ClientLeftClickAir {

@@ -46,7 +46,7 @@ public class MixinServerPlayerGameMode {
             target = "Lnet/minecraft/world/level/block/state/BlockState;getBlock()Lnet/minecraft/world/level/block/Block;",
             ordinal = 0),
             locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void onBreak(BlockPos blockPos, CallbackInfoReturnable<Boolean> cir, BlockState state) {
+    private void onBreak(BlockPos blockPos, CallbackInfoReturnable<Boolean> cir, boolean isDigging, BlockState state) {
         if (BlockEvent.BREAK.invoker().breakBlock(this.level, blockPos, state, this.player, null).isFalse()) {
             cir.setReturnValue(false);
         }

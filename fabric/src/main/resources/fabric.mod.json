@@ -34,7 +34,7 @@
   },
   "icon": "icon.png",
   "depends": {
-    "minecraft": "~1.18.2-",
+    "minecraft": "1.19-22.w.13.oneBlockAtATime",
     "fabricloader": ">=0.13.0",
     "fabric": ">=0.44.0"
   },

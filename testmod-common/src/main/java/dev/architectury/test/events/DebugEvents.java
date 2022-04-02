@@ -197,8 +197,8 @@ public class DebugEvents {
         PlayerEvent.PICKUP_ITEM_POST.register((player, entity, stack) -> {
             TestMod.SINK.accept(player.getScoreboardName() + " picks up " + new TranslatableComponent(stack.getDescriptionId()).getString() + logSide(player.level));
         });
-        PlayerEvent.DROP_ITEM.register((player, entity) -> {
-            TestMod.SINK.accept(player.getScoreboardName() + " drops " + new TranslatableComponent(entity.getItem().getDescriptionId()).getString() + logSide(player.level));
+        PlayerEvent.DROP_ITEM.register((player, stack, entity) -> {
+            TestMod.SINK.accept(player.getScoreboardName() + " drops " + new TranslatableComponent(stack.getItem().getDescriptionId()).getString() + logSide(player.level));
             return EventResult.pass();
         });
         PlayerEvent.OPEN_MENU.register((player, menu) -> {

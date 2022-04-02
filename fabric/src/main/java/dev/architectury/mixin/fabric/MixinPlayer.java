@@ -25,6 +25,7 @@ import dev.architectury.event.events.common.TickEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -33,6 +34,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.List;
 
 @Mixin(Player.class)
 public class MixinPlayer {
@@ -46,10 +49,10 @@ public class MixinPlayer {
         TickEvent.PLAYER_POST.invoker().tick((Player) (Object) this);
     }
     
-    @Inject(method = "drop(Lnet/minecraft/world/item/ItemStack;ZZ)Lnet/minecraft/world/entity/item/ItemEntity;", at = @At("RETURN"), cancellable = true)
-    private void drop(ItemStack itemStack, boolean bl, boolean bl2, CallbackInfoReturnable<ItemEntity> cir) {
-        if (cir.getReturnValue() != null && PlayerEvent.DROP_ITEM.invoker().drop((Player) (Object) this, cir.getReturnValue()).isFalse()) {
-            cir.setReturnValue(null);
+    @Inject(method = "drop(Lnet/minecraft/world/item/ItemStack;ZZ)Ljava/util/List;", at = @At("RETURN"), cancellable = true)
+    private void drop(ItemStack itemStack, boolean bl, boolean bl2, CallbackInfoReturnable<List<FallingBlockEntity>> cir) {
+        if (!cir.getReturnValue().isEmpty() && PlayerEvent.DROP_ITEM.invoker().drop((Player) (Object) this, itemStack, cir.getReturnValue()).isFalse()) {
+            cir.setReturnValue(List.of());
         }
     }
     

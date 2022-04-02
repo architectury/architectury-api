@@ -27,6 +27,7 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
+import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -34,6 +35,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public interface PlayerEvent {
     /**
@@ -77,7 +80,7 @@ public interface PlayerEvent {
      */
     Event<ChangeDimension> CHANGE_DIMENSION = EventFactory.createLoop();
     /**
-     * @see DropItem#drop(Player, ItemEntity)
+     * @see DropItem#drop(Player, ItemStack, ItemEntity)
      */
     Event<DropItem> DROP_ITEM = EventFactory.createEventResult();
     /**
@@ -219,12 +222,13 @@ public interface PlayerEvent {
          * Invoked when a player drops an item.
          * Equivalent to Forge's {@code ItemTossEvent} event.
          *
-         * @param player The player dropping something.
-         * @param entity The entity that has spawned when the player dropped a ItemStack.
+         * @param player   The player dropping something.
+         * @param stack    The item that is being dropped.
+         * @param entities The entities that have been spawned when the player dropped a ItemStack.
          * @return A {@link EventResult} determining the outcome of the event,
          * the execution of the drop may be cancelled by the result.
          */
-        EventResult drop(Player player, ItemEntity entity);
+        EventResult drop(Player player, ItemStack stack, List<FallingBlockEntity> entities);
     }
     
     interface OpenMenu {

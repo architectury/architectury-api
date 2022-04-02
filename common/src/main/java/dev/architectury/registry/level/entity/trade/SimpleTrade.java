@@ -21,7 +21,7 @@ package dev.architectury.registry.level.entity.trade;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.npc.VillagerTrades;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.trading.CarryableTrade;
 import net.minecraft.world.item.trading.MerchantOffer;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,15 +37,14 @@ import java.util.Random;
  * or
  * {@link TradeRegistry#registerTradeForWanderingTrader(boolean, VillagerTrades.ItemListing...)}.
  */
-public record SimpleTrade(ItemStack primaryPrice, ItemStack secondaryPrice,
-                          ItemStack sale, int maxTrades, int experiencePoints,
+public record SimpleTrade(CarryableTrade price,
+                          CarryableTrade sale, int maxTrades, int experiencePoints,
                           float priceMultiplier) implements VillagerTrades.ItemListing {
     /**
      * Constructor for creating the trade.
      * You can take a look at all the values the vanilla game uses right here {@link VillagerTrades#TRADES}.
      *
-     * @param primaryPrice     The first price a player has to pay to get the 'sale' stack.
-     * @param secondaryPrice   A optional, secondary price to pay as well as the primary one. If not needed just use {@link ItemStack#EMPTY}.
+     * @param price            The price a player has to pay to get the 'sale' stack.
      * @param sale             The ItemStack which a player can purchase in exchange for the two prices.
      * @param maxTrades        The amount of trades one villager or wanderer can do. When the amount is surpassed, the trade can't be purchased anymore.
      * @param experiencePoints How much experience points does the player get, when trading. Vanilla uses between 2 and 30 for this.
@@ -57,6 +56,6 @@ public record SimpleTrade(ItemStack primaryPrice, ItemStack secondaryPrice,
     @Nullable
     @Override
     public MerchantOffer getOffer(Entity entity, Random random) {
-        return new MerchantOffer(this.primaryPrice, this.secondaryPrice, this.sale, this.maxTrades, this.experiencePoints, this.priceMultiplier);
+        return new MerchantOffer(this.price, this.sale, this.maxTrades, this.experiencePoints, this.priceMultiplier);
     }
 }

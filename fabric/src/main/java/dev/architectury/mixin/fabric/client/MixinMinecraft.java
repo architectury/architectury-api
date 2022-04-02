@@ -63,11 +63,11 @@ public abstract class MixinMinecraft {
         ClientPlayerEvent.CLIENT_PLAYER_QUIT.invoker().quit(player);
     }
     
-    @Inject(method = "startUseItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;isEmpty()Z", ordinal = 1),
+    @Inject(method = "startUseItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isShiftKeyDown()Z", ordinal = 0),
             locals = LocalCapture.CAPTURE_FAILHARD)
-    private void rightClickAir(CallbackInfo ci, InteractionHand[] var1, int var2, int var3, InteractionHand interactionHand, ItemStack itemStack) {
-        if (itemStack.isEmpty() && (this.hitResult == null || this.hitResult.getType() == HitResult.Type.MISS)) {
-            InteractionEvent.CLIENT_RIGHT_CLICK_AIR.invoker().click(player, interactionHand);
+    private void rightClickAir(CallbackInfo ci, InteractionHand[] var1, int var2, int var3) {
+        if (this.player.getCarriedAsItem().isEmpty() && (this.hitResult == null || this.hitResult.getType() == HitResult.Type.MISS)) {
+            InteractionEvent.CLIENT_RIGHT_CLICK_AIR.invoker().click(player, this.player.getCarriedAsItem());
         }
     }
     

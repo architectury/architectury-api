@@ -22,10 +22,11 @@ package dev.architectury.test.trade;
 import dev.architectury.registry.level.entity.trade.SimpleTrade;
 import dev.architectury.registry.level.entity.trade.TradeRegistry;
 import net.minecraft.core.Registry;
-import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.trading.CarryableTrade;
+import net.minecraft.world.level.CarriedBlocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 
 public class TestTrades {
     public static void init() {
@@ -36,7 +37,13 @@ public class TestTrades {
     }
     
     private static VillagerTrades.ItemListing[] createTrades() {
-        var trade = new SimpleTrade(Items.APPLE.getDefaultInstance(), ItemStack.EMPTY, Items.ACACIA_BOAT.getDefaultInstance(), 1, 0, 1.0F);
+        var price = CarryableTrade.block(CarriedBlocks.getBlockFromItemStack(Items.APPLE.getDefaultInstance())
+                .map(BlockBehaviour.BlockStateBase::getBlock)
+                .orElse(VillagerTrades.CURRENCY.block()));
+        var sale = CarryableTrade.block(CarriedBlocks.getBlockFromItemStack(Items.ACACIA_BOAT.getDefaultInstance())
+                .map(BlockBehaviour.BlockStateBase::getBlock)
+                .orElse(VillagerTrades.CURRENCY.block()));
+        var trade = new SimpleTrade(price, sale, 1, 0, 1.0F);
         return new VillagerTrades.ItemListing[]{trade};
     }
 }
