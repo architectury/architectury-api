@@ -44,6 +44,8 @@ accessible field net/minecraft/world/item/ShovelItem FLATTENABLES Ljava/util/Map
 mutable field net/minecraft/world/item/ShovelItem FLATTENABLES Ljava/util/Map;
 accessible field net/minecraft/world/item/HoeItem TILLABLES Ljava/util/Map;
 mutable field net/minecraft/world/item/HoeItem TILLABLES Ljava/util/Map;
+accessible field net/minecraft/tags/FluidTags HELPER Lnet/minecraft/tags/StaticTagHelper;
+mutable field net/minecraft/tags/FluidTags HELPER Lnet/minecraft/tags/StaticTagHelper;
 transitive-accessible field net/minecraft/world/level/Explosion source Lnet/minecraft/world/entity/Entity;
 transitive-mutable field net/minecraft/world/level/Explosion source Lnet/minecraft/world/entity/Entity;
 transitive-accessible field net/minecraft/world/level/Explosion radius F

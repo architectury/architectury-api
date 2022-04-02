@@ -20,7 +20,6 @@
 package dev.architectury.hooks.tags;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
-import dev.architectury.mixin.FluidTagsAccessor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.*;
 import net.minecraft.world.entity.EntityType;
@@ -48,7 +47,7 @@ public final class TagHooks {
     }
     
     public static Tag.Named<Fluid> optionalFluid(ResourceLocation id) {
-        return optional(id, FluidTagsAccessor.getHelper()::getAllTags);
+        return optional(id, FluidTags.HELPER::getAllTags);
     }
     
     public static Tag.Named<EntityType<?>> optionalEntityType(ResourceLocation id) {
