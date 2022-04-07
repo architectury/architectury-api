@@ -32,17 +32,31 @@ public final class EventBuses {
     private static final Map<String, List<Consumer<IEventBus>>> ON_REGISTERED = new HashMap<>();
     
     public static void registerModEventBus(String modId, IEventBus bus) {
-        if (EVENT_BUS_MAP.putIfAbsent(modId, bus) != null) {
-            throw new IllegalStateException("Can't register event bus for mod '" + modId + "' because it was previously registered!");
+        synchronized (EVENT_BUS_MAP) {
+            if (EVENT_BUS_MAP.putIfAbsent(modId, bus) != null) {
+                throw new IllegalStateException("Can't register event bus for mod '" + modId + "' because it was previously registered!");
+            }
         }
         
-        for (Consumer<IEventBus> runnable : ON_REGISTERED.getOrDefault(modId, Collections.emptyList())) {
+        List<Consumer<IEventBus>> consumers;
+        
+        synchronized (ON_REGISTERED) {
+            consumers = ON_REGISTERED.getOrDefault(modId, Collections.emptyList());
+        }
+        
+        for (Consumer<IEventBus> runnable : consumers) {
             runnable.accept(bus);
         }
     }
     
     public static void onRegistered(String modId, Consumer<IEventBus> busConsumer) {
-        if (EVENT_BUS_MAP.containsKey(modId)) {
+        boolean registered;
+        
+        synchronized (EVENT_BUS_MAP) {
+            registered = EVENT_BUS_MAP.containsKey(modId);
+        }
+        
+        if (registered) {
             busConsumer.accept(EVENT_BUS_MAP.get(modId));
         } else {
             synchronized (ON_REGISTERED) {
@@ -52,6 +66,8 @@ public final class EventBuses {
     }
     
     public static Optional<IEventBus> getModEventBus(String modId) {
-        return Optional.ofNullable(EVENT_BUS_MAP.get(modId));
+        synchronized (EVENT_BUS_MAP) {
+            return Optional.ofNullable(EVENT_BUS_MAP.get(modId));
+        }
     }
 }
