@@ -24,6 +24,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.ServerStatsCounter;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnGroupData;
@@ -39,7 +40,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.Iterator;
-import java.util.Random;
 
 @Mixin(PhantomSpawner.class)
 public abstract class MixinPhantomSpawner {
@@ -56,7 +56,7 @@ public abstract class MixinPhantomSpawner {
             locals = LocalCapture.CAPTURE_FAILSOFT // SOFT, because this will break in 2 seconds
     )
     private void checkPhantomSpawn(ServerLevel level, boolean bl, boolean bl2, CallbackInfoReturnable<Integer> cir,
-                                   Random random, int i, Iterator<ServerPlayer> it, Player player, BlockPos pos, DifficultyInstance diff,
+                                   RandomSource random, int i, Iterator<ServerPlayer> it, Player player, BlockPos pos, DifficultyInstance diff,
                                    ServerStatsCounter serverStatsCounter, int j, int k, BlockPos pos2,
                                    BlockState blockState, FluidState fluidState, SpawnGroupData sgd, int l, int m, Phantom entity) {
         if (EntityEvent.LIVING_CHECK_SPAWN.invoker().canSpawn(entity, level, pos.getX(), pos.getY(), pos.getZ(), MobSpawnType.NATURAL, null).value() == Boolean.FALSE) {

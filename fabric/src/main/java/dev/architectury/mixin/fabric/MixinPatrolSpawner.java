@@ -22,6 +22,7 @@ package dev.architectury.mixin.fabric;
 import dev.architectury.event.events.common.EntityEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.monster.PatrollingMonster;
 import net.minecraft.world.level.block.state.BlockState;
@@ -49,7 +50,7 @@ public abstract class MixinPatrolSpawner {
             cancellable = true,
             locals = LocalCapture.CAPTURE_FAILHARD
     )
-    private void checkPatrolSpawn(ServerLevel level, BlockPos pos, Random r, boolean b, CallbackInfoReturnable<Boolean> cir, BlockState blockState, PatrollingMonster entity) {
+    private void checkPatrolSpawn(ServerLevel level, BlockPos pos, RandomSource r, boolean b, CallbackInfoReturnable<Boolean> cir, BlockState blockState, PatrollingMonster entity) {
         var result = EntityEvent.LIVING_CHECK_SPAWN.invoker().canSpawn(entity, level, pos.getX(), pos.getY(), pos.getZ(), MobSpawnType.PATROL, null);
         if (result.value() != null) {
             cir.setReturnValue(result.value());

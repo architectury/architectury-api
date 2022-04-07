@@ -27,9 +27,9 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.util.RandomSource;
 
 import java.util.List;
-import java.util.Random;
 
 public class ParticleProviderRegistryImpl {
     public record ExtendedSpriteSetImpl(
@@ -51,7 +51,7 @@ public class ParticleProviderRegistryImpl {
         }
         
         @Override
-        public TextureAtlasSprite get(Random random) {
+        public TextureAtlasSprite get(RandomSource random) {
             return delegate.get(random);
         }
     }
