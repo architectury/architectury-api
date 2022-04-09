@@ -19,55 +19,43 @@
 
 package dev.architectury.platform.forge;
 
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
 import net.minecraftforge.eventbus.api.IEventBus;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 public final class EventBuses {
     private EventBuses() {
     }
     
-    private static final Map<String, IEventBus> EVENT_BUS_MAP = new HashMap<>();
-    private static final Map<String, List<Consumer<IEventBus>>> ON_REGISTERED = new HashMap<>();
+    private static final Map<String, IEventBus> EVENT_BUS_MAP = Collections.synchronizedMap(new HashMap<>());
+    private static final Multimap<String, Consumer<IEventBus>> ON_REGISTERED = Multimaps.synchronizedMultimap(LinkedListMultimap.create());
     
     public static void registerModEventBus(String modId, IEventBus bus) {
-        synchronized (EVENT_BUS_MAP) {
-            if (EVENT_BUS_MAP.putIfAbsent(modId, bus) != null) {
-                throw new IllegalStateException("Can't register event bus for mod '" + modId + "' because it was previously registered!");
-            }
+        if (EVENT_BUS_MAP.putIfAbsent(modId, bus) != null) {
+            throw new IllegalStateException("Can't register event bus for mod '" + modId + "' because it was previously registered!");
         }
         
-        List<Consumer<IEventBus>> consumers;
-        
-        synchronized (ON_REGISTERED) {
-            consumers = ON_REGISTERED.getOrDefault(modId, Collections.emptyList());
-        }
-        
-        for (Consumer<IEventBus> runnable : consumers) {
-            runnable.accept(bus);
+        for (Consumer<IEventBus> consumer : ON_REGISTERED.get(modId)) {
+            consumer.accept(bus);
         }
     }
     
     public static void onRegistered(String modId, Consumer<IEventBus> busConsumer) {
-        boolean registered;
-        
-        synchronized (EVENT_BUS_MAP) {
-            registered = EVENT_BUS_MAP.containsKey(modId);
-        }
-        
-        if (registered) {
+        if (EVENT_BUS_MAP.containsKey(modId)) {
             busConsumer.accept(EVENT_BUS_MAP.get(modId));
         } else {
-            synchronized (ON_REGISTERED) {
-                ON_REGISTERED.computeIfAbsent(modId, s -> new ArrayList<>()).add(busConsumer);
-            }
+            ON_REGISTERED.put(modId, busConsumer);
         }
     }
     
     public static Optional<IEventBus> getModEventBus(String modId) {
-        synchronized (EVENT_BUS_MAP) {
-            return Optional.ofNullable(EVENT_BUS_MAP.get(modId));
-        }
+        return Optional.ofNullable(EVENT_BUS_MAP.get(modId));
     }
 }
