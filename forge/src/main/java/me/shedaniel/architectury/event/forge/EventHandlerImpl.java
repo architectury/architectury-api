@@ -29,17 +29,23 @@ public class EventHandlerImpl {
     @OnlyIn(Dist.CLIENT)
     public static void registerClient() {
         MinecraftForge.EVENT_BUS.register(EventHandlerImplClient.class);
-        EventBuses.getModEventBus(ArchitecturyForge.MOD_ID).orElseThrow(() -> new IllegalStateException("Where is architectury?")).register(EventHandlerImplClient.ModBasedEventHandler.class);
+        EventBuses.onRegistered(ArchitecturyForge.MOD_ID, bus -> {
+            bus.register(EventHandlerImplClient.ModBasedEventHandler.class);
+        });
     }
     
     public static void registerCommon() {
         MinecraftForge.EVENT_BUS.register(EventHandlerImplCommon.class);
-        EventBuses.getModEventBus(ArchitecturyForge.MOD_ID).orElseThrow(() -> new IllegalStateException("Where is architectury?")).register(EventHandlerImplCommon.ModBasedEventHandler.class);
+        EventBuses.onRegistered(ArchitecturyForge.MOD_ID, bus -> {
+            bus.register(EventHandlerImplCommon.ModBasedEventHandler.class);
+        });
     }
     
     @OnlyIn(Dist.DEDICATED_SERVER)
     public static void registerServer() {
         MinecraftForge.EVENT_BUS.register(EventHandlerImplServer.class);
-        EventBuses.getModEventBus(ArchitecturyForge.MOD_ID).orElseThrow(() -> new IllegalStateException("Where is architectury?")).register(EventHandlerImplServer.ModBasedEventHandler.class);
+        EventBuses.onRegistered(ArchitecturyForge.MOD_ID, bus -> {
+            bus.register(EventHandlerImplServer.ModBasedEventHandler.class);
+        });
     }
 }
