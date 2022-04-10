@@ -25,9 +25,9 @@ import dev.architectury.registry.menu.MenuRegistry.ScreenFactory;
 import dev.architectury.registry.menu.MenuRegistry.SimpleMenuTypeFactory;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.fabricmc.fabric.impl.screenhandler.ExtendedScreenHandlerType;
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.network.FriendlyByteBuf;
@@ -70,6 +70,6 @@ public class MenuRegistryImpl {
     
     @Environment(EnvType.CLIENT)
     public static <H extends AbstractContainerMenu, S extends Screen & MenuAccess<H>> void registerScreenFactory(MenuType<? extends H> type, ScreenFactory<H, S> factory) {
-        ScreenRegistry.register(type, factory::create);
+        MenuScreens.register(type, factory::create);
     }
 }
