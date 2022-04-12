@@ -57,30 +57,6 @@ public final class BlockFlammabilityRegistry {
     }
     
     /**
-     * Registers the flammability for the given blocks for all fire blocks.
-     *
-     * @param burnOdds        the burn odds
-     * @param flameOdds       the flame odds
-     * @param flammableBlocks the flammable blocks
-     */
-    @ExpectPlatform
-    public static void registerAll(int burnOdds, int flameOdds, Block... flammableBlocks) {
-        throw new AssertionError();
-    }
-    
-    /**
-     * Registers the flammability for a given block tag for all fire blocks.
-     *
-     * @param burnOdds        the burn odds
-     * @param flameOdds       the flame odds
-     * @param flammableBlocks the flammable block tag
-     */
-    @ExpectPlatform
-    public static void registerAll(int burnOdds, int flameOdds, TagKey<Block> flammableBlocks) {
-        throw new AssertionError();
-    }
-    
-    /**
      * Registers the flammability for the given blocks for a given fire block.
      *
      * @param fireBlock       the specific fire block

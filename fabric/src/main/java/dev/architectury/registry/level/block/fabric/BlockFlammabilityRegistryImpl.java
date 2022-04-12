@@ -53,18 +53,6 @@ public class BlockFlammabilityRegistryImpl {
         }
     }
     
-    public static void registerAll(int burnOdds, int flameOdds, Block... flammableBlocks) {
-        FlammableBlockRegistry registry = FlammableBlockRegistry.getDefaultInstance();
-        for (Block block : flammableBlocks) {
-            registry.add(block, burnOdds, flameOdds);
-        }
-    }
-    
-    public static void registerAll(int burnOdds, int flameOdds, TagKey<Block> flammableBlocks) {
-        FlammableBlockRegistry registry = FlammableBlockRegistry.getDefaultInstance();
-        registry.add(flammableBlocks, burnOdds, flameOdds);
-    }
-    
     public static void register(Block fireBlock, int burnOdds, int flameOdds, Block... flammableBlocks) {
         FlammableBlockRegistry registry = FlammableBlockRegistry.getInstance(fireBlock);
         for (Block block : flammableBlocks) {

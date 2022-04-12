@@ -33,7 +33,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.util.Unit;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FireBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -47,10 +46,6 @@ public class BlockFlammabilityRegistryImpl {
     }
     
     private static final Reference2ObjectMap<Block, Data> DATAS = new Reference2ObjectOpenHashMap<>();
-    
-    private static Data getGlobalData() {
-        return DATAS.computeIfAbsent(Blocks.AIR, $ -> new Data());
-    }
     
     private static Data getData(Block fireBlock) {
         if (fireBlock instanceof FireBlock) {
@@ -106,22 +101,6 @@ public class BlockFlammabilityRegistryImpl {
         });
     }
     
-    public static void registerAll(int burnOdds, int flameOdds, Block... flammableBlocks) {
-        Data data = getGlobalData();
-        
-        for (Block block : flammableBlocks) {
-            data.burnOdds.put(block, burnOdds);
-            data.flameOdds.put(block, burnOdds);
-        }
-    }
-    
-    public static void registerAll(int burnOdds, int flameOdds, TagKey<Block> flammableBlocks) {
-        Data data = getGlobalData();
-        
-        data.burnTagOdds.put(flammableBlocks, burnOdds);
-        data.flameTagOdds.put(flammableBlocks, burnOdds);
-    }
-    
     public static void register(Block fireBlock, int burnOdds, int flameOdds, Block... flammableBlocks) {
         Data data = getData(fireBlock);
         
@@ -146,16 +125,6 @@ public class BlockFlammabilityRegistryImpl {
             if (odds >= 0) {
                 return odds;
             }
-        } else {
-            int odds = getData(Blocks.FIRE).getBurnOdds(state.getBlock());
-            if (odds >= 0) {
-                return odds;
-            }
-        }
-        
-        int odds = getGlobalData().getBurnOdds(state.getBlock());
-        if (odds >= 0) {
-            return odds;
         }
         
         return previousValue;
@@ -169,16 +138,6 @@ public class BlockFlammabilityRegistryImpl {
             if (odds >= 0) {
                 return odds;
             }
-        } else {
-            int odds = getData(Blocks.FIRE).getFlameOdds(state.getBlock());
-            if (odds >= 0) {
-                return odds;
-            }
-        }
-        
-        int odds = getGlobalData().getFlameOdds(state.getBlock());
-        if (odds >= 0) {
-            return odds;
         }
         
         return previousValue;
