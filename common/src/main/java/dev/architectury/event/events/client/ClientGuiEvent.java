@@ -62,7 +62,7 @@ public interface ClientGuiEvent {
     /**
      * @see ContainerScreenRenderBackground#render(AbstractContainerScreen, PoseStack, int, int, float)
      */
-    Event<ContainerScreenRenderBackground> RENDER_CONTAINER_BACKGROUND = EventFactory.createEventResult();
+    Event<ContainerScreenRenderBackground> RENDER_CONTAINER_BACKGROUND = EventFactory.createLoop();
     /**
      * @see ContainerScreenRenderForeground#render(AbstractContainerScreen, PoseStack, int, int, float)
      */
