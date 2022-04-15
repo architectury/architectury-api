@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_8",
   "minVersion": "0.7.11",
   "client": [
+    "client.MixinAbstractContainerScreen",
     "client.MixinClientLevel",
     "client.MixinClientPacketListener",
     "client.MixinDebugScreenOverlay",

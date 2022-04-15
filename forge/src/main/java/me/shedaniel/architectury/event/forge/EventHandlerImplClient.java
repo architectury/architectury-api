@@ -152,6 +152,16 @@ public class EventHandlerImplClient {
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(GuiContainerEvent.DrawBackground event) {
+        GuiEvent.RENDER_CONTAINER_BACKGROUND.invoker().render(event.getGuiContainer(), event.getMatrixStack(), event.getMouseX(), event.getMouseY(), Minecraft.getInstance().getDeltaFrameTime());
+    }
+    
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(GuiContainerEvent.DrawForeground event) {
+        GuiEvent.RENDER_CONTAINER_FOREGROUND.invoker().render(event.getGuiContainer(), event.getMatrixStack(), event.getMouseX(), event.getMouseY(), Minecraft.getInstance().getDeltaFrameTime());
+    }
+    
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(PlayerInteractEvent.RightClickEmpty event) {
         InteractionEvent.CLIENT_RIGHT_CLICK_AIR.invoker().click(event.getPlayer(), event.getHand());
     }
