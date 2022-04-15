@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_16",
   "minVersion": "0.7.11",
   "client": [
+    "client.ClientPlayerAttackInvoker",
     "client.MixinAbstractContainerScreen",
     "client.MixinClientLevel",
     "client.MixinClientPacketListener",
@@ -17,10 +18,10 @@
     "client.MixinMouseHandler",
     "client.MixinMultiPlayerGameMode",
     "client.MixinScreen",
-    "client.MixinTextureAtlas",
-    "client.ClientPlayerAttackInvoker"
+    "client.MixinTextureAtlas"
   ],
   "mixins": [
+    "BucketItemAccessor",
     "ExplosionPreInvoker",
     "HorseTameInvoker",
     "LivingDeathInvoker",
