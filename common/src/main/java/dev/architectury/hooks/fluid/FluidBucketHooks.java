@@ -31,7 +31,6 @@ public final class FluidBucketHooks {
      * @param item the bucket item
      * @return the fluid contained in the bucket
      */
-    
     @ExpectPlatform
     public static Fluid getFluid(BucketItem item) {
         throw new AssertionError();
