@@ -28,6 +28,7 @@ import dev.architectury.hooks.client.screen.ScreenAccess;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 
 import java.util.List;
 
@@ -58,6 +59,14 @@ public interface ClientGuiEvent {
      * @see ScreenRenderPost#render(Screen, PoseStack, int, int, float)
      */
     Event<ScreenRenderPost> RENDER_POST = EventFactory.createLoop();
+    /**
+     * @see ContainerScreenRenderBackground#render(AbstractContainerScreen, PoseStack, int, int, float)
+     */
+    Event<ContainerScreenRenderBackground> RENDER_CONTAINER_BACKGROUND = EventFactory.createLoop();
+    /**
+     * @see ContainerScreenRenderForeground#render(AbstractContainerScreen, PoseStack, int, int, float)
+     */
+    Event<ContainerScreenRenderForeground> RENDER_CONTAINER_FOREGROUND = EventFactory.createLoop();
     /**
      * @see SetScreen#modifyScreen(Screen)
      */
@@ -143,6 +152,36 @@ public interface ClientGuiEvent {
          * @param delta    The current tick delta.
          */
         void render(Screen screen, PoseStack matrices, int mouseX, int mouseY, float delta);
+    }
+    
+    @Environment(EnvType.CLIENT)
+    interface ContainerScreenRenderBackground {
+        /**
+         * Invoked after a container screen's background are rendered.
+         * Equivalent to Forge's {@code ContainerScreenEvent.DrawBackground} event.
+         *
+         * @param screen   The screen.
+         * @param matrices The pose stack.
+         * @param mouseX   The scaled x-coordinate of the mouse cursor.
+         * @param mouseY   The scaled y-coordinate of the mouse cursor.
+         * @param delta    The current tick delta.
+         */
+        void render(AbstractContainerScreen<?> screen, PoseStack matrices, int mouseX, int mouseY, float delta);
+    }
+    
+    @Environment(EnvType.CLIENT)
+    interface ContainerScreenRenderForeground {
+        /**
+         * Invoked after a screen has finished rendering most of the foreground, but before any floating widgets are rendered.
+         * Equivalent to Forge's {@code ContainerScreenEvent.DrawForeground} event.
+         *
+         * @param screen   The screen.
+         * @param matrices The pose stack.
+         * @param mouseX   The scaled x-coordinate of the mouse cursor.
+         * @param mouseY   The scaled y-coordinate of the mouse cursor.
+         * @param delta    The current tick delta.
+         */
+        void render(AbstractContainerScreen<?> screen, PoseStack matrices, int mouseX, int mouseY, float delta);
     }
     
     @Environment(EnvType.CLIENT)
