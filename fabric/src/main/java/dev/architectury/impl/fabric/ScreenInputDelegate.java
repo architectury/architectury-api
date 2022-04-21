@@ -22,7 +22,7 @@ package dev.architectury.impl.fabric;
 import dev.architectury.event.events.client.ClientScreenInputEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 
 public interface ScreenInputDelegate {
     Screen architectury_delegateInputs();
@@ -31,7 +31,7 @@ public interface ScreenInputDelegate {
         private Screen parent;
         
         public DelegateScreen(Screen parent) {
-            super(TextComponent.EMPTY);
+            super(Component.empty());
             this.parent = parent;
         }
         

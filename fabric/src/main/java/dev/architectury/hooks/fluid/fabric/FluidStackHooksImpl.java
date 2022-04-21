@@ -32,7 +32,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.material.Fluid;
@@ -48,7 +47,7 @@ public class FluidStackHooksImpl {
             return getNameClient(stack);
         }
         
-        return new TranslatableComponent(getTranslationKey(stack));
+        return Component.translatable(getTranslationKey(stack));
     }
     
     @Environment(EnvType.CLIENT)

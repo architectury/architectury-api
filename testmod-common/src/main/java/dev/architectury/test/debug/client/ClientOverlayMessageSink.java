@@ -30,11 +30,9 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.Mth;
 
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
@@ -53,7 +51,7 @@ public class ClientOverlayMessageSink extends ConsoleMessageSink {
     @Override
     public void accept(String message) {
         super.accept(message);
-        messages.add(0, new Message(new TextComponent(message), Util.getMillis()));
+        messages.add(0, new Message(Component.literal(message), Util.getMillis()));
     }
     
     public void render(PoseStack matrices, float delta) {

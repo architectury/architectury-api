@@ -25,7 +25,7 @@ import dev.architectury.networking.simple.MessageType;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 
 public class SyncDataMessage extends BaseS2CMessage {
     private final CompoundTag serverData;
@@ -55,6 +55,6 @@ public class SyncDataMessage extends BaseS2CMessage {
     
     @Override
     public void handle(NetworkManager.PacketContext context) {
-        context.getPlayer().sendMessage(new TextComponent("Received data from server: " + serverData), Util.NIL_UUID);
+        context.getPlayer().sendMessage(Component.literal("Received data from server: " + serverData), Util.NIL_UUID);
     }
 }

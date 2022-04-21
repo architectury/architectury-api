@@ -23,7 +23,6 @@ import dev.architectury.event.events.common.ChatEvent;
 import dev.architectury.impl.fabric.ChatComponentImpl;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
@@ -70,7 +69,7 @@ public abstract class MixinServerGamePacketListenerImpl {
             
             this.chatSpamTickCount += 20;
             if (this.chatSpamTickCount > 200 && !this.server.getPlayerList().isOp(this.player.getGameProfile())) {
-                this.disconnect(new TranslatableComponent("disconnect.spam"));
+                this.disconnect(Component.translatable("disconnect.spam"));
             }
             ci.cancel();
         }

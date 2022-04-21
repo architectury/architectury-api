@@ -33,8 +33,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screens.inventory.AnvilScreen;
 import net.minecraft.core.Position;
 import net.minecraft.core.Vec3i;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -93,7 +92,7 @@ public class DebugEvents {
         EntityEvent.ENTER_SECTION.register(((entity, nx, ny, nz, ox, oy, oz) -> {
             if (entity instanceof Player player) {
                 TestMod.SINK.accept("%s switched section: %s => %s", entity.getScoreboardName(), sectionPos(ox, oy, oz), sectionPos(nx, oy, nz));
-                player.displayClientMessage(new TextComponent("Entering chunk: " + sectionPos(nx, ny, nz)), true);
+                player.displayClientMessage(Component.literal("Entering chunk: " + sectionPos(nx, ny, nz)), true);
             }
         }));
         EntityEvent.LIVING_CHECK_SPAWN.register(((entity, level, x, y, z, type, spawner) -> {
@@ -189,16 +188,16 @@ public class DebugEvents {
             TestMod.SINK.accept(player.getScoreboardName() + " was awarded with %s" + logSide(player.level), advancement.getChatComponent().getString());
         });
         PlayerEvent.CRAFT_ITEM.register((player, constructed, inventory) -> {
-            TestMod.SINK.accept(player.getScoreboardName() + " crafts " + new TranslatableComponent(constructed.getDescriptionId()).getString() + logSide(player.level));
+            TestMod.SINK.accept(player.getScoreboardName() + " crafts " + Component.translatable(constructed.getDescriptionId()).getString() + logSide(player.level));
         });
         PlayerEvent.SMELT_ITEM.register((player, smelted) -> {
-            TestMod.SINK.accept(player.getScoreboardName() + " smelts " + new TranslatableComponent(smelted.getDescriptionId()).getString() + logSide(player.level));
+            TestMod.SINK.accept(player.getScoreboardName() + " smelts " + Component.translatable(smelted.getDescriptionId()).getString() + logSide(player.level));
         });
         PlayerEvent.PICKUP_ITEM_POST.register((player, entity, stack) -> {
-            TestMod.SINK.accept(player.getScoreboardName() + " picks up " + new TranslatableComponent(stack.getDescriptionId()).getString() + logSide(player.level));
+            TestMod.SINK.accept(player.getScoreboardName() + " picks up " + Component.translatable(stack.getDescriptionId()).getString() + logSide(player.level));
         });
         PlayerEvent.DROP_ITEM.register((player, entity) -> {
-            TestMod.SINK.accept(player.getScoreboardName() + " drops " + new TranslatableComponent(entity.getItem().getDescriptionId()).getString() + logSide(player.level));
+            TestMod.SINK.accept(player.getScoreboardName() + " drops " + Component.translatable(entity.getItem().getDescriptionId()).getString() + logSide(player.level));
             return EventResult.pass();
         });
         PlayerEvent.OPEN_MENU.register((player, menu) -> {

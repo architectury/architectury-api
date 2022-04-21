@@ -100,8 +100,10 @@ public class SpawnEntityPacket {
                 }
                 entity.setUUID(uuid);
                 entity.setId(id);
-                entity.setPacketCoordinates(x, y, z);
-                entity.absMoveTo(x, y, z, xRot, yRot);
+                entity.syncPacketPositionCodec(x, y, z);
+                entity.moveTo(x, y, z);
+                entity.setXRot(xRot);
+                entity.setYRot(yRot);
                 entity.setYHeadRot(yHeadRot);
                 entity.setYBodyRot(yHeadRot);
                 if (entity instanceof EntitySpawnExtension ext) {

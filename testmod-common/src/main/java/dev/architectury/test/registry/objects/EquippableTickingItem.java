@@ -21,7 +21,7 @@ package dev.architectury.test.registry.objects;
 
 import dev.architectury.extensions.ItemExtension;
 import dev.architectury.test.TestMod;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -35,7 +35,7 @@ public class EquippableTickingItem extends Item implements ItemExtension {
     
     @Override
     public void tickArmor(ItemStack stack, Player player) {
-        TestMod.SINK.accept("Ticking " + new TranslatableComponent(stack.getDescriptionId()).getString());
+        TestMod.SINK.accept("Ticking " + Component.translatable(stack.getDescriptionId()).getString());
     }
     
     @Nullable

@@ -24,7 +24,7 @@ import dev.architectury.networking.simple.BaseC2SMessage;
 import dev.architectury.networking.simple.MessageType;
 import net.minecraft.Util;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 
 public class ButtonClickedMessage extends BaseC2SMessage {
     private final int buttonId;
@@ -52,6 +52,6 @@ public class ButtonClickedMessage extends BaseC2SMessage {
     
     @Override
     public void handle(NetworkManager.PacketContext context) {
-        context.getPlayer().sendMessage(new TextComponent("You clicked button #" + buttonId), Util.NIL_UUID);
+        context.getPlayer().sendMessage(Component.literal("You clicked button #" + buttonId), Util.NIL_UUID);
     }
 }
