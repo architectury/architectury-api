@@ -20,11 +20,11 @@
 package dev.architectury.hooks.fluid.fabric;
 
 import dev.architectury.fluid.FluidStack;
-import dev.architectury.platform.Platform;
-import dev.architectury.utils.Env;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
@@ -32,9 +32,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
@@ -44,16 +44,7 @@ import java.util.Objects;
 
 public class FluidStackHooksImpl {
     public static Component getName(FluidStack stack) {
-        if (Platform.getEnvironment() == Env.CLIENT) {
-            return getNameClient(stack);
-        }
-        
-        return new TranslatableComponent(getTranslationKey(stack));
-    }
-    
-    @Environment(EnvType.CLIENT)
-    private static Component getNameClient(FluidStack stack) {
-        return stack.getFluid().defaultFluidState().createLegacyBlock().getBlock().getName();
+        return FluidVariantAttributes.getName(FluidVariant.of(stack.getFluid(), stack.getTag()));
     }
     
     public static String getTranslationKey(FluidStack stack) {
@@ -194,5 +185,29 @@ public class FluidStackHooksImpl {
         var handler = FluidRenderHandlerRegistry.INSTANCE.get(fluid);
         if (handler == null) return -1;
         return handler.getFluidColor(null, null, fluid.defaultFluidState());
+    }
+    
+    public static int getLuminosity(FluidStack fluid, @Nullable Level level, @Nullable BlockPos pos) {
+        return FluidVariantAttributes.getLuminance(FluidVariant.of(fluid.getFluid(), fluid.getTag()));
+    }
+    
+    public static int getLuminosity(Fluid fluid, @Nullable Level level, @Nullable BlockPos pos) {
+        return FluidVariantAttributes.getLuminance(FluidVariant.of(fluid));
+    }
+    
+    public static int getTemperature(FluidStack fluid, @Nullable Level level, @Nullable BlockPos pos) {
+        return FluidVariantAttributes.getTemperature(FluidVariant.of(fluid.getFluid(), fluid.getTag()));
+    }
+    
+    public static int getTemperature(Fluid fluid, @Nullable Level level, @Nullable BlockPos pos) {
+        return FluidVariantAttributes.getTemperature(FluidVariant.of(fluid));
+    }
+    
+    public static int getViscosity(FluidStack fluid, @Nullable Level level, @Nullable BlockPos pos) {
+        return FluidVariantAttributes.getViscosity(FluidVariant.of(fluid.getFluid(), fluid.getTag()), level);
+    }
+    
+    public static int getViscosity(Fluid fluid, @Nullable Level level, @Nullable BlockPos pos) {
+        return FluidVariantAttributes.getViscosity(FluidVariant.of(fluid), level);
     }
 }
