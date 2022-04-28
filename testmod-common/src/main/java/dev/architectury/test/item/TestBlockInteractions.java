@@ -22,7 +22,6 @@ package dev.architectury.test.item;
 import dev.architectury.hooks.item.tool.AxeItemHooks;
 import dev.architectury.hooks.item.tool.HoeItemHooks;
 import dev.architectury.hooks.item.tool.ShovelItemHooks;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -40,7 +39,7 @@ public final class TestBlockInteractions {
                 if (!ctx.getLevel().isClientSide) {
                     Player player = ctx.getPlayer();
                     if (player != null)
-                        player.sendMessage(Component.literal("These dark arts can only be done at night!"), Util.NIL_UUID);
+                        player.sendSystemMessage(Component.literal("These dark arts can only be done at night!"));
                 }
                 return false;
             }
@@ -51,7 +50,7 @@ public final class TestBlockInteractions {
             if (!ctx.getLevel().isClientSide) {
                 Player player = ctx.getPlayer();
                 if (player != null)
-                    player.sendMessage(Component.literal("Thou has successfully committed the dark arts of alchemy!!"), Util.NIL_UUID);
+                    player.sendSystemMessage(Component.literal("Thou has successfully committed the dark arts of alchemy!!"));
             }
         });
     }

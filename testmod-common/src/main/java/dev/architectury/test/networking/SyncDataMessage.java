@@ -22,7 +22,6 @@ package dev.architectury.test.networking;
 import dev.architectury.networking.NetworkManager;
 import dev.architectury.networking.simple.BaseS2CMessage;
 import dev.architectury.networking.simple.MessageType;
-import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -55,6 +54,6 @@ public class SyncDataMessage extends BaseS2CMessage {
     
     @Override
     public void handle(NetworkManager.PacketContext context) {
-        context.getPlayer().sendMessage(Component.literal("Received data from server: " + serverData), Util.NIL_UUID);
+        context.getPlayer().sendSystemMessage(Component.literal("Received data from server: " + serverData));
     }
 }

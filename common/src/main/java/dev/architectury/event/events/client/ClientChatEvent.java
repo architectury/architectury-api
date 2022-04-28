@@ -24,6 +24,7 @@ import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.network.chat.ChatSender;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
@@ -63,10 +64,10 @@ public interface ClientChatEvent {
          *
          * @param type    Where was the message emitted from.
          * @param message The chat message.
-         * @param sender  The packet sender. Can be {@code null}, but probably is the sending player UUID or {@link net.minecraft.Util#NIL_UUID}
+         * @param sender  The packet sender. Can be {@code null}, but probably is the sending player UUID or null for system messages.
          * @return A {@link CompoundEventResult} determining the outcome of the event,
          * if an outcome is set, the received message is overridden.
          */
-        CompoundEventResult<Component> process(ChatType type, Component message, @Nullable UUID sender);
+        CompoundEventResult<Component> process(ChatType type, Component message, @Nullable ChatSender sender);
     }
 }

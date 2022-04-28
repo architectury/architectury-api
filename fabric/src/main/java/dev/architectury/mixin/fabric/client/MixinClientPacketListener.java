@@ -25,10 +25,7 @@ import dev.architectury.event.events.client.ClientRecipeUpdateEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.network.protocol.game.ClientboundChatPacket;
-import net.minecraft.network.protocol.game.ClientboundLoginPacket;
-import net.minecraft.network.protocol.game.ClientboundRespawnPacket;
-import net.minecraft.network.protocol.game.ClientboundUpdateRecipesPacket;
+import net.minecraft.network.protocol.game.*;
 import net.minecraft.world.item.crafting.RecipeManager;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -66,16 +63,30 @@ public class MixinClientPacketListener {
         this.tmpPlayer = null;
     }
     
-    @Inject(method = "handleChat", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/client/gui/Gui;handleChat(Lnet/minecraft/network/chat/ChatType;Lnet/minecraft/network/chat/Component;Ljava/util/UUID;)V"),
+    @Inject(method = "handleSystemChat", at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/client/gui/Gui;handleSystemChat(Lnet/minecraft/network/chat/ChatType;Lnet/minecraft/network/chat/Component;)V"),
             cancellable = true)
-    private void handleChat(ClientboundChatPacket packet, CallbackInfo ci) {
-        var process = ClientChatEvent.RECEIVED.invoker().process(packet.getType(), packet.getMessage(), packet.getSender());
+    private void handleChat(ClientboundSystemChatPacket packet, CallbackInfo ci) {
+        var process = ClientChatEvent.RECEIVED.invoker().process(packet.type(), packet.content(), null);
         if (process.isEmpty()) return;
         if (process.isFalse()) {
             ci.cancel();
-        } else if (process.object() != null && !process.object().equals(packet.getMessage())) {
-            this.minecraft.gui.handleChat(packet.getType(), packet.getMessage(), packet.getSender());
+        } else if (process.object() != null && !process.object().equals(packet.content())) {
+            this.minecraft.gui.handleSystemChat(packet.type(), packet.content());
+            ci.cancel();
+        }
+    }
+    
+    @Inject(method = "handlePlayerChat", at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/client/gui/Gui;handlePlayerChat(Lnet/minecraft/network/chat/ChatType;Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/ChatSender;)V"),
+            cancellable = true)
+    private void handleChat(ClientboundPlayerChatPacket packet, CallbackInfo ci) {
+        var process = ClientChatEvent.RECEIVED.invoker().process(packet.type(), packet.content(), packet.sender());
+        if (process.isEmpty()) return;
+        if (process.isFalse()) {
+            ci.cancel();
+        } else if (process.object() != null && !process.object().equals(packet.content())) {
+            this.minecraft.gui.handlePlayerChat(packet.type(), packet.content(), packet.sender());
             ci.cancel();
         }
     }
