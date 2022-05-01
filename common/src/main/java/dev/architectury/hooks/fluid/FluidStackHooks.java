@@ -29,6 +29,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import org.jetbrains.annotations.Nullable;
@@ -146,6 +147,88 @@ public class FluidStackHooks {
     @ExpectPlatform
     @Environment(EnvType.CLIENT)
     public static int getColor(Fluid fluid) {
+        throw new AssertionError();
+    }
+    
+    /**
+     * Returns the luminosity of the fluid.
+     *
+     * @param fluid the fluid
+     * @param level the level, can be {@code null}
+     * @param pos   the block position, can be {@code null}
+     * @return the luminosity of the fluid, this ranges from 0 to 15
+     */
+    @ExpectPlatform
+    public static int getLuminosity(FluidStack fluid, @Nullable Level level, @Nullable BlockPos pos) {
+        throw new AssertionError();
+    }
+    
+    /**
+     * Returns the luminosity of the fluid.
+     *
+     * @param fluid the fluid
+     * @param level the level, can be {@code null}
+     * @param pos   the block position, can be {@code null}
+     * @return the luminosity of the fluid, this ranges from 0 to 15
+     */
+    @ExpectPlatform
+    public static int getLuminosity(Fluid fluid, @Nullable Level level, @Nullable BlockPos pos) {
+        throw new AssertionError();
+    }
+    
+    /**
+     * Returns the temperature of the fluid.
+     * The temperature is in kelvin, for example, 300 kelvin is equal to room temperature.
+     *
+     * @param fluid the fluid
+     * @param level the level, can be {@code null}
+     * @param pos   the block position, can be {@code null}
+     * @return the temperature of the fluid
+     */
+    @ExpectPlatform
+    public static int getTemperature(FluidStack fluid, @Nullable Level level, @Nullable BlockPos pos) {
+        throw new AssertionError();
+    }
+    
+    /**
+     * Returns the temperature of the fluid.
+     * The temperature is in kelvin, for example, 300 kelvin is equal to room temperature.
+     *
+     * @param fluid the fluid
+     * @param level the level, can be {@code null}
+     * @param pos   the block position, can be {@code null}
+     * @return the temperature of the fluid
+     */
+    @ExpectPlatform
+    public static int getTemperature(Fluid fluid, @Nullable Level level, @Nullable BlockPos pos) {
+        throw new AssertionError();
+    }
+    
+    /**
+     * Returns the viscosity of the fluid. A lower viscosity means that the fluid will flow faster.
+     * The default value is 1000 for water.
+     *
+     * @param fluid the fluid
+     * @param level the level, can be {@code null}
+     * @param pos   the block position, can be {@code null}
+     * @return the viscosity of the fluid
+     */
+    @ExpectPlatform
+    public static int getViscosity(FluidStack fluid, @Nullable Level level, @Nullable BlockPos pos) {
+        throw new AssertionError();
+    }
+    
+    /**
+     * Returns the viscosity of the fluid. A lower viscosity means that the fluid will flow faster.
+     * The default value is 1000 for water.
+     *
+     * @param fluid the fluid
+     * @param level the level, can be {@code null}
+     * @param pos   the block position, can be {@code null}
+     * @return the viscosity of the fluid
+     */
+    @ExpectPlatform
+    public static int getViscosity(Fluid fluid, @Nullable Level level, @Nullable BlockPos pos) {
         throw new AssertionError();
     }
 }
