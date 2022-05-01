@@ -44,6 +44,17 @@ shadowJar {
 
     configurations = [project.configurations.shadowCommon]
     classifier "dev-shadow"
+
+    // Replace classes with forge's version
+    exclude "dev/architectury/core/block/ArchitecturyLiquidBlock.class"
+    exclude "dev/architectury/core/fluid/ArchitecturyFlowingFluid.class"
+    exclude 'dev/architectury/core/fluid/ArchitecturyFlowingFluid$Source.class'
+    exclude 'dev/architectury/core/fluid/ArchitecturyFlowingFluid$Flowing.class'
+    exclude 'dev/architectury/core/item/ArchitecturyBucketItem.class'
+    exclude 'dev/architectury/core/item/ArchitecturyMobBucketItem.class'
+    relocate "dev.architectury.core.block.forge.imitator", "dev.architectury.core.block"
+    relocate "dev.architectury.core.fluid.forge.imitator", "dev.architectury.core.fluid"
+    relocate "dev.architectury.core.item.forge.imitator", "dev.architectury.core.item"
 }
 
 remapJar {

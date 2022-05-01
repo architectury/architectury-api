@@ -17,20 +17,29 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.hooks.fluid.forge;
+package dev.architectury.core.item;
 
-import dev.architectury.fluid.FluidStack;
-import dev.architectury.fluid.forge.FluidStackImpl;
+import dev.architectury.hooks.fluid.FluidBucketHooks;
+import dev.architectury.platform.Platform;
+import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.level.material.Fluid;
 
-public final class FluidStackHooksForge {
-    private FluidStackHooksForge() {
+import java.util.function.Supplier;
+
+public class ArchitecturyBucketItem extends BucketItem {
+    public ArchitecturyBucketItem(Supplier<? extends Fluid> fluid, Properties properties) {
+        super(checkPlatform(fluid).get(), properties);
     }
     
-    public static FluidStack fromForge(net.minecraftforge.fluids.FluidStack stack) {
-        return FluidStackImpl.fromValue.apply(stack);
+    private static <T> T checkPlatform(T obj) {
+        if (Platform.isForge()) {
+            throw new IllegalStateException("This class should've been replaced on Forge!");
+        }
+        
+        return obj;
     }
     
-    public static net.minecraftforge.fluids.FluidStack toForge(FluidStack stack) {
-        return (net.minecraftforge.fluids.FluidStack) FluidStackImpl.toValue.apply(stack);
+    public final Fluid getContainedFluid() {
+        return FluidBucketHooks.getFluid(this);
     }
 }
