@@ -19,6 +19,7 @@
 
 package dev.architectury.core.fluid;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Suppliers;
 import dev.architectury.fluid.FluidStack;
 import dev.architectury.registry.registries.Registries;
@@ -40,17 +41,15 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Supplier;
 
 public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttributes {
-    private final RegistrySupplier<Fluid> flowingFluid;
-    private final RegistrySupplier<Fluid> sourceFluid;
+    private final Supplier<? extends RegistrySupplier<Fluid>> flowingFluid;
+    private final Supplier<? extends RegistrySupplier<Fluid>> sourceFluid;
     private boolean canConvertToSource = false;
     private int slopeFindDistance = 4;
     private int dropOff = 1;
-    @Nullable
-    private RegistrySupplier<Item> bucketItem;
+    private Supplier<? extends @Nullable RegistrySupplier<Item>> bucketItem = () -> null;
     private int tickDelay = 5;
     private float explosionResistance = 100.0F;
-    @Nullable
-    private RegistrySupplier<? extends LiquidBlock> block;
+    private Supplier<? extends @Nullable RegistrySupplier<? extends LiquidBlock>> block = () -> null;
     @Nullable
     private ResourceLocation sourceTexture;
     @Nullable
@@ -69,6 +68,10 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
     private final Supplier<String> defaultTranslationKey = Suppliers.memoize(() -> Util.makeDescriptionId("fluid", Registries.getId(getSourceFluid(), Registry.FLUID_REGISTRY)));
     
     public SimpleArchitecturyFluidAttributes(RegistrySupplier<Fluid> flowingFluid, RegistrySupplier<Fluid> sourceFluid) {
+        this(() -> flowingFluid, () -> sourceFluid);
+    }
+    
+    public SimpleArchitecturyFluidAttributes(Supplier<RegistrySupplier<Fluid>> flowingFluid, Supplier<RegistrySupplier<Fluid>> sourceFluid) {
         this.flowingFluid = flowingFluid;
         this.sourceFluid = sourceFluid;
     }
@@ -89,7 +92,11 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
     }
     
     public SimpleArchitecturyFluidAttributes bucketItem(RegistrySupplier<Item> bucketItem) {
-        this.bucketItem = bucketItem;
+        return bucketItem(() -> bucketItem);
+    }
+    
+    public SimpleArchitecturyFluidAttributes bucketItem(Supplier<? extends @Nullable RegistrySupplier<Item>> bucketItem) {
+        this.bucketItem = MoreObjects.firstNonNull(bucketItem, () -> null);
         return this;
     }
     
@@ -104,7 +111,11 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
     }
     
     public SimpleArchitecturyFluidAttributes block(RegistrySupplier<? extends LiquidBlock> block) {
-        this.block = block;
+        return block(() -> block);
+    }
+    
+    public SimpleArchitecturyFluidAttributes block(Supplier<? extends @Nullable RegistrySupplier<? extends LiquidBlock>> block) {
+        this.block = MoreObjects.firstNonNull(block, () -> null);
         return this;
     }
     
@@ -171,12 +182,12 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
     
     @Override
     public final Fluid getFlowingFluid() {
-        return flowingFluid.get();
+        return flowingFluid.get().get();
     }
     
     @Override
     public final Fluid getSourceFluid() {
-        return sourceFluid.get();
+        return sourceFluid.get().get();
     }
     
     @Override
@@ -197,7 +208,8 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
     @Override
     @Nullable
     public Item getBucketItem() {
-        return bucketItem == null ? null : bucketItem.orElse(null);
+        RegistrySupplier<Item> supplier = bucketItem.get();
+        return supplier == null ? null : supplier.orElse(null);
     }
     
     @Override
@@ -213,7 +225,8 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
     @Override
     @Nullable
     public LiquidBlock getBlock() {
-        return block == null ? null : block.orElse(null);
+        RegistrySupplier<? extends LiquidBlock> supplier = block.get();
+        return supplier == null ? null : supplier.orElse(null);
     }
     
     @Override

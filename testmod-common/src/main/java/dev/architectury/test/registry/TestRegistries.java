@@ -19,7 +19,6 @@
 
 package dev.architectury.test.registry;
 
-import com.google.common.base.Suppliers;
 import dev.architectury.core.fluid.ArchitecturyFluidAttributes;
 import dev.architectury.core.fluid.SimpleArchitecturyFluidAttributes;
 import dev.architectury.core.item.ArchitecturySpawnEggItem;
@@ -59,7 +58,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.function.Supplier;
 
 import static dev.architectury.test.TestMod.SINK;
 
@@ -72,13 +70,13 @@ public class TestRegistries {
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(TestMod.MOD_ID, Registry.RECIPE_SERIALIZER_REGISTRY);
     public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(TestMod.MOD_ID, Registry.RECIPE_TYPE_REGISTRY);
     
-    public static final Supplier<ArchitecturyFluidAttributes> TEST_FLUID_ATTRIBUTES = Suppliers.memoize(() -> new SimpleArchitecturyFluidAttributes(TestRegistries.TEST_FLUID_FLOWING, TestRegistries.TEST_FLUID)
+    public static final ArchitecturyFluidAttributes TEST_FLUID_ATTRIBUTES = new SimpleArchitecturyFluidAttributes(() -> TestRegistries.TEST_FLUID_FLOWING, () -> TestRegistries.TEST_FLUID)
             .convertToSource(true)
             .flowingTexture(new ResourceLocation("block/water_flow"))
             .sourceTexture(new ResourceLocation("block/water_still"))
-            .block(TestRegistries.TEST_FLUID_BLOCK)
-            .bucketItem(TestRegistries.TEST_ITEM)
-            .color(0xFF0000));
+            .block(() -> TestRegistries.TEST_FLUID_BLOCK)
+            .bucketItem(() -> TestRegistries.TEST_ITEM)
+            .color(0xFF0000);
     
     public static final RegistrySupplier<MobEffect> TEST_EFFECT = MOB_EFFECTS.register("test_effect", () ->
             new MobEffect(MobEffectCategory.NEUTRAL, 0x123456) {
@@ -138,7 +136,7 @@ public class TestRegistries {
             // In example mod the forge class isn't being replaced, this is not required in mods depending on architectury
             return (FlowingFluid) Class.forName(!Platform.isForge() ? "dev.architectury.core.fluid.ArchitecturyFlowingFluid$Source" : "dev.architectury.core.fluid.forge.imitator.ArchitecturyFlowingFluid$Source")
                     .getDeclaredConstructor(ArchitecturyFluidAttributes.class)
-                    .newInstance(TestRegistries.TEST_FLUID_ATTRIBUTES.get());
+                    .newInstance(TestRegistries.TEST_FLUID_ATTRIBUTES);
         } catch (InstantiationException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
@@ -149,7 +147,7 @@ public class TestRegistries {
             // In example mod the forge class isn't being replaced, this is not required in mods depending on architectury
             return (FlowingFluid) Class.forName(!Platform.isForge() ? "dev.architectury.core.fluid.ArchitecturyFlowingFluid$Flowing" : "dev.architectury.core.fluid.forge.imitator.ArchitecturyFlowingFluid$Flowing")
                     .getDeclaredConstructor(ArchitecturyFluidAttributes.class)
-                    .newInstance(TestRegistries.TEST_FLUID_ATTRIBUTES.get());
+                    .newInstance(TestRegistries.TEST_FLUID_ATTRIBUTES);
         } catch (InstantiationException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
