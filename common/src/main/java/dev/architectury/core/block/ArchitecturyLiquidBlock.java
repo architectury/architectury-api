@@ -20,12 +20,13 @@
 package dev.architectury.core.block;
 
 import dev.architectury.platform.Platform;
-import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.FlowingFluid;
 
+import java.util.function.Supplier;
+
 public class ArchitecturyLiquidBlock extends LiquidBlock {
-    public ArchitecturyLiquidBlock(RegistrySupplier<FlowingFluid> fluid, Properties properties) {
+    public ArchitecturyLiquidBlock(Supplier<? extends FlowingFluid> fluid, Properties properties) {
         super(checkPlatform(fluid).get(), properties);
     }
     

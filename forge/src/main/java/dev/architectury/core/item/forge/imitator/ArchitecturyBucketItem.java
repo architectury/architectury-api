@@ -19,12 +19,13 @@
 
 package dev.architectury.core.item.forge.imitator;
 
-import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.level.material.Fluid;
 
+import java.util.function.Supplier;
+
 public class ArchitecturyBucketItem extends BucketItem {
-    public ArchitecturyBucketItem(RegistrySupplier<Fluid> fluid, Properties properties) {
+    public ArchitecturyBucketItem(Supplier<? extends Fluid> fluid, Properties properties) {
         super(fluid, properties);
     }
     
