@@ -73,99 +73,159 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
         this.sourceFluid = sourceFluid;
     }
     
+    /**
+     * @see ArchitecturyFluidAttributes#canConvertToSource()
+     */
     public SimpleArchitecturyFluidAttributes convertToSource(boolean canConvertToSource) {
         this.canConvertToSource = canConvertToSource;
         return this;
     }
     
+    /**
+     * @see ArchitecturyFluidAttributes#getSlopeFindDistance(LevelReader)
+     */
     public SimpleArchitecturyFluidAttributes slopeFindDistance(int slopeFindDistance) {
         this.slopeFindDistance = slopeFindDistance;
         return this;
     }
     
+    /**
+     * @see ArchitecturyFluidAttributes#getDropOff(LevelReader)
+     */
     public SimpleArchitecturyFluidAttributes dropOff(int dropOff) {
         this.dropOff = dropOff;
         return this;
     }
     
+    /**
+     * @see ArchitecturyFluidAttributes#getBucketItem()
+     */
     public SimpleArchitecturyFluidAttributes bucketItem(RegistrySupplier<Item> bucketItem) {
         return bucketItem(bucketItem::toOptional);
     }
     
+    /**
+     * @see ArchitecturyFluidAttributes#getBucketItem()
+     */
     public SimpleArchitecturyFluidAttributes bucketItem(Supplier<? extends Optional<Item>> bucketItem) {
         this.bucketItem = Objects.requireNonNull(bucketItem);
         return this;
     }
     
+    /**
+     * @see ArchitecturyFluidAttributes#getTickDelay(LevelReader)
+     */
     public SimpleArchitecturyFluidAttributes tickDelay(int tickDelay) {
         this.tickDelay = tickDelay;
         return this;
     }
     
+    /**
+     * @see ArchitecturyFluidAttributes#getExplosionResistance()
+     */
     public SimpleArchitecturyFluidAttributes explosionResistance(float explosionResistance) {
         this.explosionResistance = explosionResistance;
         return this;
     }
     
+    /**
+     * @see ArchitecturyFluidAttributes#getBlock()
+     */
     public SimpleArchitecturyFluidAttributes block(RegistrySupplier<? extends LiquidBlock> block) {
         return block(block::toOptional);
     }
     
+    /**
+     * @see ArchitecturyFluidAttributes#getBlock()
+     */
     public SimpleArchitecturyFluidAttributes block(Supplier<? extends Optional<? extends LiquidBlock>> block) {
         this.block = Objects.requireNonNull(block);
         return this;
     }
     
+    /**
+     * @see ArchitecturyFluidAttributes#getSourceTexture(FluidStack, BlockAndTintGetter, BlockPos)
+     */
     public SimpleArchitecturyFluidAttributes sourceTexture(ResourceLocation sourceTexture) {
         this.sourceTexture = sourceTexture;
         return this;
     }
     
+    /**
+     * @see ArchitecturyFluidAttributes#getFlowingTexture(FluidStack, BlockAndTintGetter, BlockPos)
+     */
     public SimpleArchitecturyFluidAttributes flowingTexture(ResourceLocation flowingTexture) {
         this.flowingTexture = flowingTexture;
         return this;
     }
     
+    /**
+     * @see ArchitecturyFluidAttributes#getColor(FluidStack, BlockAndTintGetter, BlockPos)
+     */
     public SimpleArchitecturyFluidAttributes color(int color) {
         this.color = color;
         return this;
     }
     
+    /**
+     * @see ArchitecturyFluidAttributes#getLuminosity(FluidStack, BlockAndTintGetter, BlockPos)
+     */
     public SimpleArchitecturyFluidAttributes luminosity(int luminosity) {
         this.luminosity = luminosity;
         return this;
     }
     
+    /**
+     * @see ArchitecturyFluidAttributes#getDensity(FluidStack, BlockAndTintGetter, BlockPos)
+     */
     public SimpleArchitecturyFluidAttributes density(int density) {
         this.density = density;
         return this;
     }
     
+    /**
+     * @see ArchitecturyFluidAttributes#getTemperature(FluidStack, BlockAndTintGetter, BlockPos)
+     */
     public SimpleArchitecturyFluidAttributes temperature(int temperature) {
         this.temperature = temperature;
         return this;
     }
     
+    /**
+     * @see ArchitecturyFluidAttributes#getViscosity(FluidStack, BlockAndTintGetter, BlockPos)
+     */
     public SimpleArchitecturyFluidAttributes viscosity(int viscosity) {
         this.viscosity = viscosity;
         return this;
     }
     
+    /**
+     * @see ArchitecturyFluidAttributes#isLighterThanAir(FluidStack, BlockAndTintGetter, BlockPos)
+     */
     public SimpleArchitecturyFluidAttributes lighterThanAir(boolean lighterThanAir) {
         this.lighterThanAir = lighterThanAir;
         return this;
     }
     
+    /**
+     * @see ArchitecturyFluidAttributes#getRarity(FluidStack, BlockAndTintGetter, BlockPos)
+     */
     public SimpleArchitecturyFluidAttributes rarity(Rarity rarity) {
         this.rarity = rarity;
         return this;
     }
     
+    /**
+     * @see ArchitecturyFluidAttributes#getFillSound(FluidStack, BlockAndTintGetter, BlockPos)
+     */
     public SimpleArchitecturyFluidAttributes fillSound(SoundEvent fillSound) {
         this.fillSound = fillSound;
         return this;
     }
     
+    /**
+     * @see ArchitecturyFluidAttributes#getEmptySound(FluidStack, BlockAndTintGetter, BlockPos)
+     */
     public SimpleArchitecturyFluidAttributes emptySound(SoundEvent emptySound) {
         this.emptySound = emptySound;
         return this;
