@@ -20,8 +20,8 @@
 package dev.architectury.core.fluid.fabric;
 
 import dev.architectury.core.fluid.ArchitecturyFluidAttributes;
-import dev.architectury.core.fluid.ArchitecturyFluidProperties;
 import dev.architectury.fluid.FluidStack;
+import dev.architectury.hooks.fluid.fabric.FluidStackHooksFabric;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributeHandler;
 import net.minecraft.network.chat.Component;
@@ -33,46 +33,44 @@ import java.util.Optional;
 
 @SuppressWarnings("UnstableApiUsage")
 class ArchitecturyFluidAttributesFabric implements FluidVariantAttributeHandler {
-    private final ArchitecturyFluidProperties properties;
     private final ArchitecturyFluidAttributes attributes;
     
-    public ArchitecturyFluidAttributesFabric(ArchitecturyFluidProperties properties) {
-        this.properties = properties;
-        this.attributes = properties.getAttributes();
+    public ArchitecturyFluidAttributesFabric(ArchitecturyFluidAttributes attributes) {
+        this.attributes = attributes;
     }
     
     @Override
     public Component getName(FluidVariant variant) {
-        return attributes.getName(FluidStack.create(variant.getFluid(), FluidStack.bucketAmount(), variant.getNbt()));
+        return attributes.getName(FluidStackHooksFabric.fromFabric(variant, FluidStack.bucketAmount()));
     }
     
     @Override
     public Optional<SoundEvent> getFillSound(FluidVariant variant) {
-        return Optional.ofNullable(attributes.getFillSound(FluidStack.create(variant.getFluid(), FluidStack.bucketAmount(), variant.getNbt())));
+        return Optional.ofNullable(attributes.getFillSound(FluidStackHooksFabric.fromFabric(variant, FluidStack.bucketAmount())));
     }
     
     @Override
     public Optional<SoundEvent> getEmptySound(FluidVariant variant) {
-        return Optional.ofNullable(attributes.getEmptySound(FluidStack.create(variant.getFluid(), FluidStack.bucketAmount(), variant.getNbt())));
+        return Optional.ofNullable(attributes.getEmptySound(FluidStackHooksFabric.fromFabric(variant, FluidStack.bucketAmount())));
     }
     
     @Override
     public int getLuminance(FluidVariant variant) {
-        return attributes.getLuminosity(FluidStack.create(variant.getFluid(), FluidStack.bucketAmount(), variant.getNbt()));
+        return attributes.getLuminosity(FluidStackHooksFabric.fromFabric(variant, FluidStack.bucketAmount()));
     }
     
     @Override
     public int getTemperature(FluidVariant variant) {
-        return attributes.getTemperature(FluidStack.create(variant.getFluid(), FluidStack.bucketAmount(), variant.getNbt()));
+        return attributes.getTemperature(FluidStackHooksFabric.fromFabric(variant, FluidStack.bucketAmount()));
     }
     
     @Override
     public int getViscosity(FluidVariant variant, @Nullable Level world) {
-        return attributes.getViscosity(FluidStack.create(variant.getFluid(), FluidStack.bucketAmount(), variant.getNbt()), world, null);
+        return attributes.getViscosity(FluidStackHooksFabric.fromFabric(variant, FluidStack.bucketAmount()), world, null);
     }
     
     @Override
     public boolean isLighterThanAir(FluidVariant variant) {
-        return attributes.isLighterThanAir(FluidStack.create(variant.getFluid(), FluidStack.bucketAmount(), variant.getNbt()));
+        return attributes.isLighterThanAir(FluidStackHooksFabric.fromFabric(variant, FluidStack.bucketAmount()));
     }
 }

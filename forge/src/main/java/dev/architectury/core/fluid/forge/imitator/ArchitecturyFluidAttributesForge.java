@@ -54,17 +54,17 @@ class ArchitecturyFluidAttributesForge extends FluidAttributes {
     
     @Override
     public ResourceLocation getStillTexture() {
-        return attributes.getStillTexture();
+        return attributes.getSourceTexture();
     }
     
     @Override
     public ResourceLocation getStillTexture(FluidStack stack) {
-        return attributes.getStillTexture(stack == null ? null : FluidStackHooksForge.fromForge(stack));
+        return attributes.getSourceTexture(stack == null ? null : FluidStackHooksForge.fromForge(stack));
     }
     
     @Override
     public ResourceLocation getStillTexture(BlockAndTintGetter level, BlockPos pos) {
-        return attributes.getStillTexture(null, level, pos);
+        return attributes.getSourceTexture(null, level, pos);
     }
     
     @Override

@@ -21,7 +21,6 @@ package dev.architectury.core.fluid;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.platform.Platform;
-import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvent;
@@ -44,33 +43,42 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 public abstract class ArchitecturyFlowingFluid extends FlowingFluid {
-    private final ArchitecturyFluidProperties properties;
+    private final ArchitecturyFluidAttributes attributes;
     
-    protected ArchitecturyFlowingFluid(ArchitecturyFluidProperties properties) {
-        this.properties = properties;
+    ArchitecturyFlowingFluid(ArchitecturyFluidAttributes attributes) {
+        checkPlatform(null);
+        this.attributes = attributes;
         if (Platform.isFabric()) {
-            addFabricFluidAttributes(this, properties);
+            addFabricFluidAttributes(this, attributes);
         }
     }
     
+    private static <T> T checkPlatform(T obj) {
+        if (Platform.isForge()) {
+            throw new IllegalStateException("This class should've been replaced on Forge!");
+        }
+        
+        return obj;
+    }
+    
     @ExpectPlatform
-    private static void addFabricFluidAttributes(FlowingFluid fluid, ArchitecturyFluidProperties properties) {
+    private static void addFabricFluidAttributes(FlowingFluid fluid, ArchitecturyFluidAttributes properties) {
         throw new AssertionError();
     }
     
     @Override
     public Fluid getFlowing() {
-        return properties.getFlowingFluid().get();
+        return attributes.getFlowingFluid();
     }
     
     @Override
     public Fluid getSource() {
-        return properties.getSourceFluid().get();
+        return attributes.getSourceFluid();
     }
     
     @Override
     protected boolean canConvertToSource() {
-        return properties.canConvertToSource();
+        return attributes.canConvertToSource();
     }
     
     @Override
@@ -82,18 +90,18 @@ public abstract class ArchitecturyFlowingFluid extends FlowingFluid {
     
     @Override
     protected int getSlopeFindDistance(LevelReader level) {
-        return properties.getSlopeFindDistance();
+        return attributes.getSlopeFindDistance(level);
     }
     
     @Override
     protected int getDropOff(LevelReader level) {
-        return properties.getDropOff();
+        return attributes.getDropOff(level);
     }
     
     @Override
     public Item getBucket() {
-        RegistrySupplier<Item> item = properties.getBucketItem();
-        return item == null ? Items.AIR : item.orElse(Items.AIR);
+        Item item = attributes.getBucketItem();
+        return item == null ? Items.AIR : item;
     }
     
     @Override
@@ -104,30 +112,30 @@ public abstract class ArchitecturyFlowingFluid extends FlowingFluid {
     
     @Override
     public int getTickDelay(LevelReader level) {
-        return properties.getTickDelay();
+        return attributes.getTickDelay(level);
     }
     
     @Override
     protected float getExplosionResistance() {
-        return properties.getExplosionResistance();
+        return attributes.getExplosionResistance();
     }
     
     @Override
     protected BlockState createLegacyBlock(FluidState state) {
-        RegistrySupplier<? extends LiquidBlock> block = properties.getBlock();
-        if (block == null || !block.isPresent()) return Blocks.AIR.defaultBlockState();
-        return block.get().defaultBlockState().setValue(LiquidBlock.LEVEL, getLegacyLevel(state));
+        LiquidBlock block = attributes.getBlock();
+        if (block == null) return Blocks.AIR.defaultBlockState();
+        return block.defaultBlockState().setValue(LiquidBlock.LEVEL, getLegacyLevel(state));
     }
     
     @NotNull
     @Override
     public Optional<SoundEvent> getPickupSound() {
-        return Optional.ofNullable(properties.getAttributes().getFillSound());
+        return Optional.ofNullable(attributes.getFillSound());
     }
     
     public static class Source extends ArchitecturyFlowingFluid {
-        public Source(ArchitecturyFluidProperties properties) {
-            super(properties);
+        public Source(ArchitecturyFluidAttributes attributes) {
+            super(attributes);
         }
         
         @Override
@@ -142,8 +150,8 @@ public abstract class ArchitecturyFlowingFluid extends FlowingFluid {
     }
     
     public static class Flowing extends ArchitecturyFlowingFluid {
-        public Flowing(ArchitecturyFluidProperties properties) {
-            super(properties);
+        public Flowing(ArchitecturyFluidAttributes attributes) {
+            super(attributes);
             this.registerDefaultState(this.getStateDefinition().any().setValue(LEVEL, 7));
         }
         

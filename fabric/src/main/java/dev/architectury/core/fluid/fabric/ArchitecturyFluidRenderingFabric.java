@@ -20,8 +20,8 @@
 package dev.architectury.core.fluid.fabric;
 
 import dev.architectury.core.fluid.ArchitecturyFluidAttributes;
-import dev.architectury.core.fluid.ArchitecturyFluidProperties;
 import dev.architectury.fluid.FluidStack;
+import dev.architectury.hooks.fluid.fabric.FluidStackHooksFabric;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRenderHandler;
@@ -39,27 +39,25 @@ import java.util.function.Function;
 @SuppressWarnings("UnstableApiUsage")
 @Environment(EnvType.CLIENT)
 class ArchitecturyFluidRenderingFabric implements FluidVariantRenderHandler {
-    private final ArchitecturyFluidProperties properties;
     private final ArchitecturyFluidAttributes attributes;
     private final TextureAtlasSprite[] sprites = new TextureAtlasSprite[2];
     
-    public ArchitecturyFluidRenderingFabric(ArchitecturyFluidProperties properties) {
-        this.properties = properties;
-        this.attributes = properties.getAttributes();
+    public ArchitecturyFluidRenderingFabric(ArchitecturyFluidAttributes attributes) {
+        this.attributes = attributes;
     }
     
     @Override
     @Nullable
     public TextureAtlasSprite[] getSprites(FluidVariant variant) {
-        FluidStack stack = FluidStack.create(variant.getFluid(), FluidStack.bucketAmount(), variant.getNbt());
+        FluidStack stack = FluidStackHooksFabric.fromFabric(variant, FluidStack.bucketAmount());
         Function<ResourceLocation, TextureAtlasSprite> atlas = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS);
-        sprites[0] = atlas.apply(attributes.getStillTexture(stack));
+        sprites[0] = atlas.apply(attributes.getSourceTexture(stack));
         sprites[1] = atlas.apply(attributes.getFlowingTexture(stack));
         return sprites;
     }
     
     @Override
     public int getColor(FluidVariant variant, @Nullable BlockAndTintGetter view, @Nullable BlockPos pos) {
-        return attributes.getColor(FluidStack.create(variant.getFluid(), FluidStack.bucketAmount(), variant.getNbt()), view, pos);
+        return attributes.getColor(FluidStackHooksFabric.fromFabric(variant, FluidStack.bucketAmount()), view, pos);
     }
 }
