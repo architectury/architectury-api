@@ -68,7 +68,7 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
     private SoundEvent emptySound = SoundEvents.BUCKET_EMPTY;
     private final Supplier<String> defaultTranslationKey = Suppliers.memoize(() -> Util.makeDescriptionId("fluid", Registries.getId(getSourceFluid(), Registry.FLUID_REGISTRY)));
     
-    public SimpleArchitecturyFluidAttributes(Supplier<Fluid> flowingFluid, Supplier<Fluid> sourceFluid) {
+    public SimpleArchitecturyFluidAttributes(Supplier<? extends Fluid> flowingFluid, Supplier<? extends Fluid> sourceFluid) {
         this.flowingFluid = flowingFluid;
         this.sourceFluid = sourceFluid;
     }
