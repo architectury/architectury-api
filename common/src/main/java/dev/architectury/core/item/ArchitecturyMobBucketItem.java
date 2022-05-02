@@ -17,29 +17,26 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.core.item.forge.imitator;
+package dev.architectury.core.item;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.BucketItem;
-import net.minecraft.world.item.ItemStack;
+import dev.architectury.platform.Platform;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.MobBucketItem;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fluids.capability.wrappers.FluidBucketWrapper;
 
-import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
-public class ArchitecturyBucketItem extends BucketItem {
-    public ArchitecturyBucketItem(Supplier<? extends Fluid> fluid, Properties properties) {
-        super(fluid, properties);
+public class ArchitecturyMobBucketItem extends MobBucketItem {
+    public ArchitecturyMobBucketItem(Supplier<? extends EntityType<?>> entity, Supplier<? extends Fluid> fluid, Supplier<? extends SoundEvent> sound, Properties properties) {
+        super(checkPlatform(entity).get(), fluid.get(), sound.get(), properties);
     }
     
-    public final Fluid getContainingFluid() {
-        return getFluid();
-    }
-    
-    @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        return this.getClass() == ArchitecturyBucketItem.class ? new FluidBucketWrapper(stack) : super.initCapabilities(stack, nbt);
+    private static <T> T checkPlatform(T obj) {
+        if (Platform.isForge()) {
+            throw new IllegalStateException("This class should've been replaced on Forge!");
+        }
+        
+        return obj;
     }
 }

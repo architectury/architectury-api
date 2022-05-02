@@ -19,27 +19,15 @@
 
 package dev.architectury.core.item.forge.imitator;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.BucketItem;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.MobBucketItem;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fluids.capability.wrappers.FluidBucketWrapper;
 
-import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
-public class ArchitecturyBucketItem extends BucketItem {
-    public ArchitecturyBucketItem(Supplier<? extends Fluid> fluid, Properties properties) {
-        super(fluid, properties);
-    }
-    
-    public final Fluid getContainingFluid() {
-        return getFluid();
-    }
-    
-    @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        return this.getClass() == ArchitecturyBucketItem.class ? new FluidBucketWrapper(stack) : super.initCapabilities(stack, nbt);
+public class ArchitecturyMobBucketItem extends MobBucketItem {
+    public ArchitecturyMobBucketItem(Supplier<? extends EntityType<?>> entity, Supplier<? extends Fluid> fluid, Supplier<? extends SoundEvent> sound, Properties properties) {
+        super(entity, fluid, sound, properties);
     }
 }
