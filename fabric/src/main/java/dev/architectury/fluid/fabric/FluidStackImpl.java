@@ -22,6 +22,7 @@ package dev.architectury.fluid.fabric;
 import dev.architectury.fluid.FluidStack;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -55,7 +56,11 @@ public enum FluidStackImpl implements FluidStack.FluidStackAdapter<FluidStackImp
     
     @Override
     public FluidStackImpl.Pair create(Supplier<Fluid> fluid, long amount, CompoundTag tag) {
-        return new Pair(FluidVariant.of(Objects.requireNonNull(fluid).get(), tag == null ? null : tag.copy()), amount);
+        Fluid fluidType = Objects.requireNonNull(fluid).get();
+        if (fluidType instanceof FlowingFluid flowingFluid) {
+            fluidType = flowingFluid.getSource();
+        }
+        return new Pair(FluidVariant.of(fluidType, tag == null ? null : tag.copy()), amount);
     }
     
     @Override

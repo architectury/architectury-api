@@ -133,6 +133,11 @@ public abstract class ArchitecturyFlowingFluid extends ForgeFlowingFluid {
         return Optional.ofNullable(attributes.getFillSound());
     }
     
+    @Override
+    public boolean isSame(Fluid fluid) {
+        return fluid == getSource() || fluid == getFlowing();
+    }
+    
     public static class Source extends ArchitecturyFlowingFluid {
         public Source(ArchitecturyFluidAttributes attributes) {
             super(attributes);
