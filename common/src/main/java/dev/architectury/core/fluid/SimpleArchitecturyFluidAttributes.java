@@ -19,7 +19,6 @@
 
 package dev.architectury.core.fluid;
 
-import com.google.common.base.MoreObjects;
 import com.google.common.base.Suppliers;
 import dev.architectury.fluid.FluidStack;
 import dev.architectury.registry.registries.Registries;
@@ -38,18 +37,20 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttributes {
-    private final Supplier<? extends RegistrySupplier<Fluid>> flowingFluid;
-    private final Supplier<? extends RegistrySupplier<Fluid>> sourceFluid;
+    private final Supplier<? extends Fluid> flowingFluid;
+    private final Supplier<? extends Fluid> sourceFluid;
     private boolean canConvertToSource = false;
     private int slopeFindDistance = 4;
     private int dropOff = 1;
-    private Supplier<? extends @Nullable RegistrySupplier<Item>> bucketItem = () -> null;
+    private Supplier<? extends Optional<Item>> bucketItem = Optional::empty;
     private int tickDelay = 5;
     private float explosionResistance = 100.0F;
-    private Supplier<? extends @Nullable RegistrySupplier<? extends LiquidBlock>> block = () -> null;
+    private Supplier<? extends Optional<? extends LiquidBlock>> block = Optional::empty;
     @Nullable
     private ResourceLocation sourceTexture;
     @Nullable
@@ -67,11 +68,7 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
     private SoundEvent emptySound = SoundEvents.BUCKET_EMPTY;
     private final Supplier<String> defaultTranslationKey = Suppliers.memoize(() -> Util.makeDescriptionId("fluid", Registries.getId(getSourceFluid(), Registry.FLUID_REGISTRY)));
     
-    public SimpleArchitecturyFluidAttributes(RegistrySupplier<Fluid> flowingFluid, RegistrySupplier<Fluid> sourceFluid) {
-        this(() -> flowingFluid, () -> sourceFluid);
-    }
-    
-    public SimpleArchitecturyFluidAttributes(Supplier<RegistrySupplier<Fluid>> flowingFluid, Supplier<RegistrySupplier<Fluid>> sourceFluid) {
+    public SimpleArchitecturyFluidAttributes(Supplier<Fluid> flowingFluid, Supplier<Fluid> sourceFluid) {
         this.flowingFluid = flowingFluid;
         this.sourceFluid = sourceFluid;
     }
@@ -92,11 +89,11 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
     }
     
     public SimpleArchitecturyFluidAttributes bucketItem(RegistrySupplier<Item> bucketItem) {
-        return bucketItem(() -> bucketItem);
+        return bucketItem(bucketItem::toOptional);
     }
     
-    public SimpleArchitecturyFluidAttributes bucketItem(Supplier<? extends @Nullable RegistrySupplier<Item>> bucketItem) {
-        this.bucketItem = MoreObjects.firstNonNull(bucketItem, () -> null);
+    public SimpleArchitecturyFluidAttributes bucketItem(Supplier<? extends Optional<Item>> bucketItem) {
+        this.bucketItem = Objects.requireNonNull(bucketItem);
         return this;
     }
     
@@ -111,11 +108,11 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
     }
     
     public SimpleArchitecturyFluidAttributes block(RegistrySupplier<? extends LiquidBlock> block) {
-        return block(() -> block);
+        return block(block::toOptional);
     }
     
-    public SimpleArchitecturyFluidAttributes block(Supplier<? extends @Nullable RegistrySupplier<? extends LiquidBlock>> block) {
-        this.block = MoreObjects.firstNonNull(block, () -> null);
+    public SimpleArchitecturyFluidAttributes block(Supplier<? extends Optional<? extends LiquidBlock>> block) {
+        this.block = Objects.requireNonNull(block);
         return this;
     }
     
@@ -182,12 +179,12 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
     
     @Override
     public final Fluid getFlowingFluid() {
-        return flowingFluid.get().get();
+        return flowingFluid.get();
     }
     
     @Override
     public final Fluid getSourceFluid() {
-        return sourceFluid.get().get();
+        return sourceFluid.get();
     }
     
     @Override
@@ -208,8 +205,7 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
     @Override
     @Nullable
     public Item getBucketItem() {
-        RegistrySupplier<Item> supplier = bucketItem.get();
-        return supplier == null ? null : supplier.orElse(null);
+        return bucketItem.get().orElse(null);
     }
     
     @Override
@@ -225,8 +221,7 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
     @Override
     @Nullable
     public LiquidBlock getBlock() {
-        RegistrySupplier<? extends LiquidBlock> supplier = block.get();
-        return supplier == null ? null : supplier.orElse(null);
+        return block.get().orElse(null);
     }
     
     @Override
