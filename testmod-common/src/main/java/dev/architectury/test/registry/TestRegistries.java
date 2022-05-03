@@ -70,13 +70,12 @@ public class TestRegistries {
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(TestMod.MOD_ID, Registry.RECIPE_SERIALIZER_REGISTRY);
     public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(TestMod.MOD_ID, Registry.RECIPE_TYPE_REGISTRY);
     
-    @SuppressWarnings("Convert2MethodRef") // Forward referencing should be possible, but I don't want to do it.
-    public static final ArchitecturyFluidAttributes TEST_FLUID_ATTRIBUTES = new SimpleArchitecturyFluidAttributes(() -> TestRegistries.TEST_FLUID_FLOWING.get(), () -> TestRegistries.TEST_FLUID.get())
+    public static final ArchitecturyFluidAttributes TEST_FLUID_ATTRIBUTES = SimpleArchitecturyFluidAttributes.ofSupplier(() -> TestRegistries.TEST_FLUID_FLOWING, () -> TestRegistries.TEST_FLUID)
             .convertToSource(true)
             .flowingTexture(new ResourceLocation("block/water_flow"))
             .sourceTexture(new ResourceLocation("block/water_still"))
-            .block(() -> TestRegistries.TEST_FLUID_BLOCK.toOptional())
-            .bucketItem(() -> TestRegistries.TEST_ITEM.toOptional())
+            .blockSupplier(() -> TestRegistries.TEST_FLUID_BLOCK)
+            .bucketItemSupplier(() -> TestRegistries.TEST_FLUID_BUCKET)
             .color(0xFF0000);
     
     public static final RegistrySupplier<MobEffect> TEST_EFFECT = MOB_EFFECTS.register("test_effect", () ->

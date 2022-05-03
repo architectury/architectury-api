@@ -68,7 +68,16 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
     private SoundEvent emptySound = SoundEvents.BUCKET_EMPTY;
     private final Supplier<String> defaultTranslationKey = Suppliers.memoize(() -> Util.makeDescriptionId("fluid", Registries.getId(getSourceFluid(), Registry.FLUID_REGISTRY)));
     
-    public SimpleArchitecturyFluidAttributes(Supplier<? extends Fluid> flowingFluid, Supplier<? extends Fluid> sourceFluid) {
+    public static SimpleArchitecturyFluidAttributes ofSupplier(Supplier<? extends Supplier<? extends Fluid>> flowingFluid, Supplier<? extends Supplier<? extends Fluid>> sourceFluid) {
+        return of(() -> flowingFluid.get().get(), () -> sourceFluid.get().get());
+    }
+    
+    
+    public static SimpleArchitecturyFluidAttributes of(Supplier<? extends Fluid> flowingFluid, Supplier<? extends Fluid> sourceFluid) {
+        return new SimpleArchitecturyFluidAttributes(flowingFluid, sourceFluid);
+    }
+    
+    protected SimpleArchitecturyFluidAttributes(Supplier<? extends Fluid> flowingFluid, Supplier<? extends Fluid> sourceFluid) {
         this.flowingFluid = flowingFluid;
         this.sourceFluid = sourceFluid;
     }
@@ -100,6 +109,13 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
     /**
      * @see ArchitecturyFluidAttributes#getBucketItem()
      */
+    public SimpleArchitecturyFluidAttributes bucketItemSupplier(Supplier<RegistrySupplier<Item>> bucketItem) {
+        return bucketItem(() -> bucketItem.get().toOptional());
+    }
+    
+    /**
+     * @see ArchitecturyFluidAttributes#getBucketItem()
+     */
     public SimpleArchitecturyFluidAttributes bucketItem(RegistrySupplier<Item> bucketItem) {
         return bucketItem(bucketItem::toOptional);
     }
@@ -126,6 +142,13 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
     public SimpleArchitecturyFluidAttributes explosionResistance(float explosionResistance) {
         this.explosionResistance = explosionResistance;
         return this;
+    }
+    
+    /**
+     * @see ArchitecturyFluidAttributes#getBlock()
+     */
+    public SimpleArchitecturyFluidAttributes blockSupplier(Supplier<RegistrySupplier<? extends LiquidBlock>> block) {
+        return block(() -> block.get().toOptional());
     }
     
     /**
