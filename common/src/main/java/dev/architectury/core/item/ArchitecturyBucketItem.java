@@ -39,7 +39,7 @@ public class ArchitecturyBucketItem extends BucketItem {
         return obj;
     }
     
-    public final Fluid getContainingFluid() {
+    public final Fluid getContainedFluid() {
         return FluidBucketHooks.getFluid(this);
     }
 }

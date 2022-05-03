@@ -34,7 +34,7 @@ public class ArchitecturyBucketItem extends BucketItem {
         super(fluid, properties);
     }
     
-    public final Fluid getContainingFluid() {
+    public final Fluid getContainedFluid() {
         return getFluid();
     }
     
