@@ -23,8 +23,10 @@ import dev.architectury.event.events.client.ClientChatEvent;
 import dev.architectury.event.events.client.ClientPlayerEvent;
 import dev.architectury.event.events.client.ClientRecipeUpdateEvent;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.Registry;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.world.item.crafting.RecipeManager;
 import org.spongepowered.asm.mixin.Final;
@@ -43,6 +45,8 @@ public class MixinClientPacketListener {
     @Shadow
     @Final
     private RecipeManager recipeManager;
+    @Shadow
+    private ClientLevel level;
     @Unique
     private LocalPlayer tmpPlayer;
     
@@ -67,12 +71,14 @@ public class MixinClientPacketListener {
             target = "Lnet/minecraft/client/gui/Gui;handleSystemChat(Lnet/minecraft/network/chat/ChatType;Lnet/minecraft/network/chat/Component;)V"),
             cancellable = true)
     private void handleChat(ClientboundSystemChatPacket packet, CallbackInfo ci) {
-        var process = ClientChatEvent.RECEIVED.invoker().process(packet.type(), packet.content(), null);
+        var registry = this.level.registryAccess().registryOrThrow(Registry.CHAT_TYPE_REGISTRY);
+        var chatType = packet.resolveType(registry);
+        var process = ClientChatEvent.RECEIVED.invoker().process(chatType, packet.content(), null);
         if (process.isEmpty()) return;
         if (process.isFalse()) {
             ci.cancel();
         } else if (process.object() != null && !process.object().equals(packet.content())) {
-            this.minecraft.gui.handleSystemChat(packet.type(), packet.content());
+            this.minecraft.gui.handleSystemChat(chatType, packet.content());
             ci.cancel();
         }
     }
@@ -81,12 +87,14 @@ public class MixinClientPacketListener {
             target = "Lnet/minecraft/client/gui/Gui;handlePlayerChat(Lnet/minecraft/network/chat/ChatType;Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/ChatSender;)V"),
             cancellable = true)
     private void handleChat(ClientboundPlayerChatPacket packet, CallbackInfo ci) {
-        var process = ClientChatEvent.RECEIVED.invoker().process(packet.type(), packet.content(), packet.sender());
+        var registry = this.level.registryAccess().registryOrThrow(Registry.CHAT_TYPE_REGISTRY);
+        var chatType = packet.resolveType(registry);
+        var process = ClientChatEvent.RECEIVED.invoker().process(chatType, packet.content(), packet.sender());
         if (process.isEmpty()) return;
         if (process.isFalse()) {
             ci.cancel();
         } else if (process.object() != null && !process.object().equals(packet.content())) {
-            this.minecraft.gui.handlePlayerChat(packet.type(), packet.content(), packet.sender());
+            this.minecraft.gui.handlePlayerChat(chatType, packet.content(), packet.sender());
             ci.cancel();
         }
     }

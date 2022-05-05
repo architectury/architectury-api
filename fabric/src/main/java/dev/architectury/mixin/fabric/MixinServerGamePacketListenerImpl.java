@@ -21,8 +21,7 @@ package dev.architectury.mixin.fabric;
 
 import dev.architectury.event.events.common.ChatEvent;
 import dev.architectury.impl.fabric.ChatComponentImpl;
-import net.minecraft.network.chat.ChatType;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.*;
 import net.minecraft.network.protocol.game.ServerboundChatPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -48,30 +47,38 @@ public abstract class MixinServerGamePacketListenerImpl {
     private MinecraftServer server;
     
     @Shadow
-    private int chatSpamTickCount;
-    
-    @Shadow
-    public abstract void disconnect(Component component);
+    protected abstract void detectRateSpam();
     
     @Inject(method = "handleChat(Lnet/minecraft/network/protocol/game/ServerboundChatPacket;Lnet/minecraft/server/network/TextFilter$FilteredText;)V",
             at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/server/players/PlayerList;broadcastPlayerMessage(Lnet/minecraft/network/chat/Component;Ljava/util/function/Function;Lnet/minecraft/network/chat/ChatType;Lnet/minecraft/network/chat/ChatSender;Ljava/time/Instant;Lnet/minecraft/util/Crypt$SaltSignaturePair;)V"),
+                    target = "Lnet/minecraft/server/players/PlayerList;broadcastChatMessage(Lnet/minecraft/network/chat/SignedMessage;Lnet/minecraft/server/network/TextFilter$FilteredText;Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/resources/ResourceKey;)V"),
             cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-    private void handleChat(ServerboundChatPacket packet, TextFilter.FilteredText message, CallbackInfo ci, String normalizedMessage, String filteredMessage, Component filtered, Component raw) {
+    private void handleChat(ServerboundChatPacket packet, TextFilter.FilteredText message, CallbackInfo ci) {
+        MutableComponent raw = Component.literal(message.getRaw());
+        MutableComponent filtered = Component.literal(message.getFiltered());
         var chatComponent = new ChatComponentImpl(raw, filtered);
         var process = ChatEvent.SERVER.invoker().process(this.player, message, chatComponent);
         if (process.isEmpty()) return;
         if (process.isFalse()) {
             ci.cancel();
         } else if (!Objects.equals(chatComponent.getRaw(), raw) || !Objects.equals(chatComponent.getFiltered(), filtered)) {
-            this.server.getPlayerList().broadcastPlayerMessage(chatComponent.getRaw(), (serverPlayer) -> {
-                return this.player.shouldFilterMessageTo(serverPlayer) ? chatComponent.getFiltered() : chatComponent.getRaw();
-            }, ChatType.CHAT, this.player.asChatSender(), packet.getTimeStamp(), packet.getSaltSignature());
+            MessageSignature messageSignature = packet.getSignature(this.player.getUUID());
+            SignedMessage signedMessage = new SignedMessage(chatComponent.getRaw(), messageSignature);
             
-            this.chatSpamTickCount += 20;
-            if (this.chatSpamTickCount > 200 && !this.server.getPlayerList().isOp(this.player.getGameProfile())) {
-                this.disconnect(Component.translatable("disconnect.spam"));
+            {
+                SignedMessage filteredMessage;
+                if (!chatComponent.getFiltered().getString().isEmpty()) {
+                    filteredMessage = new SignedMessage(chatComponent.getFiltered(), MessageSignature.unsigned());
+                } else {
+                    filteredMessage = null;
+                }
+                
+                this.server.getPlayerList().broadcastChatMessage(signedMessage, (serverPlayer2) -> {
+                    return player.shouldFilterMessageTo(serverPlayer2) ? filteredMessage : signedMessage;
+                }, player.asChatSender(), ChatType.CHAT);
             }
+            
+            this.detectRateSpam();
             ci.cancel();
         }
     }
