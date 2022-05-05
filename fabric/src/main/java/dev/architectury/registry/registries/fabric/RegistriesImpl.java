@@ -19,6 +19,7 @@
 
 package dev.architectury.registry.registries.fabric;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.HashMultimap;
@@ -34,6 +35,7 @@ import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
@@ -48,7 +50,8 @@ public class RegistriesImpl {
     
     private static void listen(ResourceKey<?> resourceKey, ResourceLocation id, Consumer<?> listener) {
         if (LISTENED_REGISTRIES.add(resourceKey)) {
-            RegistryEntryAddedCallback.event(Registry.REGISTRY.get(resourceKey.location())).register((rawId, entryId, object) -> {
+            Registry<?> registry = MoreObjects.firstNonNull(Registry.REGISTRY.get(resourceKey.location()), BuiltinRegistries.REGISTRY.get(resourceKey.location()));
+            RegistryEntryAddedCallback.event(registry).register((rawId, entryId, object) -> {
                 RegistryEntryId<?> registryEntryId = new RegistryEntryId<>(resourceKey, entryId);
                 for (Consumer<?> consumer : LISTENERS.get(registryEntryId)) {
                     ((Consumer<Object>) consumer).accept(object);
@@ -67,7 +70,7 @@ public class RegistriesImpl {
     public static <T> ResourceLocation getId(T object, ResourceKey<Registry<T>> fallback) {
         if (fallback == null)
             return null;
-        return getId(object, (Registry<T>) Registry.REGISTRY.get(fallback.location()));
+        return getId(object, (Registry<T>) MoreObjects.firstNonNull(Registry.REGISTRY.get(fallback.location()), BuiltinRegistries.REGISTRY.get(fallback.location())));
     }
     
     public static <T> ResourceLocation getId(T object, Registry<T> fallback) {
@@ -85,7 +88,7 @@ public class RegistriesImpl {
         
         @Override
         public <T> Registrar<T> get(ResourceKey<Registry<T>> key) {
-            return new RegistrarImpl<>(modId, (Registry<T>) Registry.REGISTRY.get(key.location()));
+            return new RegistrarImpl<>(modId, (Registry<T>) MoreObjects.firstNonNull(Registry.REGISTRY.get(key.location()), BuiltinRegistries.REGISTRY.get(key.location())));
         }
         
         @Override
