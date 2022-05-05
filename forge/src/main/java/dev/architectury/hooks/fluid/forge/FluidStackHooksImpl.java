@@ -29,6 +29,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
@@ -129,5 +130,41 @@ public class FluidStackHooksImpl {
     public static int getColor(Fluid fluid) {
         if (fluid == Fluids.EMPTY) return -1;
         return fluid.getAttributes().getColor();
+    }
+    
+    public static int getLuminosity(FluidStack fluid, @Nullable Level level, @Nullable BlockPos pos) {
+        return fluid.getFluid().getAttributes().getLuminosity(FluidStackHooksForge.toForge(fluid));
+    }
+    
+    public static int getLuminosity(Fluid fluid, @Nullable Level level, @Nullable BlockPos pos) {
+        if (level != null && pos != null) {
+            return fluid.getAttributes().getLuminosity(level, pos);
+        }
+        
+        return fluid.getAttributes().getLuminosity();
+    }
+    
+    public static int getTemperature(FluidStack fluid, @Nullable Level level, @Nullable BlockPos pos) {
+        return fluid.getFluid().getAttributes().getTemperature(FluidStackHooksForge.toForge(fluid));
+    }
+    
+    public static int getTemperature(Fluid fluid, @Nullable Level level, @Nullable BlockPos pos) {
+        if (level != null && pos != null) {
+            return fluid.getAttributes().getTemperature(level, pos);
+        }
+        
+        return fluid.getAttributes().getTemperature();
+    }
+    
+    public static int getViscosity(FluidStack fluid, @Nullable Level level, @Nullable BlockPos pos) {
+        return fluid.getFluid().getAttributes().getViscosity(FluidStackHooksForge.toForge(fluid));
+    }
+    
+    public static int getViscosity(Fluid fluid, @Nullable Level level, @Nullable BlockPos pos) {
+        if (level != null && pos != null) {
+            return fluid.getAttributes().getViscosity(level, pos);
+        }
+        
+        return fluid.getAttributes().getViscosity();
     }
 }
