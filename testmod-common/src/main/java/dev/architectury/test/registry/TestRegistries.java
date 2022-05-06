@@ -19,6 +19,7 @@
 
 package dev.architectury.test.registry;
 
+import dev.architectury.core.RegistryEntry;
 import dev.architectury.core.fluid.ArchitecturyFluidAttributes;
 import dev.architectury.core.fluid.SimpleArchitecturyFluidAttributes;
 import dev.architectury.core.item.ArchitecturySpawnEggItem;
@@ -27,6 +28,8 @@ import dev.architectury.hooks.level.entity.EntityHooks;
 import dev.architectury.platform.Platform;
 import dev.architectury.registry.level.entity.EntityAttributeRegistry;
 import dev.architectury.registry.registries.DeferredRegister;
+import dev.architectury.registry.registries.Registrar;
+import dev.architectury.registry.registries.Registries;
 import dev.architectury.registry.registries.RegistrySupplier;
 import dev.architectury.test.TestMod;
 import dev.architectury.test.entity.TestEntity;
@@ -62,6 +65,17 @@ import java.lang.reflect.InvocationTargetException;
 import static dev.architectury.test.TestMod.SINK;
 
 public class TestRegistries {
+    public static final class TestInt extends RegistryEntry<TestInt> {
+        public final int value;
+        
+        public TestInt(int value) {
+            this.value = value;
+        }
+    }
+    
+    public static final Registrar<TestInt> INTS = Registries.get(TestMod.MOD_ID).<TestInt>builder(new ResourceLocation(TestMod.MOD_ID, "ints"))
+            .syncToClients()
+            .build();
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(TestMod.MOD_ID, Registry.ITEM_REGISTRY);
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(TestMod.MOD_ID, Registry.BLOCK_REGISTRY);
     public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(TestMod.MOD_ID, Registry.FLUID_REGISTRY);
@@ -77,6 +91,9 @@ public class TestRegistries {
             .blockSupplier(() -> TestRegistries.TEST_FLUID_BLOCK)
             .bucketItemSupplier(() -> TestRegistries.TEST_FLUID_BUCKET)
             .color(0xFF0000);
+    
+    public static final RegistrySupplier<TestInt> TEST_INT = INTS.register(new ResourceLocation(TestMod.MOD_ID, "test_int"), () -> new TestInt(1));
+    public static final RegistrySupplier<TestInt> TEST_INT_2 = INTS.register(new ResourceLocation(TestMod.MOD_ID, "test_int_2"), () -> new TestInt(2));
     
     public static final RegistrySupplier<MobEffect> TEST_EFFECT = MOB_EFFECTS.register("test_effect", () ->
             new MobEffect(MobEffectCategory.NEUTRAL, 0x123456) {

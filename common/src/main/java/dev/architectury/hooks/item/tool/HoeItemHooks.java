@@ -21,12 +21,16 @@ package dev.architectury.hooks.item.tool;
 
 import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.util.Pair;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.HashMap;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 public final class HoeItemHooks {
@@ -48,10 +52,25 @@ public final class HoeItemHooks {
      * @param predicate context predicate
      * @param action action to run
      */
+    @Deprecated(forRemoval = true)
+    @ApiStatus.ScheduledForRemoval
     public static void addTillable(Block input, Predicate<UseOnContext> predicate, Consumer<UseOnContext> action) {
         if (HoeItem.TILLABLES instanceof ImmutableMap) {
             HoeItem.TILLABLES = new HashMap<>(HoeItem.TILLABLES);
         }
         HoeItem.TILLABLES.put(input, new Pair<>(predicate, action));
+    }
+    
+    /**
+     * Adds a new tilling action.
+     *
+     * @param input     input block
+     * @param predicate context predicate
+     * @param action    action to run
+     * @param newState  the new block state
+     */
+    @ExpectPlatform
+    public static void addTillable(Block input, Predicate<UseOnContext> predicate, Consumer<UseOnContext> action, Function<UseOnContext, BlockState> newState) {
+        throw new AssertionError();
     }
 }
