@@ -19,12 +19,15 @@
 
 package dev.architectury.test.registry;
 
+import dev.architectury.core.RegistryEntry;
 import dev.architectury.core.item.ArchitecturySpawnEggItem;
 import dev.architectury.hooks.item.food.FoodPropertiesHooks;
 import dev.architectury.hooks.level.entity.EntityHooks;
 import dev.architectury.registry.block.BlockProperties;
 import dev.architectury.registry.level.entity.EntityAttributeRegistry;
 import dev.architectury.registry.registries.DeferredRegister;
+import dev.architectury.registry.registries.Registrar;
+import dev.architectury.registry.registries.Registries;
 import dev.architectury.registry.registries.RegistrySupplier;
 import dev.architectury.test.TestMod;
 import dev.architectury.test.entity.TestEntity;
@@ -33,6 +36,7 @@ import dev.architectury.test.registry.objects.EquippableTickingItem;
 import dev.architectury.test.tab.TestCreativeTabs;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -53,6 +57,17 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import static dev.architectury.test.TestMod.SINK;
 
 public class TestRegistries {
+    public static final class TestInt extends RegistryEntry<TestInt> {
+        public final int value;
+        
+        public TestInt(int value) {
+            this.value = value;
+        }
+    }
+    
+    public static final Registrar<TestInt> INTS = Registries.get(TestMod.MOD_ID).<TestInt>builder(new ResourceLocation(TestMod.MOD_ID, "ints"))
+            .syncToClients()
+            .build();
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(TestMod.MOD_ID, Registry.ITEM_REGISTRY);
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(TestMod.MOD_ID, Registry.BLOCK_REGISTRY);
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(TestMod.MOD_ID, Registry.ENTITY_TYPE_REGISTRY);
@@ -60,6 +75,8 @@ public class TestRegistries {
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(TestMod.MOD_ID, Registry.RECIPE_SERIALIZER_REGISTRY);
     public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(TestMod.MOD_ID, Registry.RECIPE_TYPE_REGISTRY);
     
+    public static final RegistrySupplier<TestInt> TEST_INT = INTS.register(new ResourceLocation(TestMod.MOD_ID, "test_int"), () -> new TestInt(1));
+    public static final RegistrySupplier<TestInt> TEST_INT_2 = INTS.register(new ResourceLocation(TestMod.MOD_ID, "test_int_2"), () -> new TestInt(2));
     public static final RegistrySupplier<MobEffect> TEST_EFFECT = MOB_EFFECTS.register("test_effect", () ->
             new MobEffect(MobEffectCategory.NEUTRAL, 0x123456) {
             });
