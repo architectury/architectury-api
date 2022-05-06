@@ -17,20 +17,22 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.hooks.fluid.forge;
+package dev.architectury.utils;
 
-import dev.architectury.fluid.FluidStack;
-import dev.architectury.fluid.forge.FluidStackImpl;
-
-public final class FluidStackHooksForge {
-    private FluidStackHooksForge() {
-    }
-    
-    public static FluidStack fromForge(net.minecraftforge.fluids.FluidStack stack) {
-        return FluidStackImpl.fromValue.apply(stack);
-    }
-    
-    public static net.minecraftforge.fluids.FluidStack toForge(FluidStack stack) {
-        return (net.minecraftforge.fluids.FluidStack) FluidStackImpl.toValue.apply(stack);
+public class Amount {
+    /**
+     * Converts a long to an int while dropping overflowed values.
+     *
+     * @param amount the long to convert
+     * @return the int value
+     */
+    public static int toInt(long amount) {
+        if (amount >= Integer.MAX_VALUE) {
+            return Integer.MAX_VALUE;
+        } else if (amount <= Integer.MIN_VALUE) {
+            return Integer.MIN_VALUE;
+        }
+        
+        return (int) amount;
     }
 }

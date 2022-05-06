@@ -17,20 +17,26 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.hooks.fluid.forge;
+package dev.architectury.core.item;
 
-import dev.architectury.fluid.FluidStack;
-import dev.architectury.fluid.forge.FluidStackImpl;
+import dev.architectury.platform.Platform;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.MobBucketItem;
+import net.minecraft.world.level.material.Fluid;
 
-public final class FluidStackHooksForge {
-    private FluidStackHooksForge() {
+import java.util.function.Supplier;
+
+public class ArchitecturyMobBucketItem extends MobBucketItem {
+    public ArchitecturyMobBucketItem(Supplier<? extends EntityType<?>> entity, Supplier<? extends Fluid> fluid, Supplier<? extends SoundEvent> sound, Properties properties) {
+        super(checkPlatform(entity).get(), fluid.get(), sound.get(), properties);
     }
     
-    public static FluidStack fromForge(net.minecraftforge.fluids.FluidStack stack) {
-        return FluidStackImpl.fromValue.apply(stack);
-    }
-    
-    public static net.minecraftforge.fluids.FluidStack toForge(FluidStack stack) {
-        return (net.minecraftforge.fluids.FluidStack) FluidStackImpl.toValue.apply(stack);
+    private static <T> T checkPlatform(T obj) {
+        if (Platform.isForge()) {
+            throw new IllegalStateException("This class should've been replaced on Forge!");
+        }
+        
+        return obj;
     }
 }

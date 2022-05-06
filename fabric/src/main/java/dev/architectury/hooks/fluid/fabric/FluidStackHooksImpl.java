@@ -44,7 +44,7 @@ import java.util.Objects;
 
 public class FluidStackHooksImpl {
     public static Component getName(FluidStack stack) {
-        return FluidVariantAttributes.getName(FluidVariant.of(stack.getFluid(), stack.getTag()));
+        return FluidVariantAttributes.getName(FluidStackHooksFabric.toFabric(stack));
     }
     
     public static String getTranslationKey(FluidStack stack) {
@@ -188,7 +188,7 @@ public class FluidStackHooksImpl {
     }
     
     public static int getLuminosity(FluidStack fluid, @Nullable Level level, @Nullable BlockPos pos) {
-        return FluidVariantAttributes.getLuminance(FluidVariant.of(fluid.getFluid(), fluid.getTag()));
+        return FluidVariantAttributes.getLuminance(FluidStackHooksFabric.toFabric(fluid));
     }
     
     public static int getLuminosity(Fluid fluid, @Nullable Level level, @Nullable BlockPos pos) {
@@ -196,7 +196,7 @@ public class FluidStackHooksImpl {
     }
     
     public static int getTemperature(FluidStack fluid, @Nullable Level level, @Nullable BlockPos pos) {
-        return FluidVariantAttributes.getTemperature(FluidVariant.of(fluid.getFluid(), fluid.getTag()));
+        return FluidVariantAttributes.getTemperature(FluidStackHooksFabric.toFabric(fluid));
     }
     
     public static int getTemperature(Fluid fluid, @Nullable Level level, @Nullable BlockPos pos) {
@@ -204,7 +204,7 @@ public class FluidStackHooksImpl {
     }
     
     public static int getViscosity(FluidStack fluid, @Nullable Level level, @Nullable BlockPos pos) {
-        return FluidVariantAttributes.getViscosity(FluidVariant.of(fluid.getFluid(), fluid.getTag()), level);
+        return FluidVariantAttributes.getViscosity(FluidStackHooksFabric.toFabric(fluid), level);
     }
     
     public static int getViscosity(Fluid fluid, @Nullable Level level, @Nullable BlockPos pos) {

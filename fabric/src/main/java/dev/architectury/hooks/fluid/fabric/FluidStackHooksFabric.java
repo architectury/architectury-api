@@ -17,20 +17,27 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.hooks.fluid.forge;
+package dev.architectury.hooks.fluid.fabric;
 
 import dev.architectury.fluid.FluidStack;
-import dev.architectury.fluid.forge.FluidStackImpl;
+import dev.architectury.fluid.fabric.FluidStackImpl;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 
-public final class FluidStackHooksForge {
-    private FluidStackHooksForge() {
+@SuppressWarnings("UnstableApiUsage")
+public final class FluidStackHooksFabric {
+    private FluidStackHooksFabric() {
     }
     
-    public static FluidStack fromForge(net.minecraftforge.fluids.FluidStack stack) {
-        return FluidStackImpl.fromValue.apply(stack);
+    public static FluidStack fromFabric(StorageView<FluidVariant> storageView) {
+        return fromFabric(storageView.getResource(), storageView.getAmount());
     }
     
-    public static net.minecraftforge.fluids.FluidStack toForge(FluidStack stack) {
-        return (net.minecraftforge.fluids.FluidStack) FluidStackImpl.toValue.apply(stack);
+    public static FluidStack fromFabric(FluidVariant variant, long amount) {
+        return FluidStackImpl.fromValue.apply(new FluidStackImpl.Pair(variant, amount));
+    }
+    
+    public static FluidVariant toFabric(FluidStack stack) {
+        return ((FluidStackImpl.Pair) FluidStackImpl.toValue.apply(stack)).variant;
     }
 }
