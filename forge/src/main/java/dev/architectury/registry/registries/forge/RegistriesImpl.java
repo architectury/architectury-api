@@ -136,6 +136,7 @@ public class RegistriesImpl {
     }
     
     public static class RegistryProviderImpl implements Registries.RegistryProvider {
+        private static final Map<ResourceKey<Registry<?>>, Registrar<?>> CUSTOM_REGS = new HashMap<>();
         private final String modId;
         private final Supplier<IEventBus> eventBus;
         private final Map<ResourceKey<? extends Registry<?>>, Data> registry = new HashMap<>();
@@ -170,6 +171,7 @@ public class RegistriesImpl {
             if (registry == null) {
                 Registry<T> ts = (Registry<T>) Registry.REGISTRY.get(registryKey.location());
                 if (ts == null) ts = (Registry<T>) BuiltinRegistries.REGISTRY.get(registryKey.location());
+                if (ts == null) ts = (Registry<T>) RegistryProviderImpl.CUSTOM_REGS.get(registryKey);
                 if (ts == null) {
                     throw new IllegalArgumentException("Registry " + registryKey + " does not exist!");
                 } else {
@@ -374,6 +376,7 @@ public class RegistriesImpl {
                 registrar.onRegister();
             });
             provider.builders.add(entry);
+            RegistryProviderImpl.CUSTOM_REGS.put(registrar.key(), registrar);
             return registrar;
         }
         
