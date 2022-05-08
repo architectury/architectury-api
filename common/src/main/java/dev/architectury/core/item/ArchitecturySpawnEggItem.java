@@ -19,11 +19,9 @@
 
 package dev.architectury.core.item;
 
-import dev.architectury.registry.registries.Registries;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.BlockSource;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.nbt.CompoundTag;
@@ -76,8 +74,8 @@ public class ArchitecturySpawnEggItem extends SpawnEggItem {
         this.entityType = Objects.requireNonNull(entityType, "entityType");
         SpawnEggItem.BY_ID.remove(null);
         entityType.listen(type -> {
-            LOGGER.debug("Registering spawn egg {} for {}", Objects.toString(Registries.getId(this, Registry.ITEM_REGISTRY)),
-                    Objects.toString(Registries.getId(type, Registry.ENTITY_TYPE_REGISTRY)));
+            LOGGER.debug("Registering spawn egg {} for {}", Objects.toString(this.arch$getRegistryName()),
+                    Objects.toString(type.arch$getRegistryName()));
             SpawnEggItem.BY_ID.put(type, this);
             this.defaultType = type;
             
