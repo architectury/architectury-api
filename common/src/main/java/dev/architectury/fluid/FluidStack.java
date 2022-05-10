@@ -245,7 +245,9 @@ public final class FluidStack {
         return new FluidStack(getRawFluidSupplier(), amount, getTag());
     }
     
+    @ApiStatus.Internal
     public static void init() {
         // classloading my beloved 😍
+        // please don't use this by the way
     }
 }
