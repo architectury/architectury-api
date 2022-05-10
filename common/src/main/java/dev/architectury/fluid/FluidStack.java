@@ -244,4 +244,8 @@ public final class FluidStack {
         if (isEmpty()) return this;
         return new FluidStack(getRawFluidSupplier(), amount, getTag());
     }
+    
+    public static void init() {
+        // classloading my beloved 😍
+    }
 }

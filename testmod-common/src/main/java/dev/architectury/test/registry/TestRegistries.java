@@ -61,6 +61,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.function.Supplier;
 
 import static dev.architectury.test.TestMod.SINK;
 
@@ -119,7 +120,7 @@ public class TestRegistries {
         try {
             // In example mod the forge class isn't being replaced, this is not required in mods depending on architectury
             return (Item) Class.forName(!Platform.isForge() ? "dev.architectury.core.item.ArchitecturyBucketItem" : "dev.architectury.core.item.forge.imitator.ArchitecturyBucketItem")
-                    .getDeclaredConstructor(RegistrySupplier.class, Item.Properties.class)
+                    .getDeclaredConstructor(Supplier.class, Item.Properties.class)
                     .newInstance(TestRegistries.TEST_FLUID, new Item.Properties().tab(TestCreativeTabs.TEST_TAB));
         } catch (InstantiationException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             throw new RuntimeException(e);
@@ -141,7 +142,7 @@ public class TestRegistries {
         try {
             // In example mod the forge class isn't being replaced, this is not required in mods depending on architectury
             return (LiquidBlock) Class.forName(!Platform.isForge() ? "dev.architectury.core.block.ArchitecturyLiquidBlock" : "dev.architectury.core.block.forge.imitator.ArchitecturyLiquidBlock")
-                    .getDeclaredConstructor(RegistrySupplier.class, BlockBehaviour.Properties.class)
+                    .getDeclaredConstructor(Supplier.class, BlockBehaviour.Properties.class)
                     .newInstance(TestRegistries.TEST_FLUID, BlockBehaviour.Properties.copy(Blocks.WATER).noCollission().strength(100.0F).noDrops());
         } catch (InstantiationException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             throw new RuntimeException(e);
