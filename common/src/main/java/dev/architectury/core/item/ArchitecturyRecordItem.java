@@ -17,20 +17,30 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.hooks.fluid.forge;
+package dev.architectury.core.item;
 
-import dev.architectury.fluid.FluidStack;
-import dev.architectury.fluid.forge.FluidStackImpl;
+import dev.architectury.registry.registries.RegistrySupplier;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.item.RecordItem;
 
-public final class FluidStackHooksForge {
-    private FluidStackHooksForge() {
+public class ArchitecturyRecordItem extends RecordItem {
+    private final RegistrySupplier<SoundEvent> sound;
+    
+    public ArchitecturyRecordItem(int analogOutput, RegistrySupplier<SoundEvent> sound, Properties properties) {
+        super(analogOutput, sound.orElse(null), properties);
+        this.sound = sound;
+        
+        if (!sound.isPresent()) {
+            RecordItem.BY_NAME.remove(null);
+
+            sound.listen(soundEvent -> {
+                RecordItem.BY_NAME.put(soundEvent, this);
+            });
+        }
     }
     
-    public static FluidStack fromForge(net.minecraftforge.fluids.FluidStack stack) {
-        return FluidStackImpl.fromValue.apply(stack);
-    }
-    
-    public static net.minecraftforge.fluids.FluidStack toForge(FluidStack stack) {
-        return (net.minecraftforge.fluids.FluidStack) FluidStackImpl.toValue.apply(stack);
+    @Override
+    public SoundEvent getSound() {
+        return sound.get();
     }
 }

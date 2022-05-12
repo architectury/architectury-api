@@ -17,20 +17,15 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.hooks.fluid.forge;
+package dev.architectury.core.block.forge.imitator;
 
-import dev.architectury.fluid.FluidStack;
-import dev.architectury.fluid.forge.FluidStackImpl;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.material.FlowingFluid;
 
-public final class FluidStackHooksForge {
-    private FluidStackHooksForge() {
-    }
-    
-    public static FluidStack fromForge(net.minecraftforge.fluids.FluidStack stack) {
-        return FluidStackImpl.fromValue.apply(stack);
-    }
-    
-    public static net.minecraftforge.fluids.FluidStack toForge(FluidStack stack) {
-        return (net.minecraftforge.fluids.FluidStack) FluidStackImpl.toValue.apply(stack);
+import java.util.function.Supplier;
+
+public class ArchitecturyLiquidBlock extends LiquidBlock {
+    public ArchitecturyLiquidBlock(Supplier<? extends FlowingFluid> fluid, Properties properties) {
+        super(fluid, properties);
     }
 }

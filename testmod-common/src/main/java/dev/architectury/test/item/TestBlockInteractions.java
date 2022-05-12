@@ -30,28 +30,21 @@ import net.minecraft.world.level.block.Blocks;
 public final class TestBlockInteractions {
     private TestBlockInteractions() {
     }
-
+    
     public static void init() {
         AxeItemHooks.addStrippable(Blocks.QUARTZ_PILLAR, Blocks.OAK_LOG);
         ShovelItemHooks.addFlattenable(Blocks.IRON_ORE, Blocks.DIAMOND_BLOCK.defaultBlockState());
         HoeItemHooks.addTillable(Blocks.COAL_BLOCK, ctx -> {
-            if (!ctx.getLevel().isNight()) {
-                if (!ctx.getLevel().isClientSide) {
-                    Player player = ctx.getPlayer();
-                    if (player != null)
-                        player.sendSystemMessage(Component.literal("These dark arts can only be done at night!"));
-                }
-                return false;
-            }
-            return true;
+            return ctx.getLevel().isNight();
         }, ctx -> {
             BlockPos pos = ctx.getClickedPos();
-            ctx.getLevel().setBlock(pos, Blocks.DIAMOND_BLOCK.defaultBlockState(), 3);
             if (!ctx.getLevel().isClientSide) {
                 Player player = ctx.getPlayer();
                 if (player != null)
                     player.sendSystemMessage(Component.literal("Thou has successfully committed the dark arts of alchemy!!"));
             }
+        }, ctx -> {
+            return Blocks.DIAMOND_BLOCK.defaultBlockState();
         });
     }
 }

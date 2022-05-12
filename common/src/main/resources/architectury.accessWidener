@@ -120,6 +120,7 @@ transitive-accessible class net/minecraft/client/renderer/RenderType$OutlineProp
 accessible field net/minecraft/world/item/SpawnEggItem BY_ID Ljava/util/Map;
 accessible field net/minecraft/world/item/SpawnEggItem defaultType Lnet/minecraft/world/entity/EntityType;
 mutable field net/minecraft/world/item/SpawnEggItem defaultType Lnet/minecraft/world/entity/EntityType;
+accessible field net/minecraft/world/item/RecordItem BY_NAME Ljava/util/Map;
 accessible field net/minecraft/client/particle/ParticleEngine textureAtlas Lnet/minecraft/client/renderer/texture/TextureAtlas;
 accessible class net/minecraft/client/particle/ParticleEngine$MutableSpriteSet
 accessible field net/minecraft/client/particle/ParticleEngine$MutableSpriteSet sprites Ljava/util/List;
