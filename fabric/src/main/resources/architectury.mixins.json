@@ -12,6 +12,7 @@
     "client.MixinDebugScreenOverlay",
     "client.MixinEffectInstance",
     "client.MixinGameRenderer",
+    "client.MixinGui",
     "client.MixinIntegratedServer",
     "client.MixinKeyboardHandler",
     "client.MixinMinecraft",
@@ -21,6 +22,7 @@
     "client.MixinTextureAtlas"
   ],
   "mixins": [
+    "server.MixinDedicatedServer",
     "BucketItemAccessor",
     "ExplosionPreInvoker",
     "HorseTameInvoker",
@@ -41,6 +43,7 @@
     "MixinInventory",
     "MixinItemEntity",
     "MixinLivingEntity",
+    "MixinMinecraftServer",
     "MixinNaturalSpawner",
     "MixinOcelot",
     "MixinPatrolSpawner",

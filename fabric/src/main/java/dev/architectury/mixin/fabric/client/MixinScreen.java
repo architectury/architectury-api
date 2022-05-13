@@ -20,7 +20,6 @@
 package dev.architectury.mixin.fabric.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import dev.architectury.event.events.client.ClientChatEvent;
 import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.event.events.client.ClientTooltipEvent;
 import dev.architectury.hooks.client.screen.ScreenAccess;
@@ -84,18 +83,6 @@ public abstract class MixinScreen implements ScreenInputDelegate {
     @Inject(method = "init(Lnet/minecraft/client/Minecraft;II)V", at = @At(value = "RETURN"))
     private void postInit(Minecraft minecraft, int i, int j, CallbackInfo ci) {
         ClientGuiEvent.INIT_POST.invoker().init((Screen) (Object) this, getAccess());
-    }
-    
-    @ModifyVariable(method = "sendMessage(Ljava/lang/String;Z)V", at = @At("HEAD"), argsOnly = true, ordinal = 0)
-    private String modifyMessage(String message) {
-        var process = ClientChatEvent.PROCESS.invoker().process(message);
-        if (process.isPresent()) {
-            if (process.isFalse())
-                return "";
-            if (process.object() != null)
-                return process.object();
-        }
-        return message;
     }
     
     @Inject(method = "renderTooltip(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/item/ItemStack;II)V", at = @At("HEAD"))

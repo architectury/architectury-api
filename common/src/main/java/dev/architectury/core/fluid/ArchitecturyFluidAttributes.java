@@ -22,7 +22,6 @@ package dev.architectury.core.fluid;
 import dev.architectury.fluid.FluidStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.Item;
@@ -65,7 +64,7 @@ public interface ArchitecturyFluidAttributes {
      * @return the name
      */
     default Component getName(@Nullable FluidStack stack) {
-        return new TranslatableComponent(getTranslationKey(stack));
+        return Component.translatable(getTranslationKey(stack));
     }
     
     /**

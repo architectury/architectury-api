@@ -30,6 +30,7 @@ import dev.architectury.test.TestMod;
 import dev.architectury.utils.Env;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.inventory.AnvilScreen;
 import net.minecraft.core.Position;
 import net.minecraft.core.Vec3i;
@@ -60,9 +61,12 @@ public class DebugEvents {
             TestMod.SINK.accept(Optional.ofNullable(placer).map(Entity::getScoreboardName).orElse("null") + " places block at " + toShortString(pos) + logSide(world));
             return EventResult.pass();
         });
-        ChatEvent.SERVER.register((player, message, component) -> {
-            TestMod.SINK.accept("Server chat received: " + message.getRaw());
-            return EventResult.pass();
+        ChatEvent.SERVER.register((player, message) -> {
+            TestMod.SINK.accept("Server chat received: " + message);
+            if (message.getString().contains("shit")) {
+                return CompoundEventResult.interruptFalse(Component.empty());
+            }
+            return CompoundEventResult.interruptTrue(message.copy().withStyle(ChatFormatting.AQUA));
         });
         CommandPerformEvent.EVENT.register(event -> {
             TestMod.SINK.accept("Server command performed: " + event.getResults().getReader().getString());
@@ -248,8 +252,8 @@ public class DebugEvents {
                 e.printStackTrace();
             }
         });
-        ClientChatEvent.PROCESS.register(message -> {
-            TestMod.SINK.accept("Client chat sent: " + message);
+        ClientChatEvent.PROCESS.register((type, message, sender) -> {
+            TestMod.SINK.accept("Client chat sent: " + message + " of type " + type.chat());
             return CompoundEventResult.pass();
         });
         ClientChatEvent.RECEIVED.register((type, message, sender) -> {

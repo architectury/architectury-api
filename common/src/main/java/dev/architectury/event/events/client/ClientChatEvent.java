@@ -29,16 +29,14 @@ import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.UUID;
-
 @Environment(EnvType.CLIENT)
 public interface ClientChatEvent {
     /**
-     * @see Process#process(String)
+     * @see Process#process(ChatType, Component, ChatSender) 
      */
     Event<Process> PROCESS = EventFactory.createCompoundEventResult();
     /**
-     * @see Received#process(ChatType, Component, UUID)
+     * @see Received#process(ChatType, Component, ChatSender)
      */
     Event<Received> RECEIVED = EventFactory.createCompoundEventResult();
     
@@ -48,11 +46,11 @@ public interface ClientChatEvent {
          * Event to modify the chat message a clients sends.
          * Equivalent to Forge's {@code ClientChatEvent} event.
          *
-         * @param message The raw chat message the client wants to send.
+         * @param message The chat message the client wants to send.
          * @return A {@link CompoundEventResult} determining the outcome of the event,
          * if an outcome is set, the sent message is overridden.
          */
-        CompoundEventResult<String> process(String message);
+        CompoundEventResult<Component> process(ChatType chatType, Component message, @Nullable ChatSender sender);
     }
     
     @Environment(EnvType.CLIENT)

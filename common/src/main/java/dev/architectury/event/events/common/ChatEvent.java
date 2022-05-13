@@ -19,16 +19,16 @@
 
 package dev.architectury.event.events.common;
 
+import dev.architectury.event.CompoundEventResult;
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
-import dev.architectury.event.EventResult;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.TextFilter;
+import org.jetbrains.annotations.Nullable;
 
 public interface ChatEvent {
     /**
-     * @see Server#process(ServerPlayer, TextFilter.FilteredText, ChatComponent)
+     * @see Server#process(ServerPlayer, Component)
      */
     Event<Server> SERVER = EventFactory.createEventResult();
     
@@ -37,22 +37,11 @@ public interface ChatEvent {
          * Invoked when the server receives a message from a client.
          * Equivalent to Forge's {@code ServerChatEvent} event.
          *
-         * @param player    The player who has sent the message.
-         * @param message   The raw message itself.
+         * @param player    The player who has sent the message, or null.
          * @param component The message as component.
-         * @return A {@link EventResult} determining the outcome of the event,
-         * the execution of the vanilla message may be cancelled by the result.
+         * @return A {@link CompoundEventResult} determining the outcome of the event,
+         * if an outcome is set, the sent message is overridden.
          */
-        EventResult process(ServerPlayer player, TextFilter.FilteredText message, ChatComponent component);
-    }
-    
-    interface ChatComponent {
-        Component getRaw();
-        
-        Component getFiltered();
-        
-        void setRaw(Component raw);
-        
-        void setFiltered(Component filtered);
+        CompoundEventResult<Component> process(@Nullable ServerPlayer player, Component component);
     }
 }

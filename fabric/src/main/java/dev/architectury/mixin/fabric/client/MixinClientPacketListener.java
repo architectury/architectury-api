@@ -27,7 +27,14 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.Registry;
-import net.minecraft.network.protocol.game.*;
+import net.minecraft.network.chat.ChatSender;
+import net.minecraft.network.chat.ChatType;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.PlayerChatMessage;
+import net.minecraft.network.protocol.game.ClientboundLoginPacket;
+import net.minecraft.network.protocol.game.ClientboundRespawnPacket;
+import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
+import net.minecraft.network.protocol.game.ClientboundUpdateRecipesPacket;
 import net.minecraft.world.item.crafting.RecipeManager;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -36,6 +43,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(ClientPacketListener.class)
 public class MixinClientPacketListener {
@@ -83,18 +91,17 @@ public class MixinClientPacketListener {
         }
     }
     
-    @Inject(method = "handlePlayerChat", at = @At(value = "INVOKE",
+    @Inject(method = "handlePlayerChat(Lnet/minecraft/network/chat/ChatType;Lnet/minecraft/network/chat/PlayerChatMessage;Lnet/minecraft/network/chat/ChatSender;)V", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/client/gui/Gui;handlePlayerChat(Lnet/minecraft/network/chat/ChatType;Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/ChatSender;)V"),
-            cancellable = true)
-    private void handleChat(ClientboundPlayerChatPacket packet, CallbackInfo ci) {
+            cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
+    private void handleChat(ChatType chatType, PlayerChatMessage playerChatMessage, ChatSender sender, CallbackInfo ci, boolean showSigned, Component component) {
         var registry = this.level.registryAccess().registryOrThrow(Registry.CHAT_TYPE_REGISTRY);
-        var chatType = packet.resolveType(registry);
-        var process = ClientChatEvent.RECEIVED.invoker().process(chatType, packet.content(), packet.sender());
+        var process = ClientChatEvent.RECEIVED.invoker().process(chatType, component, sender);
         if (process.isEmpty()) return;
         if (process.isFalse()) {
             ci.cancel();
-        } else if (process.object() != null && !process.object().equals(packet.content())) {
-            this.minecraft.gui.handlePlayerChat(chatType, packet.content(), packet.sender());
+        } else if (process.object() != null && !process.object().equals(component)) {
+            this.minecraft.gui.handlePlayerChat(chatType, component, sender);
             ci.cancel();
         }
     }
