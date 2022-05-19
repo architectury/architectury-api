@@ -19,12 +19,16 @@
 
 package dev.architectury.impl.fabric;
 
+import dev.architectury.event.events.common.ChatEvent;
 import net.minecraft.network.chat.ChatDecorator;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MessageSignature;
 import net.minecraft.network.chat.PlayerChatMessage;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.FilteredText;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.concurrent.CompletableFuture;
 
 public class EventChatDecorator implements ChatDecorator {
     public static final Component CANCELLING_COMPONENT = Component.literal("THIS SHOULDN'T BE DISPLAYED, ARCHITECTURY SPECIFIC STRING DO NOT IMITATE THIS");
@@ -37,32 +41,46 @@ public class EventChatDecorator implements ChatDecorator {
     }
     
     @Override
-    public Component decorate(@Nullable ServerPlayer player, Component component) {
-        return processor.process(player, parent.decorate(player, component));
+    public CompletableFuture<Component> decorate(@Nullable ServerPlayer player, Component component) {
+        return parent.decorate(player, component).thenApply(c -> {
+            return processor.process(player, FilteredText.fullyFiltered(c)).raw();
+        }).exceptionally(throwable -> {
+            throwable.printStackTrace();
+            return component;
+        });
     }
     
     @Override
-    public PlayerChatMessage decorate(@Nullable ServerPlayer player, Component component, MessageSignature signature, boolean signedPreview) {
-        PlayerChatMessage message = parent.decorate(player, component, signature, signedPreview);
-        Component newContent = processor.process(player, component);
-        if (!newContent.equals(component)) {
-            return !signedPreview ? PlayerChatMessage.signed(component, signature).withUnsignedContent(newContent) : PlayerChatMessage.signed(newContent, signature);
-        }
-        return message;
+    public CompletableFuture<FilteredText<Component>> decorateFiltered(@Nullable ServerPlayer player, FilteredText<Component> message) {
+        return parent.decorateFiltered(player, message).thenApply(newMessage -> {
+            FilteredText<Component> newContent = processor.process(player, newMessage);
+            if (!newContent.equals(newMessage)) {
+                return newContent;
+            }
+            return newMessage;
+        }).exceptionally(throwable -> {
+            throwable.printStackTrace();
+            return message;
+        });
     }
     
     @Override
-    public PlayerChatMessage decorate(@Nullable ServerPlayer player, PlayerChatMessage message) {
-        PlayerChatMessage newMessage = parent.decorate(player, message.signedContent(), message.signature(), false);
-        Component newContent = processor.process(player, message.signedContent());
-        if (!newContent.equals(message.signedContent())) {
-            return PlayerChatMessage.signed(message.signedContent(), message.signature()).withUnsignedContent(newContent);
-        }
-        return message;
+    public CompletableFuture<FilteredText<PlayerChatMessage>> decorateChat(@Nullable ServerPlayer player, FilteredText<Component> component, MessageSignature signature, boolean signedPreview) {
+        return parent.decorateChat(player, component, signature, signedPreview).thenApply(message -> {
+            FilteredText<Component> newComponent = processor.process(player, message.map(PlayerChatMessage::signedContent));
+            FilteredText<PlayerChatMessage> newMessage = PlayerChatMessage.filteredSigned(component, newComponent, signature, signedPreview);
+            if (!newMessage.equals(message)) {
+                return newMessage;
+            }
+            return message;
+        }).exceptionally(throwable -> {
+            throwable.printStackTrace();
+            return PlayerChatMessage.filteredSigned(component, component, signature, signedPreview);
+        });
     }
     
     @FunctionalInterface
     public interface ChatProcessor {
-        Component process(@Nullable ServerPlayer player, Component component);
+        FilteredText<Component> process(@Nullable ServerPlayer player, FilteredText<Component> text);
     }
 }

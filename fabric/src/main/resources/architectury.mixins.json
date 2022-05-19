@@ -22,7 +22,6 @@
     "client.MixinTextureAtlas"
   ],
   "mixins": [
-    "server.MixinDedicatedServer",
     "BucketItemAccessor",
     "ExplosionPreInvoker",
     "HorseTameInvoker",

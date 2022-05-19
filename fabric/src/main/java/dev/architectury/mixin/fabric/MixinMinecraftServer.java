@@ -20,11 +20,14 @@
 package dev.architectury.mixin.fabric;
 
 import dev.architectury.event.CompoundEventResult;
+import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.ChatEvent;
+import dev.architectury.impl.fabric.ChatComponentImpl;
 import dev.architectury.impl.fabric.EventChatDecorator;
 import net.minecraft.network.chat.ChatDecorator;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.FilteredText;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -36,12 +39,13 @@ public class MixinMinecraftServer {
     private void getChatDecorator(CallbackInfoReturnable<ChatDecorator> cir) {
         ChatDecorator parent = cir.getReturnValue();
         cir.setReturnValue(new EventChatDecorator(parent, (player, component) -> {
-            CompoundEventResult<Component> result = ChatEvent.SERVER.invoker().process(player, component);
+            ChatEvent.ChatComponent chatComponent = new ChatComponentImpl(component.raw(), component.filtered());
+            EventResult result = ChatEvent.SERVER.invoker().process(player, chatComponent);
             if (result.isPresent()) {
                 if (result.isFalse()) {
-                    return EventChatDecorator.CANCELLING_COMPONENT;
-                } else if (result.object() != null) {
-                    return result.object();
+                    return FilteredText.fullyFiltered(EventChatDecorator.CANCELLING_COMPONENT);
+                } else {
+                    return new FilteredText<>(chatComponent.getRaw(), chatComponent.getFiltered());
                 }
             }
             

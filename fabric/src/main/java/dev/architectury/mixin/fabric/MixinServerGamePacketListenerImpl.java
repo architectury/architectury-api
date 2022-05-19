@@ -26,6 +26,7 @@ import net.minecraft.network.chat.PlayerChatMessage;
 import net.minecraft.network.protocol.game.ServerboundChatPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.FilteredText;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.server.network.TextFilter;
 import org.spongepowered.asm.mixin.Final;
@@ -48,11 +49,12 @@ public abstract class MixinServerGamePacketListenerImpl {
     @Shadow
     protected abstract void detectRateSpam();
     
-    @Inject(method = "handleChat(Lnet/minecraft/network/protocol/game/ServerboundChatPacket;Lnet/minecraft/server/network/TextFilter$FilteredText;)V",
+    @Inject(method = "broadcastChatMessage",
             at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/network/chat/PlayerChatMessage;verify(Lnet/minecraft/world/entity/player/ProfilePublicKey;)Z"),
-            cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-    private void handleChat(ServerboundChatPacket packet, TextFilter.FilteredText message, CallbackInfo ci, Component component, MessageSignature signature, PlayerChatMessage chatMessage) {
+                    target = "Lnet/minecraft/network/chat/PlayerChatMessage;verify(Lnet/minecraft/server/level/ServerPlayer;)Z"),
+            cancellable = true)
+    private void handleChat(FilteredText<PlayerChatMessage> filteredText, CallbackInfo ci) {
+        PlayerChatMessage chatMessage = filteredText.raw();
         if (chatMessage.serverContent().equals(EventChatDecorator.CANCELLING_COMPONENT)) {
             ci.cancel();
         }

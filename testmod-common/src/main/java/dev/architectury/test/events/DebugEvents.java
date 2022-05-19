@@ -62,11 +62,12 @@ public class DebugEvents {
             return EventResult.pass();
         });
         ChatEvent.SERVER.register((player, message) -> {
-            TestMod.SINK.accept("Server chat received: " + message);
-            if (message.getString().contains("shit")) {
-                return CompoundEventResult.interruptFalse(Component.empty());
+            TestMod.SINK.accept("Server chat received: " + message.getRaw());
+            if (message.getRaw().getString().contains("shit")) {
+                return EventResult.interruptFalse();
             }
-            return CompoundEventResult.interruptTrue(message.copy().withStyle(ChatFormatting.AQUA));
+            message.modifyBoth(component -> component.copy().withStyle(ChatFormatting.AQUA));
+            return EventResult.interruptTrue();
         });
         CommandPerformEvent.EVENT.register(event -> {
             TestMod.SINK.accept("Server command performed: " + event.getResults().getReader().getString());

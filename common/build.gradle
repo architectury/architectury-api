@@ -9,7 +9,7 @@ dependencies {
 }
 
 architectury {
-    common(rootProject.forgeEnabled.toBoolean())
+    common(rootProject.platforms.split(","))
 }
 
 /**
