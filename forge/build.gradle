@@ -1,6 +1,7 @@
 plugins {
     id "com.github.johnrengelman.shadow" version "7.1.2"
     id "com.matthewprenger.cursegradle"
+    id "com.modrinth.minotaur"
 }
 
 loom {
@@ -96,11 +97,12 @@ publishing {
 }
 
 curseforge {
-    if (project.hasProperty("CURSE_API_KEY") || System.getenv("CURSE_API_KEY") != null) {
-        apiKey = project.hasProperty("CURSE_API_KEY") ? project.property("CURSE_API_KEY") : System.getenv("CURSE_API_KEY")
+    var CURSE_API_KEY = project.findProperty("CURSE_API_KEY") ?: System.getenv("CURSE_API_KEY")
+    if (CURSE_API_KEY != null) {
+        apiKey = CURSE_API_KEY
         project {
-            id = "419699"
-            releaseType = "$rootProject.cf_type"
+            id = rootProject.curseforge_id
+            releaseType = "$rootProject.artifact_type"
             changelogType = "html"
             changelog = releaseChangelog()
             addGameVersion "1.17"
@@ -121,4 +123,19 @@ curseforge {
     }
 }
 
-rootProject.tasks.getByName("curseforgePublish").dependsOn tasks.getByName("curseforge")
+modrinth {
+    var MODRINTH_TOKEN = project.findProperty("MODRINTH_TOKEN") ?: System.getenv("MODRINTH_TOKEN")
+    if (MODRINTH_TOKEN != null) {
+        token = MODRINTH_TOKEN
+        projectId = rootProject.modrinth_id
+        versionType = "$rootProject.artifact_type"
+        versionNumber = "$project.version+$project.name"
+        versionName = "[Forge $rootProject.supported_version] v$project.version"
+        changelog = releaseChangelog()
+        uploadFile = remapJar
+        gameVersions = ["1.17.1"]
+        loaders = ["forge"]
+        dependencies {
+        }
+    }
+}

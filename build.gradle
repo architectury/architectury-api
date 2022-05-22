@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat
+
 buildscript {
     configurations.classpath {
         resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
@@ -6,9 +8,10 @@ buildscript {
 
 plugins {
     id "architectury-plugin" version "3.4-SNAPSHOT"
-    id "dev.architectury.loom" version "0.10.0-SNAPSHOT" apply false
+    id "dev.architectury.loom" version "0.12.0-SNAPSHOT" apply false
     id "org.cadixdev.licenser" version "0.6.1"
     id "com.matthewprenger.cursegradle" version "1.4.0" apply false
+    id "com.modrinth.minotaur" version "2.2.0" apply false
     id "maven-publish"
 }
 
@@ -37,7 +40,7 @@ allprojects {
     apply plugin: "java"
     apply plugin: "architectury-plugin"
     apply plugin: "org.cadixdev.licenser"
-    
+
     ext {
         isSnapshot = System.getenv("PR_NUM") != null
     }
@@ -81,7 +84,7 @@ allprojects {
 
     ext {
         releaseChangelog = {
-            def dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm")
+            def dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm")
             dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"))
             def branch
             if (System.env.BRANCH_NAME) {
@@ -115,5 +118,3 @@ allprojects {
 
 task licenseFormatAll
 subprojects { p -> licenseFormatAll.dependsOn("${p.path}:licenseFormat") }
-
-task curseforgePublish
