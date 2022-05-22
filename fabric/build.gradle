@@ -5,7 +5,7 @@ plugins {
 }
 
 loom {
-    accessWidener = file("src/main/resources/architectury.accessWidener")
+    accessWidenerPath = file("src/main/resources/architectury.accessWidener")
 }
 
 architectury {
