@@ -142,7 +142,7 @@ modrinth {
         versionName = "[Fabric $rootProject.supported_version] v$project.version"
         changelog = releaseChangelog()
         uploadFile = remapJar
-        gameVersions = ["1.18.2"]
+        gameVersions = ["1.16.5"]
         loaders = ["fabric"]
         dependencies {
             // TODO: move to slugs if that functionality becomes available in minotaur
