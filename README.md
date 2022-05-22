@@ -28,11 +28,14 @@ Architectury Plugin.
 
 ### Getting started with making multiplatform mods
 
-Gradle Plugin: https://github.com/architectury/architectury-plugin
+Architectury Loom: https://github.com/architectury/architectury-loom (a fork of Fabric Loom adding multiplatform development capabilities)
+Gradle Plugin: https://github.com/architectury/architectury-plugin (includes Architectury Injectables, for the `@ExpectPlatform` annotation)
+Example Mod: https://github.com/architectury/architectury-example-mod (a discontinued example mod using Architectury, if possible, use the templates instead)
+Mod Templates: https://github.com/architectury/architectury-templates (a set of templates to get started using the Architectury toolchain)
 
-Example Mod: https://github.com/architectury/architectury-example-mod
+### Example: Usage of @ExpectPlatform
+![Exmaple of the @ExpectPlatform annotation, part of Architectury Injectables](https://camo.githubusercontent.com/78c68766affb70fbd88f9806e0e95f78765ec339448d7102065f2942be2b3215/68747470733a2f2f6d656469612e646973636f72646170702e6e65742f6174746163686d656e74732f3538363138363230323738313138383130382f3737363432383831343330393738353632302f756e6b6e6f776e2e706e673f77696474683d31313931266865696768743d343339)
 
 ### Credits
 
-This library bundles typetools, which you can find its
-license [here](https://github.com/jhalterman/typetools/blob/master/LICENSE.txt "")
+In certain older versions, this library used to bundle typetools; you can find its license [here](https://github.com/jhalterman/typetools/blob/master/LICENSE.txt "")
