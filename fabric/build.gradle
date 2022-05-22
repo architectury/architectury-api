@@ -131,17 +131,19 @@ curseforge {
 
 modrinth {
     var MODRINTH_TOKEN = project.findProperty("MODRINTH_TOKEN") ?: System.getenv("MODRINTH_TOKEN")
-    if(MODRINTH_TOKEN != null) {
+    if (MODRINTH_TOKEN != null) {
         token = MODRINTH_TOKEN
         projectId = rootProject.modrinth_id
         versionType = "$rootProject.artifact_type"
+        versionNumber = "$project.version+$project.name"
         versionName = "[Fabric $rootProject.supported_version] v$project.version"
         changelog = releaseChangelog()
         uploadFile = remapJar
         gameVersions = ["1.18.2"]
         loaders = ["fabric"]
         dependencies {
-            required.project("P7dR8mSH") // Fabric API, TODO: move to slugs if that functionality becomes available in minotaur
+            // TODO: move to slugs if that functionality becomes available in minotaur
+            required.project("P7dR8mSH") // Fabric API
         }
     }
 }

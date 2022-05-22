@@ -140,10 +140,11 @@ curseforge {
 
 modrinth {
     var MODRINTH_TOKEN = project.findProperty("MODRINTH_TOKEN") ?: System.getenv("MODRINTH_TOKEN")
-    if(MODRINTH_TOKEN != null) {
+    if (MODRINTH_TOKEN != null) {
         token = MODRINTH_TOKEN
         projectId = rootProject.modrinth_id
         versionType = "$rootProject.artifact_type"
+        versionNumber = "$project.version+$project.name"
         versionName = "[Forge $rootProject.supported_version] v$project.version"
         changelog = releaseChangelog()
         uploadFile = remapJar
