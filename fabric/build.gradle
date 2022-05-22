@@ -140,7 +140,7 @@ modrinth {
         changelog = releaseChangelog()
         uploadFile = remapJar
         gameVersions = ["1.18.2"]
-        loaders = ["fabric"]
+        loaders = ["fabric", "quilt"]
         dependencies {
             // TODO: move to slugs if that functionality becomes available in minotaur
             required.project("P7dR8mSH") // Fabric API
