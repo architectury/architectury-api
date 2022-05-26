@@ -19,17 +19,13 @@
 
 package me.shedaniel.architectury.hooks.fabric;
 
-import net.minecraft.server.level.ServerPlayer;
+import me.shedaniel.architectury.event.Event;
+import me.shedaniel.architectury.event.EventFactory;
+import me.shedaniel.architectury.event.EventResult;
 import net.minecraft.world.entity.player.Player;
 
-public class PlayerHooksImpl {
-    public static boolean isFake(Player player) {
-        var result = FakePlayers.EVENT.invoker().isFakePlayer(player);
-        if (result.value() != null) {
-            return result.value();
-        }
-        // If no result has been returned, assume that player classes extending ServerPlayer
-        // (apart from ServerPlayer itself) are fake players, as a "reasonable default"
-        return player instanceof ServerPlayer && player.getClass() != ServerPlayer.class;
-    }
+public interface FakePlayers {
+    Event<FakePlayers> EVENT = EventFactory.createEventResult();
+    
+    EventResult isFakePlayer(Player player);
 }
