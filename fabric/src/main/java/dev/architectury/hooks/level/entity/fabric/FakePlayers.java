@@ -19,17 +19,13 @@
 
 package dev.architectury.hooks.level.entity.fabric;
 
-import net.minecraft.server.level.ServerPlayer;
+import dev.architectury.event.Event;
+import dev.architectury.event.EventFactory;
+import dev.architectury.event.EventResult;
 import net.minecraft.world.entity.player.Player;
 
-public class PlayerHooksImpl {
-    public static boolean isFake(Player player) {
-        var result = FakePlayers.EVENT.invoker().isFakePlayer(player);
-        if (result.isPresent()) {
-            return result.isTrue();
-        }
-        // If no result has been returned, assume that player classes extending ServerPlayer
-        // (apart from ServerPlayer itself) are fake players, as a "reasonable default"
-        return player instanceof ServerPlayer && player.getClass() != ServerPlayer.class;
-    }
+public interface FakePlayers {
+    Event<FakePlayers> EVENT = EventFactory.createEventResult();
+    
+    EventResult isFakePlayer(Player player);
 }
