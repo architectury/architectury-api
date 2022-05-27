@@ -61,6 +61,15 @@ public interface Mod {
     @Deprecated(forRemoval = true)
     Path getFilePath();
     
+    /**
+     * Gets an NIO Path to the given resource contained within the mod file / folder.
+     * The path is verified to exist, and an empty optional is returned if it doesn't.
+     *
+     * @param path The resource to search for
+     * @return The path of the resource if it exists, or {@link Optional#empty()} if it doesn't
+     */
+    Optional<Path> findResource(String... path);
+    
     Collection<String> getAuthors();
     
     @Nullable

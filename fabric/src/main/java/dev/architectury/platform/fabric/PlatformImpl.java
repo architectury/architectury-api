@@ -132,7 +132,12 @@ public class PlatformImpl {
         public Path getFilePath() {
             return container.getRootPath();
         }
-        
+    
+        @Override
+        public Optional<Path> findResource(String... path) {
+            return container.findPath(String.join("/", path));
+        }
+    
         @Override
         public Collection<String> getAuthors() {
             return metadata.getAuthors().stream()
