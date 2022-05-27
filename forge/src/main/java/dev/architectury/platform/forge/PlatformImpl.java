@@ -134,7 +134,7 @@ public class PlatformImpl {
     
         @Override
         public Path getFilePath() {
-            return this.info.getOwningFile().getFile().getFilePath();
+            return this.info.getOwningFile().getFile().getSecureJar().getRootPath();
         }
         
         @Override
