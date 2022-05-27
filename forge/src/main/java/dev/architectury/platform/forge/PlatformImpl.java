@@ -126,7 +126,12 @@ public class PlatformImpl {
         public Optional<String> getLogoFile(int i) {
             return this.info.getLogoFile();
         }
-        
+    
+        @Override
+        public List<Path> getFilePaths() {
+            return List.of(getFilePath());
+        }
+    
         @Override
         public Path getFilePath() {
             return this.info.getOwningFile().getFile().getFilePath();
