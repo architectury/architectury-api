@@ -30,6 +30,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -121,7 +122,12 @@ public class PlatformImpl {
         public Optional<String> getLogoFile(int preferredSize) {
             return metadata.getIconPath(preferredSize);
         }
-        
+    
+        @Override
+        public List<Path> getFilePaths() {
+            return container.getRootPaths();
+        }
+    
         @Override
         public Path getFilePath() {
             return container.getRootPath();

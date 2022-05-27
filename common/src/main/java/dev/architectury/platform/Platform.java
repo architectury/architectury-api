@@ -51,10 +51,14 @@ public final class Platform {
             return;
         }
         
-        switch (ArchitecturyTarget.getCurrentTarget()) {
+        switch (getLoader()) {
             case "fabric" -> simpleLoaderCache = 0;
             case "forge" -> simpleLoaderCache = 1;
         }
+    }
+    
+    public static String getLoader() {
+        return ArchitecturyTarget.getCurrentTarget();
     }
     
     public static String getMinecraftVersion() {

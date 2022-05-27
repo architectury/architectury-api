@@ -26,6 +26,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 public interface Mod {
@@ -45,6 +46,16 @@ public interface Mod {
      */
     Optional<String> getLogoFile(int preferredSize);
     
+    /**
+     * Gets a list of all possible root paths for the mod.
+     * This is especially relevant on Fabric, as a single mod may have multiple source sets
+     * (such as client / server-specific ones), each corresponding to one root path.
+     *
+     * @return A list of root paths belonging to the mod
+     */
+    List<Path> getFilePaths();
+    
+    @Deprecated
     Path getFilePath();
     
     Collection<String> getAuthors();
