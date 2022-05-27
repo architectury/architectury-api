@@ -55,7 +55,10 @@ public interface Mod {
      */
     List<Path> getFilePaths();
     
-    @Deprecated
+    /**
+     * @deprecated Use {@link #getFilePaths()} instead
+     */
+    @Deprecated(forRemoval = true)
     Path getFilePath();
     
     Collection<String> getAuthors();
