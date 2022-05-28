@@ -41,7 +41,7 @@ public interface TestModNet {
     // An example Server to Client message
     MessageType SYNC_DATA = NET.registerS2C("sync_data", SyncDataMessage::new);
     ResourceLocation BIG_DATA = new ResourceLocation(TestMod.MOD_ID, "big_data");
-    String BIG_STRING = StringUtils.repeat('a', 60000);
+    String BIG_STRING = StringUtils.repeat('a', 100000);
     
     static void initialize() {
         NetworkManager.registerReceiver(NetworkManager.Side.C2S, BIG_DATA, Collections.singletonList(new SplitPacketTransformer()), (buf, context) -> {
