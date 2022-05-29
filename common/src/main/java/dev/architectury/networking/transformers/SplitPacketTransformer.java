@@ -179,7 +179,7 @@ public class SplitPacketTransformer implements PacketTransformer {
     
     @Override
     public void outbound(NetworkManager.Side side, ResourceLocation id, FriendlyByteBuf buf, TransformationSink sink) {
-        int maxSize = (side == NetworkManager.Side.C2S ? 32767 : 1048576) - 1 - 10;
+        int maxSize = (side == NetworkManager.Side.C2S ? 32767 : 1048576) - 1 - 20;
         if (buf.readableBytes() <= maxSize) {
             ByteBuf stateBuf = Unpooled.buffer(1);
             stateBuf.writeByte(ONLY);
@@ -187,7 +187,7 @@ public class SplitPacketTransformer implements PacketTransformer {
             sink.accept(side, id, packetBuffer);
         } else {
             int partSize = maxSize - 4;
-            int parts = Math.round(buf.readableBytes() / (float) partSize);
+            int parts = (int) Math.ceil(buf.readableBytes() / (float) partSize);
             for (int i = 0; i < parts; i++) {
                 FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
                 if (i == 0) {

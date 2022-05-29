@@ -35,6 +35,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -128,8 +129,18 @@ public class PlatformImpl {
         }
         
         @Override
+        public List<Path> getFilePaths() {
+            return List.of(getFilePath());
+        }
+        
+        @Override
         public Path getFilePath() {
-            return this.info.getOwningFile().getFile().getFilePath();
+            return this.info.getOwningFile().getFile().getSecureJar().getRootPath();
+        }
+        
+        @Override
+        public Optional<Path> findResource(String... path) {
+            return Optional.of(this.info.getOwningFile().getFile().findResource(path)).filter(Files::exists);
         }
         
         @Override
