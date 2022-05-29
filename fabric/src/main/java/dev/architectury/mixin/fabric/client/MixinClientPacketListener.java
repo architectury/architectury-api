@@ -25,6 +25,7 @@ import dev.architectury.event.events.client.ClientRecipeUpdateEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.ChatSender;
@@ -94,7 +95,7 @@ public class MixinClientPacketListener {
     @Inject(method = "handlePlayerChat(Lnet/minecraft/network/chat/ChatType;Lnet/minecraft/network/chat/PlayerChatMessage;Lnet/minecraft/network/chat/ChatSender;)V", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/client/gui/Gui;handlePlayerChat(Lnet/minecraft/network/chat/ChatType;Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/ChatSender;)V"),
             cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-    private void handleChat(ChatType chatType, PlayerChatMessage playerChatMessage, ChatSender sender, CallbackInfo ci, boolean showSigned, Component component) {
+    private void handleChat(ChatType chatType, PlayerChatMessage playerChatMessage, ChatSender sender, CallbackInfo ci, boolean showSigned, PlayerInfo playerInfo, Component component) {
         var registry = this.level.registryAccess().registryOrThrow(Registry.CHAT_TYPE_REGISTRY);
         var process = ClientChatEvent.RECEIVED.invoker().process(chatType, component, sender);
         if (process.isEmpty()) return;
