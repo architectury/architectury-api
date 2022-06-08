@@ -19,45 +19,35 @@
 
 package dev.architectury.hooks.block;
 
-import com.mojang.datafixers.types.Type;
-import dev.architectury.injectables.annotations.ExpectPlatform;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.Set;
+import java.util.Objects;
 
 public class BlockEntityHooks {
     private BlockEntityHooks() {
     }
     
-    public static class TypeBuilder<T extends BlockEntity> {
-        private final Constructor<? extends T> constructor;
-        private final Set<Block> validBlocks;
-        
-        private TypeBuilder(Constructor<? extends T> constructor, Set<Block> validBlocks) {
-            this.constructor = constructor;
-            this.validBlocks = validBlocks;
-        }
-        
-        public BlockEntityType<T> build(@Nullable Type<?> type) {
-            return new BlockEntityType<>(this.constructor::create, this.validBlocks, type);
-        }
-    }
-    
     /**
-     * Sync data to the clients.
+     * Utility method to sync block entity data to the clients.
+     * Original implementation by FabricMC, see copyright notice below.
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     *     http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
      */
-    @ExpectPlatform
     public static void syncData(BlockEntity entity) {
-        throw new AssertionError();
-    }
-    
-    @FunctionalInterface
-    public interface Constructor<T extends BlockEntity> {
-        T create(BlockPos pos, BlockState state);
+        if (!(Objects.requireNonNull(entity.getLevel()) instanceof ServerLevel level)) {
+            throw new IllegalStateException("Cannot call syncData() on the logical client! Did you check level.isClientSide first?");
+        }
+        level.getChunkSource().blockChanged(entity.getBlockPos());
     }
 }
