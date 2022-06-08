@@ -67,18 +67,6 @@ public class RegistriesImpl {
         return new RegistryProviderImpl(modId);
     }
     
-    public static <T> ResourceLocation getId(T object, ResourceKey<Registry<T>> fallback) {
-        if (fallback == null)
-            return null;
-        return getId(object, (Registry<T>) MoreObjects.firstNonNull(Registry.REGISTRY.get(fallback.location()), BuiltinRegistries.REGISTRY.get(fallback.location())));
-    }
-    
-    public static <T> ResourceLocation getId(T object, Registry<T> fallback) {
-        if (fallback == null)
-            return null;
-        return fallback.getKey(object);
-    }
-    
     public static class RegistryProviderImpl implements Registries.RegistryProvider {
         private final String modId;
         

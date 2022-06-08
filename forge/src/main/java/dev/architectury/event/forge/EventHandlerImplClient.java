@@ -21,9 +21,11 @@ package dev.architectury.event.forge;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.architectury.event.CompoundEventResult;
+import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientChatEvent;
 import dev.architectury.event.events.client.*;
 import dev.architectury.event.events.common.InteractionEvent;
+import dev.architectury.impl.ChatProcessorImpl;
 import dev.architectury.impl.ScreenAccessImpl;
 import dev.architectury.impl.TooltipEventColorContextImpl;
 import dev.architectury.impl.TooltipEventPositionContextImpl;
@@ -59,7 +61,7 @@ public class EventHandlerImplClient {
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(RenderGameOverlayEvent.Post event) {
         if (event.getType() == RenderGameOverlayEvent.ElementType.ALL)
-            ClientGuiEvent.RENDER_HUD.invoker().renderHud(event.getMatrixStack(), event.getPartialTicks());
+            ClientGuiEvent.RENDER_HUD.invoker().renderHud(event.getPoseStack(), event.getPartialTick());
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
@@ -99,18 +101,24 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(net.minecraftforge.client.event.ClientChatEvent event) {
-        CompoundEventResult<String> process = ClientChatEvent.PROCESS.invoker().process(event.getMessage());
+        ChatProcessorImpl processor = new ChatProcessorImpl(event.getMessage(), null);
+        EventResult process = ClientChatEvent.PROCESS.invoker().process(processor);
         if (process.isPresent()) {
             if (process.isFalse())
                 event.setCanceled(true);
-            else if (process.object() != null)
-                event.setMessage(process.object());
+            else {
+                event.setMessage(processor.getMessage());
+                
+                if (process.isTrue()) {
+                    event.setCanceled(true);
+                }
+            }
         }
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(ClientChatReceivedEvent event) {
-        CompoundEventResult<Component> process = ClientChatEvent.RECEIVED.invoker().process(event.getType(), event.getMessage(), event.getSenderUUID());
+        CompoundEventResult<Component> process = ClientChatEvent.RECEIVED.invoker().process(event.getType(), event.getMessage(), event.getChatSender());
         if (process.isPresent()) {
             if (process.isFalse())
                 event.setCanceled(true);
@@ -140,14 +148,14 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(ScreenEvent.DrawScreenEvent.Pre event) {
-        if (ClientGuiEvent.RENDER_PRE.invoker().render(event.getScreen(), event.getPoseStack(), event.getMouseX(), event.getMouseY(), event.getPartialTicks()).isFalse()) {
+        if (ClientGuiEvent.RENDER_PRE.invoker().render(event.getScreen(), event.getPoseStack(), event.getMouseX(), event.getMouseY(), event.getPartialTick()).isFalse()) {
             event.setCanceled(true);
         }
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(ScreenEvent.DrawScreenEvent.Post event) {
-        ClientGuiEvent.RENDER_POST.invoker().render(event.getScreen(), event.getPoseStack(), event.getMouseX(), event.getMouseY(), event.getPartialTicks());
+        ClientGuiEvent.RENDER_POST.invoker().render(event.getScreen(), event.getPoseStack(), event.getMouseX(), event.getMouseY(), event.getPartialTick());
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)

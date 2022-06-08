@@ -19,7 +19,6 @@
 
 package dev.architectury.test.registry;
 
-import dev.architectury.core.RegistryEntry;
 import dev.architectury.core.fluid.ArchitecturyFluidAttributes;
 import dev.architectury.core.fluid.SimpleArchitecturyFluidAttributes;
 import dev.architectury.core.item.ArchitecturySpawnEggItem;
@@ -66,7 +65,7 @@ import java.util.function.Supplier;
 import static dev.architectury.test.TestMod.SINK;
 
 public class TestRegistries {
-    public static final class TestInt extends RegistryEntry<TestInt> {
+    public static final class TestInt {
         public final int value;
         
         public TestInt(int value) {
@@ -122,7 +121,8 @@ public class TestRegistries {
             return (Item) Class.forName(!Platform.isForge() ? "dev.architectury.core.item.ArchitecturyBucketItem" : "dev.architectury.core.item.forge.imitator.ArchitecturyBucketItem")
                     .getDeclaredConstructor(Supplier.class, Item.Properties.class)
                     .newInstance(TestRegistries.TEST_FLUID, new Item.Properties().tab(TestCreativeTabs.TEST_TAB));
-        } catch (InstantiationException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+        } catch (InstantiationException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException |
+                 IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     });
@@ -144,7 +144,8 @@ public class TestRegistries {
             return (LiquidBlock) Class.forName(!Platform.isForge() ? "dev.architectury.core.block.ArchitecturyLiquidBlock" : "dev.architectury.core.block.forge.imitator.ArchitecturyLiquidBlock")
                     .getDeclaredConstructor(Supplier.class, BlockBehaviour.Properties.class)
                     .newInstance(TestRegistries.TEST_FLUID, BlockBehaviour.Properties.copy(Blocks.WATER).noCollission().strength(100.0F).noLootTable());
-        } catch (InstantiationException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+        } catch (InstantiationException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException |
+                 IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     });
@@ -155,7 +156,8 @@ public class TestRegistries {
             return (FlowingFluid) Class.forName(!Platform.isForge() ? "dev.architectury.core.fluid.ArchitecturyFlowingFluid$Source" : "dev.architectury.core.fluid.forge.imitator.ArchitecturyFlowingFluid$Source")
                     .getDeclaredConstructor(ArchitecturyFluidAttributes.class)
                     .newInstance(TestRegistries.TEST_FLUID_ATTRIBUTES);
-        } catch (InstantiationException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+        } catch (InstantiationException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException |
+                 IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     });
@@ -166,7 +168,8 @@ public class TestRegistries {
             return (FlowingFluid) Class.forName(!Platform.isForge() ? "dev.architectury.core.fluid.ArchitecturyFlowingFluid$Flowing" : "dev.architectury.core.fluid.forge.imitator.ArchitecturyFlowingFluid$Flowing")
                     .getDeclaredConstructor(ArchitecturyFluidAttributes.class)
                     .newInstance(TestRegistries.TEST_FLUID_ATTRIBUTES);
-        } catch (InstantiationException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+        } catch (InstantiationException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException |
+                 IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     });

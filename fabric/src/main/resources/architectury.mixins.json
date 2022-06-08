@@ -15,6 +15,7 @@
     "client.MixinGui",
     "client.MixinIntegratedServer",
     "client.MixinKeyboardHandler",
+    "client.MixinLocalPlayer",
     "client.MixinMinecraft",
     "client.MixinMouseHandler",
     "client.MixinMultiPlayerGameMode",
@@ -22,6 +23,7 @@
     "client.MixinTextureAtlas"
   ],
   "mixins": [
+    "BiomeAccessor",
     "BucketItemAccessor",
     "ExplosionPreInvoker",
     "HorseTameInvoker",

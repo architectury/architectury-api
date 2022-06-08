@@ -101,8 +101,8 @@ public class BiomeModificationsImpl {
             BiomeProperties properties = BiomeHooks.getBiomeProperties(context.getBiome());
             
             @Override
-            public ResourceLocation getKey() {
-                return context.getBiomeKey().location();
+            public Optional<ResourceLocation> getKey() {
+                return Optional.ofNullable(context.getBiomeKey().location());
             }
             
             @Override

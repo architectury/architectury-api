@@ -57,7 +57,6 @@ transitive-accessible class net/minecraft/world/inventory/MenuType$MenuSupplier
 accessible method net/minecraft/world/entity/Entity getEncodeId ()Ljava/lang/String;
 accessible field net/minecraft/server/packs/repository/PackRepository sources Ljava/util/Set;
 mutable field net/minecraft/server/packs/repository/PackRepository sources Ljava/util/Set;
-accessible field net/minecraft/world/level/biome/Biome climateSettings Lnet/minecraft/world/level/biome/Biome$ClimateSettings;
 accessible field net/minecraft/world/level/biome/Biome$ClimateSettings precipitation Lnet/minecraft/world/level/biome/Biome$Precipitation;
 mutable field net/minecraft/world/level/biome/Biome$ClimateSettings precipitation Lnet/minecraft/world/level/biome/Biome$Precipitation;
 accessible field net/minecraft/world/level/biome/Biome$ClimateSettings temperature F
@@ -90,6 +89,18 @@ accessible field net/minecraft/world/level/biome/BiomeSpecialEffects ambientAddi
 mutable field net/minecraft/world/level/biome/BiomeSpecialEffects ambientAdditionsSettings Ljava/util/Optional;
 accessible field net/minecraft/world/level/biome/BiomeSpecialEffects backgroundMusic Ljava/util/Optional;
 mutable field net/minecraft/world/level/biome/BiomeSpecialEffects backgroundMusic Ljava/util/Optional;
+accessible field net/minecraft/world/level/biome/BiomeSpecialEffects$Builder fogColor Ljava/util/OptionalInt;
+accessible field net/minecraft/world/level/biome/BiomeSpecialEffects$Builder waterColor Ljava/util/OptionalInt;
+accessible field net/minecraft/world/level/biome/BiomeSpecialEffects$Builder waterFogColor Ljava/util/OptionalInt;
+accessible field net/minecraft/world/level/biome/BiomeSpecialEffects$Builder skyColor Ljava/util/OptionalInt;
+accessible field net/minecraft/world/level/biome/BiomeSpecialEffects$Builder foliageColorOverride Ljava/util/Optional;
+accessible field net/minecraft/world/level/biome/BiomeSpecialEffects$Builder grassColorOverride Ljava/util/Optional;
+accessible field net/minecraft/world/level/biome/BiomeSpecialEffects$Builder grassColorModifier Lnet/minecraft/world/level/biome/BiomeSpecialEffects$GrassColorModifier;
+accessible field net/minecraft/world/level/biome/BiomeSpecialEffects$Builder ambientParticle Ljava/util/Optional;
+accessible field net/minecraft/world/level/biome/BiomeSpecialEffects$Builder ambientLoopSoundEvent Ljava/util/Optional;
+accessible field net/minecraft/world/level/biome/BiomeSpecialEffects$Builder ambientMoodSettings Ljava/util/Optional;
+accessible field net/minecraft/world/level/biome/BiomeSpecialEffects$Builder ambientAdditionsSettings Ljava/util/Optional;
+accessible field net/minecraft/world/level/biome/BiomeSpecialEffects$Builder backgroundMusic Ljava/util/Optional;
 accessible field net/minecraft/world/level/biome/BiomeGenerationSettings$Builder features Ljava/util/List;
 accessible field net/minecraft/world/level/biome/MobSpawnSettings$Builder spawners Ljava/util/Map;
 accessible field net/minecraft/world/level/biome/MobSpawnSettings$Builder mobSpawnCosts Ljava/util/Map;

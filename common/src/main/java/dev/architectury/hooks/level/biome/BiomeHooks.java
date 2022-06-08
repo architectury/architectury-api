@@ -19,6 +19,7 @@
 
 package dev.architectury.hooks.level.biome;
 
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.Holder;
 import net.minecraft.sounds.Music;
 import net.minecraft.sounds.SoundEvent;
@@ -91,7 +92,7 @@ public final class BiomeHooks {
                                    GenerationProperties.Mutable generationProperties,
                                    SpawnProperties.Mutable spawnProperties) {
             this(biome,
-                    new ClimateWrapped(biome.climateSettings),
+                    new ClimateWrapped(extractClimateSettings(biome)),
                     new EffectsWrapped(biome.getSpecialEffects()),
                     generationProperties,
                     spawnProperties);
@@ -130,11 +131,17 @@ public final class BiomeHooks {
         }
     }
     
+    @ExpectPlatform
+    private static Biome.ClimateSettings extractClimateSettings(Biome biome) {
+        return null;
+    }
+    
     public static class ClimateWrapped implements ClimateProperties.Mutable {
+        
         protected final Biome.ClimateSettings climateSettings;
         
         public ClimateWrapped(Biome biome) {
-            this(biome.climateSettings);
+            this(extractClimateSettings(biome));
         }
         
         public ClimateWrapped(Biome.ClimateSettings climateSettings) {

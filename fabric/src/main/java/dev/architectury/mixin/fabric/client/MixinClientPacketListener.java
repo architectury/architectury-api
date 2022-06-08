@@ -76,37 +76,6 @@ public class MixinClientPacketListener {
         this.tmpPlayer = null;
     }
     
-    @Inject(method = "handleSystemChat", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/client/gui/Gui;handleSystemChat(Lnet/minecraft/network/chat/ChatType;Lnet/minecraft/network/chat/Component;)V"),
-            cancellable = true)
-    private void handleChat(ClientboundSystemChatPacket packet, CallbackInfo ci) {
-        var registry = this.level.registryAccess().registryOrThrow(Registry.CHAT_TYPE_REGISTRY);
-        var chatType = packet.resolveType(registry);
-        var process = ClientChatEvent.RECEIVED.invoker().process(chatType, packet.content(), null);
-        if (process.isEmpty()) return;
-        if (process.isFalse()) {
-            ci.cancel();
-        } else if (process.object() != null && !process.object().equals(packet.content())) {
-            this.minecraft.gui.handleSystemChat(chatType, packet.content());
-            ci.cancel();
-        }
-    }
-    
-    @Inject(method = "handlePlayerChat(Lnet/minecraft/network/chat/ChatType;Lnet/minecraft/network/chat/PlayerChatMessage;Lnet/minecraft/network/chat/ChatSender;)V", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/client/gui/Gui;handlePlayerChat(Lnet/minecraft/network/chat/ChatType;Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/ChatSender;)V"),
-            cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-    private void handleChat(ChatType chatType, PlayerChatMessage playerChatMessage, ChatSender sender, CallbackInfo ci, boolean showSigned, PlayerInfo playerInfo, Component component) {
-        var registry = this.level.registryAccess().registryOrThrow(Registry.CHAT_TYPE_REGISTRY);
-        var process = ClientChatEvent.RECEIVED.invoker().process(chatType, component, sender);
-        if (process.isEmpty()) return;
-        if (process.isFalse()) {
-            ci.cancel();
-        } else if (process.object() != null && !process.object().equals(component)) {
-            this.minecraft.gui.handlePlayerChat(chatType, component, sender);
-            ci.cancel();
-        }
-    }
-    
     @Inject(method = "handleUpdateRecipes", at = @At("RETURN"))
     private void handleUpdateRecipes(ClientboundUpdateRecipesPacket clientboundUpdateRecipesPacket, CallbackInfo ci) {
         ClientRecipeUpdateEvent.EVENT.invoker().update(recipeManager);

@@ -52,7 +52,7 @@ public abstract class MixinGui {
             chatSender = null;
             return message;
         }
-        var process = ClientChatEvent.PROCESS.invoker().process(chatType, message, chatSender);
+        var process = ClientChatEvent.RECEIVED.invoker().process(chatType, message, chatSender);
         if (process.isPresent()) {
             if (process.isFalse())
                 return EventChatDecorator.CANCELLING_COMPONENT;
@@ -82,7 +82,7 @@ public abstract class MixinGui {
             chatType = null;
             return message;
         }
-        var process = ClientChatEvent.PROCESS.invoker().process(chatType, message, null);
+        var process = ClientChatEvent.RECEIVED.invoker().process(chatType, message, null);
         if (process.isPresent()) {
             if (process.isFalse())
                 return EventChatDecorator.CANCELLING_COMPONENT;

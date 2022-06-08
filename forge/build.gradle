@@ -148,7 +148,7 @@ modrinth {
         versionName = "[Forge $rootProject.supported_version] v$project.version"
         changelog = releaseChangelog()
         uploadFile = remapJar
-        gameVersions = ["1.19-pre1"]
+        gameVersions = ["1.19"]
         loaders = ["forge"]
         dependencies {
         }

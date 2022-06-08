@@ -29,6 +29,7 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.util.RandomSource;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -65,7 +66,7 @@ public class ParticleProviderRegistryImpl {
         }
         
         @Override
-        public TextureAtlasSprite get(Random random) {
+        public TextureAtlasSprite get(RandomSource random) {
             return delegate.get(random);
         }
     }

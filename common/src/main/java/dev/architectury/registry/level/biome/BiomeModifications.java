@@ -24,6 +24,7 @@ import dev.architectury.hooks.level.biome.BiomeProperties;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
@@ -86,7 +87,7 @@ public final class BiomeModifications {
     }
     
     public interface BiomeContext {
-        ResourceLocation getKey();
+        Optional<ResourceLocation> getKey();
         
         BiomeProperties getProperties();
     }

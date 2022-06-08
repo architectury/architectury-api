@@ -253,9 +253,9 @@ public class DebugEvents {
                 e.printStackTrace();
             }
         });
-        ClientChatEvent.PROCESS.register((type, message, sender) -> {
-            TestMod.SINK.accept("Client chat sent: " + message + " of type " + type.chat());
-            return CompoundEventResult.pass();
+        ClientChatEvent.PROCESS.register((message) -> {
+            TestMod.SINK.accept("Client chat sent: " + message.getMessage());
+            return EventResult.pass();
         });
         ClientChatEvent.RECEIVED.register((type, message, sender) -> {
             TestMod.SINK.accept("Client chat received: " + message.getString());

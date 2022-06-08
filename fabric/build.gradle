@@ -109,6 +109,7 @@ curseforge {
             changelogType = "html"
             changelog = releaseChangelog()
             addGameVersion "1.19"
+            addGameVersion "1.19-Snapshot"
             addGameVersion "Java 17"
             addGameVersion "Fabric"
             relations {
@@ -138,7 +139,7 @@ modrinth {
         versionName = "[Fabric $rootProject.supported_version] v$project.version"
         changelog = releaseChangelog()
         uploadFile = remapJar
-        gameVersions = ["1.19-pre1"]
+        gameVersions = ["1.19"]
         loaders = ["fabric", "quilt"]
         dependencies {
             // TODO: move to slugs if that functionality becomes available in minotaur

@@ -17,27 +17,13 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.test.recipes;
+package dev.architectury.hooks.level.biome.fabric;
 
-import com.google.gson.JsonObject;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.CustomRecipe;
-import net.minecraft.world.item.crafting.FireworkRocketRecipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
+import dev.architectury.mixin.fabric.BiomeAccessor;
+import net.minecraft.world.level.biome.Biome;
 
-public class TestRecipeSerializer implements RecipeSerializer<CustomRecipe> {
-    @Override
-    public CustomRecipe fromJson(ResourceLocation id, JsonObject json) {
-        return new FireworkRocketRecipe(id);
-    }
-    
-    @Override
-    public CustomRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
-        return new FireworkRocketRecipe(id);
-    }
-    
-    @Override
-    public void toNetwork(FriendlyByteBuf buf, CustomRecipe recipe) {
+public class BiomeHooksImpl {
+    public static Biome.ClimateSettings extractClimateSettings(Biome biome) {
+        return ((BiomeAccessor) (Object) biome).getClimateSettings();
     }
 }

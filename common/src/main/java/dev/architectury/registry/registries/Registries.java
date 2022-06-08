@@ -19,8 +19,10 @@
 
 package dev.architectury.registry.registries;
 
+import com.google.common.base.MoreObjects;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.Registry;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus;
@@ -80,9 +82,10 @@ public final class Registries {
      * Fabric: Use registry
      */
     @Nullable
-    @ExpectPlatform
     public static <T> ResourceLocation getId(T object, @Nullable ResourceKey<Registry<T>> fallback) {
-        throw new AssertionError();
+        if (fallback == null)
+            return null;
+        return getId(object, (Registry<T>) MoreObjects.firstNonNull(Registry.REGISTRY.get(fallback.location()), BuiltinRegistries.REGISTRY.get(fallback.location())));
     }
     
     /**
@@ -91,19 +94,10 @@ public final class Registries {
      */
     @Nullable
     @Deprecated
-    @ExpectPlatform
     public static <T> ResourceLocation getId(T object, @Nullable Registry<T> fallback) {
-        throw new AssertionError();
-    }
-    
-    /**
-     * Forge: If the object is {@code IForgeRegistryEntry}, use `getRegistryName`, else null
-     * Fabric: null
-     */
-    @Nullable
-    @Deprecated
-    public static <T> ResourceLocation getRegistryName(T object) {
-        return getId(object, (ResourceKey<Registry<T>>) null);
+        if (fallback == null)
+            return null;
+        return fallback.getKey(object);
     }
     
     @ExpectPlatform

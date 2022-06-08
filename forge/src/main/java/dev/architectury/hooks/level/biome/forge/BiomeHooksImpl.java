@@ -17,13 +17,12 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.core;
+package dev.architectury.hooks.level.biome.forge;
 
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.biome.Biome;
 
-/**
- * The equivalent of {@link RecipeSerializer} to use in common that has forge registry entries extended.
- */
-public abstract class AbstractRecipeSerializer<T extends Recipe<?>> extends RegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<T> {
+public class BiomeHooksImpl {
+    public static Biome.ClimateSettings extractClimateSettings(Biome biome) {
+        return biome.getModifiedClimateSettings();
+    }
 }

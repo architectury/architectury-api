@@ -25,10 +25,8 @@ import dev.architectury.event.events.common.PlayerEvent;
 import dev.architectury.event.events.common.*;
 import dev.architectury.utils.value.IntValue;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.TextFilter;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -145,7 +143,7 @@ public class EventHandlerImplCommon {
         class ChatComponentImpl implements ChatEvent.ChatComponent {
             @Override
             public Component getRaw() {
-                return new TextComponent(event.getMessage());
+                return Component.literal(event.getMessage());
             }
             
             @Override
@@ -164,7 +162,7 @@ public class EventHandlerImplCommon {
             }
         }
         
-        EventResult process = ChatEvent.SERVER.invoker().process(event.getPlayer(), TextFilter.FilteredText.passThrough(event.getMessage()), new ChatComponentImpl());
+        EventResult process = ChatEvent.SERVER.invoker().process(event.getPlayer(), new ChatComponentImpl());
         if (process.isFalse())
             event.setCanceled(true);
     }

@@ -32,6 +32,7 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.ForgeRegistries;
 
 class ArchitecturyFluidAttributesForge extends FluidAttributes {
     private final ArchitecturyFluidAttributes attributes;
@@ -40,7 +41,7 @@ class ArchitecturyFluidAttributesForge extends FluidAttributes {
     public ArchitecturyFluidAttributesForge(Builder builder, Fluid fluid, ArchitecturyFluidAttributes attributes) {
         super(addArchIntoBuilder(builder, attributes), fluid);
         this.attributes = attributes;
-        this.defaultTranslationKey = Util.makeDescriptionId("fluid", fluid.getRegistryName());
+        this.defaultTranslationKey = Util.makeDescriptionId("fluid", ForgeRegistries.FLUIDS.getKey(fluid));
     }
     
     private static Builder addArchIntoBuilder(Builder builder, ArchitecturyFluidAttributes attributes) {

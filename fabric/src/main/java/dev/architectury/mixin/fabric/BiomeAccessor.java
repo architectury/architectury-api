@@ -17,12 +17,14 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.mixin.forge;
+package dev.architectury.mixin.fabric;
 
-import dev.architectury.core.RegistryEntry;
-import net.minecraftforge.registries.IForgeRegistryEntry;
+import net.minecraft.world.level.biome.Biome;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(RegistryEntry.class)
-public abstract class MixinRegistryEntry<T> implements IForgeRegistryEntry<T> {
+@Mixin(Biome.class)
+public interface BiomeAccessor {
+    @Accessor("climateSettings")
+    Biome.ClimateSettings getClimateSettings();
 }

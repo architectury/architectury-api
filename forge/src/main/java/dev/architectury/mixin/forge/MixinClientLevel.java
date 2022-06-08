@@ -36,8 +36,8 @@ import java.util.function.Supplier;
 
 @Mixin(ClientLevel.class)
 public abstract class MixinClientLevel extends Level {
-    protected MixinClientLevel(WritableLevelData worldInfo, ResourceKey<Level> dimension, Holder<DimensionType> dimensionType, Supplier<ProfilerFiller> profiler, boolean isRemote, boolean isDebug, long seed) {
-        super(worldInfo, dimension, dimensionType, profiler, isRemote, isDebug, seed);
+    protected MixinClientLevel(WritableLevelData arg, ResourceKey<Level> arg2, Holder<DimensionType> arg3, Supplier<ProfilerFiller> supplier, boolean bl, boolean bl2, long l, int i) {
+        super(arg, arg2, arg3, supplier, bl, bl2, l, i);
     }
     
     @Inject(method = "tickEntities", at = @At("HEAD"))
