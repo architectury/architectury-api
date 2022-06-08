@@ -19,20 +19,17 @@
 
 package dev.architectury.test.gamerule;
 
-import dev.architectury.registry.level.GameRuleFactory;
 import net.minecraft.world.level.GameRules;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import static dev.architectury.registry.level.GameRuleRegistry.register;
-
 public class TestGameRules {
     private static final Logger LOGGER = LogManager.getLogger();
     
-    public static final GameRules.Key<GameRules.BooleanValue> SIMPLE_BOOL = register("simpleBool", GameRules.Category.MISC, GameRuleFactory.createBooleanRule(true));
-    public static final GameRules.Key<GameRules.IntegerValue> SIMPLE_INT = register("simpleInt", GameRules.Category.MISC, GameRuleFactory.createIntRule(10));
-    public static final GameRules.Key<GameRules.BooleanValue> CALLBACK_BOOL = register("callbackBool", GameRules.Category.MISC, GameRuleFactory.createBooleanRule(true, (server, value) -> LOGGER.info("changed to {}", value.get())));
-    public static final GameRules.Key<GameRules.IntegerValue> CALLBACK_INT = register("callbackInt", GameRules.Category.MISC, GameRuleFactory.createIntRule(10, (server, value) -> LOGGER.info("changed to {}", value.get())));
+    public static final GameRules.Key<GameRules.BooleanValue> SIMPLE_BOOL = GameRules.register("simpleBool", GameRules.Category.MISC, GameRules.BooleanValue.create(true));
+    public static final GameRules.Key<GameRules.IntegerValue> SIMPLE_INT = GameRules.register("simpleInt", GameRules.Category.MISC, GameRules.IntegerValue.create(10));
+    public static final GameRules.Key<GameRules.BooleanValue> CALLBACK_BOOL = GameRules.register("callbackBool", GameRules.Category.MISC, GameRules.BooleanValue.create(true, (server, value) -> LOGGER.info("changed to {}", value.get())));
+    public static final GameRules.Key<GameRules.IntegerValue> CALLBACK_INT = GameRules.register("callbackInt", GameRules.Category.MISC, GameRules.IntegerValue.create(10, (server, value) -> LOGGER.info("changed to {}", value.get())));
     
     public static void init() {
     }

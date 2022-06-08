@@ -19,7 +19,6 @@
 
 package dev.architectury.hooks.block;
 
-import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.types.Type;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.BlockPos;
@@ -27,22 +26,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
 public class BlockEntityHooks {
     private BlockEntityHooks() {
-    }
-    
-    /**
-     * @deprecated Use the Builder from vanilla directly.
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval
-    public static <T extends BlockEntity> TypeBuilder<T> builder(Constructor<? extends T> constructor, Block... blocks) {
-        return new TypeBuilder<>(constructor, ImmutableSet.copyOf(blocks));
     }
     
     public static class TypeBuilder<T extends BlockEntity> {

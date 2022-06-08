@@ -121,7 +121,7 @@ curseforge {
             releaseType = "$rootProject.artifact_type"
             changelogType = "html"
             changelog = releaseChangelog()
-            addGameVersion "1.19-Snapshot"
+            addGameVersion "1.19"
             addGameVersion "Java 17"
             addGameVersion "Forge"
             mainArtifact(remapJar.archivePath) {

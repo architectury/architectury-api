@@ -21,8 +21,6 @@ package dev.architectury.hooks.level.entity;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
 
 public final class PlayerHooks {
     private PlayerHooks() {
@@ -31,14 +29,5 @@ public final class PlayerHooks {
     @ExpectPlatform
     public static boolean isFake(Player player) {
         throw new AssertionError();
-    }
-    
-    /**
-     * @deprecated Use the method directly.
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval
-    public static void closeContainer(Player player) {
-        player.closeContainer();
     }
 }

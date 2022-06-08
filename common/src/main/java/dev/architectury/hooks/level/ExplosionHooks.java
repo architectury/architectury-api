@@ -20,11 +20,8 @@
 package dev.architectury.hooks.level;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
 
 public final class ExplosionHooks {
     private ExplosionHooks() {
@@ -33,33 +30,5 @@ public final class ExplosionHooks {
     @ExpectPlatform
     public static Vec3 getPosition(Explosion explosion) {
         throw new AssertionError();
-    }
-    
-    /**
-     * @deprecated Use the field directly.
-     */
-    @Nullable
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval
-    public static Entity getSource(Explosion explosion) {
-        return explosion.source;
-    }
-    
-    /**
-     * @deprecated Use the field directly.
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval
-    public static float getRadius(Explosion explosion) {
-        return explosion.radius;
-    }
-    
-    /**
-     * @deprecated Use the field directly.
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval
-    public static void setRadius(Explosion explosion, float radius) {
-        explosion.radius = radius;
     }
 }

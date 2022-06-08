@@ -19,24 +19,13 @@
 
 package dev.architectury.hooks.level.entity;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 public final class EntityHooks {
     private EntityHooks() {
-    }
-    
-    /**
-     * @deprecated Use the field directly.
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval
-    public static String getEncodeId(Entity entity) {
-        return entity.getEncodeId();
     }
     
     @Nullable

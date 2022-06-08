@@ -1,3 +1,7 @@
+loom {
+    accessWidenerPath = project(':common').file("src/main/resources/architectury.accessWidener")
+}
+
 dependencies {
     // We depend on fabric loader here to use the fabric @Environment annotations
     // Do NOT use other classes from fabric loader
