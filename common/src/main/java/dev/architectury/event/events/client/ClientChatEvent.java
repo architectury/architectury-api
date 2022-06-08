@@ -44,7 +44,7 @@ public interface ClientChatEvent {
     /**
      * @see Received#process(ChatType, Component, ChatSender)
      */
-    Event<Received> RECEIVED = EventFactory.createEventResult();
+    Event<Received> RECEIVED = EventFactory.createCompoundEventResult();
     
     @Environment(EnvType.CLIENT)
     interface Process {
