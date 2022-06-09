@@ -33,6 +33,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.Music;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.*;
@@ -108,6 +109,11 @@ public class BiomeModificationsImpl {
             @Override
             public BiomeProperties getProperties() {
                 return properties;
+            }
+    
+            @Override
+            public boolean hasTag(TagKey<Biome> tag) {
+                return context.hasTag(tag);
             }
         };
     }
