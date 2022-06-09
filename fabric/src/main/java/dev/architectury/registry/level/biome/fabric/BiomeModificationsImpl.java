@@ -110,7 +110,7 @@ public class BiomeModificationsImpl {
             public BiomeProperties getProperties() {
                 return properties;
             }
-    
+            
             @Override
             public boolean hasTag(TagKey<Biome> tag) {
                 return context.hasTag(tag);

@@ -144,11 +144,11 @@ public class BiomeModificationsImpl {
             @Override
             public boolean hasTag(TagKey<Biome> tag) {
                 MinecraftServer server = GameInstance.getServer();
-                if(server != null) {
+                if (server != null) {
                     Optional<? extends Registry<Biome>> registry = server.registryAccess().registry(Registry.BIOME_REGISTRY);
-                    if(registry.isPresent()) {
+                    if (registry.isPresent()) {
                         Optional<Holder<Biome>> holder = registry.get().getHolder(biomeResourceKey.get());
-                        if(holder.isPresent()) {
+                        if (holder.isPresent()) {
                             return holder.get().is(tag);
                         }
                     }

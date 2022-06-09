@@ -22,7 +22,6 @@ package dev.architectury.registry.level.biome;
 import com.google.common.base.Predicates;
 import dev.architectury.hooks.level.biome.BiomeProperties;
 import dev.architectury.injectables.annotations.ExpectPlatform;
-import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
@@ -46,7 +45,7 @@ import java.util.function.Predicate;
  *     <li>{@linkplain #replaceProperties(Predicate, BiConsumer) Replacing} existing features with new ones. [LOW]</li>
  *     <li>Generic {@linkplain #postProcessProperties(Predicate, BiConsumer) Post-Processing} of already modified biome features. [LOWEST]</li>
  * </ol>
- *
+ * <p>
  * Keep in mind that it isn't strictly <b>required</b> that you use these phases accordingly
  * (i.e., you may also add features during Post-Processing, for example); they mostly serve to
  * add a predictable order to biome modifications.
@@ -93,7 +92,7 @@ public final class BiomeModifications {
         Optional<ResourceLocation> getKey();
         
         BiomeProperties getProperties();
-
+        
         boolean hasTag(TagKey<Biome> tag);
     }
 }
