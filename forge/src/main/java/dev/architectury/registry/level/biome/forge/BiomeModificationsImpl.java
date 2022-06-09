@@ -30,6 +30,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.sounds.Music;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
@@ -142,7 +143,17 @@ public class BiomeModificationsImpl {
             
             @Override
             public boolean hasTag(TagKey<Biome> tag) {
-                return GameInstance.getServer().registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getHolder(biomeResourceKey.get()).get().is(tag);
+                MinecraftServer server = GameInstance.getServer();
+                if(server != null) {
+                    Optional<? extends Registry<Biome>> registry = server.registryAccess().registry(Registry.BIOME_REGISTRY);
+                    if(registry.isPresent()) {
+                        Optional<Holder<Biome>> holder = registry.get().getHolder(biomeResourceKey.get());
+                        if(holder.isPresent()) {
+                            return holder.get().is(tag);
+                        }
+                    }
+                }
+                return false;
             }
         };
     }
