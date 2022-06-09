@@ -36,7 +36,7 @@
   "depends": {
     "minecraft": "~1.18.2-",
     "fabricloader": ">=0.13.0",
-    "fabric": ">=0.50.0"
+    "fabric": ">=0.54.0"
   },
   "breaks": {
     "optifabric": "<1.13.0"

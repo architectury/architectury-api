@@ -22,7 +22,10 @@ package dev.architectury.registry.level.biome;
 import com.google.common.base.Predicates;
 import dev.architectury.hooks.level.biome.BiomeProperties;
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.biome.Biome;
 
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
@@ -89,5 +92,7 @@ public final class BiomeModifications {
         ResourceLocation getKey();
         
         BiomeProperties getProperties();
+
+        boolean hasTag(TagKey<Biome> tag);
     }
 }
