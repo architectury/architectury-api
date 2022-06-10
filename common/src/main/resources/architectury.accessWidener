@@ -55,6 +55,7 @@ transitive-accessible method net/minecraft/advancements/CriteriaTriggers registe
 transitive-accessible method net/minecraft/world/inventory/MenuType <init> (Lnet/minecraft/world/inventory/MenuType$MenuSupplier;)V
 transitive-accessible class net/minecraft/world/inventory/MenuType$MenuSupplier
 accessible method net/minecraft/world/entity/Entity getEncodeId ()Ljava/lang/String;
+transitive-accessible method net/minecraft/world/entity/Entity getEncodeId ()Ljava/lang/String;
 accessible field net/minecraft/server/packs/repository/PackRepository sources Ljava/util/Set;
 mutable field net/minecraft/server/packs/repository/PackRepository sources Ljava/util/Set;
 accessible field net/minecraft/world/level/biome/Biome$ClimateSettings precipitation Lnet/minecraft/world/level/biome/Biome$Precipitation;
