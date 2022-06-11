@@ -97,7 +97,7 @@ allprojects {
             }
             def time = dateFormat.format(new Date())
             def changes = new StringBuilder()
-            changes << "## Architectury v$project.version for $project.supported_version\nUpdated at **$time**.\n![Click here for changelog](https://www.github.com/architectury/architectury/commits/$branch)"
+            changes << "## Architectury v$project.version for $project.supported_version\nUpdated at **$time**.\n[Click here for changelog](https://www.github.com/architectury/architectury/commits/$branch)"
             def proc = "git log --max-count=200 --pretty=format:%s".execute()
             proc.in.eachLine { line ->
                 def processedLine = line.toString()
