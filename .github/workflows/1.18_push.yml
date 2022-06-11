@@ -73,4 +73,4 @@ jobs:
           CURSE_API_KEY: ${{ secrets.CURSE_API_KEY }}
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
         with:
-          arguments: publish curseforge modrinth --stacktrace --no-daemon
+          arguments: publish publishUnified --stacktrace --no-daemon
