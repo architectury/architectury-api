@@ -22,12 +22,13 @@ package dev.architectury.event.events.common;
 import com.mojang.brigadier.CommandDispatcher;
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 
 public interface CommandRegistrationEvent {
     /**
-     * @see CommandRegistrationEvent#register(CommandDispatcher, Commands.CommandSelection)
+     * @see CommandRegistrationEvent#register(CommandDispatcher, Commands.CommandSelection, CommandBuildContext)
      */
     Event<CommandRegistrationEvent> EVENT = EventFactory.createLoop();
     
@@ -37,6 +38,7 @@ public interface CommandRegistrationEvent {
      *
      * @param dispatcher The command dispatcher to register commands to.
      * @param selection  The selection where the command can be executed.
+     * @param ctx        The build context of the command event, contains a reference to a read-only registry access.
      */
-    void register(CommandDispatcher<CommandSourceStack> dispatcher, Commands.CommandSelection selection);
+    void register(CommandDispatcher<CommandSourceStack> dispatcher, Commands.CommandSelection selection, CommandBuildContext ctx);
 }

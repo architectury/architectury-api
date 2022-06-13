@@ -101,7 +101,7 @@ public class EventHandlerImplCommon {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(RegisterCommandsEvent event) {
-        CommandRegistrationEvent.EVENT.invoker().register(event.getDispatcher(), event.getEnvironment());
+        CommandRegistrationEvent.EVENT.invoker().register(event.getDispatcher(), event.getEnvironment(), event.getBuildContext());
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
