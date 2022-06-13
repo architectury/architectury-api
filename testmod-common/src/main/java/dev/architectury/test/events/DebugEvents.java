@@ -73,7 +73,7 @@ public class DebugEvents {
             TestMod.SINK.accept("Server command performed: " + event.getResults().getReader().getString());
             return EventResult.pass();
         });
-        CommandRegistrationEvent.EVENT.register((dispatcher, selection) -> {
+        CommandRegistrationEvent.EVENT.register((dispatcher, selection, ctx) -> {
             TestMod.SINK.accept("Server commands registers");
         });
         EntityEvent.LIVING_DEATH.register((entity, source) -> {
