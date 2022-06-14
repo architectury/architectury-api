@@ -19,6 +19,7 @@
 
 package dev.architectury.hooks.item;
 
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -52,5 +53,15 @@ public final class ItemStackHooks {
                 entity.setOwner(player.getUUID());
             }
         }
+    }
+    
+    @ExpectPlatform
+    public static boolean hasCraftingRemainingItem(ItemStack stack) {
+        throw new AssertionError();
+    }
+    
+    @ExpectPlatform
+    public static ItemStack getCraftingRemainingItem(ItemStack stack) {
+        throw new AssertionError();
     }
 }
