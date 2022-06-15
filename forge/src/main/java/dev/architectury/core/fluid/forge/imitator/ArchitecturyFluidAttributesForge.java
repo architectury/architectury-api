@@ -100,23 +100,23 @@ class ArchitecturyFluidAttributesForge extends FluidType {
             
             @Override
             public ResourceLocation getStillTexture(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
-                return attributes.getSourceTexture(convertSafe(state), getter, pos);
+                return attributes.getSourceTexture(state, getter, pos);
             }
             
             @Override
             public ResourceLocation getFlowingTexture(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
-                return attributes.getFlowingTexture(convertSafe(state), getter, pos);
+                return attributes.getFlowingTexture(state, getter, pos);
             }
             
             @Override
             @Nullable
             public ResourceLocation getOverlayTexture(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
-                return attributes.getOverlayTexture(convertSafe(state), getter, pos);
+                return attributes.getOverlayTexture(state, getter, pos);
             }
             
             @Override
             public int getColorTint(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
-                return attributes.getColor(convertSafe(state), getter, pos);
+                return attributes.getColor(state, getter, pos);
             }
             
             @Override
