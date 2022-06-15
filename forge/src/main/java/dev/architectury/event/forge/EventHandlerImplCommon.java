@@ -168,7 +168,7 @@ public class EventHandlerImplCommon {
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void event(WorldEvent.Load event) {
+    public static void eventWorldEvent(WorldEvent.Load event) {
         if (event.getWorld() instanceof ServerLevel) {
             ServerLevel world = (ServerLevel) event.getWorld();
             LifecycleEvent.SERVER_LEVEL_LOAD.invoker().act(world);
@@ -176,7 +176,7 @@ public class EventHandlerImplCommon {
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void event(WorldEvent.Unload event) {
+    public static void eventWorldEvent(WorldEvent.Unload event) {
         if (event.getWorld() instanceof ServerLevel) {
             ServerLevel world = (ServerLevel) event.getWorld();
             LifecycleEvent.SERVER_LEVEL_UNLOAD.invoker().act(world);
@@ -184,7 +184,7 @@ public class EventHandlerImplCommon {
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void event(WorldEvent.Save event) {
+    public static void eventWorldEvent(WorldEvent.Save event) {
         if (event.getWorld() instanceof ServerLevel) {
             ServerLevel world = (ServerLevel) event.getWorld();
             LifecycleEvent.SERVER_LEVEL_SAVE.invoker().act(world);
@@ -206,21 +206,21 @@ public class EventHandlerImplCommon {
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void event(Clone event) {
+    public static void eventPlayerEvent(Clone event) {
         if (event.getOriginal() instanceof ServerPlayer && event.getPlayer() instanceof ServerPlayer) {
             PlayerEvent.PLAYER_CLONE.invoker().clone((ServerPlayer) event.getOriginal(), (ServerPlayer) event.getPlayer(), !event.isWasDeath());
         }
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void event(Start event) {
+    public static void eventExplosionEvent(Start event) {
         if (ExplosionEvent.PRE.invoker().explode(event.getWorld(), event.getExplosion()).isFalse()) {
             event.setCanceled(true);
         }
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void event(Detonate event) {
+    public static void eventExplosionEvent(Detonate event) {
         ExplosionEvent.DETONATE.invoker().explode(event.getWorld(), event.getExplosion(), event.getAffectedEntities());
     }
     
@@ -266,7 +266,7 @@ public class EventHandlerImplCommon {
     //    }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void event(LivingSpawnEvent.CheckSpawn event) {
+    public static void eventLivingSpawnEvent(LivingSpawnEvent.CheckSpawn event) {
         EventResult result = EntityEvent.LIVING_CHECK_SPAWN.invoker().canSpawn(event.getEntityLiving(), event.getWorld(), event.getX(), event.getY(), event.getZ(), event.getSpawnReason(), event.getSpawner());
         if (result.interruptsFurtherEvaluation()) {
             if (result.value() != null) {
@@ -308,17 +308,17 @@ public class EventHandlerImplCommon {
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void event(PlayerContainerEvent.Open event) {
+    public static void eventPlayerContainerEvent(PlayerContainerEvent.Open event) {
         PlayerEvent.OPEN_MENU.invoker().open(event.getPlayer(), event.getContainer());
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void event(PlayerContainerEvent.Close event) {
+    public static void eventPlayerContainerEvent(PlayerContainerEvent.Close event) {
         PlayerEvent.CLOSE_MENU.invoker().close(event.getPlayer(), event.getContainer());
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void event(PlayerInteractEvent.RightClickItem event) {
+    public static void eventPlayerInteractEvent(PlayerInteractEvent.RightClickItem event) {
         CompoundEventResult<ItemStack> result = InteractionEvent.RIGHT_CLICK_ITEM.invoker().click(event.getPlayer(), event.getHand());
         if (result.isPresent()) {
             event.setCanceled(true);
@@ -327,7 +327,7 @@ public class EventHandlerImplCommon {
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void event(PlayerInteractEvent.RightClickBlock event) {
+    public static void eventPlayerInteractEvent(PlayerInteractEvent.RightClickBlock event) {
         EventResult result = InteractionEvent.RIGHT_CLICK_BLOCK.invoker().click(event.getPlayer(), event.getHand(), event.getPos(), event.getFace());
         if (result.isPresent()) {
             event.setCanceled(true);
@@ -338,7 +338,7 @@ public class EventHandlerImplCommon {
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void event(PlayerInteractEvent.EntityInteract event) {
+    public static void eventPlayerInteractEvent(PlayerInteractEvent.EntityInteract event) {
         EventResult result = InteractionEvent.INTERACT_ENTITY.invoker().interact(event.getPlayer(), event.getTarget(), event.getHand());
         if (result.isPresent()) {
             event.setCanceled(true);
@@ -347,7 +347,7 @@ public class EventHandlerImplCommon {
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void event(PlayerInteractEvent.LeftClickBlock event) {
+    public static void eventPlayerInteractEvent(PlayerInteractEvent.LeftClickBlock event) {
         EventResult result = InteractionEvent.LEFT_CLICK_BLOCK.invoker().click(event.getPlayer(), event.getHand(), event.getPos(), event.getFace());
         if (result.isPresent()) {
             event.setCanceled(true);
@@ -400,14 +400,14 @@ public class EventHandlerImplCommon {
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void event(ChunkDataEvent.Save event) {
+    public static void eventChunkDataEvent(ChunkDataEvent.Save event) {
         if (event.getWorld() instanceof ServerLevel) {
             ChunkEvent.SAVE_DATA.invoker().save(event.getChunk(), (ServerLevel) event.getWorld(), event.getData());
         }
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void event(ChunkDataEvent.Load event) {
+    public static void eventChunkDataEvent(ChunkDataEvent.Load event) {
         LevelAccessor level = event.getChunk().getWorldForge();
         if (!(level instanceof ServerLevel) && event instanceof WorldEventAttachment) {
             level = ((WorldEventAttachment) event).architectury$getAttachedLevel();
