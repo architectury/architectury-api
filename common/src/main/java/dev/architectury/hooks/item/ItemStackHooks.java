@@ -55,11 +55,25 @@ public final class ItemStackHooks {
         }
     }
     
+    /**
+     * Returns whether the given item stack has a remaining item after crafting.
+     * This method is stack-aware only on Forge.
+     *
+     * @param stack the item stack
+     * @return whether the given item stack has a remaining item after crafting
+     */
     @ExpectPlatform
     public static boolean hasCraftingRemainingItem(ItemStack stack) {
         throw new AssertionError();
     }
     
+    /**
+     * Returns the remaining item for a given item stack after crafting.
+     * This method is stack-aware only on Forge.
+     *
+     * @param stack the item stack
+     * @return the remaining item for a given item stack after crafting
+     */
     @ExpectPlatform
     public static ItemStack getCraftingRemainingItem(ItemStack stack) {
         throw new AssertionError();
