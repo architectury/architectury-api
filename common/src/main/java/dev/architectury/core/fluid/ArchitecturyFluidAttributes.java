@@ -198,7 +198,10 @@ public interface ArchitecturyFluidAttributes {
      * @param level the level, can be {@code null}
      * @param pos   the position, can be {@code null}
      * @return the texture location
+     * @deprecated Please use and override {@link #getSourceTexture(FluidState, BlockAndTintGetter, BlockPos)}
+     * or {@link #getSourceTexture(FluidStack)} instead, this method will be removed in a future version.
      */
+    @Deprecated(forRemoval = true)
     ResourceLocation getSourceTexture(@Nullable FluidStack stack, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos);
     
     /**
@@ -247,7 +250,10 @@ public interface ArchitecturyFluidAttributes {
      * @param level the level, can be {@code null}
      * @param pos   the position, can be {@code null}
      * @return the texture location
+     * @deprecated Please use and override {@link #getFlowingTexture(FluidState, BlockAndTintGetter, BlockPos)}
+     * or {@link #getFlowingTexture(FluidStack)} instead, this method will be removed in a future version.
      */
+    @Deprecated(forRemoval = true)
     ResourceLocation getFlowingTexture(@Nullable FluidStack stack, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos);
     
     /**
@@ -292,21 +298,6 @@ public interface ArchitecturyFluidAttributes {
      * <p>
      * The vanilla water location is {@code "block/water_overlay"}.
      *
-     * @param stack the fluid stack, can be {@code null}
-     * @param level the level, can be {@code null}
-     * @param pos   the position, can be {@code null}
-     * @return the texture location, can be {@code null}
-     */
-    @Nullable
-    default ResourceLocation getOverlayTexture(@Nullable FluidStack stack, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos) {
-        return null;
-    }
-    
-    /**
-     * Returns the overlay texture location of this fluid behind transparent blocks.
-     * <p>
-     * The vanilla water location is {@code "block/water_overlay"}.
-     *
      * @param state the fluid state, can be {@code null}
      * @param level the level, can be {@code null}
      * @param pos   the position, can be {@code null}
@@ -314,7 +305,7 @@ public interface ArchitecturyFluidAttributes {
      */
     @Nullable
     default ResourceLocation getOverlayTexture(@Nullable FluidState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos) {
-        return getOverlayTexture(state == null ? null : FluidStack.create(state.getType(), FluidStack.bucketAmount()), level, pos);
+        return null;
     }
     
     /**
@@ -327,7 +318,7 @@ public interface ArchitecturyFluidAttributes {
      */
     @Nullable
     default ResourceLocation getOverlayTexture(@Nullable FluidStack stack) {
-        return getOverlayTexture(stack, null, null);
+        return null;
     }
     
     /**
@@ -349,6 +340,8 @@ public interface ArchitecturyFluidAttributes {
      * @param level the level, can be {@code null}
      * @param pos   the position, can be {@code null}
      * @return the color
+     * @deprecated Please use and override {@link #getColor(FluidState, BlockAndTintGetter, BlockPos)}
+     * or {@link #getColor(FluidStack)} instead, this method will be removed in a future version.
      */
     int getColor(@Nullable FluidStack stack, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos);
     
