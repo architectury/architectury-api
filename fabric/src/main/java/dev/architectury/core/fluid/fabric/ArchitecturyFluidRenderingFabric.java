@@ -42,8 +42,8 @@ import java.util.function.Function;
 @Environment(EnvType.CLIENT)
 class ArchitecturyFluidRenderingFabric implements FluidVariantRenderHandler, FluidRenderHandler {
     private final ArchitecturyFluidAttributes attributes;
-    private final TextureAtlasSprite[] sprites = new TextureAtlasSprite[2];
-    private final TextureAtlasSprite[] spritesOther = new TextureAtlasSprite[2];
+    private final TextureAtlasSprite[] sprites = new TextureAtlasSprite[3];
+    private final TextureAtlasSprite[] spritesOther = new TextureAtlasSprite[3];
     
     public ArchitecturyFluidRenderingFabric(ArchitecturyFluidAttributes attributes) {
         this.attributes = attributes;
@@ -56,6 +56,8 @@ class ArchitecturyFluidRenderingFabric implements FluidVariantRenderHandler, Flu
         Function<ResourceLocation, TextureAtlasSprite> atlas = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS);
         sprites[0] = atlas.apply(attributes.getSourceTexture(stack));
         sprites[1] = atlas.apply(attributes.getFlowingTexture(stack));
+        ResourceLocation overlayTexture = attributes.getOverlayTexture(stack);
+        sprites[2] = overlayTexture == null ? null : atlas.apply(overlayTexture);
         return sprites;
     }
     
@@ -70,6 +72,8 @@ class ArchitecturyFluidRenderingFabric implements FluidVariantRenderHandler, Flu
         Function<ResourceLocation, TextureAtlasSprite> atlas = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS);
         spritesOther[0] = atlas.apply(attributes.getSourceTexture(stack, view, pos));
         spritesOther[1] = atlas.apply(attributes.getFlowingTexture(stack, view, pos));
+        ResourceLocation overlayTexture = attributes.getOverlayTexture(stack, view, pos);
+        spritesOther[2] = overlayTexture == null ? null : atlas.apply(overlayTexture);
         return spritesOther;
     }
     

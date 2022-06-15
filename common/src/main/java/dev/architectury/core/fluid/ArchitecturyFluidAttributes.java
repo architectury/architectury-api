@@ -259,6 +259,46 @@ public interface ArchitecturyFluidAttributes {
     }
     
     /**
+     * Returns the overlay texture location of this fluid behind transparent blocks.
+     * <p>
+     * The vanilla water location is {@code "block/water_overlay"}.
+     *
+     * @param stack the fluid stack, can be {@code null}
+     * @param level the level, can be {@code null}
+     * @param pos   the position, can be {@code null}
+     * @return the texture location, can be {@code null}
+     */
+    @Nullable
+    default ResourceLocation getOverlayTexture(@Nullable FluidStack stack, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos) {
+        return null;
+    }
+    
+    /**
+     * Returns the overlay texture location of this fluid behind transparent blocks.
+     * <p>
+     * The vanilla water location is {@code "block/water_overlay"}.
+     *
+     * @param stack the fluid stack, can be {@code null}
+     * @return the texture location, can be {@code null}
+     */
+    @Nullable
+    default ResourceLocation getOverlayTexture(@Nullable FluidStack stack) {
+        return getOverlayTexture(stack, null, null);
+    }
+    
+    /**
+     * Returns the overlay texture location of this fluid behind transparent blocks.
+     * <p>
+     * The vanilla water location is {@code "block/water_overlay"}.
+     *
+     * @return the texture location, can be {@code null}
+     */
+    @Nullable
+    default ResourceLocation getOverlayTexture() {
+        return getOverlayTexture(null);
+    }
+    
+    /**
      * Returns the color of the fluid.
      *
      * @param stack the fluid stack, can be {@code null}
