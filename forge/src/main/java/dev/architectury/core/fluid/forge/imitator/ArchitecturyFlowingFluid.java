@@ -44,6 +44,7 @@ import net.minecraftforge.fluids.ForgeFlowingFluid;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public abstract class ArchitecturyFlowingFluid extends ForgeFlowingFluid {
     private final ArchitecturyFluidAttributes attributes;
