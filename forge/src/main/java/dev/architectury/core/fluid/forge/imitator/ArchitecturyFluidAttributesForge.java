@@ -27,84 +27,101 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraftforge.client.IFluidTypeRenderProperties;
+import net.minecraftforge.common.SoundAction;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.Nullable;
 
-class ArchitecturyFluidAttributesForge extends FluidAttributes {
+import java.util.function.Consumer;
+
+import static net.minecraftforge.common.SoundActions.BUCKET_EMPTY;
+import static net.minecraftforge.common.SoundActions.BUCKET_FILL;
+
+class ArchitecturyFluidAttributesForge extends FluidType {
     private final ArchitecturyFluidAttributes attributes;
     private final String defaultTranslationKey;
     
-    public ArchitecturyFluidAttributesForge(Builder builder, Fluid fluid, ArchitecturyFluidAttributes attributes) {
-        super(addArchIntoBuilder(builder, attributes), fluid);
+    public ArchitecturyFluidAttributesForge(Properties builder, Fluid fluid, ArchitecturyFluidAttributes attributes) {
+        super(addArchIntoBuilder(builder, attributes));
         this.attributes = attributes;
         this.defaultTranslationKey = Util.makeDescriptionId("fluid", ForgeRegistries.FLUIDS.getKey(fluid));
     }
     
-    private static Builder addArchIntoBuilder(Builder builder, ArchitecturyFluidAttributes attributes) {
-        builder.luminosity(attributes.getLuminosity())
+    private static Properties addArchIntoBuilder(Properties builder, ArchitecturyFluidAttributes attributes) {
+        builder.lightLevel(attributes.getLuminosity())
                 .density(attributes.getDensity())
                 .temperature(attributes.getTemperature())
+                .rarity(attributes.getRarity())
+                .canConvertToSource(attributes.canConvertToSource())
                 .viscosity(attributes.getViscosity());
-        if (attributes.isLighterThanAir()) builder.gaseous();
         return builder;
     }
     
     @Override
-    public ResourceLocation getStillTexture() {
-        return attributes.getSourceTexture();
+    public void initializeClient(Consumer<IFluidTypeRenderProperties> consumer) {
+        consumer.accept(new IFluidTypeRenderProperties() {
+            @Override
+            public int getColorTint() {
+                return attributes.getColor();
+            }
+            
+            @Override
+            public ResourceLocation getStillTexture() {
+                return attributes.getSourceTexture();
+            }
+            
+            @Override
+            public ResourceLocation getFlowingTexture() {
+                return attributes.getFlowingTexture();
+            }
+            
+            @Override
+            public ResourceLocation getStillTexture(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
+                return attributes.getSourceTexture(null, getter, pos);
+            }
+            
+            @Override
+            public ResourceLocation getFlowingTexture(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
+                return attributes.getFlowingTexture(null, getter, pos);
+            }
+            
+            @Override
+            public int getColorTint(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
+                return attributes.getColor(null, getter, pos);
+            }
+            
+            @Override
+            public int getColorTint(FluidStack stack) {
+                return attributes.getColor(convertSafe(stack));
+            }
+            
+            @Override
+            public ResourceLocation getStillTexture(FluidStack stack) {
+                return attributes.getSourceTexture(convertSafe(stack));
+            }
+            
+            @Override
+            public ResourceLocation getFlowingTexture(FluidStack stack) {
+                return attributes.getFlowingTexture(convertSafe(stack));
+            }
+        });
     }
     
     @Override
-    public ResourceLocation getStillTexture(FluidStack stack) {
-        return attributes.getSourceTexture(stack == null ? null : FluidStackHooksForge.fromForge(stack));
-    }
-    
-    @Override
-    public ResourceLocation getStillTexture(BlockAndTintGetter level, BlockPos pos) {
-        return attributes.getSourceTexture(null, level, pos);
-    }
-    
-    @Override
-    public ResourceLocation getFlowingTexture() {
-        return attributes.getFlowingTexture();
-    }
-    
-    @Override
-    public ResourceLocation getFlowingTexture(FluidStack stack) {
-        return attributes.getFlowingTexture(stack == null ? null : FluidStackHooksForge.fromForge(stack));
-    }
-    
-    @Override
-    public ResourceLocation getFlowingTexture(BlockAndTintGetter level, BlockPos pos) {
-        return attributes.getFlowingTexture(null, level, pos);
-    }
-    
-    @Override
-    public int getColor() {
-        return attributes.getColor();
-    }
-    
-    @Override
-    public int getColor(FluidStack stack) {
-        return attributes.getColor(stack == null ? null : FluidStackHooksForge.fromForge(stack));
-    }
-    
-    @Override
-    public int getColor(BlockAndTintGetter level, BlockPos pos) {
-        return attributes.getColor(null, level, pos);
-    }
-    
-    @Override
-    public int getLuminosity(FluidStack stack) {
+    public int getLightLevel(FluidStack stack) {
         return attributes.getLuminosity(stack == null ? null : FluidStackHooksForge.fromForge(stack));
     }
     
     @Override
-    public int getLuminosity(BlockAndTintGetter level, BlockPos pos) {
+    public int getLightLevel(FluidState state, BlockAndTintGetter level, BlockPos pos) {
         return attributes.getLuminosity(null, level, pos);
     }
     
@@ -114,7 +131,7 @@ class ArchitecturyFluidAttributesForge extends FluidAttributes {
     }
     
     @Override
-    public int getDensity(BlockAndTintGetter level, BlockPos pos) {
+    public int getDensity(FluidState state, BlockAndTintGetter level, BlockPos pos) {
         return attributes.getDensity(null, level, pos);
     }
     
@@ -124,7 +141,7 @@ class ArchitecturyFluidAttributesForge extends FluidAttributes {
     }
     
     @Override
-    public int getTemperature(BlockAndTintGetter level, BlockPos pos) {
+    public int getTemperature(FluidState state, BlockAndTintGetter level, BlockPos pos) {
         return attributes.getTemperature(null, level, pos);
     }
     
@@ -134,18 +151,8 @@ class ArchitecturyFluidAttributesForge extends FluidAttributes {
     }
     
     @Override
-    public int getViscosity(BlockAndTintGetter level, BlockPos pos) {
+    public int getViscosity(FluidState state, BlockAndTintGetter level, BlockPos pos) {
         return attributes.getViscosity(null, level, pos);
-    }
-    
-    @Override
-    public boolean isGaseous(FluidStack stack) {
-        return attributes.isLighterThanAir(stack == null ? null : FluidStackHooksForge.fromForge(stack));
-    }
-    
-    @Override
-    public boolean isGaseous(BlockAndTintGetter level, BlockPos pos) {
-        return attributes.isLighterThanAir(null, level, pos);
     }
     
     @Override
@@ -155,56 +162,53 @@ class ArchitecturyFluidAttributesForge extends FluidAttributes {
     
     @Override
     public Rarity getRarity(FluidStack stack) {
-        return attributes.getRarity(stack == null ? null : FluidStackHooksForge.fromForge(stack));
+        return attributes.getRarity(convertSafe(stack));
     }
     
     @Override
-    public Rarity getRarity(BlockAndTintGetter level, BlockPos pos) {
-        return attributes.getRarity(null, level, pos);
+    public Component getDescription(FluidStack stack) {
+        return attributes.getName(convertSafe(stack));
     }
     
     @Override
-    public Component getDisplayName(FluidStack stack) {
-        return attributes.getName(stack == null ? null : FluidStackHooksForge.fromForge(stack));
-    }
-    
-    @Override
-    public String getTranslationKey() {
+    public String getDescriptionId() {
         return MoreObjects.firstNonNull(attributes.getTranslationKey(), defaultTranslationKey);
     }
     
     @Override
-    public String getTranslationKey(FluidStack stack) {
-        return MoreObjects.firstNonNull(attributes.getTranslationKey(stack == null ? null : FluidStackHooksForge.fromForge(stack)), defaultTranslationKey);
+    public String getDescriptionId(FluidStack stack) {
+        return MoreObjects.firstNonNull(attributes.getTranslationKey(convertSafe(stack)), defaultTranslationKey);
     }
     
     @Override
-    public SoundEvent getFillSound() {
-        return attributes.getFillSound();
+    public @Nullable SoundEvent getSound(SoundAction action) {
+        return getSound((FluidStack) null, action);
     }
     
     @Override
-    public SoundEvent getFillSound(FluidStack stack) {
-        return attributes.getFillSound(stack == null ? null : FluidStackHooksForge.fromForge(stack));
+    public @Nullable SoundEvent getSound(@Nullable FluidStack stack, SoundAction action) {
+        var archStack = convertSafe(stack);
+        if (BUCKET_FILL.equals(action)) {
+            return attributes.getFillSound(archStack);
+        } else if (BUCKET_EMPTY.equals(action)) {
+            return attributes.getEmptySound(archStack);
+        }
+        return null;
     }
     
     @Override
-    public SoundEvent getFillSound(BlockAndTintGetter level, BlockPos pos) {
-        return attributes.getFillSound(null, level, pos);
+    public @Nullable SoundEvent getSound(@Nullable Player player, BlockGetter getter, BlockPos pos, SoundAction action) {
+        if (getter instanceof BlockAndTintGetter level) {
+            if (BUCKET_FILL.equals(action)) {
+                return attributes.getFillSound(null, level, pos);
+            } else if (BUCKET_EMPTY.equals(action)) {
+                return attributes.getEmptySound(null, level, pos);
+            }
+        }
+        return null;
     }
     
-    @Override
-    public SoundEvent getEmptySound() {
-        return attributes.getEmptySound();
-    }
-    
-    @Override
-    public SoundEvent getEmptySound(FluidStack stack) {
-        return attributes.getEmptySound(stack == null ? null : FluidStackHooksForge.fromForge(stack));
-    }
-    
-    @Override
-    public SoundEvent getEmptySound(BlockAndTintGetter level, BlockPos pos) {
-        return attributes.getEmptySound(null, level, pos);
+    public dev.architectury.fluid.FluidStack convertSafe(@Nullable FluidStack stack) {
+        return stack == null ? null : FluidStackHooksForge.fromForge(stack);
     }
 }
