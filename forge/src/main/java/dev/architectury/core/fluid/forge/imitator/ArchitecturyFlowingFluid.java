@@ -37,11 +37,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public abstract class ArchitecturyFlowingFluid extends ForgeFlowingFluid {
     private final ArchitecturyFluidAttributes attributes;
@@ -52,11 +53,9 @@ public abstract class ArchitecturyFlowingFluid extends ForgeFlowingFluid {
     }
     
     private static Properties toForgeProperties(ArchitecturyFluidAttributes attributes) {
-        FluidAttributes.Builder forgeAttributes = new FluidAttributes.Builder(attributes.getSourceTexture(), attributes.getFlowingTexture(), (builder, fluid) ->
-                new ArchitecturyFluidAttributesForge(builder, fluid, attributes)) {
-        };
-        Properties forge = new Properties(attributes::getSourceFluid, attributes::getFlowingFluid, forgeAttributes);
-        if (attributes.canConvertToSource()) forge.canMultiply();
+        // TODO: Does this *want* the flowing fluid?
+        Supplier<FluidType> type = () -> new ArchitecturyFluidAttributesForge(FluidType.Properties.create(), attributes.getFlowingFluid(), attributes);
+        Properties forge = new Properties(type, attributes::getSourceFluid, attributes::getFlowingFluid);
         forge.slopeFindDistance(attributes.getSlopeFindDistance());
         forge.levelDecreasePerBlock(attributes.getDropOff());
         forge.bucket(() -> MoreObjects.firstNonNull(attributes.getBucketItem(), Items.AIR));
