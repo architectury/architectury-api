@@ -343,6 +343,7 @@ public interface ArchitecturyFluidAttributes {
      * @deprecated Please use and override {@link #getColor(FluidState, BlockAndTintGetter, BlockPos)}
      * or {@link #getColor(FluidStack)} instead, this method will be removed in a future version.
      */
+    @Deprecated(forRemoval = true)
     int getColor(@Nullable FluidStack stack, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos);
     
     /**
