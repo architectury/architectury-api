@@ -68,6 +68,16 @@ remapJar {
     classifier null
 }
 
+task renameJarForPublication(type: Zip, dependsOn: remapJar) {
+    from remapJar.archiveFile.map { zipTree(it) }
+    extension "jar"
+    metadataCharset "UTF-8"
+    destinationDirectory = base.libsDirectory
+    classifier project.name
+}
+
+assemble.dependsOn renameJarForPublication
+
 jar {
     classifier "dev"
 }
@@ -118,7 +128,7 @@ unifiedPublishing {
         changelog = releaseChangelog()
         gameVersions = ["1.18.2"]
         gameLoaders = ["forge"]
-        mainPublication remapJar
+        mainPublication renameJarForPublication
 
         var CURSE_API_KEY = project.findProperty("CURSE_API_KEY") ?: System.getenv("CURSE_API_KEY")
         if (CURSE_API_KEY != null) {
