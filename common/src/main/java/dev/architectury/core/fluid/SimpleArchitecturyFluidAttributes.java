@@ -35,6 +35,7 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -55,6 +56,8 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
     private ResourceLocation sourceTexture;
     @Nullable
     private ResourceLocation flowingTexture;
+    @Nullable
+    private ResourceLocation overlayTexture;
     private int color = 0xffffff;
     private int luminosity = 0;
     private int density = 1000;
@@ -167,7 +170,7 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
     }
     
     /**
-     * @see ArchitecturyFluidAttributes#getSourceTexture(FluidStack, BlockAndTintGetter, BlockPos)
+     * @see ArchitecturyFluidAttributes#getSourceTexture(FluidState, BlockAndTintGetter, BlockPos)
      */
     public SimpleArchitecturyFluidAttributes sourceTexture(ResourceLocation sourceTexture) {
         this.sourceTexture = sourceTexture;
@@ -175,7 +178,7 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
     }
     
     /**
-     * @see ArchitecturyFluidAttributes#getFlowingTexture(FluidStack, BlockAndTintGetter, BlockPos)
+     * @see ArchitecturyFluidAttributes#getFlowingTexture(FluidState, BlockAndTintGetter, BlockPos)
      */
     public SimpleArchitecturyFluidAttributes flowingTexture(ResourceLocation flowingTexture) {
         this.flowingTexture = flowingTexture;
@@ -183,7 +186,15 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
     }
     
     /**
-     * @see ArchitecturyFluidAttributes#getColor(FluidStack, BlockAndTintGetter, BlockPos)
+     * @see ArchitecturyFluidAttributes#getFlowingTexture(FluidState, BlockAndTintGetter, BlockPos)
+     */
+    public SimpleArchitecturyFluidAttributes overlayTexture(ResourceLocation overlayTexture) {
+        this.overlayTexture = overlayTexture;
+        return this;
+    }
+    
+    /**
+     * @see ArchitecturyFluidAttributes#getColor(FluidState, BlockAndTintGetter, BlockPos)
      */
     public SimpleArchitecturyFluidAttributes color(int color) {
         this.color = color;
@@ -315,6 +326,11 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
     @Override
     public ResourceLocation getFlowingTexture(@Nullable FluidStack stack, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos) {
         return flowingTexture;
+    }
+    
+    @Override
+    public ResourceLocation getOverlayTexture(@Nullable FluidState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos) {
+        return overlayTexture;
     }
     
     @Override

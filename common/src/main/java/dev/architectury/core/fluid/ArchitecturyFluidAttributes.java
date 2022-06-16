@@ -30,6 +30,7 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -197,8 +198,25 @@ public interface ArchitecturyFluidAttributes {
      * @param level the level, can be {@code null}
      * @param pos   the position, can be {@code null}
      * @return the texture location
+     * @deprecated Please use and override {@link #getSourceTexture(FluidState, BlockAndTintGetter, BlockPos)}
+     * or {@link #getSourceTexture(FluidStack)} instead, this method will be removed in a future version.
      */
+    @Deprecated(forRemoval = true)
     ResourceLocation getSourceTexture(@Nullable FluidStack stack, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos);
+    
+    /**
+     * Returns the texture location of this fluid in its source form.
+     * <p>
+     * The vanilla water location is {@code "block/water_still"}.
+     *
+     * @param state the fluid state, can be {@code null}
+     * @param level the level, can be {@code null}
+     * @param pos   the position, can be {@code null}
+     * @return the texture location
+     */
+    default ResourceLocation getSourceTexture(@Nullable FluidState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos) {
+        return getSourceTexture(state == null ? null : FluidStack.create(state.getType(), FluidStack.bucketAmount()), level, pos);
+    }
     
     /**
      * Returns the texture location of this fluid in its source form.
@@ -232,8 +250,25 @@ public interface ArchitecturyFluidAttributes {
      * @param level the level, can be {@code null}
      * @param pos   the position, can be {@code null}
      * @return the texture location
+     * @deprecated Please use and override {@link #getFlowingTexture(FluidState, BlockAndTintGetter, BlockPos)}
+     * or {@link #getFlowingTexture(FluidStack)} instead, this method will be removed in a future version.
      */
+    @Deprecated(forRemoval = true)
     ResourceLocation getFlowingTexture(@Nullable FluidStack stack, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos);
+    
+    /**
+     * Returns the texture location of this fluid in its flowing form.
+     * <p>
+     * The vanilla water location is {@code "block/water_flow"}.
+     *
+     * @param state the fluid state, can be {@code null}
+     * @param level the level, can be {@code null}
+     * @param pos   the position, can be {@code null}
+     * @return the texture location
+     */
+    default ResourceLocation getFlowingTexture(@Nullable FluidState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos) {
+        return getFlowingTexture(state == null ? null : FluidStack.create(state.getType(), FluidStack.bucketAmount()), level, pos);
+    }
     
     /**
      * Returns the texture location of this fluid in its flowing form.
@@ -259,14 +294,69 @@ public interface ArchitecturyFluidAttributes {
     }
     
     /**
+     * Returns the overlay texture location of this fluid behind transparent blocks.
+     * <p>
+     * The vanilla water location is {@code "block/water_overlay"}.
+     *
+     * @param state the fluid state, can be {@code null}
+     * @param level the level, can be {@code null}
+     * @param pos   the position, can be {@code null}
+     * @return the texture location, can be {@code null}
+     */
+    @Nullable
+    default ResourceLocation getOverlayTexture(@Nullable FluidState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos) {
+        return null;
+    }
+    
+    /**
+     * Returns the overlay texture location of this fluid behind transparent blocks.
+     * <p>
+     * The vanilla water location is {@code "block/water_overlay"}.
+     *
+     * @param stack the fluid stack, can be {@code null}
+     * @return the texture location, can be {@code null}
+     */
+    @Nullable
+    default ResourceLocation getOverlayTexture(@Nullable FluidStack stack) {
+        return null;
+    }
+    
+    /**
+     * Returns the overlay texture location of this fluid behind transparent blocks.
+     * <p>
+     * The vanilla water location is {@code "block/water_overlay"}.
+     *
+     * @return the texture location, can be {@code null}
+     */
+    @Nullable
+    default ResourceLocation getOverlayTexture() {
+        return getOverlayTexture(null);
+    }
+    
+    /**
      * Returns the color of the fluid.
      *
      * @param stack the fluid stack, can be {@code null}
      * @param level the level, can be {@code null}
      * @param pos   the position, can be {@code null}
      * @return the color
+     * @deprecated Please use and override {@link #getColor(FluidState, BlockAndTintGetter, BlockPos)}
+     * or {@link #getColor(FluidStack)} instead, this method will be removed in a future version.
      */
+    @Deprecated(forRemoval = true)
     int getColor(@Nullable FluidStack stack, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos);
+    
+    /**
+     * Returns the color of the fluid.
+     *
+     * @param state the fluid state, can be {@code null}
+     * @param level the level, can be {@code null}
+     * @param pos   the position, can be {@code null}
+     * @return the color
+     */
+    default int getColor(@Nullable FluidState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos) {
+        return getColor(state == null ? null : FluidStack.create(state.getType(), FluidStack.bucketAmount()), level, pos);
+    }
     
     /**
      * Returns the color of the fluid.

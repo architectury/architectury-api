@@ -20,6 +20,7 @@
 package dev.architectury.core.fluid.forge.imitator;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Suppliers;
 import dev.architectury.core.fluid.ArchitecturyFluidAttributes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -37,26 +38,29 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public abstract class ArchitecturyFlowingFluid extends ForgeFlowingFluid {
     private final ArchitecturyFluidAttributes attributes;
+    private final Supplier<FluidType> forgeType;
     
     ArchitecturyFlowingFluid(ArchitecturyFluidAttributes attributes) {
         super(toForgeProperties(attributes));
         this.attributes = attributes;
+        this.forgeType = Suppliers.memoize(() -> {
+            return new ArchitecturyFluidAttributesForge(FluidType.Properties.create(), this, attributes);
+        });
     }
     
     private static Properties toForgeProperties(ArchitecturyFluidAttributes attributes) {
-        FluidAttributes.Builder forgeAttributes = new FluidAttributes.Builder(attributes.getSourceTexture(), attributes.getFlowingTexture(), (builder, fluid) ->
-                new ArchitecturyFluidAttributesForge(builder, fluid, attributes)) {
-        };
-        Properties forge = new Properties(attributes::getSourceFluid, attributes::getFlowingFluid, forgeAttributes);
-        if (attributes.canConvertToSource()) forge.canMultiply();
+        Properties forge = new Properties(Suppliers.memoize(() -> {
+            return new ArchitecturyFluidAttributesForge(FluidType.Properties.create(), attributes.getSourceFluid(), attributes);
+        }), attributes::getSourceFluid, attributes::getFlowingFluid);
         forge.slopeFindDistance(attributes.getSlopeFindDistance());
         forge.levelDecreasePerBlock(attributes.getDropOff());
         forge.bucket(() -> MoreObjects.firstNonNull(attributes.getBucketItem(), Items.AIR));
@@ -64,6 +68,11 @@ public abstract class ArchitecturyFlowingFluid extends ForgeFlowingFluid {
         forge.explosionResistance(attributes.getExplosionResistance());
         forge.block(() -> MoreObjects.firstNonNull(attributes.getBlock(), (LiquidBlock) Blocks.WATER));
         return forge;
+    }
+    
+    @Override
+    public FluidType getFluidType() {
+        return forgeType.get();
     }
     
     @Override
