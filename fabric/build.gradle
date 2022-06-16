@@ -55,6 +55,16 @@ remapJar {
     classifier null
 }
 
+task renameJarForPublication(type: Zip, dependsOn: remapJar) {
+    from remapJar.archiveFile.map { zipTree(it) }
+    extension "jar"
+    metadataCharset "UTF-8"
+    destinationDirectory = base.libsDirectory
+    classifier project.name
+}
+
+assemble.dependsOn renameJarForPublication
+
 jar {
     classifier "dev"
 }
@@ -105,7 +115,7 @@ unifiedPublishing {
         changelog = releaseChangelog()
         gameVersions = ["1.19"]
         gameLoaders = ["fabric", "quilt"]
-        mainPublication remapJar
+        mainPublication renameJarForPublication
         relations {
             depends {
                 curseforge = "fabric-api"

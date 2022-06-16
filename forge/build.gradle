@@ -68,6 +68,16 @@ remapJar {
     classifier null
 }
 
+task renameJarForPublication(type: Zip, dependsOn: remapJar) {
+    from remapJar.archiveFile.map { zipTree(it) }
+    extension "jar"
+    metadataCharset "UTF-8"
+    destinationDirectory = base.libsDirectory
+    classifier project.name
+}
+
+assemble.dependsOn renameJarForPublication
+
 jar {
     classifier "dev"
 }
@@ -118,7 +128,7 @@ unifiedPublishing {
         changelog = releaseChangelog()
         gameVersions = ["1.19"]
         gameLoaders = ["forge"]
-        mainPublication remapJar
+        mainPublication renameJarForPublication
 
         var CURSE_API_KEY = project.findProperty("CURSE_API_KEY") ?: System.getenv("CURSE_API_KEY")
         if (CURSE_API_KEY != null) {
@@ -137,5 +147,16 @@ unifiedPublishing {
                 version = "$project.version+$project.name"
             }
         }
+    }
+}
+
+// Update mods.toml with the new versions automatically
+// Not using processResources because it is easier to do this manually, and see it reflected immediately
+afterEvaluate {
+    file("src/main/resources/META-INF/mods.toml").withOutputStream {
+        it << file("mods.toml").text
+                .replaceAll("@LOADER_MAJOR@", rootProject.forge_version.split("\\.")[0])
+                .replaceAll("@MINECRAFT_VERSION@", rootProject.architectury.minecraft)
+                .replaceAll("@FORGE_VERSION@", rootProject.forge_version)
     }
 }
