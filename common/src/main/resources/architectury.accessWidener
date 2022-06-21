@@ -325,3 +325,18 @@ transitive-accessible field net/minecraft/client/renderer/RenderStateShard WEATH
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard CLOUDS_TARGET Lnet/minecraft/client/renderer/RenderStateShard$OutputStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard ITEM_ENTITY_TARGET Lnet/minecraft/client/renderer/RenderStateShard$OutputStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard DEFAULT_LINE Lnet/minecraft/client/renderer/RenderStateShard$LineStateShard;
+transitive-accessible class net/minecraft/client/renderer/RenderStateShard$TransparencyStateShard
+transitive-accessible class net/minecraft/client/renderer/RenderStateShard$ShaderStateShard
+transitive-accessible class net/minecraft/client/renderer/RenderStateShard$TextureStateShard
+transitive-accessible class net/minecraft/client/renderer/RenderStateShard$EmptyTextureStateShard
+transitive-accessible class net/minecraft/client/renderer/RenderStateShard$TexturingStateShard
+transitive-accessible class net/minecraft/client/renderer/RenderStateShard$LightmapStateShard
+transitive-accessible class net/minecraft/client/renderer/RenderStateShard$OverlayStateShard
+transitive-accessible class net/minecraft/client/renderer/RenderStateShard$CullStateShard
+transitive-accessible class net/minecraft/client/renderer/RenderStateShard$DepthTestStateShard
+transitive-accessible class net/minecraft/client/renderer/RenderStateShard$WriteMaskStateShard
+transitive-accessible class net/minecraft/client/renderer/RenderStateShard$LayeringStateShard
+transitive-accessible class net/minecraft/client/renderer/RenderStateShard$OutputStateShard
+transitive-accessible class net/minecraft/client/renderer/RenderStateShard$LineStateShard
+transitive-accessible class net/minecraft/client/renderer/RenderStateShard$OffsetTexturingStateShard
+transitive-accessible class net/minecraft/client/renderer/RenderStateShard$MultiTextureStateShard
