@@ -120,6 +120,11 @@ static def generateRenderTypeRelated(List<String> lines, FileSystem fs) {
             }
         }
     }
+    for (def innerClass : node.innerClasses) {
+        if ((innerClass.access & Opcodes.ACC_PROTECTED) != 0) {
+            lines.add("transitive-accessible class $innerClass.name")
+        }
+    }
 }
 
 static ClassNode loadClass(Path path) {
