@@ -19,12 +19,13 @@
 
 package me.shedaniel.architectury.hooks.fabric;
 
+import me.shedaniel.architectury.event.EventResult;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
 public class PlayerHooksImpl {
     public static boolean isFake(Player player) {
-        var result = FakePlayers.EVENT.invoker().isFakePlayer(player);
+        EventResult result = FakePlayers.EVENT.invoker().isFakePlayer(player);
         if (result.value() != null) {
             return result.value();
         }
