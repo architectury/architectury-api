@@ -22,6 +22,7 @@ package me.shedaniel.architectury.platform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screens.Screen;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
@@ -58,7 +59,8 @@ public interface Mod {
     /**
      * @deprecated Use {@link #getFilePaths()} instead
      */
-    @Deprecated(forRemoval = true)
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval
     Path getFilePath();
     
     Collection<String> getAuthors();
