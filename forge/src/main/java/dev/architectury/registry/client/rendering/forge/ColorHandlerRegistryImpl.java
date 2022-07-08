@@ -20,14 +20,14 @@
 package dev.architectury.registry.client.rendering.forge;
 
 import com.google.common.collect.Lists;
-import dev.architectury.platform.forge.EventBuses;
 import dev.architectury.forge.ArchitecturyForge;
+import dev.architectury.platform.forge.EventBuses;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -46,16 +46,16 @@ public class ColorHandlerRegistryImpl {
     }
     
     @SubscribeEvent
-    public static void onItemColorEvent(ColorHandlerEvent.Item event) {
+    public static void onItemColorEvent(RegisterColorHandlersEvent.Item event) {
         for (Pair<ItemColor, Supplier<? extends ItemLike>[]> pair : ITEM_COLORS) {
-            event.getItemColors().register(pair.getLeft(), unpackItems(pair.getRight()));
+            event.register(pair.getLeft(), unpackItems(pair.getRight()));
         }
     }
     
     @SubscribeEvent
-    public static void onBlockColorEvent(ColorHandlerEvent.Block event) {
+    public static void onBlockColorEvent(RegisterColorHandlersEvent.Block event) {
         for (Pair<BlockColor, Supplier<? extends Block>[]> pair : BLOCK_COLORS) {
-            event.getBlockColors().register(pair.getLeft(), unpackBlocks(pair.getRight()));
+            event.register(pair.getLeft(), unpackBlocks(pair.getRight()));
         }
     }
     

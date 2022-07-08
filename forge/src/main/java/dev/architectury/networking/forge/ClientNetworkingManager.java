@@ -55,7 +55,7 @@ public class ClientNetworkingManager {
     }
     
     @SubscribeEvent
-    public static void loggedOut(ClientPlayerNetworkEvent.LoggedOutEvent event) {
+    public static void loggedOut(ClientPlayerNetworkEvent.LoggingOut event) {
         NetworkManagerImpl.serverReceivables.clear();
     }
 }
