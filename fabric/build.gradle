@@ -1,6 +1,6 @@
 plugins {
     id "com.github.johnrengelman.shadow" version "7.1.2"
-    id "com.matthewprenger.cursegradle"
+    id "me.shedaniel.unified-publishing"
 }
 
 loom {
@@ -55,6 +55,16 @@ remapJar {
     classifier null
 }
 
+task renameJarForPublication(type: Zip, dependsOn: remapJar) {
+    from remapJar.archiveFile.map { zipTree(it) }
+    extension "jar"
+    metadataCharset "UTF-8"
+    destinationDirectory = base.libsDirectory
+    classifier project.name
+}
+
+assemble.dependsOn renameJarForPublication
+
 jar {
     classifier "dev"
 }
@@ -98,33 +108,37 @@ publishing {
     }
 }
 
-curseforge {
-    if (project.hasProperty("CURSE_API_KEY") || System.getenv("CURSE_API_KEY") != null) {
-        apiKey = project.hasProperty("CURSE_API_KEY") ? project.property("CURSE_API_KEY") : System.getenv("CURSE_API_KEY")
-        project {
-            id = "419699"
-            releaseType = "$rootProject.cf_type"
-            changelogType = "html"
-            changelog = releaseChangelog()
-            addGameVersion "1.18.2"
-            addGameVersion "1.18-Snapshot"
-            addGameVersion "Java 17"
-            addGameVersion "Fabric"
-            relations {
-                requiredDependency "fabric-api"
+unifiedPublishing {
+    project {
+        displayName = "[Fabric $rootProject.supported_version] v$project.version"
+        releaseType = "$rootProject.artifact_type"
+        changelog = releaseChangelog()
+        gameVersions = ["1.18.2"]
+        gameLoaders = ["fabric", "quilt"]
+        mainPublication renameJarForPublication
+        relations {
+            depends {
+                curseforge = "fabric-api"
+                modrinth = "fabric-api"
             }
-            mainArtifact(remapJar.archivePath) {
-                displayName = "[Fabric $rootProject.supported_version] v$project.version"
+        }
+
+        var CURSE_API_KEY = project.findProperty("CURSE_API_KEY") ?: System.getenv("CURSE_API_KEY")
+        if (CURSE_API_KEY != null) {
+            curseforge {
+                token = CURSE_API_KEY
+                id = rootProject.curseforge_id
+                gameVersions.addAll "Java 17", "1.18-Snapshot"
             }
-            afterEvaluate {
-                uploadTask.dependsOn("build")
+        }
+
+        var MODRINTH_TOKEN = project.findProperty("MODRINTH_TOKEN") ?: System.getenv("MODRINTH_TOKEN")
+        if (MODRINTH_TOKEN != null) {
+            modrinth {
+                token = MODRINTH_TOKEN
+                id = rootProject.modrinth_id
+                version = "$project.version+$project.name"
             }
         }
     }
-    options {
-        forgeGradleIntegration = false
-        javaVersionAutoDetect = false
-    }
 }
-
-rootProject.tasks.getByName("curseforgePublish").dependsOn tasks.getByName("curseforge")

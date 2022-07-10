@@ -35,6 +35,10 @@ import java.util.function.Supplier;
 public enum FluidStackImpl implements FluidStack.FluidStackAdapter<FluidStackImpl.Pair> {
     INSTANCE;
     
+    static {
+        dev.architectury.fluid.FluidStack.init();
+    }
+    
     public static Function<FluidStack, Object> toValue;
     public static Function<Object, FluidStack> fromValue;
     

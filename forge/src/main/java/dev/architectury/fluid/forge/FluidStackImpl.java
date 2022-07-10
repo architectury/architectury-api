@@ -33,6 +33,10 @@ import static dev.architectury.utils.Amount.toInt;
 public enum FluidStackImpl implements dev.architectury.fluid.FluidStack.FluidStackAdapter<FluidStack> {
     INSTANCE;
     
+    static {
+        dev.architectury.fluid.FluidStack.init();
+    }
+    
     public static Function<dev.architectury.fluid.FluidStack, Object> toValue;
     public static Function<Object, dev.architectury.fluid.FluidStack> fromValue;
     

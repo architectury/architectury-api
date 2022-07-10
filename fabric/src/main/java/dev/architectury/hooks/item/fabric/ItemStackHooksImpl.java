@@ -17,19 +17,20 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.hooks.level.entity.fabric;
+package dev.architectury.hooks.item.fabric;
 
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
-public class PlayerHooksImpl {
-    public static boolean isFake(Player player) {
-        var result = FakePlayers.EVENT.invoker().isFakePlayer(player);
-        if (result.isPresent()) {
-            return result.isTrue();
-        }
-        // If no result has been returned, assume that player classes extending ServerPlayer
-        // (apart from ServerPlayer itself) are fake players, as a "reasonable default"
-        return player instanceof ServerPlayer && player.getClass() != ServerPlayer.class;
+public class ItemStackHooksImpl {
+    public static boolean hasCraftingRemainingItem(ItemStack stack) {
+        return stack.getItem().hasCraftingRemainingItem();
+    }
+    
+    public static ItemStack getCraftingRemainingItem(ItemStack stack) {
+        if (!hasCraftingRemainingItem(stack)) return ItemStack.EMPTY;
+        Item item = stack.getItem().getCraftingRemainingItem();
+        return item == null || item == Items.AIR ? ItemStack.EMPTY : item.getDefaultInstance();
     }
 }
