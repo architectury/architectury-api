@@ -20,13 +20,13 @@
 package dev.architectury.extensions.injected;
 
 import dev.architectury.registry.registries.Registries;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 
-public interface InjectedEntityTypeExtension extends InjectedRegistryEntryExtension {
+public interface InjectedEntityTypeExtension extends InjectedRegistryEntryExtension<EntityType<?>> {
     @Override
-    default ResourceLocation arch$getRegistryName() {
-        return Registries.getId((EntityType<?>) this, Registry.ENTITY_TYPE_REGISTRY);
+    default Holder<EntityType<?>> arch$holder() {
+        return ((EntityType<?>) this).builtInRegistryHolder();
     }
 }

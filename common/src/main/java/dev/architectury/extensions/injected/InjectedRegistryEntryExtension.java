@@ -19,8 +19,8 @@
 
 package dev.architectury.extensions.injected;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Holder;
 
-public interface InjectedRegistryEntryExtension {
-    ResourceLocation arch$getRegistryName();
+public interface InjectedRegistryEntryExtension<T> {
+    Holder<T> arch$holder();
 }

@@ -19,14 +19,12 @@
 
 package dev.architectury.extensions.injected;
 
-import dev.architectury.registry.registries.Registries;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Holder;
+import net.minecraft.world.level.gameevent.GameEvent;
 
-public interface InjectedBlockEntityTypeExtension extends InjectedRegistryEntryExtension {
+public interface InjectedGameEventExtension extends InjectedRegistryEntryExtension<GameEvent> {
     @Override
-    default ResourceLocation arch$getRegistryName() {
-        return Registries.getId((BlockEntityType<?>) this, Registry.BLOCK_ENTITY_TYPE_REGISTRY);
+    default Holder<GameEvent> arch$holder() {
+        return ((GameEvent) this).builtInRegistryHolder();
     }
 }

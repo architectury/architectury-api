@@ -20,13 +20,13 @@
 package dev.architectury.extensions.injected;
 
 import dev.architectury.registry.registries.Registries;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
 
-public interface InjectedFluidExtension extends InjectedRegistryEntryExtension {
+public interface InjectedFluidExtension extends InjectedRegistryEntryExtension<Fluid> {
     @Override
-    default ResourceLocation arch$getRegistryName() {
-        return Registries.getId((Fluid) this, Registry.FLUID_REGISTRY);
+    default Holder<Fluid> arch$holder() {
+        return ((Fluid) this).builtInRegistryHolder();
     }
 }

@@ -20,13 +20,13 @@
 package dev.architectury.extensions.injected;
 
 import dev.architectury.registry.registries.Registries;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 
-public interface InjectedBlockExtension extends InjectedRegistryEntryExtension {
+public interface InjectedBlockExtension extends InjectedRegistryEntryExtension<Block> {
     @Override
-    default ResourceLocation arch$getRegistryName() {
-        return Registries.getId((Block) this, Registry.BLOCK_REGISTRY);
+    default Holder<Block> arch$holder() {
+        return ((Block) this).builtInRegistryHolder();
     }
 }

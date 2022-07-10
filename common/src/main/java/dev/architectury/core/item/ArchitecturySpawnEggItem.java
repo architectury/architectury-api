@@ -74,8 +74,8 @@ public class ArchitecturySpawnEggItem extends SpawnEggItem {
         this.entityType = Objects.requireNonNull(entityType, "entityType");
         SpawnEggItem.BY_ID.remove(null);
         entityType.listen(type -> {
-            LOGGER.debug("Registering spawn egg {} for {}", Objects.toString(this.arch$getRegistryName()),
-                    Objects.toString(type.arch$getRegistryName()));
+            LOGGER.debug("Registering spawn egg {} for {}", Objects.toString(this.arch$holder()),
+                    Objects.toString(type.arch$holder()));
             SpawnEggItem.BY_ID.put(type, this);
             this.defaultType = type;
             
