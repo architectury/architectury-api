@@ -64,7 +64,7 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
     private SoundEvent fillSound = SoundEvents.BUCKET_FILL;
     @Nullable
     private SoundEvent emptySound = SoundEvents.BUCKET_EMPTY;
-    private final Supplier<String> defaultTranslationKey = Suppliers.memoize(() -> Util.makeDescriptionId("fluid", getSourceFluid().arch$holder()));
+    private final Supplier<String> defaultTranslationKey = Suppliers.memoize(() -> Util.makeDescriptionId("fluid", getSourceFluid().arch$registryName()));
     
     public static SimpleArchitecturyFluidAttributes ofSupplier(Supplier<? extends Supplier<? extends Fluid>> flowingFluid, Supplier<? extends Supplier<? extends Fluid>> sourceFluid) {
         return of(() -> flowingFluid.get().get(), () -> sourceFluid.get().get());
