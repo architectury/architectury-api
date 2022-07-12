@@ -21,14 +21,14 @@ package dev.architectury.mixin.forge;
 
 import dev.architectury.event.forge.EventHandlerImplCommon;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.event.level.LevelEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
 import java.lang.ref.WeakReference;
 
-@Mixin(WorldEvent.class)
-public class MixinWorldEvent implements EventHandlerImplCommon.WorldEventAttachment {
+@Mixin(LevelEvent.class)
+public class MixinLevelEvent implements EventHandlerImplCommon.LevelEventAttachment {
     @Unique
     private WeakReference<LevelAccessor> level;
     

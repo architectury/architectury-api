@@ -36,7 +36,7 @@ import net.minecraftforge.network.NetworkHooks;
 
 public class MenuRegistryImpl {
     public static void openExtendedMenu(ServerPlayer player, ExtendedMenuProvider provider) {
-        NetworkHooks.openGui(player, provider, provider::saveExtraData);
+        NetworkHooks.openScreen(player, provider, provider::saveExtraData);
     }
     
     public static <T extends AbstractContainerMenu> MenuType<T> of(SimpleMenuTypeFactory<T> factory) {

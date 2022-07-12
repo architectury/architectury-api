@@ -22,7 +22,7 @@ package dev.architectury.platform.forge;
 import dev.architectury.platform.Mod;
 import dev.architectury.utils.Env;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.ConfigGuiHandler;
+import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLEnvironment;
@@ -178,8 +178,8 @@ public class PlatformImpl {
         
         @Override
         public void registerConfigurationScreen(ConfigurationScreenProvider configurationScreenProvider) {
-            container.registerExtensionPoint(ConfigGuiHandler.ConfigGuiFactory.class, () ->
-                    new ConfigGuiHandler.ConfigGuiFactory((minecraft, screen) -> configurationScreenProvider.provide(screen)));
+            container.registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class, () ->
+                    new ConfigScreenHandler.ConfigScreenFactory((minecraft, screen) -> configurationScreenProvider.provide(screen)));
         }
     }
 }

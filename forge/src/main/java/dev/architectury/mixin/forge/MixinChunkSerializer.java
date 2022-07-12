@@ -26,7 +26,7 @@ import net.minecraft.world.entity.ai.village.poi.PoiManager;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.ProtoChunk;
 import net.minecraft.world.level.chunk.storage.ChunkSerializer;
-import net.minecraftforge.event.world.ChunkDataEvent;
+import net.minecraftforge.event.level.ChunkDataEvent;
 import net.minecraftforge.eventbus.api.Event;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -56,7 +56,7 @@ public class MixinChunkSerializer {
         WeakReference<ServerLevel> levelRef = level.get();
         if (levelRef != null && event instanceof ChunkDataEvent.Load) {
             ChunkDataEvent.Load load = (ChunkDataEvent.Load) event;
-            ((EventHandlerImplCommon.WorldEventAttachment) load).architectury$attachLevel(levelRef.get());
+            ((EventHandlerImplCommon.LevelEventAttachment) load).architectury$attachLevel(levelRef.get());
         }
         level.remove();
         return event;
