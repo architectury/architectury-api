@@ -23,10 +23,10 @@ import net.minecraft.world.item.ItemStack;
 
 public class ItemStackHooksImpl {
     public static boolean hasCraftingRemainingItem(ItemStack stack) {
-        return stack.hasContainerItem();
+        return stack.hasCraftingRemainingItem();
     }
     
     public static ItemStack getCraftingRemainingItem(ItemStack stack) {
-        return stack.getContainerItem();
+        return stack.getCraftingRemainingItem();
     }
 }

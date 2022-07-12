@@ -194,11 +194,11 @@ public class NetworkManagerImpl {
     
     @SubscribeEvent
     public static void loggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-        NetworkManager.sendToPlayer((ServerPlayer) event.getPlayer(), SYNC_IDS, sendSyncPacket(C2S));
+        NetworkManager.sendToPlayer((ServerPlayer) event.getEntity(), SYNC_IDS, sendSyncPacket(C2S));
     }
     
     @SubscribeEvent
     public static void loggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
-        clientReceivables.removeAll(event.getPlayer());
+        clientReceivables.removeAll(event.getEntity());
     }
 }

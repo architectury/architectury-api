@@ -38,7 +38,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -127,9 +127,9 @@ public class EventHandlerImplClient {
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void eventWorldEvent(WorldEvent.Load event) {
-        if (event.getWorld().isClientSide()) {
-            ClientLevel world = (ClientLevel) event.getWorld();
+    public static void eventWorldEvent(LevelEvent.Load event) {
+        if (event.getLevel().isClientSide()) {
+            ClientLevel world = (ClientLevel) event.getLevel();
             ClientLifecycleEvent.CLIENT_LEVEL_LOAD.invoker().act(world);
         }
     }
@@ -169,12 +169,12 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventPlayerInteractEvent(PlayerInteractEvent.RightClickEmpty event) {
-        InteractionEvent.CLIENT_RIGHT_CLICK_AIR.invoker().click(event.getPlayer(), event.getHand());
+        InteractionEvent.CLIENT_RIGHT_CLICK_AIR.invoker().click(event.getEntity(), event.getHand());
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventPlayerInteractEvent(PlayerInteractEvent.LeftClickEmpty event) {
-        InteractionEvent.CLIENT_LEFT_CLICK_AIR.invoker().click(event.getPlayer(), event.getHand());
+        InteractionEvent.CLIENT_LEFT_CLICK_AIR.invoker().click(event.getEntity(), event.getHand());
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
