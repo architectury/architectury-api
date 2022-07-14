@@ -46,7 +46,9 @@ public class ClientNetworkingManager {
             for (int i = 0; i < size; i++) {
                 receivables.add(buffer.readResourceLocation());
             }
-            NetworkManager.sendToServer(NetworkManagerImpl.SYNC_IDS, NetworkManagerImpl.sendSyncPacket(NetworkManagerImpl.C2S));
+            context.queue(() -> {
+                NetworkManager.sendToServer(NetworkManagerImpl.SYNC_IDS, NetworkManagerImpl.sendSyncPacket(NetworkManagerImpl.C2S));
+            });
         });
     }
     
