@@ -418,7 +418,7 @@ public class EventHandlerImplCommon {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(LootTableLoadEvent event) {
-        LootEvent.MODIFY_LOOT_TABLE.invoker().modifyLootTable(event.getLootTableManager(), event.getName(), new LootTableModificationContextImpl(event.getTable()));
+        LootEvent.MODIFY_LOOT_TABLE.invoker().modifyLootTable(event.getLootTableManager(), event.getName(), new LootTableModificationContextImpl(event.getTable()), true);
     }
     
     public interface LevelEventAttachment {

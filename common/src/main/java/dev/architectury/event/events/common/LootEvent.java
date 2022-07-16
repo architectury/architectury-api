@@ -35,11 +35,20 @@ public interface LootEvent {
      * This can be used to add new drops via new loot pools to existing loot tables
      * without replacing the entire table.
      *
+     * <h2>Built-in loot tables</h2>
+     * <p>{@linkplain ModifyLootTable The event interface} includes a {@code builtin} parameter.
+     * If it's {@code true}, the loot table is built-in to vanilla or a mod.
+     * Otherwise, it's from a user data pack. The parameter can be used to only modify built-in loot tables
+     * and let user-provided loot tables act as full "overwrites".
+     *
+     * <p>This event only runs for built-in loot tables on Forge due to the limitations of
+     * {@code LootTableLoadEvent}.
+     *
      * <h2>Example: adding diamonds as a drop for dirt</h2>
      * <pre>{@code
-     * LootEvent.MODIFY_LOOT_TABLE.register((lootTables, id, context) -> {
-     *     // Check that the loot table is dirt
-     *     if (Blocks.DIRT.getLootTable().equals(id)) {
+     * LootEvent.MODIFY_LOOT_TABLE.register((lootTables, id, context, builtin) -> {
+     *     // Check that the loot table is dirt and built-in
+     *     if (builtin && Blocks.DIRT.getLootTable().equals(id)) {
      *         // Create a loot pool with a single item entry of Items.DIAMOND
      *         LootPool.Builder pool = LootPool.lootPool().add(LootItem.lootTableItem(Items.DIAMOND));
      *         context.addPool(pool);
@@ -47,7 +56,7 @@ public interface LootEvent {
      * });
      * }</pre>
      *
-     * @see ModifyLootTable#modifyLootTable(LootTables, ResourceLocation, LootTableModificationContext)
+     * @see ModifyLootTable#modifyLootTable(LootTables, ResourceLocation, LootTableModificationContext, boolean)
      */
     Event<ModifyLootTable> MODIFY_LOOT_TABLE = EventFactory.createLoop();
     
@@ -59,8 +68,10 @@ public interface LootEvent {
          * @param lootTables the {@link LootTables} instance containing all loot tables
          * @param id         the loot table ID
          * @param context    the context used to modify the loot table
+         * @param builtin    if {@code true}, the loot table is built-in;
+         *                   if {@code false}, it is from a user data pack
          */
-        void modifyLootTable(LootTables lootTables, ResourceLocation id, LootTableModificationContext context);
+        void modifyLootTable(LootTables lootTables, ResourceLocation id, LootTableModificationContext context, boolean builtin);
     }
     
     /**
