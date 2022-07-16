@@ -107,10 +107,6 @@ public class EventHandlerImplClient {
                 event.setCanceled(true);
             else {
                 event.setMessage(processor.getMessage());
-                
-                if (process.isTrue()) {
-                    event.setCanceled(true);
-                }
             }
         }
     }
