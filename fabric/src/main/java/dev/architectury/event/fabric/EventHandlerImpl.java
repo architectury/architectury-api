@@ -19,14 +19,14 @@
 
 package dev.architectury.event.fabric;
 
+import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.event.events.client.ClientLifecycleEvent;
 import dev.architectury.event.events.client.ClientTickEvent;
 import dev.architectury.event.events.client.ClientTooltipEvent;
-import dev.architectury.event.events.common.CommandRegistrationEvent;
-import dev.architectury.event.events.common.InteractionEvent;
-import dev.architectury.event.events.common.LifecycleEvent;
-import dev.architectury.event.events.common.TickEvent;
+import dev.architectury.event.events.common.*;
+import dev.architectury.impl.fabric.ChatComponentImpl;
+import dev.architectury.impl.fabric.EventChatDecorator;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
@@ -40,6 +40,9 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
+import net.fabricmc.fabric.api.message.v1.ServerMessageDecoratorEvent;
+
+import java.util.concurrent.CompletableFuture;
 
 public class EventHandlerImpl {
     @Environment(EnvType.CLIENT)
@@ -75,6 +78,20 @@ public class EventHandlerImpl {
         UseItemCallback.EVENT.register((player, world, hand) -> InteractionEvent.RIGHT_CLICK_ITEM.invoker().click(player, hand).asMinecraft());
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> InteractionEvent.RIGHT_CLICK_BLOCK.invoker().click(player, hand, hitResult.getBlockPos(), hitResult.getDirection()).asMinecraft());
         AttackBlockCallback.EVENT.register((player, world, hand, pos, face) -> InteractionEvent.LEFT_CLICK_BLOCK.invoker().click(player, hand, pos, face).asMinecraft());
+        
+        ServerMessageDecoratorEvent.EVENT.register(ServerMessageDecoratorEvent.CONTENT_PHASE, (player, component) -> {
+            ChatEvent.ChatComponent chatComponent = new ChatComponentImpl(component, component);
+            EventResult result = ChatEvent.SERVER.invoker().process(player, chatComponent);
+            if (result.isPresent()) {
+                if (result.isFalse()) {
+                    return CompletableFuture.completedFuture(EventChatDecorator.CANCELLING_COMPONENT);
+                } else {
+                    return CompletableFuture.completedFuture(chatComponent.getFiltered());
+                }
+            }
+            
+            return CompletableFuture.completedFuture(component);
+        });
     }
     
     @Environment(EnvType.SERVER)

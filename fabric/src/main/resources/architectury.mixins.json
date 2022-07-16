@@ -44,7 +44,6 @@
     "MixinInventory",
     "MixinItemEntity",
     "MixinLivingEntity",
-    "MixinMinecraftServer",
     "MixinNaturalSpawner",
     "MixinOcelot",
     "MixinPatrolSpawner",

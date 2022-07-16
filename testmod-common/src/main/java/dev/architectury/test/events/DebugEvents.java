@@ -66,7 +66,7 @@ public class DebugEvents {
             if (message.getRaw().getString().contains("shit")) {
                 return EventResult.interruptFalse();
             }
-            message.modifyBoth(component -> component.copy().withStyle(ChatFormatting.AQUA));
+            message.modifyBoth(component -> component.copy().withStyle(ChatFormatting.AQUA).append(" + new text"));
             return EventResult.interruptTrue();
         });
         CommandPerformEvent.EVENT.register(event -> {
@@ -255,6 +255,10 @@ public class DebugEvents {
         });
         ClientChatEvent.PROCESS.register((message) -> {
             TestMod.SINK.accept("Client chat sent: " + message.getMessage());
+            if (message.getMessage().contains("error")) {
+                message.setMessage("Error: " + message.getMessage());
+                return EventResult.interruptTrue();
+            }
             return EventResult.pass();
         });
         ClientChatEvent.RECEIVED.register((type, message, sender) -> {
