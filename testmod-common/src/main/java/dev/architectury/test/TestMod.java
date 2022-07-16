@@ -34,6 +34,7 @@ import dev.architectury.test.registry.TestRegistries;
 import dev.architectury.test.registry.client.TestKeybinds;
 import dev.architectury.test.tags.TestTags;
 import dev.architectury.test.trade.TestTrades;
+import dev.architectury.test.worldgen.TestWorldGeneration;
 import dev.architectury.utils.Env;
 import dev.architectury.utils.EnvExecutor;
 import net.fabricmc.api.EnvType;
@@ -55,6 +56,7 @@ public class TestMod {
         TestParticles.initialize();
         TestModNet.initialize();
         TestBlockInteractions.init();
+        TestWorldGeneration.initialize();
         EnvExecutor.runInEnv(Env.CLIENT, () -> TestMod.Client::initializeClient);
     }
     
