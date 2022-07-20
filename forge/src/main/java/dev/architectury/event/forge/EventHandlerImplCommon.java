@@ -296,7 +296,14 @@ public class EventHandlerImplCommon {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(EntityItemPickupEvent event) {
-        PlayerEvent.PICKUP_ITEM_PRE.invoker().canPickup(event.getPlayer(), event.getItem(), event.getItem().getItem());
+        // note: this event is weird, cancel is equivalent to denying the pickup,
+        // and setting the result to ALLOW will pick it up without adding it to the player's inventory
+        var result = PlayerEvent.PICKUP_ITEM_PRE.invoker().canPickup(event.getPlayer(), event.getItem(), event.getItem().getItem());
+        if (result.isFalse()) {
+            event.setCanceled(true);
+        } else if (result.isTrue()) {
+            event.setResult(Event.Result.ALLOW);
+        }
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
