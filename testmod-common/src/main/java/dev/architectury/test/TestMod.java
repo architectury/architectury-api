@@ -28,6 +28,7 @@ import dev.architectury.test.entity.TestEntity;
 import dev.architectury.test.events.DebugEvents;
 import dev.architectury.test.gamerule.TestGameRules;
 import dev.architectury.test.item.TestBlockInteractions;
+import dev.architectury.test.loot.TestLoot;
 import dev.architectury.test.networking.TestModNet;
 import dev.architectury.test.particle.TestParticles;
 import dev.architectury.test.registry.TestRegistries;
@@ -55,6 +56,8 @@ public class TestMod {
         TestParticles.initialize();
         TestModNet.initialize();
         TestBlockInteractions.init();
+        TestLoot.init();
+        TestWorldGeneration.initialize();
         EnvExecutor.runInEnv(Env.CLIENT, () -> TestMod.Client::initializeClient);
     }
     
