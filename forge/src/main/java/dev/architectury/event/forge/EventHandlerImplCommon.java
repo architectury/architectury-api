@@ -31,6 +31,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraftforge.event.CommandEvent;
+import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent.LevelTickEvent;
@@ -413,6 +414,11 @@ public class EventHandlerImplCommon {
             level = ((LevelEventAttachment) event).architectury$getAttachedLevel();
         }
         ChunkEvent.LOAD_DATA.invoker().load(event.getChunk(), level instanceof ServerLevel ? (ServerLevel) level : null, event.getData());
+    }
+    
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(LootTableLoadEvent event) {
+        LootEvent.MODIFY_LOOT_TABLE.invoker().modifyLootTable(event.getLootTableManager(), event.getName(), new LootTableModificationContextImpl(event.getTable()), true);
     }
     
     public interface LevelEventAttachment {
