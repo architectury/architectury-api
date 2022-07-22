@@ -26,33 +26,18 @@ import org.jetbrains.annotations.Nullable;
 
 @ApiStatus.Internal
 public class ChatComponentImpl implements ChatEvent.ChatComponent {
-    private Component raw;
-    @Nullable
-    private Component filtered;
+    private Component component;
     
-    public ChatComponentImpl(Component raw, @Nullable Component filtered) {
-        this.raw = raw;
-        this.filtered = filtered;
+    public ChatComponentImpl(Component component) {
+        this.component = component;
     }
     
     @Override
-    public Component getRaw() {
-        return raw;
+    public Component get() {
+        return component;
     }
     
-    @Override
-    @Nullable
-    public Component getFiltered() {
-        return filtered;
-    }
-    
-    @Override
-    public void setRaw(Component raw) {
-        this.raw = raw;
-    }
-    
-    @Override
-    public void setFiltered(@Nullable Component filtered) {
-        this.filtered = filtered;
+    public void set(Component component) {
+        this.component = component;
     }
 }

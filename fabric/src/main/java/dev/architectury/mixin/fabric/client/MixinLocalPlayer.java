@@ -20,26 +20,22 @@
 package dev.architectury.mixin.fabric.client;
 
 import com.mojang.authlib.GameProfile;
-import dev.architectury.event.CompoundEventResult;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientChatEvent;
 import dev.architectury.impl.ChatProcessorImpl;
-import dev.architectury.impl.fabric.EventChatDecorator;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MessageSigner;
 import net.minecraft.world.entity.player.ProfilePublicKey;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.util.Objects;
+import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 @Mixin(LocalPlayer.class)
 public abstract class MixinLocalPlayer extends AbstractClientPlayer {
@@ -47,26 +43,29 @@ public abstract class MixinLocalPlayer extends AbstractClientPlayer {
         super(clientLevel, gameProfile, profilePublicKey);
     }
     
-    @Shadow
-    protected abstract void sendChat(MessageSigner messageSigner, String string, @Nullable Component component);
-    
-    @Inject(method = "chat(Ljava/lang/String;Lnet/minecraft/network/chat/Component;)V", at = @At(value = "HEAD"), cancellable = true)
-    private void chat(String message, Component component, CallbackInfo ci) {
+    @ModifyArgs(method = "chatSigned(Ljava/lang/String;Lnet/minecraft/network/chat/Component;)V", at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/client/player/LocalPlayer;sendChat(Ljava/lang/String;Lnet/minecraft/network/chat/Component;)V"))
+    private void chat(Args args) {
+        String message = args.get(0);
+        @Nullable
+        Component component = args.get(1);
         ChatProcessorImpl processor = new ChatProcessorImpl(message, component);
         EventResult process = ClientChatEvent.PROCESS.invoker().process(processor);
         if (process.isPresent()) {
-            if (process.isFalse())
-                ci.cancel();
-            else {
-                String processorMessage = processor.getMessage();
-                Component processorComponent = processor.getComponent();
-                
-                if (!Objects.equals(processorMessage, message) || !Objects.equals(processorComponent, component)) {
-                    MessageSigner messageSigner = MessageSigner.create(this.getUUID());
-                    this.sendChat(messageSigner, processorMessage, processorComponent);
-                    ci.cancel();
-                }
+            if (process.isFalse()) {
+                args.set(0, "");
+                args.set(1, null);
+            } else {
+                args.set(0, processor.getMessage());
+                args.set(1, processor.getComponent());
             }
+        }
+    }
+    
+    @Inject(method = "sendChat(Ljava/lang/String;Lnet/minecraft/network/chat/Component;)V", at = @At(value = "HEAD"), cancellable = true)
+    private void chat(String string, Component component, CallbackInfo ci) {
+        if (StringUtils.isEmpty(string)) {
+            ci.cancel();
         }
     }
 }
