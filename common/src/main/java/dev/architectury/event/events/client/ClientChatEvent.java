@@ -25,49 +25,33 @@ import dev.architectury.event.EventFactory;
 import dev.architectury.event.EventResult;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.chat.ClientChatPreview;
-import net.minecraft.client.multiplayer.ServerData;
-import net.minecraft.network.chat.ChatSender;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Function;
-
 @Environment(EnvType.CLIENT)
 public interface ClientChatEvent {
     /**
-     * @see Process#process(ChatProcessor)
+     * @see Send#send(String, Component)
      */
-    Event<Process> PROCESS = EventFactory.createEventResult();
+    Event<Send> SEND = EventFactory.createEventResult();
     /**
-     * @see Received#process(ChatType, Component, ChatSender)
+     * @see Received#process(ChatType.Bound, Component)
      */
     Event<Received> RECEIVED = EventFactory.createCompoundEventResult();
     
     @Environment(EnvType.CLIENT)
-    interface Process {
+    interface Send {
         /**
-         * Event to modify the chat message a clients sends.
+         * Event to cancel clients sending the chat message.
          * Equivalent to Forge's {@code ClientChatEvent} event.
          *
-         * @param processor The chat message the client wants to send.
+         * @param message   The chat message.
+         * @param component The chat component that was decorated, can be {@code null}.
          * @return A {@link EventResult} determining the outcome of the event,
-         * if an outcome is set, the sent message is overridden.
+         * if an outcome is set, the message and component will be ignored.
          */
-        EventResult process(ChatProcessor processor);
-    }
-    
-    interface ChatProcessor {
-        String getMessage();
-        
-        @Nullable
-        Component getComponent();
-        
-        void setMessage(String message);
-        
-        void setComponent(@Nullable Component component);
+        EventResult send(String message, @Nullable Component component);
     }
     
     @Environment(EnvType.CLIENT)
@@ -79,10 +63,9 @@ public interface ClientChatEvent {
          *
          * @param type    Where was the message emitted from.
          * @param message The chat message.
-         * @param sender  The packet sender. Can be {@code null}, but probably is the sending player UUID or null for system messages.
          * @return A {@link CompoundEventResult} determining the outcome of the event,
          * if an outcome is set, the received message is overridden.
          */
-        CompoundEventResult<Component> process(ChatType type, Component message, @Nullable ChatSender sender);
+        CompoundEventResult<Component> process(ChatType.Bound type, Component message);
     }
 }

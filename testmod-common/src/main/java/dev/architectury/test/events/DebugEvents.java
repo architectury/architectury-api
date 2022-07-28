@@ -61,19 +61,21 @@ public class DebugEvents {
             TestMod.SINK.accept(Optional.ofNullable(placer).map(Entity::getScoreboardName).orElse("null") + " places block at " + toShortString(pos) + logSide(world));
             return EventResult.pass();
         });
-        ChatEvent.SERVER.register((player, message) -> {
-            TestMod.SINK.accept("Server chat received: " + message.getRaw());
-            if (message.getRaw().getString().contains("shit")) {
+        ChatEvent.DECORATE.register((player, component) -> {
+            component.set(component.get().copy().withStyle(ChatFormatting.AQUA).append(" + new text"));
+        });
+        ChatEvent.RECEIVED.register((player, message) -> {
+            TestMod.SINK.accept("Server chat received: " + message);
+            if (message.getString().contains("shit")) {
                 return EventResult.interruptFalse();
             }
-            message.modifyBoth(component -> component.copy().withStyle(ChatFormatting.AQUA));
             return EventResult.interruptTrue();
         });
         CommandPerformEvent.EVENT.register(event -> {
             TestMod.SINK.accept("Server command performed: " + event.getResults().getReader().getString());
             return EventResult.pass();
         });
-        CommandRegistrationEvent.EVENT.register((dispatcher, selection) -> {
+        CommandRegistrationEvent.EVENT.register((dispatcher, registry, selection) -> {
             TestMod.SINK.accept("Server commands registers");
         });
         EntityEvent.LIVING_DEATH.register((entity, source) -> {
@@ -253,12 +255,21 @@ public class DebugEvents {
                 e.printStackTrace();
             }
         });
-        ClientChatEvent.PROCESS.register((message) -> {
-            TestMod.SINK.accept("Client chat sent: " + message.getMessage());
+        ClientChatEvent.SEND.register((message, component) -> {
+            TestMod.SINK.accept("Client chat sent: " + message);
+            if (message.contains("error")) {
+                return EventResult.interruptFalse();
+            }
             return EventResult.pass();
         });
-        ClientChatEvent.RECEIVED.register((type, message, sender) -> {
+        ClientChatEvent.RECEIVED.register((type, message) -> {
             TestMod.SINK.accept("Client chat received: " + message.getString());
+            if (message.getString().contains("terraria")) {
+                return CompoundEventResult.interruptTrue(message.copy().append(" + terraria is a great game!"));
+            }
+            if (message.getString().contains("potato")) {
+                return CompoundEventResult.interruptFalse(Component.empty());
+            }
             return CompoundEventResult.pass();
         });
         ClientLifecycleEvent.CLIENT_LEVEL_LOAD.register(world -> {
