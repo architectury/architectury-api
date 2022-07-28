@@ -19,7 +19,6 @@
 
 package dev.architectury.event.events.common;
 
-import dev.architectury.event.CompoundEventResult;
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
 import dev.architectury.event.EventResult;
@@ -27,15 +26,30 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Function;
-
 public interface ChatEvent {
     /**
-     * @see Server#process(ServerPlayer, ChatComponent)
+     * @see Decorate#decorate(ServerPlayer, ChatComponent)
      */
-    Event<Server> SERVER = EventFactory.createEventResult();
+    Event<Decorate> DECORATE = EventFactory.createLoop();
+    /**
+     * @see Received#received(ServerPlayer, Component)
+     */
+    Event<Received> RECEIVED = EventFactory.createEventResult();
     
-    interface Server {
+    @FunctionalInterface
+    interface Decorate {
+        /**
+         * Invoked when the server receives a message from a client.
+         * Equivalent to Forge's {@code ServerChatEvent} event.
+         *
+         * @param player    The player who has sent the message, or null.
+         * @param component The message as component.
+         */
+        void decorate(@Nullable ServerPlayer player, ChatComponent component);
+    }
+    
+    @FunctionalInterface
+    interface Received {
         /**
          * Invoked when the server receives a message from a client.
          * Equivalent to Forge's {@code ServerChatEvent} event.
@@ -45,34 +59,12 @@ public interface ChatEvent {
          * @return A {@link EventResult} determining the outcome of the event,
          * the execution of the vanilla message may be cancelled by the result.
          */
-        EventResult process(@Nullable ServerPlayer player, ChatComponent component);
+        EventResult received(@Nullable ServerPlayer player, Component component);
     }
     
     interface ChatComponent {
-        Component getRaw();
+        Component get();
         
-        @Nullable
-        Component getFiltered();
-        
-        void setRaw(Component raw);
-        
-        void setFiltered(@Nullable Component filtered);
-        
-        default void modifyRaw(Function<Component, Component> function) {
-            setRaw(function.apply(getRaw()));
-        }
-        
-        default void modifyFiltered(Function<Component, Component> function) {
-            Component filtered = getFiltered();
-            
-            if (filtered != null) {
-                setFiltered(function.apply(filtered));
-            }
-        }
-        
-        default void modifyBoth(Function<Component, Component> function) {
-            modifyRaw(function);
-            modifyFiltered(function);
-        }
+        void set(Component component);
     }
 }
