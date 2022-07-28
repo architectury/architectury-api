@@ -88,7 +88,7 @@ public class EventHandlerImpl {
             return CompletableFuture.completedFuture(chatComponent.get());
         });
         ServerMessageEvents.ALLOW_CHAT_MESSAGE.register((message, sender, params) -> {
-            return !ChatEvent.RECEIVED.invoker().received(sender, message.map(PlayerChatMessage::serverContent)).isFalse();
+            return !ChatEvent.RECEIVED.invoker().received(sender, message.serverContent()).isFalse();
         });
     }
     

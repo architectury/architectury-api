@@ -25,7 +25,6 @@ import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientChatEvent;
 import dev.architectury.event.events.client.*;
 import dev.architectury.event.events.common.InteractionEvent;
-import dev.architectury.impl.ChatProcessorImpl;
 import dev.architectury.impl.ScreenAccessImpl;
 import dev.architectury.impl.TooltipEventColorContextImpl;
 import dev.architectury.impl.TooltipEventPositionContextImpl;
@@ -100,24 +99,15 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(net.minecraftforge.client.event.ClientChatEvent event) {
-        ChatProcessorImpl processor = new ChatProcessorImpl(event.getMessage(), null);
-        EventResult process = ClientChatEvent.PROCESS.invoker().process(processor);
-        if (process.isPresent()) {
-            if (process.isFalse())
-                event.setCanceled(true);
-            else {
-                event.setMessage(processor.getMessage());
-                
-                if (process.isTrue()) {
-                    event.setCanceled(true);
-                }
-            }
+        EventResult process = ClientChatEvent.SEND.invoker().send(event.getMessage(), null);
+        if (process.isFalse()) {
+            event.setCanceled(true);
         }
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(ClientChatReceivedEvent event) {
-        CompoundEventResult<Component> process = ClientChatEvent.RECEIVED.invoker().process(event.getType(), event.getMessage(), event.getChatSender());
+        CompoundEventResult<Component> process = ClientChatEvent.RECEIVED.invoker().process(event.getBoundChatType(), event.getMessage());
         if (process.isPresent()) {
             if (process.isFalse())
                 event.setCanceled(true);

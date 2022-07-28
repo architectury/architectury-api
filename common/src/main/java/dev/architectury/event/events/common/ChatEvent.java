@@ -24,7 +24,6 @@ import dev.architectury.event.EventFactory;
 import dev.architectury.event.EventResult;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.FilteredText;
 import org.jetbrains.annotations.Nullable;
 
 public interface ChatEvent {
@@ -33,7 +32,7 @@ public interface ChatEvent {
      */
     Event<Decorate> DECORATE = EventFactory.createLoop();
     /**
-     * @see Received#received(ServerPlayer, FilteredText)
+     * @see Received#received(ServerPlayer, Component)
      */
     Event<Received> RECEIVED = EventFactory.createEventResult();
     
@@ -60,7 +59,7 @@ public interface ChatEvent {
          * @return A {@link EventResult} determining the outcome of the event,
          * the execution of the vanilla message may be cancelled by the result.
          */
-        EventResult received(@Nullable ServerPlayer player, FilteredText<Component> component);
+        EventResult received(@Nullable ServerPlayer player, Component component);
     }
     
     interface ChatComponent {

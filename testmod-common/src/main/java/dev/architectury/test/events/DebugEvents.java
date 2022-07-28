@@ -65,8 +65,8 @@ public class DebugEvents {
             component.set(component.get().copy().withStyle(ChatFormatting.AQUA).append(" + new text"));
         });
         ChatEvent.RECEIVED.register((player, message) -> {
-            TestMod.SINK.accept("Server chat received: " + message.raw());
-            if (message.raw().getString().contains("shit")) {
+            TestMod.SINK.accept("Server chat received: " + message);
+            if (message.getString().contains("shit")) {
                 return EventResult.interruptFalse();
             }
             return EventResult.interruptTrue();
@@ -255,11 +255,10 @@ public class DebugEvents {
                 e.printStackTrace();
             }
         });
-        ClientChatEvent.PROCESS.register((message) -> {
-            TestMod.SINK.accept("Client chat sent: " + message.getMessage());
-            if (message.getMessage().contains("error")) {
-                message.setMessage("Error: " + message.getMessage());
-                return EventResult.interruptTrue();
+        ClientChatEvent.SEND.register((message, component) -> {
+            TestMod.SINK.accept("Client chat sent: " + message);
+            if (message.contains("error")) {
+                return EventResult.interruptFalse();
             }
             return EventResult.pass();
         });
