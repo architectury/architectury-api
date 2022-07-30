@@ -38,7 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-@Mod.EventBusSubscriber(modid = ArchitecturyForge.MOD_ID, value = Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = ArchitecturyForge.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ParticleProviderRegistryImpl {
     private static final class ExtendedSpriteSetImpl implements ParticleProviderRegistry.ExtendedSpriteSet {
         private final ParticleEngine engine;
