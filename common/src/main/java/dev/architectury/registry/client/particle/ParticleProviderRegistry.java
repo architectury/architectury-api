@@ -52,11 +52,11 @@ public final class ParticleProviderRegistry {
         List<TextureAtlasSprite> getSprites();
     }
     
-    public static <T extends ParticleOptions> void register(RegistrySupplier<ParticleType<T>> supplier, ParticleProvider<T> provider) {
+    public static <T extends ParticleOptions> void register(RegistrySupplier<? extends ParticleType<T>> supplier, ParticleProvider<T> provider) {
         supplier.listen(it -> register(it, provider));
     }
     
-    public static <T extends ParticleOptions> void register(RegistrySupplier<ParticleType<T>> supplier, DeferredParticleProvider<T> provider) {
+    public static <T extends ParticleOptions> void register(RegistrySupplier<? extends ParticleType<T>> supplier, DeferredParticleProvider<T> provider) {
         supplier.listen(it -> register(it, provider));
     }
     
