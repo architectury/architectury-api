@@ -40,9 +40,7 @@ public class TestParticles {
     public static void initialize() {
         PARTICLE_TYPES.register();
         if (Platform.getEnvironment() == Env.CLIENT) {
-            ClientLifecycleEvent.CLIENT_SETUP.register(instance -> {
-                    ParticleProviderRegistry.register(TEST_PARTICLE.get(), HeartParticle.Provider::new);
-            });
+            ParticleProviderRegistry.register(TEST_PARTICLE, HeartParticle.Provider::new);
         }
     }
 }

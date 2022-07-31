@@ -19,7 +19,9 @@
 
 package dev.architectury.registry.client.particle;
 
+import dev.architectury.event.events.client.ClientLifecycleEvent;
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import dev.architectury.registry.registries.RegistrySupplier;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.particle.ParticleProvider;
@@ -31,12 +33,31 @@ import net.minecraft.core.particles.ParticleType;
 
 import java.util.List;
 
+/**
+ * A utility class for registering custom {@link ParticleProvider}s for particle types.
+ * <p>
+ * This class's methods should be invoked <b>before</b> {@link ClientLifecycleEvent#CLIENT_SETUP},
+ * as doing so afterwards will result in the providers not being registered properly on Forge, causing crashes on startup.
+ * <p>
+ * Generally speaking, you should either listen to the registration of your particle type yourself and use either
+ * {@link #register(ParticleType, ParticleProvider)} or {@link #register(ParticleType, DeferredParticleProvider)} to register the provider,
+ * or use the helper methods {@link #register(RegistrySupplier, ParticleProvider)} and {@link #register(RegistrySupplier, DeferredParticleProvider)},
+ * which will automatically handle the listening for you.
+ */
 @Environment(EnvType.CLIENT)
 public final class ParticleProviderRegistry {
     public interface ExtendedSpriteSet extends SpriteSet {
         TextureAtlas getAtlas();
         
         List<TextureAtlasSprite> getSprites();
+    }
+    
+    public static <T extends ParticleOptions> void register(RegistrySupplier<? extends ParticleType<T>> supplier, ParticleProvider<T> provider) {
+        supplier.listen(it -> register(it, provider));
+    }
+    
+    public static <T extends ParticleOptions> void register(RegistrySupplier<? extends ParticleType<T>> supplier, DeferredParticleProvider<T> provider) {
+        supplier.listen(it -> register(it, provider));
     }
     
     @ExpectPlatform
