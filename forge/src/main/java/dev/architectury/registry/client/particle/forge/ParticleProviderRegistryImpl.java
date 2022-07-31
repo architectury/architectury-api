@@ -19,6 +19,7 @@
 
 package dev.architectury.registry.client.particle.forge;
 
+import com.mojang.logging.LogUtils;
 import dev.architectury.forge.ArchitecturyForge;
 import dev.architectury.registry.client.particle.ParticleProviderRegistry;
 import net.minecraft.client.Minecraft;
@@ -34,13 +35,17 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-@Mod.EventBusSubscriber(modid = ArchitecturyForge.MOD_ID, value = Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = ArchitecturyForge.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ParticleProviderRegistryImpl {
+    
+    public static final Logger LOGGER = LogUtils.getLogger();
+    
     private static final class ExtendedSpriteSetImpl implements ParticleProviderRegistry.ExtendedSpriteSet {
         private final ParticleEngine engine;
         private final SpriteSet delegate;
@@ -73,28 +78,30 @@ public class ParticleProviderRegistryImpl {
     
     private static List<Consumer<ParticleProviderRegistrar>> deferred = new ArrayList<>();
     
-    private static <T extends ParticleOptions> void _register(ParticleProviderRegistrar registrar, ParticleType<T> type, ParticleProvider<T> provider) {
+    private static <T extends ParticleOptions> void doRegister(ParticleProviderRegistrar registrar, ParticleType<T> type, ParticleProvider<T> provider) {
         registrar.register(type, provider);
     }
     
-    private static <T extends ParticleOptions> void _register(ParticleProviderRegistrar registrar, ParticleType<T> type, ParticleProviderRegistry.DeferredParticleProvider<T> provider) {
+    private static <T extends ParticleOptions> void doRegister(ParticleProviderRegistrar registrar, ParticleType<T> type, ParticleProviderRegistry.DeferredParticleProvider<T> provider) {
         registrar.register(type, sprites ->
                 provider.create(new ExtendedSpriteSetImpl(Minecraft.getInstance().particleEngine, sprites)));
     }
     
     public static <T extends ParticleOptions> void register(ParticleType<T> type, ParticleProvider<T> provider) {
         if (deferred == null) {
-            _register(ParticleProviderRegistrar.ofFallback(), type, provider);
+            LOGGER.warn("Something is attempting to register particle providers at a later point than intended! This might cause issues!", new Throwable());
+            doRegister(ParticleProviderRegistrar.ofFallback(), type, provider);
         } else {
-            deferred.add(registrar -> _register(registrar, type, provider));
+            deferred.add(registrar -> doRegister(registrar, type, provider));
         }
     }
     
     public static <T extends ParticleOptions> void register(ParticleType<T> type, ParticleProviderRegistry.DeferredParticleProvider<T> provider) {
         if (deferred == null) {
-            _register(ParticleProviderRegistrar.ofFallback(), type, provider);
+            LOGGER.warn("Something is attempting to register particle providers at a later point than intended! This might cause issues!", new Throwable());
+            doRegister(ParticleProviderRegistrar.ofFallback(), type, provider);
         } else {
-            deferred.add(registrar -> _register(registrar, type, provider));
+            deferred.add(registrar -> doRegister(registrar, type, provider));
         }
     }
     
