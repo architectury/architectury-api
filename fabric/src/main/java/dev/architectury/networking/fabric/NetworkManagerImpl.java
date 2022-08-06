@@ -19,6 +19,7 @@
 
 package dev.architectury.networking.fabric;
 
+import com.mojang.logging.LogUtils;
 import dev.architectury.networking.NetworkManager;
 import dev.architectury.networking.NetworkManager.NetworkReceiver;
 import dev.architectury.networking.transformers.PacketSink;
@@ -38,10 +39,12 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.thread.BlockableEventLoop;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import org.slf4j.Logger;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class NetworkManagerImpl {
     private static final Map<ResourceLocation, NetworkReceiver> C2S_RECEIVER = new HashMap<>();
@@ -49,7 +52,12 @@ public class NetworkManagerImpl {
     private static final Map<ResourceLocation, PacketTransformer> C2S_TRANSFORMERS = new HashMap<>();
     private static final Map<ResourceLocation, PacketTransformer> S2C_TRANSFORMERS = new HashMap<>();
     
+    private static final Logger LOGGER = LogUtils.getLogger();
+    
     public static void registerReceiver(NetworkManager.Side side, ResourceLocation id, List<PacketTransformer> packetTransformers, NetworkReceiver receiver) {
+        Objects.requireNonNull(id, "Cannot register receiver with a null ID!");
+        packetTransformers = Objects.requireNonNullElse(packetTransformers, List.of());
+        Objects.requireNonNull(receiver, "Cannot register a null receiver!");
         if (side == NetworkManager.Side.C2S) {
             registerC2SReceiver(id, packetTransformers, receiver);
         } else if (side == NetworkManager.Side.S2C) {
@@ -58,6 +66,7 @@ public class NetworkManagerImpl {
     }
     
     private static void registerC2SReceiver(ResourceLocation id, List<PacketTransformer> packetTransformers, NetworkReceiver receiver) {
+        LOGGER.info("Registering C2S receiver with id {}", id);
         C2S_RECEIVER.put(id, receiver);
         PacketTransformer transformer = PacketTransformer.concat(packetTransformers);
         ServerPlayNetworking.registerGlobalReceiver(id, (server, player, handler, buf, sender) -> {
@@ -76,6 +85,7 @@ public class NetworkManagerImpl {
     @SuppressWarnings("Convert2Lambda")
     @Environment(EnvType.CLIENT)
     private static void registerS2CReceiver(ResourceLocation id, List<PacketTransformer> packetTransformers, NetworkReceiver receiver) {
+        LOGGER.info("Registering S2C receiver with id {}", id);
         S2C_RECEIVER.put(id, receiver);
         PacketTransformer transformer = PacketTransformer.concat(packetTransformers);
         ClientPlayNetworking.registerGlobalReceiver(id, new ClientPlayNetworking.PlayChannelHandler() {
