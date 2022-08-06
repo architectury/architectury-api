@@ -58,7 +58,7 @@ public abstract class MixinMinecraft {
     private ThreadLocal<Boolean> setScreenCancelled = new ThreadLocal<>();
     
     @Inject(method = "clearLevel(Lnet/minecraft/client/gui/screens/Screen;)V",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/GameNarrator;clear()V"))
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/chat/NarratorChatListener;clear()V"))
     private void handleLogin(Screen screen, CallbackInfo ci) {
         ClientPlayerEvent.CLIENT_PLAYER_QUIT.invoker().quit(player);
     }

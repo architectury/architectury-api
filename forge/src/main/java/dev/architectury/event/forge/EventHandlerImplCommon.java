@@ -102,7 +102,7 @@ public class EventHandlerImplCommon {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(RegisterCommandsEvent event) {
-        CommandRegistrationEvent.EVENT.invoker().register(event.getDispatcher(), event.getBuildContext(), event.getCommandSelection());
+        CommandRegistrationEvent.EVENT.invoker().register(event.getDispatcher(), event.getCommandSelection());
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
@@ -140,24 +140,30 @@ public class EventHandlerImplCommon {
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void event(ServerChatEvent.Preview event) {
+    public static void event(ServerChatEvent event) {
         class ChatComponentImpl implements ChatEvent.ChatComponent {
             @Override
-            public Component get() {
-                return event.getMessage();
+            public Component getRaw() {
+                return Component.literal(event.getMessage());
             }
             
             @Override
-            public void set(Component component) {
-                event.setMessage(component);
+            public Component getFiltered() {
+                return event.getComponent();
+            }
+            
+            @Override
+            public void setRaw(Component raw) {
+                // NO-OP
+            }
+            
+            @Override
+            public void setFiltered(Component filtered) {
+                event.setComponent(filtered);
             }
         }
-        ChatEvent.DECORATE.invoker().decorate(event.getPlayer(), new ChatComponentImpl());
-    }
-    
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void event(ServerChatEvent.Submitted event) {
-        EventResult process = ChatEvent.RECEIVED.invoker().received(event.getPlayer(), event.getMessage());
+        
+        EventResult process = ChatEvent.SERVER.invoker().process(event.getPlayer(), new ChatComponentImpl());
         if (process.isFalse())
             event.setCanceled(true);
     }

@@ -26,8 +26,8 @@ import net.minecraft.world.item.RecordItem;
 public class ArchitecturyRecordItem extends RecordItem {
     private final RegistrySupplier<SoundEvent> sound;
     
-    public ArchitecturyRecordItem(int analogOutput, RegistrySupplier<SoundEvent> sound, Properties properties, int lengthInSeconds) {
-        super(analogOutput, sound.orElse(null), properties, lengthInSeconds);
+    public ArchitecturyRecordItem(int analogOutput, RegistrySupplier<SoundEvent> sound, Properties properties) {
+        super(analogOutput, sound.orElse(null), properties);
         this.sound = sound;
         
         if (!sound.isPresent()) {

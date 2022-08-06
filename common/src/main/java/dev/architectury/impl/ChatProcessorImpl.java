@@ -17,42 +17,44 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.impl.fabric;
+package dev.architectury.impl;
 
-import dev.architectury.event.events.common.ChatEvent;
+import dev.architectury.event.events.client.ClientChatEvent;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 @ApiStatus.Internal
-public class ChatComponentImpl implements ChatEvent.ChatComponent {
-    private Component raw;
+public class ChatProcessorImpl implements ClientChatEvent.ChatProcessor {
+    private String message;
     @Nullable
-    private Component filtered;
+    private Component component;
     
-    public ChatComponentImpl(Component raw, @Nullable Component filtered) {
-        this.raw = raw;
-        this.filtered = filtered;
+    public ChatProcessorImpl(String message, @Nullable Component component) {
+        this.message = message;
+        this.component = component;
     }
     
     @Override
-    public Component getRaw() {
-        return raw;
+    public String getMessage() {
+        return message;
     }
     
     @Override
     @Nullable
-    public Component getFiltered() {
-        return filtered;
+    public Component getComponent() {
+        return component;
     }
     
     @Override
-    public void setRaw(Component raw) {
-        this.raw = raw;
+    public void setMessage(String message) {
+        this.message = Objects.requireNonNull(message);
     }
     
     @Override
-    public void setFiltered(@Nullable Component filtered) {
-        this.filtered = filtered;
+    public void setComponent(@Nullable Component component) {
+        this.component = component;
     }
 }

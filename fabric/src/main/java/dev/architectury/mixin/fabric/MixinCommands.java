@@ -21,7 +21,7 @@ package dev.architectury.mixin.fabric;
 
 import com.google.common.base.Throwables;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.ParseResults;
+import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import dev.architectury.event.events.common.CommandPerformEvent;
 import net.minecraft.commands.CommandSourceStack;
@@ -33,9 +33,11 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(Commands.class)
 public class MixinCommands {
     @Redirect(method = "performCommand",
-            at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/CommandDispatcher;execute(Lcom/mojang/brigadier/ParseResults;)I", remap = false))
-    private int performCommand(CommandDispatcher<CommandSourceStack> dispatcher, ParseResults<CommandSourceStack> results) throws CommandSyntaxException {
-        var event = new CommandPerformEvent(results, null);
+            at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/CommandDispatcher;execute(Lcom/mojang/brigadier/StringReader;Ljava/lang/Object;)I", remap = false))
+    private int performCommand(CommandDispatcher<CommandSourceStack> dispatcher, StringReader input, Object source) throws CommandSyntaxException {
+        var stack = (CommandSourceStack) source;
+        var parse = dispatcher.parse(input, stack);
+        var event = new CommandPerformEvent(parse, null);
         if (CommandPerformEvent.EVENT.invoker().act(event).isPresent()) {
             if (event.getThrowable() != null) {
                 Throwables.throwIfUnchecked(event.getThrowable());

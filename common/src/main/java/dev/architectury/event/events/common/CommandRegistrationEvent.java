@@ -22,13 +22,12 @@ package dev.architectury.event.events.common;
 import com.mojang.brigadier.CommandDispatcher;
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
-import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 
 public interface CommandRegistrationEvent {
     /**
-     * @see CommandRegistrationEvent#register(CommandDispatcher, CommandBuildContext, Commands.CommandSelection)
+     * @see CommandRegistrationEvent#register(CommandDispatcher, Commands.CommandSelection)
      */
     Event<CommandRegistrationEvent> EVENT = EventFactory.createLoop();
     
@@ -37,8 +36,7 @@ public interface CommandRegistrationEvent {
      * Equivalent to Forge's {@code RegisterCommandsEvent} and Fabric's {@code CommandRegistrationCallback}.
      *
      * @param dispatcher The command dispatcher to register commands to.
-     * @param registry   The command registry for building arguments.
      * @param selection  The selection where the command can be executed.
      */
-    void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registry, Commands.CommandSelection selection);
+    void register(CommandDispatcher<CommandSourceStack> dispatcher, Commands.CommandSelection selection);
 }
