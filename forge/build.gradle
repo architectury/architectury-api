@@ -126,7 +126,7 @@ unifiedPublishing {
         displayName = "[Forge $rootProject.supported_version] v$project.version"
         releaseType = "$rootProject.artifact_type"
         changelog = releaseChangelog()
-        gameVersions = ["1.19.1"]
+        gameVersions = ["1.19.1", "1.19.2"]
         gameLoaders = ["forge"]
         mainPublication renameJarForPublication
 
@@ -155,8 +155,8 @@ unifiedPublishing {
 afterEvaluate {
     file("src/main/resources/META-INF/mods.toml").withOutputStream {
         it << file("mods.toml").text
-                .replaceAll("@LOADER_MAJOR@", rootProject.forge_version.split("\\.")[0])
-                .replaceAll("@MINECRAFT_VERSION@", rootProject.architectury.minecraft)
-                .replaceAll("@FORGE_VERSION@", rootProject.forge_version)
+                .replaceAll("@LOADER_MAJOR@", rootProject.required_forge_version.split("\\.")[0])
+                .replaceAll("@MINECRAFT_VERSION@", rootProject.required_version)
+                .replaceAll("@FORGE_VERSION@", rootProject.required_forge_version)
     }
 }
