@@ -21,6 +21,7 @@ package dev.architectury.networking.forge;
 
 
 import com.google.common.collect.*;
+import com.mojang.logging.LogUtils;
 import dev.architectury.forge.ArchitecturyForge;
 import dev.architectury.networking.NetworkManager;
 import dev.architectury.networking.NetworkManager.NetworkReceiver;
@@ -47,18 +48,17 @@ import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.event.EventNetworkChannel;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 
 @Mod.EventBusSubscriber(modid = ArchitecturyForge.MOD_ID)
 public class NetworkManagerImpl {
     public static void registerReceiver(NetworkManager.Side side, ResourceLocation id, List<PacketTransformer> packetTransformers, NetworkReceiver receiver) {
+        Objects.requireNonNull(id, "Cannot register receiver with a null ID!");
+        packetTransformers = Objects.requireNonNullElse(packetTransformers, List.of());
+        Objects.requireNonNull(receiver, "Cannot register a null receiver!");
         if (side == NetworkManager.Side.C2S) {
             registerC2SReceiver(id, packetTransformers, receiver);
         } else if (side == NetworkManager.Side.S2C) {
@@ -84,7 +84,7 @@ public class NetworkManagerImpl {
         }
     }
     
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogUtils.getLogger();
     private static final ResourceLocation CHANNEL_ID = new ResourceLocation("architectury:network");
     static final ResourceLocation SYNC_IDS = new ResourceLocation("architectury:sync_ids");
     static final EventNetworkChannel CHANNEL = NetworkRegistry.newEventChannel(CHANNEL_ID, () -> "1", version -> true, version -> true);
@@ -159,12 +159,14 @@ public class NetworkManagerImpl {
     
     @OnlyIn(Dist.CLIENT)
     public static void registerS2CReceiver(ResourceLocation id, List<PacketTransformer> packetTransformers, NetworkReceiver receiver) {
+        LOGGER.info("Registering S2C receiver with id {}", id);
         S2C.put(id, receiver);
         PacketTransformer transformer = PacketTransformer.concat(packetTransformers);
         S2C_TRANSFORMERS.put(id, transformer);
     }
     
     public static void registerC2SReceiver(ResourceLocation id, List<PacketTransformer> packetTransformers, NetworkReceiver receiver) {
+        LOGGER.info("Registering C2S receiver with id {}", id);
         C2S.put(id, receiver);
         PacketTransformer transformer = PacketTransformer.concat(packetTransformers);
         C2S_TRANSFORMERS.put(id, transformer);
