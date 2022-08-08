@@ -1,3 +1,26 @@
 {
-  "accessWidener": "architectury.accessWidener"
+  "accessWidener": "architectury.accessWidener",
+  "injected_interfaces": {
+    "net/minecraft/class_1792": [
+      "dev/architectury/extensions/injected/InjectedItemExtension"
+    ],
+    "net/minecraft/class_2248": [
+      "dev/architectury/extensions/injected/InjectedBlockExtension"
+    ],
+    "net/minecraft/class_3611": [
+      "dev/architectury/extensions/injected/InjectedFluidExtension"
+    ],
+    "net/minecraft/class_1299": [
+      "dev/architectury/extensions/injected/InjectedEntityTypeExtension"
+    ],
+    "net/minecraft/class_2591": [
+      "dev/architectury/extensions/injected/InjectedBlockEntityTypeExtension"
+    ],
+    "net/minecraft/class_1755": [
+      "dev/architectury/extensions/injected/InjectedBucketItemExtension"
+    ],
+    "net/minecraft/class_4174$class_4175": [
+      "dev/architectury/extensions/injected/InjectedFoodPropertiesBuilderExtension"
+    ]
+  }
 }

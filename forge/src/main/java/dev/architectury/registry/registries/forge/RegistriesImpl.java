@@ -100,26 +100,10 @@ public class RegistriesImpl {
         }
     }
     
-    public static class RegistryEntryId<T> {
-        private final ResourceKey<T> registryKey;
-        private final ResourceLocation id;
-        
-        public RegistryEntryId(ResourceKey<T> registryKey, ResourceLocation id) {
-            this.registryKey = registryKey;
-            this.id = id;
-        }
-        
+    public record RegistryEntryId<T>(ResourceKey<T> registryKey, ResourceLocation id) {
         @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof RegistryEntryId)) return false;
-            RegistryEntryId<?> that = (RegistryEntryId<?>) o;
-            return java.util.Objects.equals(registryKey, that.registryKey) && java.util.Objects.equals(id, that.id);
-        }
-        
-        @Override
-        public int hashCode() {
-            return java.util.Objects.hash(registryKey, id);
+        public String toString() {
+            return "Registry Entry [%s / %s]".formatted(registryKey.location(), id);
         }
     }
     
