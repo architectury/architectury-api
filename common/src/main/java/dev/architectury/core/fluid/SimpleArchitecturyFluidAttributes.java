@@ -21,11 +21,9 @@ package dev.architectury.core.fluid;
 
 import com.google.common.base.Suppliers;
 import dev.architectury.fluid.FluidStack;
-import dev.architectury.registry.registries.Registries;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -69,7 +67,7 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
     private SoundEvent fillSound = SoundEvents.BUCKET_FILL;
     @Nullable
     private SoundEvent emptySound = SoundEvents.BUCKET_EMPTY;
-    private final Supplier<String> defaultTranslationKey = Suppliers.memoize(() -> Util.makeDescriptionId("fluid", Registries.getId(getSourceFluid(), Registry.FLUID_REGISTRY)));
+    private final Supplier<String> defaultTranslationKey = Suppliers.memoize(() -> Util.makeDescriptionId("fluid", getSourceFluid().arch$registryName()));
     
     public static SimpleArchitecturyFluidAttributes ofSupplier(Supplier<? extends Supplier<? extends Fluid>> flowingFluid, Supplier<? extends Supplier<? extends Fluid>> sourceFluid) {
         return of(() -> flowingFluid.get().get(), () -> sourceFluid.get().get());
