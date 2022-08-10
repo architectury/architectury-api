@@ -7,10 +7,10 @@
   ],
   "mixins": [
     "inject.MixinBlock",
-    "inject.MixinBlockEntityType",
     "inject.MixinBucketItem",
     "inject.MixinEntityType",
     "inject.MixinFluid",
+    "inject.MixinGameEvent",
     "inject.MixinItem",
     "MixinLightningBolt"
   ],
