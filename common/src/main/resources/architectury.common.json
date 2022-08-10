@@ -13,11 +13,11 @@
     "net/minecraft/class_1299": [
       "dev/architectury/extensions/injected/InjectedEntityTypeExtension"
     ],
-    "net/minecraft/class_2591": [
-      "dev/architectury/extensions/injected/InjectedBlockEntityTypeExtension"
-    ],
     "net/minecraft/class_1755": [
       "dev/architectury/extensions/injected/InjectedBucketItemExtension"
+    ],
+    "net/minecraft/class_5712": [
+      "dev/architectury/extensions/injected/InjectedGameEventExtension"
     ],
     "net/minecraft/class_4174$class_4175": [
       "dev/architectury/extensions/injected/InjectedFoodPropertiesBuilderExtension"
