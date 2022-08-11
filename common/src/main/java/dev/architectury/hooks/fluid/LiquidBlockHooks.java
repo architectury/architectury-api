@@ -17,12 +17,22 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.mixin.inject;
+package dev.architectury.hooks.fluid;
 
-import dev.architectury.extensions.injected.InjectedFluidExtension;
-import net.minecraft.world.level.material.Fluid;
-import org.spongepowered.asm.mixin.Mixin;
+import dev.architectury.injectables.annotations.ExpectPlatform;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.material.FlowingFluid;
 
-@Mixin(Fluid.class)
-public class MixinFluid implements InjectedFluidExtension {
+public final class LiquidBlockHooks {
+    /**
+     * Returns the fluid contained in the liquid block.
+     * This requires special handling since forge defers the fiuid.
+     *
+     * @param block the liquid block
+     * @return the fluid contained in the liquid block
+     */
+    @ExpectPlatform
+    public static FlowingFluid getFluid(LiquidBlock block) {
+        throw new AssertionError();
+    }
 }
