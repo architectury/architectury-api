@@ -19,10 +19,10 @@
 
 package dev.architectury.mixin.inject;
 
-import dev.architectury.extensions.injected.InjectedFluidExtension;
-import net.minecraft.world.level.material.Fluid;
+import dev.architectury.extensions.injected.InjectedLiquidBlockExtension;
+import net.minecraft.world.level.block.LiquidBlock;
 import org.spongepowered.asm.mixin.Mixin;
 
-@Mixin(Fluid.class)
-public class MixinFluid implements InjectedFluidExtension {
+@Mixin(LiquidBlock.class)
+public class MixinLiquidBlock implements InjectedLiquidBlockExtension {
 }

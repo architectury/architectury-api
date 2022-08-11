@@ -28,6 +28,7 @@
     "BucketItemAccessor",
     "ExplosionPreInvoker",
     "HorseTameInvoker",
+    "LiquidBlockAccessor",
     "LivingDeathInvoker",
     "MixinBaseSpawner",
     "MixinBlockItem",

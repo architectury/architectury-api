@@ -17,12 +17,13 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.mixin.inject;
+package dev.architectury.hooks.fluid.forge;
 
-import dev.architectury.extensions.injected.InjectedFluidExtension;
-import net.minecraft.world.level.material.Fluid;
-import org.spongepowered.asm.mixin.Mixin;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.material.FlowingFluid;
 
-@Mixin(Fluid.class)
-public class MixinFluid implements InjectedFluidExtension {
+public class LiquidBlockHooksImpl {
+    public static FlowingFluid getFluid(LiquidBlock block) {
+        return block.getFluid();
+    }
 }
