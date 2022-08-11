@@ -21,9 +21,6 @@
     ],
     "net/minecraft/class_4174$class_4175": [
       "dev/architectury/extensions/injected/InjectedFoodPropertiesBuilderExtension"
-    ],
-    "net/minecraft/class_2404": [
-      "dev/architectury/extensions/injected/InjectedLiquidBlockExtension"
     ]
   }
 }
