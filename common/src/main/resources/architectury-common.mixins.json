@@ -10,10 +10,8 @@
     "inject.MixinBucketItem",
     "inject.MixinEntityType",
     "inject.MixinFluid",
-    "inject.MixinFoodPropertiesBuilder",
     "inject.MixinGameEvent",
     "inject.MixinItem",
-    "inject.MixinLiquidBlock",
     "MixinLightningBolt"
   ],
   "injectors": {
