@@ -11,6 +11,7 @@
     "client.MixinClientPacketListener",
     "client.MixinDebugScreenOverlay",
     "client.MixinEffectInstance",
+    "client.MixinFabricClientCommandSource",
     "client.MixinGameRenderer",
     "client.MixinIntegratedServer",
     "client.MixinKeyboardHandler",
