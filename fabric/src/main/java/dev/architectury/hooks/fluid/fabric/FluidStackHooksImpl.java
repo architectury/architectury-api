@@ -23,6 +23,7 @@ import dev.architectury.fluid.FluidStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -111,23 +112,15 @@ public class FluidStackHooksImpl {
     @Environment(EnvType.CLIENT)
     @Nullable
     public static TextureAtlasSprite getStillTexture(FluidStack stack) {
-        if (stack.getFluid() == Fluids.EMPTY) return null;
-        var handler = FluidRenderHandlerRegistry.INSTANCE.get(stack.getFluid());
-        if (handler == null) return null;
-        var sprites = handler.getFluidSprites(null, null, stack.getFluid().defaultFluidState());
-        if (sprites == null) return null;
-        return sprites[0];
+        var sprites = FluidVariantRendering.getSprites(FluidStackHooksFabric.toFabric(stack));
+        return sprites == null ? null : sprites[0];
     }
     
     @Environment(EnvType.CLIENT)
     @Nullable
     public static TextureAtlasSprite getStillTexture(Fluid fluid) {
-        if (fluid == Fluids.EMPTY) return null;
-        var handler = FluidRenderHandlerRegistry.INSTANCE.get(fluid);
-        if (handler == null) return null;
-        var sprites = handler.getFluidSprites(null, null, fluid.defaultFluidState());
-        if (sprites == null) return null;
-        return sprites[0];
+        var sprites = FluidVariantRendering.getSprites(FluidVariant.of(fluid));
+        return sprites == null ? null : sprites[0];
     }
     
     @Environment(EnvType.CLIENT)
@@ -144,23 +137,15 @@ public class FluidStackHooksImpl {
     @Environment(EnvType.CLIENT)
     @Nullable
     public static TextureAtlasSprite getFlowingTexture(FluidStack stack) {
-        if (stack.getFluid() == Fluids.EMPTY) return null;
-        var handler = FluidRenderHandlerRegistry.INSTANCE.get(stack.getFluid());
-        if (handler == null) return null;
-        var sprites = handler.getFluidSprites(null, null, stack.getFluid().defaultFluidState());
-        if (sprites == null) return null;
-        return sprites[1];
+        var sprites = FluidVariantRendering.getSprites(FluidStackHooksFabric.toFabric(stack));
+        return sprites == null ? null : sprites[1];
     }
     
     @Environment(EnvType.CLIENT)
     @Nullable
     public static TextureAtlasSprite getFlowingTexture(Fluid fluid) {
-        if (fluid == Fluids.EMPTY) return null;
-        var handler = FluidRenderHandlerRegistry.INSTANCE.get(fluid);
-        if (handler == null) return null;
-        var sprites = handler.getFluidSprites(null, null, fluid.defaultFluidState());
-        if (sprites == null) return null;
-        return sprites[1];
+        var sprites = FluidVariantRendering.getSprites(FluidVariant.of(fluid));
+        return sprites == null ? null : sprites[1];
     }
     
     @Environment(EnvType.CLIENT)
@@ -173,10 +158,7 @@ public class FluidStackHooksImpl {
     
     @Environment(EnvType.CLIENT)
     public static int getColor(FluidStack stack) {
-        if (stack.getFluid() == Fluids.EMPTY) return -1;
-        var handler = FluidRenderHandlerRegistry.INSTANCE.get(stack.getFluid());
-        if (handler == null) return -1;
-        return handler.getFluidColor(null, null, stack.getFluid().defaultFluidState());
+        return FluidVariantRendering.getColor(FluidStackHooksFabric.toFabric(stack));
     }
     
     @Environment(EnvType.CLIENT)
