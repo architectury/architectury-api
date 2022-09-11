@@ -34,7 +34,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mod.EventBusSubscriber(modid = ArchitecturyForge.MOD_ID, value = Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = ArchitecturyForge.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class KeyMappingRegistryImpl {
     private static final Logger LOGGER = LogManager.getLogger(KeyMappingRegistryImpl.class);
     private static final List<KeyMapping> MAPPINGS = new ArrayList<>();
