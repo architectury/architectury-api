@@ -29,17 +29,19 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.annotation.Nullable;
 import java.security.SecureRandom;
+import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 public class ReloadListenerRegistryImpl {
     private static final SecureRandom RANDOM = new SecureRandom();
     
-    public static void register(PackType type, PreparableReloadListener listener) {
+    public static void register(PackType type, PreparableReloadListener listener, @Nullable ResourceLocation listenerId, Collection<ResourceLocation> dependencies) {
         var bytes = new byte[8];
         RANDOM.nextBytes(bytes);
-        var id = new ResourceLocation("architectury:reload_" + StringUtils.leftPad(Math.abs(Longs.fromByteArray(bytes)) + "", 19, '0'));
+        var id = listenerId != null ? listenerId : new ResourceLocation("architectury:reload_" + StringUtils.leftPad(Math.abs(Longs.fromByteArray(bytes)) + "", 19, '0'));
         ResourceManagerHelper.get(type).registerReloadListener(new IdentifiableResourceReloadListener() {
             @Override
             public ResourceLocation getFabricId() {
@@ -49,6 +51,11 @@ public class ReloadListenerRegistryImpl {
             @Override
             public String getName() {
                 return listener.getName();
+            }
+            
+            @Override
+            public Collection<ResourceLocation> getFabricDependencies() {
+                return dependencies;
             }
             
             @Override
