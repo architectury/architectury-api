@@ -22,22 +22,30 @@ package dev.architectury.test.recipes;
 import com.google.gson.JsonObject;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.FireworkRocketRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
+import java.util.Objects;
+
 public class TestRecipeSerializer implements RecipeSerializer<CustomRecipe> {
     @Override
     public CustomRecipe fromJson(ResourceLocation id, JsonObject json) {
-        return new FireworkRocketRecipe(id);
+        CraftingBookCategory category = Objects.requireNonNullElse(
+                CraftingBookCategory.CODEC.byName(GsonHelper.getAsString(json, "category", null)), CraftingBookCategory.MISC);
+        return new FireworkRocketRecipe(id, category);
     }
     
     @Override
     public CustomRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
-        return new FireworkRocketRecipe(id);
+        CraftingBookCategory category = buf.readEnum(CraftingBookCategory.class);
+        return new FireworkRocketRecipe(id, category);
     }
     
     @Override
     public void toNetwork(FriendlyByteBuf buf, CustomRecipe recipe) {
+        buf.writeEnum(recipe.category());
     }
 }

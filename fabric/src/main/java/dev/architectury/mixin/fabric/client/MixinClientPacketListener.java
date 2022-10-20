@@ -19,22 +19,16 @@
 
 package dev.architectury.mixin.fabric.client;
 
+import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientChatEvent;
 import dev.architectury.event.events.client.ClientPlayerEvent;
 import dev.architectury.event.events.client.ClientRecipeUpdateEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.core.Registry;
-import net.minecraft.network.chat.ChatSender;
-import net.minecraft.network.chat.ChatType;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.PlayerChatMessage;
 import net.minecraft.network.protocol.game.ClientboundLoginPacket;
 import net.minecraft.network.protocol.game.ClientboundRespawnPacket;
-import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
 import net.minecraft.network.protocol.game.ClientboundUpdateRecipesPacket;
 import net.minecraft.world.item.crafting.RecipeManager;
 import org.spongepowered.asm.mixin.Final;
@@ -44,7 +38,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(ClientPacketListener.class)
 public class MixinClientPacketListener {
@@ -79,5 +72,13 @@ public class MixinClientPacketListener {
     @Inject(method = "handleUpdateRecipes", at = @At("RETURN"))
     private void handleUpdateRecipes(ClientboundUpdateRecipesPacket clientboundUpdateRecipesPacket, CallbackInfo ci) {
         ClientRecipeUpdateEvent.EVENT.invoker().update(recipeManager);
+    }
+    
+    @Inject(method = "sendChat(Ljava/lang/String;)V", at = @At(value = "HEAD"), cancellable = true)
+    private void chat(String string, CallbackInfo ci) {
+        EventResult process = ClientChatEvent.SEND.invoker().send(string, null);
+        if (process.isFalse()) {
+            ci.cancel();
+        }
     }
 }

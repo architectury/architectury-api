@@ -180,7 +180,7 @@ public class NetworkManagerImpl {
         return clientReceivables.get(player).contains(id);
     }
     
-    public static Packet<?> createAddEntityPacket(Entity entity) {
+    public static Packet<ClientGamePacketListener> createAddEntityPacket(Entity entity) {
         return NetworkHooks.getEntitySpawningPacket(entity);
     }
     

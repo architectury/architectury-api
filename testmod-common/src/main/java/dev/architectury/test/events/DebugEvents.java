@@ -299,9 +299,9 @@ public class DebugEvents {
         ClientRecipeUpdateEvent.EVENT.register(recipeManager -> {
             TestMod.SINK.accept("Client recipes received");
         });
-        ClientTextureStitchEvent.POST.register(atlas -> {
-            TestMod.SINK.accept("Client texture stitched: " + atlas.location());
-        });
+//        ClientTextureStitchEvent.POST.register(atlas -> {
+//            TestMod.SINK.accept("Client texture stitched: " + atlas.location());
+//        });
         ClientScreenInputEvent.MOUSE_SCROLLED_PRE.register((client, screen, mouseX, mouseY, amount) -> {
             TestMod.SINK.accept("Screen Mouse scrolled: %.2f distance", amount);
             return EventResult.pass();

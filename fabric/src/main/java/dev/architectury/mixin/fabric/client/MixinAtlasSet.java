@@ -21,30 +21,36 @@ package dev.architectury.mixin.fabric.client;
 
 import dev.architectury.event.events.client.ClientTextureStitchEvent;
 import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.resources.model.AtlasSet;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.server.packs.resources.Resource;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import java.util.Set;
-import java.util.stream.Stream;
+import java.util.HashMap;
+import java.util.Map;
 
-@Mixin(TextureAtlas.class)
-public class MixinTextureAtlas {
-    @Inject(method = "prepareToStitch",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V", ordinal = 0,
-                    shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD)
-    private void preStitch(ResourceManager resourceManager, Stream<ResourceLocation> stream, ProfilerFiller profilerFiller, int i, CallbackInfoReturnable<TextureAtlas.Preparations> cir, Set<ResourceLocation> set) {
-        ClientTextureStitchEvent.PRE.invoker().stitch((TextureAtlas) (Object) this, set::add);
-    }
+@Mixin(AtlasSet.AtlasEntry.class)
+public class MixinAtlasSet {
+    @Mutable
+    @Shadow
+    @Final
+    AtlasSet.ResourceLister resourceLister;
     
-    @Inject(method = "reload", at = @At("RETURN"))
-    private void postStitch(TextureAtlas.Preparations preparations, CallbackInfo ci) {
-        ClientTextureStitchEvent.POST.invoker().stitch((TextureAtlas) (Object) this);
+    @Inject(method = "<init>", at = @At(value = "RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
+    private void preStitch(TextureAtlas textureAtlas, AtlasSet.ResourceLister resourceLister, CallbackInfo ci) {
+        AtlasSet.ResourceLister tmp = this.resourceLister;
+        this.resourceLister = resourceManager -> {
+            Map<ResourceLocation, Resource> map = new HashMap<>();
+            ClientTextureStitchEvent.PRE.invoker().stitch(textureAtlas, resourceManager, map::put);
+            map.putAll(tmp.apply(resourceManager));
+            return map;
+        };
     }
 }

@@ -7,8 +7,7 @@
   "client": [
     "client.ClientPlayerAttackInvoker",
     "client.MixinAbstractContainerScreen",
-    "client.MixinChatListener_1",
-    "client.MixinChatListener_2",
+    "client.MixinChatListener",
     "client.MixinClientLevel",
     "client.MixinClientPacketListener",
     "client.MixinDebugScreenOverlay",
@@ -16,12 +15,11 @@
     "client.MixinGameRenderer",
     "client.MixinIntegratedServer",
     "client.MixinKeyboardHandler",
-    "client.MixinLocalPlayer",
     "client.MixinMinecraft",
     "client.MixinMouseHandler",
     "client.MixinMultiPlayerGameMode",
     "client.MixinScreen",
-    "client.MixinTextureAtlas"
+    "client.MixinAtlasSet"
   ],
   "mixins": [
     "BiomeAccessor",

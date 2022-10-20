@@ -28,6 +28,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 
@@ -37,7 +38,7 @@ import net.minecraft.world.entity.Entity;
 public class SpawnEntityPacket {
     private static final ResourceLocation PACKET_ID = new ResourceLocation("architectury", "spawn_entity_packet");
     
-    public static Packet<?> create(Entity entity) {
+    public static Packet<ClientGamePacketListener> create(Entity entity) {
         if (entity.level.isClientSide()) {
             throw new IllegalStateException("SpawnPacketUtil.create called on the logical client!");
         }
@@ -59,7 +60,7 @@ public class SpawnEntityPacket {
         if (entity instanceof EntitySpawnExtension ext) {
             ext.saveAdditionalSpawnData(buffer);
         }
-        return NetworkManager.toPacket(NetworkManager.s2c(), PACKET_ID, buffer);
+        return (Packet<ClientGamePacketListener>) NetworkManager.toPacket(NetworkManager.s2c(), PACKET_ID, buffer);
     }
     
     

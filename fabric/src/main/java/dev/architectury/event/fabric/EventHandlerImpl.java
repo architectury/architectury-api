@@ -41,7 +41,6 @@ import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
 import net.fabricmc.fabric.api.message.v1.ServerMessageDecoratorEvent;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
-import net.minecraft.network.chat.PlayerChatMessage;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -88,7 +87,7 @@ public class EventHandlerImpl {
             return CompletableFuture.completedFuture(chatComponent.get());
         });
         ServerMessageEvents.ALLOW_CHAT_MESSAGE.register((message, sender, params) -> {
-            return !ChatEvent.RECEIVED.invoker().received(sender, message.serverContent()).isFalse();
+            return !ChatEvent.RECEIVED.invoker().received(sender, message.decoratedContent()).isFalse();
         });
     }
     

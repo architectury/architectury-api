@@ -21,9 +21,11 @@ package dev.architectury.registry;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 public final class CreativeTabRegistry {
@@ -32,7 +34,7 @@ public final class CreativeTabRegistry {
     
     // I am sorry, fabric wants a resource location instead of the translation key for whatever reason
     @ExpectPlatform
-    public static CreativeModeTab create(ResourceLocation name, Supplier<ItemStack> icon) {
+    public static CreativeModeTab create(ResourceLocation name, Supplier<ItemStack> icon, BiConsumer<FeatureFlagSet, CreativeModeTab.Output> filler) {
         throw new AssertionError();
     }
 }

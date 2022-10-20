@@ -34,6 +34,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.thread.BlockableEventLoop;
@@ -153,7 +154,7 @@ public class NetworkManagerImpl {
         return ServerPlayNetworking.canSend(player, id);
     }
     
-    public static Packet<?> createAddEntityPacket(Entity entity) {
+    public static Packet<ClientGamePacketListener> createAddEntityPacket(Entity entity) {
         return SpawnEntityPacket.create(entity);
     }
     

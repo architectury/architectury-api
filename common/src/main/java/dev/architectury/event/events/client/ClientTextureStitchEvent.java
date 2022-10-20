@@ -25,19 +25,22 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
 
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 @Environment(EnvType.CLIENT)
 public interface ClientTextureStitchEvent {
     /**
-     * @see Pre#stitch(TextureAtlas, Consumer)
+     * @see Pre#stitch(TextureAtlas, ResourceManager, BiConsumer)
      */
     Event<Pre> PRE = EventFactory.createLoop();
+    
     /**
      * @see Post#stitch(TextureAtlas)
      */
-    Event<Post> POST = EventFactory.createLoop();
+//    Event<Post> POST = EventFactory.createLoop();
     
     @Environment(EnvType.CLIENT)
     interface Pre {
@@ -45,10 +48,11 @@ public interface ClientTextureStitchEvent {
          * Invoked before the texture atlas is stitched together.
          * Equivalent to Forge's {@code TextureStitchEvent.Pre} event.
          *
-         * @param atlas       The TextureAtlas.
-         * @param spriteAdder A consumer where you can add your own sprites to be stitched.
+         * @param atlas           The TextureAtlas.
+         * @param resourceManager The resource manager.
+         * @param spriteAdder     A consumer where you can add your own sprites to be stitched.
          */
-        void stitch(TextureAtlas atlas, Consumer<ResourceLocation> spriteAdder);
+        void stitch(TextureAtlas atlas, ResourceManager resourceManager, BiConsumer<ResourceLocation, Resource> spriteAdder);
     }
     
     @Environment(EnvType.CLIENT)

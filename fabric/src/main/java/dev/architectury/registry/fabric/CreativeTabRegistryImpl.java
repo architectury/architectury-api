@@ -19,15 +19,26 @@
 
 package dev.architectury.registry.fabric;
 
-import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 public class CreativeTabRegistryImpl {
-    public static CreativeModeTab create(ResourceLocation name, Supplier<ItemStack> icon) {
-        return FabricItemGroupBuilder.build(name, icon);
+    public static CreativeModeTab create(ResourceLocation name, Supplier<ItemStack> icon, BiConsumer<FeatureFlagSet, CreativeModeTab.Output> filler) {
+        return new FabricItemGroup(name, icon) {
+            @Override
+            public ItemStack makeIcon() {
+                return icon.get();
+            }
+            
+            @Override
+            protected void generateDisplayItems(FeatureFlagSet flags, CreativeModeTab.Output output) {
+                filler.accept(flags, output);
+            }
+        };
     }
 }
