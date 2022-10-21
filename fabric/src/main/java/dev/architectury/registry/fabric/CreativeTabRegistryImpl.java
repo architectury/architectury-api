@@ -19,6 +19,7 @@
 
 package dev.architectury.registry.fabric;
 
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.CreativeModeTab;
@@ -29,7 +30,7 @@ import java.util.function.Supplier;
 
 public class CreativeTabRegistryImpl {
     public static CreativeModeTab create(ResourceLocation name, Supplier<ItemStack> icon, BiConsumer<FeatureFlagSet, CreativeModeTab.Output> filler) {
-        return new FabricItemGroup(name, icon) {
+        return new FabricItemGroup(name) {
             @Override
             public ItemStack makeIcon() {
                 return icon.get();

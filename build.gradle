@@ -27,6 +27,10 @@ subprojects {
         silentMojangMappingsLicense()
     }
 
+    repositories {
+        mavenLocal()
+    }
+
     dependencies {
         minecraft "com.mojang:minecraft:${rootProject.architectury.minecraft}"
         mappings loom.officialMojangMappings()
