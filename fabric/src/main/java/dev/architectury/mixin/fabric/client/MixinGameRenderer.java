@@ -30,6 +30,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceProvider;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -65,8 +66,8 @@ public abstract class MixinGameRenderer {
     
     @Inject(method = "reloadShaders",
             at = @At(value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z", ordinal = 0), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-    public void reloadShaders(ResourceManager resourceManager, CallbackInfo ci, List<Program> programs, List<Pair<ShaderInstance, Consumer<ShaderInstance>>> shaders) {
-        ClientReloadShadersEvent.EVENT.invoker().reload(resourceManager, (shader, callback) -> {
+    public void reloadShaders(ResourceProvider provider, CallbackInfo ci, List<Program> programs, List<Pair<ShaderInstance, Consumer<ShaderInstance>>> shaders) {
+        ClientReloadShadersEvent.EVENT.invoker().reload(provider, (shader, callback) -> {
             shaders.add(Pair.of(shader, callback));
         });
     }

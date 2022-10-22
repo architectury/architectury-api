@@ -30,11 +30,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 import java.util.Objects;
 
@@ -78,18 +76,18 @@ public class MixinChatListener {
         cancelNextChat.remove();
     }
     
-    @ModifyArgs(method = "handleSystemMessage", at = @At(value = "HEAD"))
-    private void modifySystemMessage(Args args) {
+    @ModifyVariable(method = "handleSystemMessage", at = @At(value = "HEAD"), argsOnly = true)
+    private Component modifySystemMessage(Component message) {
         cancelNextSystem.remove();
-        Component message = args.get(0);
         var process = ClientSystemMessageEvent.RECEIVED.invoker().process(message);
         if (process.isPresent()) {
             if (process.isFalse()) {
                 cancelNextSystem.set(message);
             } else if (process.object() != null) {
-                args.set(0, process.object());
+                return process.object();
             }
         }
+        return message;
     }
     
     @Inject(method = "handleSystemMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Options;hideMatchedNames()Lnet/minecraft/client/OptionInstance;"),

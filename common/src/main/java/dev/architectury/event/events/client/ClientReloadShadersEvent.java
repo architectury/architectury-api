@@ -24,7 +24,7 @@ import dev.architectury.event.EventFactory;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.ShaderInstance;
-import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceProvider;
 
 import java.util.function.Consumer;
 
@@ -34,11 +34,11 @@ public interface ClientReloadShadersEvent {
     /**
      * Invoked when client reloads shaders.
      *
-     * @see net.minecraft.client.renderer.GameRenderer#reloadShaders(ResourceManager)
+     * @see net.minecraft.client.renderer.GameRenderer#reloadShaders(ResourceProvider)
      */
     Event<ClientReloadShadersEvent> EVENT = EventFactory.createLoop();
     
-    void reload(ResourceManager manager, ShadersSink sink);
+    void reload(ResourceProvider provider, ShadersSink sink);
     
     @FunctionalInterface
     interface ShadersSink {

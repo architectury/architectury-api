@@ -22,33 +22,20 @@ package dev.architectury.test.worldgen;
 import dev.architectury.event.events.common.LifecycleEvent;
 import dev.architectury.registry.level.biome.BiomeModifications;
 import dev.architectury.test.TestMod;
-import net.minecraft.core.Holder;
-import net.minecraft.data.worldgen.features.FeatureUtils;
-import net.minecraft.data.worldgen.features.OreFeatures;
-import net.minecraft.data.worldgen.placement.PlacementUtils;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.VerticalAnchor;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
-import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
-import net.minecraft.world.level.levelgen.placement.*;
-
-import java.util.List;
 
 public class TestWorldGeneration {
     public static void initialize() {
         LifecycleEvent.SETUP.register(() -> {
-            Holder<ConfiguredFeature<OreConfiguration, ?>> configuredFeature = FeatureUtils.register(TestMod.MOD_ID + ":diamond_blocks", Feature.ORE,
-                    new OreConfiguration(OreFeatures.NATURAL_STONE, Blocks.DIAMOND_BLOCK.defaultBlockState(), 33));
-            Holder<PlacedFeature> placedFeature = PlacementUtils.register(TestMod.MOD_ID + ":diamond_blocks", configuredFeature,
-                    List.of(CountPlacement.of(4), InSquarePlacement.spread(),
-                            HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.absolute(15)),
-                            BiomeFilter.biome()));
             BiomeModifications.addProperties((ctx, mutable) -> {
                 if (ctx.hasTag(BiomeTags.IS_FOREST)) {
-                    mutable.getGenerationProperties().addFeature(GenerationStep.Decoration.TOP_LAYER_MODIFICATION, placedFeature);
+                    mutable.getGenerationProperties().addFeature(GenerationStep.Decoration.TOP_LAYER_MODIFICATION,
+                            ResourceKey.create(Registry.PLACED_FEATURE_REGISTRY,
+                                    new ResourceLocation(TestMod.MOD_ID + ":diamond_blocks")));
                 }
             });
         });

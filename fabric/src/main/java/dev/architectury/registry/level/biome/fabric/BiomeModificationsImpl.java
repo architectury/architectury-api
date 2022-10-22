@@ -149,6 +149,12 @@ public class BiomeModificationsImpl {
         }
         
         @Override
+        public Mutable addFeature(GenerationStep.Decoration decoration, ResourceKey<PlacedFeature> feature) {
+            this.context.addFeature(decoration, feature);
+            return this;
+        }
+        
+        @Override
         public Mutable addCarver(GenerationStep.Carving carving, Holder<ConfiguredWorldCarver<?>> feature) {
             Either<ResourceKey<ConfiguredWorldCarver<?>>, ConfiguredWorldCarver<?>> unwrap = feature.unwrap();
             if (unwrap.left().isPresent()) {
@@ -156,6 +162,12 @@ public class BiomeModificationsImpl {
             } else {
                 this.context.addBuiltInCarver(carving, unwrap.right().get());
             }
+            return this;
+        }
+        
+        @Override
+        public Mutable addCarver(GenerationStep.Carving carving, ResourceKey<ConfiguredWorldCarver<?>> feature) {
+            this.context.addCarver(carving, feature);
             return this;
         }
         

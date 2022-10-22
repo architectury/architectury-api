@@ -25,6 +25,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.List;
 import java.util.Optional;
@@ -49,6 +50,9 @@ public interface GenerationProperties {
         
         Mutable addFeature(GenerationStep.Decoration decoration, Holder<PlacedFeature> feature);
         
+        @ApiStatus.Experimental
+        Mutable addFeature(GenerationStep.Decoration decoration, ResourceKey<PlacedFeature> feature);
+        
         @Deprecated
         default Mutable addCarver(GenerationStep.Carving carving, ConfiguredWorldCarver<?> feature) {
             Optional<ResourceKey<ConfiguredWorldCarver<?>>> key = BuiltinRegistries.CONFIGURED_CARVER.getResourceKey(feature);
@@ -60,6 +64,9 @@ public interface GenerationProperties {
         }
         
         Mutable addCarver(GenerationStep.Carving carving, Holder<ConfiguredWorldCarver<?>> feature);
+        
+        @ApiStatus.Experimental
+        Mutable addCarver(GenerationStep.Carving carving, ResourceKey<ConfiguredWorldCarver<?>> feature);
         
         @Deprecated
         default Mutable removeFeature(GenerationStep.Decoration decoration, PlacedFeature feature) {
