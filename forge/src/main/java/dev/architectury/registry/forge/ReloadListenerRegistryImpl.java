@@ -22,6 +22,7 @@ package dev.architectury.registry.forge;
 import com.google.common.collect.Lists;
 import dev.architectury.forge.ArchitecturyForge;
 import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
@@ -31,13 +32,15 @@ import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.List;
 
 @Mod.EventBusSubscriber(modid = ArchitecturyForge.MOD_ID)
 public class ReloadListenerRegistryImpl {
     private static List<PreparableReloadListener> serverDataReloadListeners = Lists.newArrayList();
     
-    public static void register(PackType type, PreparableReloadListener listener) {
+    public static void register(PackType type, PreparableReloadListener listener, @Nullable ResourceLocation listenerId, Collection<ResourceLocation> dependencies) {
         if (type == PackType.SERVER_DATA) {
             serverDataReloadListeners.add(listener);
         } else if (type == PackType.CLIENT_RESOURCES) {
