@@ -34,6 +34,7 @@ import dev.architectury.test.TestMod;
 import dev.architectury.test.entity.TestEntity;
 import dev.architectury.test.recipes.TestRecipeSerializer;
 import dev.architectury.test.registry.objects.EquippableTickingItem;
+import dev.architectury.test.tab.TestCreativeTabs;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -59,6 +60,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import static dev.architectury.test.TestMod.SINK;
@@ -70,6 +72,10 @@ public class TestRegistries {
         public TestInt(int value) {
             this.value = value;
         }
+    }
+    
+    static {
+        Objects.requireNonNull(TestCreativeTabs.TEST_TAB);
     }
     
     public static final Registrar<TestInt> INTS = Registries.get(TestMod.MOD_ID).<TestInt>builder(new ResourceLocation(TestMod.MOD_ID, "ints"))
