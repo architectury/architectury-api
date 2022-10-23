@@ -19,23 +19,28 @@
 
 package dev.architectury.mixin.inject;
 
-import dev.architectury.extensions.injected.InjectedItemExtension;
+import dev.architectury.extensions.injected.InjectedItemPropertiesExtension;
 import dev.architectury.impl.ItemPropertiesExtensionImpl;
-import dev.architectury.registry.CreativeTabRegistry;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.Unique;
 
-@Mixin(Item.class)
-public class MixinItem implements InjectedItemExtension {
-    @Inject(method = "<init>", at = @At("RETURN"))
-    private void init(Item.Properties properties, CallbackInfo ci) {
-        CreativeModeTab tab = ((ItemPropertiesExtensionImpl) properties).arch$getTab();
-        if (tab != null) {
-            CreativeTabRegistry.append(tab, (Item) (Object) this);
-        }
+@Mixin(Item.Properties.class)
+public class MixinItemProperties implements InjectedItemPropertiesExtension, ItemPropertiesExtensionImpl {
+    @Unique
+    private CreativeModeTab tab;
+    
+    @Override
+    public Item.Properties arch$tab(CreativeModeTab tab) {
+        this.tab = tab;
+        return (Item.Properties) (Object) this;
+    }
+    
+    @Override
+    @Nullable
+    public CreativeModeTab arch$getTab() {
+        return tab;
     }
 }

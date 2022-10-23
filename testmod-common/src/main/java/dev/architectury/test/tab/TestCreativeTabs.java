@@ -28,14 +28,5 @@ import net.minecraft.world.item.ItemStack;
 
 public class TestCreativeTabs {
     public static final CreativeModeTab TEST_TAB = CreativeTabRegistry.create(new ResourceLocation(TestMod.MOD_ID, "test_tab"),
-            () -> new ItemStack(TestRegistries.TEST_ITEM.get()), (featureFlagSet, output) -> {
-                output.accept(TestRegistries.TEST_ITEM.get());
-                output.accept(TestRegistries.TEST_EQUIPPABLE.get());
-                output.accept(TestRegistries.TEST_EDIBLE.get());
-                output.accept(TestRegistries.TEST_SPAWN_EGG.get());
-                output.accept(TestRegistries.TEST_SPAWN_EGG_2.get());
-                output.accept(TestRegistries.TEST_FLUID_BUCKET.get());
-                output.accept(TestRegistries.TEST_BLOCK_ITEM.get());
-                output.accept(TestRegistries.COLLISION_BLOCK_ITEM.get());
-            });
+            () -> new ItemStack(TestRegistries.TEST_ITEM.get()));
 }

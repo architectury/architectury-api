@@ -1,5 +1,4 @@
 {
-  "accessWidener": "architectury.accessWidener",
   "injected_interfaces": {
     "net/minecraft/class_1792": [
       "dev/architectury/extensions/injected/InjectedItemExtension"

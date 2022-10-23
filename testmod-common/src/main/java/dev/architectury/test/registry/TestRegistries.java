@@ -105,27 +105,27 @@ public class TestRegistries {
             });
     
     public static final RegistrySupplier<Item> TEST_ITEM = ITEMS.register("test_item", () ->
-            new Item(new Item.Properties()));
+            new Item(new Item.Properties().arch$tab(TestCreativeTabs.TEST_TAB)));
     public static final RegistrySupplier<Item> TEST_EQUIPPABLE = ITEMS.register("test_eqippable", () ->
-            new EquippableTickingItem(new Item.Properties()));
+            new EquippableTickingItem(new Item.Properties().arch$tab(TestCreativeTabs.TEST_TAB)));
     public static final RegistrySupplier<Item> TEST_EDIBLE = ITEMS.register("test_edible", () -> {
         FoodProperties.Builder fpBuilder = new FoodProperties.Builder().nutrition(8).saturationMod(0.8F).meat();
         FoodPropertiesHooks.effect(fpBuilder, () -> new MobEffectInstance(TEST_EFFECT.get(), 100), 1);
-        return new Item(new Item.Properties().food(fpBuilder.build()));
+        return new Item(new Item.Properties().food(fpBuilder.build()).arch$tab(TestCreativeTabs.TEST_TAB));
     });
     public static final RegistrySupplier<Item> TEST_SPAWN_EGG = ITEMS.register("test_spawn_egg", () ->
             new ArchitecturySpawnEggItem(TestRegistries.TEST_ENTITY, 0xFF000000, 0xFFFFFFFF,
-                    new Item.Properties()));
+                    new Item.Properties().arch$tab(TestCreativeTabs.TEST_TAB)));
     public static final RegistrySupplier<Item> TEST_SPAWN_EGG_2 = ITEMS.register("test_spawn_egg_2", () ->
             new ArchitecturySpawnEggItem(TestRegistries.TEST_ENTITY_2, 0xFFFFFFFF, 0xFF000000,
-                    new Item.Properties()));
+                    new Item.Properties().arch$tab(TestCreativeTabs.TEST_TAB)));
     
     public static final RegistrySupplier<Item> TEST_FLUID_BUCKET = ITEMS.register("test_fluid_bucket", () -> {
         try {
             // In example mod the forge class isn't being replaced, this is not required in mods depending on architectury
             return (Item) Class.forName(!Platform.isForge() ? "dev.architectury.core.item.ArchitecturyBucketItem" : "dev.architectury.core.item.forge.imitator.ArchitecturyBucketItem")
                     .getDeclaredConstructor(Supplier.class, Item.Properties.class)
-                    .newInstance(TestRegistries.TEST_FLUID, new Item.Properties());
+                    .newInstance(TestRegistries.TEST_FLUID, new Item.Properties().arch$tab(TestCreativeTabs.TEST_TAB));
         } catch (InstantiationException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException |
                  IllegalAccessException e) {
             throw new RuntimeException(e);
@@ -180,9 +180,9 @@ public class TestRegistries {
     });
     
     public static final RegistrySupplier<Item> TEST_BLOCK_ITEM = ITEMS.register("test_block", () ->
-            new BlockItem(TEST_BLOCK.get(), new Item.Properties()));
+            new BlockItem(TEST_BLOCK.get(), new Item.Properties().arch$tab(TestCreativeTabs.TEST_TAB)));
     public static final RegistrySupplier<Item> COLLISION_BLOCK_ITEM = ITEMS.register("collision_block", () ->
-            new BlockItem(COLLISION_BLOCK.get(), new Item.Properties()));
+            new BlockItem(COLLISION_BLOCK.get(), new Item.Properties().arch$tab(TestCreativeTabs.TEST_TAB)));
     
     public static final RegistrySupplier<EntityType<TestEntity>> TEST_ENTITY = ENTITY_TYPES.register("test_entity", TestEntity.TYPE);
     public static final RegistrySupplier<EntityType<TestEntity>> TEST_ENTITY_2 = ENTITY_TYPES.register("test_entity_2", TestEntity.TYPE_2);

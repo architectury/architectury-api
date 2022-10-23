@@ -17,25 +17,14 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.mixin.inject;
+package dev.architectury.impl;
 
-import dev.architectury.extensions.injected.InjectedItemExtension;
-import dev.architectury.impl.ItemPropertiesExtensionImpl;
-import dev.architectury.registry.CreativeTabRegistry;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
-@Mixin(Item.class)
-public class MixinItem implements InjectedItemExtension {
-    @Inject(method = "<init>", at = @At("RETURN"))
-    private void init(Item.Properties properties, CallbackInfo ci) {
-        CreativeModeTab tab = ((ItemPropertiesExtensionImpl) properties).arch$getTab();
-        if (tab != null) {
-            CreativeTabRegistry.append(tab, (Item) (Object) this);
-        }
-    }
+@ApiStatus.Internal
+public interface ItemPropertiesExtensionImpl {
+    @Nullable
+    CreativeModeTab arch$getTab();
 }
