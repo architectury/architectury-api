@@ -264,10 +264,11 @@ public class EventHandlerImplCommon {
     public static void eventLivingSpawnEvent(LivingSpawnEvent.CheckSpawn event) {
         EventResult result = EntityEvent.LIVING_CHECK_SPAWN.invoker().canSpawn(event.getEntity(), event.getLevel(), event.getX(), event.getY(), event.getZ(), event.getSpawnReason(), event.getSpawner());
         if (result.interruptsFurtherEvaluation()) {
-            if (result.value() != null) {
-                event.setResult(result.value() == Boolean.TRUE ? Event.Result.ALLOW : Event.Result.DENY);
+            if (result.isEmpty()) {
+                event.setResult(Event.Result.DEFAULT);
+            } else {
+                event.setResult(result.value() ? Event.Result.ALLOW : Event.Result.DENY);
             }
-            event.setCanceled(true);
         }
     }
     
