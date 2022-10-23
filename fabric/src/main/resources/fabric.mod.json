@@ -34,8 +34,8 @@
   },
   "icon": "icon.png",
   "depends": {
-    "minecraft": "~1.19-",
-    "fabricloader": ">=0.13.0",
+    "minecraft": "~1.19.3-",
+    "fabricloader": ">=0.14.0",
     "fabric": ">=0.54.0"
   },
   "breaks": {
