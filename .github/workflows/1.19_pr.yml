@@ -9,6 +9,7 @@ on:
     branches:
       - "1.19"
       - "1.19.2"
+      - "1.19.3"
     types: [ opened, synchronize, reopened ]
 jobs:
   validate-gradle:

@@ -113,7 +113,7 @@ unifiedPublishing {
         displayName = "[Fabric $rootProject.supported_version] v$project.version"
         releaseType = "$rootProject.artifact_type"
         changelog = releaseChangelog()
-        gameVersions = ["1.19.1", "1.19.2"]
+        gameVersions = ["1.19.3"]
         gameLoaders = ["fabric", "quilt"]
         mainPublication renameJarForPublication
         relations {
@@ -138,6 +138,7 @@ unifiedPublishing {
                 token = MODRINTH_TOKEN
                 id = rootProject.modrinth_id
                 version = "$project.version+$project.name"
+                gameVersions.addAll project.minecraft_version.toString()
             }
         }
     }
