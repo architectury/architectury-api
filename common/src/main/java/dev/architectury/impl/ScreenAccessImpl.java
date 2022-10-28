@@ -22,7 +22,7 @@ package dev.architectury.impl;
 import dev.architectury.hooks.client.screen.ScreenAccess;
 import dev.architectury.hooks.client.screen.ScreenHooks;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Widget;
+import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
@@ -51,17 +51,17 @@ public class ScreenAccessImpl implements ScreenAccess {
     }
     
     @Override
-    public List<Widget> getRenderables() {
+    public List<Renderable> getRenderables() {
         return ScreenHooks.getRenderables(screen);
     }
     
     @Override
-    public <T extends AbstractWidget & Widget & NarratableEntry> T addRenderableWidget(T widget) {
+    public <T extends AbstractWidget & Renderable & NarratableEntry> T addRenderableWidget(T widget) {
         return ScreenHooks.addRenderableWidget(screen, widget);
     }
     
     @Override
-    public <T extends Widget> T addRenderableOnly(T listener) {
+    public <T extends Renderable> T addRenderableOnly(T listener) {
         return ScreenHooks.addRenderableOnly(screen, listener);
     }
     

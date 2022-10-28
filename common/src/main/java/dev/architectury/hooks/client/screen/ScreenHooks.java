@@ -23,7 +23,7 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Widget;
+import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
@@ -41,17 +41,17 @@ public final class ScreenHooks {
     }
     
     @ExpectPlatform
-    public static List<Widget> getRenderables(Screen screen) {
+    public static List<Renderable> getRenderables(Screen screen) {
         throw new AssertionError();
     }
     
     @ExpectPlatform
-    public static <T extends AbstractWidget & Widget & NarratableEntry> T addRenderableWidget(Screen screen, T widget) {
+    public static <T extends AbstractWidget & Renderable & NarratableEntry> T addRenderableWidget(Screen screen, T widget) {
         throw new AssertionError();
     }
     
     @ExpectPlatform
-    public static <T extends Widget> T addRenderableOnly(Screen screen, T listener) {
+    public static <T extends Renderable> T addRenderableOnly(Screen screen, T listener) {
         throw new AssertionError();
     }
     
