@@ -6,14 +6,14 @@ plugins {
 loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
 
+    mods {
+        forge {
+            sourceSet project(":forge").sourceSets.main
+        }
+    }
+
     forge {
         mixinConfig "architectury.mixins.json"
-
-        localMods {
-            forge {
-                it.add(project(":forge").sourceSets.main)
-            }
-        }
     }
 }
 
