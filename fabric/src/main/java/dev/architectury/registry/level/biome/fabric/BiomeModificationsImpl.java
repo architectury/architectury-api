@@ -143,7 +143,7 @@ public class BiomeModificationsImpl {
             if (unwrap.left().isPresent()) {
                 this.context.addFeature(decoration, unwrap.left().get());
             } else {
-                this.context.addBuiltInFeature(decoration, unwrap.right().get());
+                throw new UnsupportedOperationException("Cannot add a feature that is not registered: " + unwrap.right().orElseThrow());
             }
             return this;
         }
@@ -160,7 +160,7 @@ public class BiomeModificationsImpl {
             if (unwrap.left().isPresent()) {
                 this.context.addCarver(carving, unwrap.left().get());
             } else {
-                this.context.addBuiltInCarver(carving, unwrap.right().get());
+                throw new UnsupportedOperationException("Cannot add a carver that is not registered: " + unwrap.right().orElseThrow());
             }
             return this;
         }

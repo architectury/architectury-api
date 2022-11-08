@@ -19,10 +19,8 @@
 
 package dev.architectury.registry.registries;
 
-import com.google.common.base.MoreObjects;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.Registry;
-import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus;
@@ -85,7 +83,7 @@ public final class Registries {
     public static <T> ResourceLocation getId(T object, @Nullable ResourceKey<Registry<T>> fallback) {
         if (fallback == null)
             return null;
-        return getId(object, (Registry<T>) MoreObjects.firstNonNull(Registry.REGISTRY.get(fallback.location()), BuiltinRegistries.REGISTRY.get(fallback.location())));
+        return getId(object, (Registry<T>) Registry.REGISTRY.get(fallback.location()));
     }
     
     /**

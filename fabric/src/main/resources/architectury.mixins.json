@@ -24,7 +24,6 @@
   "mixins": [
     "BiomeAccessor",
     "BucketItemAccessor",
-    "ExplosionPreInvoker",
     "HorseTameInvoker",
     "LiquidBlockAccessor",
     "LivingDeathInvoker",
@@ -43,6 +42,7 @@
     "MixinFurnaceResultSlot",
     "MixinInventory",
     "MixinItemEntity",
+    "MixinLevel",
     "MixinLivingEntity",
     "MixinNaturalSpawner",
     "MixinOcelot",

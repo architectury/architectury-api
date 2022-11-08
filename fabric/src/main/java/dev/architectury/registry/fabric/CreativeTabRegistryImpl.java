@@ -21,6 +21,7 @@ package dev.architectury.registry.fabric;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
+import dev.architectury.registry.CreativeTabRegistry;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.resources.ResourceLocation;
@@ -32,7 +33,6 @@ import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.ApiStatus.Experimental;
 
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -40,7 +40,7 @@ public class CreativeTabRegistryImpl {
     private static final Multimap<CreativeModeTab, Supplier<ItemStack>> APPENDS = MultimapBuilder.hashKeys().arrayListValues().build();
     
     @ApiStatus.Experimental
-    public static CreativeModeTab create(ResourceLocation name, Supplier<ItemStack> icon, BiConsumer<FeatureFlagSet, Output> filler) {
+    public static CreativeModeTab create(ResourceLocation name, Supplier<ItemStack> icon, CreativeTabRegistry.CreativeTabFiller filler) {
         return new FabricItemGroup(name) {
             @Override
             public ItemStack makeIcon() {
@@ -48,8 +48,8 @@ public class CreativeTabRegistryImpl {
             }
             
             @Override
-            protected void generateDisplayItems(FeatureFlagSet flags, Output output) {
-                filler.accept(flags, output);
+            protected void generateDisplayItems(FeatureFlagSet flags, Output output, boolean canUseGameMasterBlocks) {
+                filler.fill(flags, output, canUseGameMasterBlocks);
             }
         };
     }

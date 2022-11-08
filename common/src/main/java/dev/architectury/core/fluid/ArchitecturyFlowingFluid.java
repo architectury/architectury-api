@@ -27,6 +27,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
@@ -77,7 +78,7 @@ public abstract class ArchitecturyFlowingFluid extends FlowingFluid {
     }
     
     @Override
-    protected boolean canConvertToSource() {
+    protected boolean canConvertToSource(Level level) {
         return attributes.canConvertToSource();
     }
     

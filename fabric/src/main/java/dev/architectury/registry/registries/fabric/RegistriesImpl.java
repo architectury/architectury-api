@@ -19,7 +19,6 @@
 
 package dev.architectury.registry.registries.fabric;
 
-import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.HashMultimap;
@@ -35,7 +34,6 @@ import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
-import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
@@ -50,7 +48,7 @@ public class RegistriesImpl {
     
     private static void listen(ResourceKey<?> resourceKey, ResourceLocation id, Consumer<?> listener) {
         if (LISTENED_REGISTRIES.add(resourceKey)) {
-            Registry<?> registry = MoreObjects.firstNonNull(Registry.REGISTRY.get(resourceKey.location()), BuiltinRegistries.REGISTRY.get(resourceKey.location()));
+            Registry<?> registry = java.util.Objects.requireNonNull(Registry.REGISTRY.get(resourceKey.location()), "Registry " + resourceKey + " not found!");
             RegistryEntryAddedCallback.event(registry).register((rawId, entryId, object) -> {
                 RegistryEntryId<?> registryEntryId = new RegistryEntryId<>(resourceKey, entryId);
                 for (Consumer<?> consumer : LISTENERS.get(registryEntryId)) {
@@ -76,7 +74,7 @@ public class RegistriesImpl {
         
         @Override
         public <T> Registrar<T> get(ResourceKey<Registry<T>> key) {
-            return new RegistrarImpl<>(modId, (Registry<T>) MoreObjects.firstNonNull(Registry.REGISTRY.get(key.location()), BuiltinRegistries.REGISTRY.get(key.location())));
+            return new RegistrarImpl<>(modId, (Registry<T>) java.util.Objects.requireNonNull(Registry.REGISTRY.get(key.location()), "Registry " + key + " not found!"));
         }
         
         @Override
