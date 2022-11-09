@@ -102,7 +102,6 @@ accessible field net/minecraft/world/level/biome/BiomeSpecialEffects$Builder amb
 accessible field net/minecraft/world/level/biome/BiomeSpecialEffects$Builder ambientMoodSettings Ljava/util/Optional;
 accessible field net/minecraft/world/level/biome/BiomeSpecialEffects$Builder ambientAdditionsSettings Ljava/util/Optional;
 accessible field net/minecraft/world/level/biome/BiomeSpecialEffects$Builder backgroundMusic Ljava/util/Optional;
-accessible field net/minecraft/world/level/biome/BiomeGenerationSettings$Builder features Ljava/util/List;
 accessible field net/minecraft/world/level/biome/MobSpawnSettings$Builder spawners Ljava/util/Map;
 accessible field net/minecraft/world/level/biome/MobSpawnSettings$Builder mobSpawnCosts Ljava/util/Map;
 accessible field net/minecraft/world/level/biome/MobSpawnSettings$Builder creatureGenerationProbability F
@@ -191,7 +190,7 @@ transitive-accessible method net/minecraft/world/level/block/EnderChestBlock <in
 transitive-accessible method net/minecraft/world/level/block/FaceAttachedHorizontalDirectionalBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/FarmBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/FletchingTableBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
-transitive-accessible method net/minecraft/world/level/block/FungusBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;Ljava/util/function/Supplier;)V
+transitive-accessible method net/minecraft/world/level/block/FungusBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;Lnet/minecraft/resources/ResourceKey;)V
 transitive-accessible method net/minecraft/world/level/block/FurnaceBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/GrindstoneBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/HalfTransparentBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
