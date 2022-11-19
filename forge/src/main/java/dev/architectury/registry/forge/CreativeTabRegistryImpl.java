@@ -22,15 +22,15 @@ package dev.architectury.registry.forge;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.function.Supplier;
 
 public class CreativeTabRegistryImpl {
     public static CreativeModeTab create(ResourceLocation resourceLocation, Supplier<ItemStack> supplier) {
         return new CreativeModeTab(String.format("%s.%s", resourceLocation.getNamespace(), resourceLocation.getPath())) {
             @Override
-            @Nonnull
+            @NotNull
             public ItemStack makeIcon() {
                 return supplier.get();
             }
