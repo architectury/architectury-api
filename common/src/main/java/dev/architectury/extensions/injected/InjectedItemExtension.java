@@ -19,9 +19,7 @@
 
 package dev.architectury.extensions.injected;
 
-import dev.architectury.registry.registries.Registries;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
 import net.minecraft.world.item.Item;
 
 public interface InjectedItemExtension extends InjectedRegistryEntryExtension<Item> {

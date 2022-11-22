@@ -29,7 +29,7 @@ import java.util.*;
 import java.util.function.Supplier;
 
 public class DeferredRegister<T> implements Iterable<RegistrySupplier<T>> {
-    private final Supplier<Registries> registriesSupplier;
+    private final Supplier<RegistrarManager> registriesSupplier;
     private final ResourceKey<Registry<T>> key;
     private final List<Entry<T>> entries = new ArrayList<>();
     private final List<RegistrySupplier<T>> entryView = Collections.unmodifiableList(this.entries);
@@ -37,14 +37,14 @@ public class DeferredRegister<T> implements Iterable<RegistrySupplier<T>> {
     @Nullable
     private String modId;
     
-    private DeferredRegister(Supplier<Registries> registriesSupplier, ResourceKey<Registry<T>> key, @Nullable String modId) {
+    private DeferredRegister(Supplier<RegistrarManager> registriesSupplier, ResourceKey<Registry<T>> key, @Nullable String modId) {
         this.registriesSupplier = Objects.requireNonNull(registriesSupplier);
         this.key = Objects.requireNonNull(key);
         this.modId = modId;
     }
     
     public static <T> DeferredRegister<T> create(String modId, ResourceKey<Registry<T>> key) {
-        Supplier<Registries> value = Suppliers.memoize(() -> Registries.get(modId));
+        Supplier<RegistrarManager> value = Suppliers.memoize(() -> RegistrarManager.get(modId));
         return new DeferredRegister<>(value, key, Objects.requireNonNull(modId));
     }
     
@@ -82,7 +82,7 @@ public class DeferredRegister<T> implements Iterable<RegistrySupplier<T>> {
         return entryView.iterator();
     }
     
-    public Registries getRegistries() {
+    public RegistrarManager getRegistrarManager() {
         return registriesSupplier.get();
     }
     
@@ -101,8 +101,8 @@ public class DeferredRegister<T> implements Iterable<RegistrySupplier<T>> {
         }
         
         @Override
-        public Registries getRegistries() {
-            return DeferredRegister.this.getRegistries();
+        public RegistrarManager getRegistrarManager() {
+            return DeferredRegister.this.getRegistrarManager();
         }
         
         @Override

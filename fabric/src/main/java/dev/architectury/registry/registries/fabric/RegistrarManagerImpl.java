@@ -25,7 +25,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarBuilder;
-import dev.architectury.registry.registries.Registries;
+import dev.architectury.registry.registries.RegistrarManager;
 import dev.architectury.registry.registries.RegistrySupplier;
 import dev.architectury.registry.registries.options.RegistrarOption;
 import dev.architectury.registry.registries.options.StandardRegistrarOption;
@@ -43,7 +43,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class RegistriesImpl {
+public class RegistrarManagerImpl {
     private static final Multimap<RegistryEntryId<?>, Consumer<?>> LISTENERS = HashMultimap.create();
     private static final Set<ResourceKey<?>> LISTENED_REGISTRIES = new HashSet<>();
     
@@ -62,11 +62,11 @@ public class RegistriesImpl {
         LISTENERS.put(new RegistryEntryId<>(resourceKey, id), listener);
     }
     
-    public static Registries.RegistryProvider _get(String modId) {
+    public static RegistrarManager.RegistryProvider _get(String modId) {
         return new RegistryProviderImpl(modId);
     }
     
-    public static class RegistryProviderImpl implements Registries.RegistryProvider {
+    public static class RegistryProviderImpl implements RegistrarManager.RegistryProvider {
         private final String modId;
         
         public RegistryProviderImpl(String modId) {
@@ -128,7 +128,7 @@ public class RegistriesImpl {
         
         @Override
         public Registrar<T> build() {
-            return Registries.get(modId).get(builder.buildAndRegister());
+            return RegistrarManager.get(modId).get(builder.buildAndRegister());
         }
         
         @Override
@@ -157,8 +157,8 @@ public class RegistriesImpl {
             RegistrarImpl<T> registrar = this;
             return new RegistrySupplier<>() {
                 @Override
-                public Registries getRegistries() {
-                    return Registries.get(modId);
+                public RegistrarManager getRegistrarManager() {
+                    return RegistrarManager.get(modId);
                 }
                 
                 @Override
@@ -271,7 +271,7 @@ public class RegistriesImpl {
             if (contains(id)) {
                 callback.accept(get(id));
             } else {
-                RegistriesImpl.listen(key(), id, callback);
+                RegistrarManagerImpl.listen(key(), id, callback);
             }
         }
     }
