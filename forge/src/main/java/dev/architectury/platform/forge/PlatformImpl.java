@@ -31,9 +31,9 @@ import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.fml.loading.moddiscovery.ModFileInfo;
 import net.minecraftforge.forgespi.language.IModFileInfo;
 import net.minecraftforge.forgespi.language.IModInfo;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -100,25 +100,25 @@ public class PlatformImpl {
         }
         
         @Override
-        @Nonnull
+        @NotNull
         public String getModId() {
             return info.getModId();
         }
         
         @Override
-        @Nonnull
+        @NotNull
         public String getVersion() {
             return info.getVersion().toString();
         }
         
         @Override
-        @Nonnull
+        @NotNull
         public String getName() {
             return info.getDisplayName();
         }
         
         @Override
-        @Nonnull
+        @NotNull
         public String getDescription() {
             return info.getDescription();
         }
