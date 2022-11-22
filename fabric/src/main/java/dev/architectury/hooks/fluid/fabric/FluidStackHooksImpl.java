@@ -28,7 +28,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -49,12 +49,12 @@ public class FluidStackHooksImpl {
     }
     
     public static String getTranslationKey(FluidStack stack) {
-        var id = Registry.FLUID.getKey(stack.getFluid());
+        var id = BuiltInRegistries.FLUID.getKey(stack.getFluid());
         return "block." + id.getNamespace() + "." + id.getPath();
     }
     
     public static FluidStack read(FriendlyByteBuf buf) {
-        var fluid = Objects.requireNonNull(Registry.FLUID.get(buf.readResourceLocation()));
+        var fluid = Objects.requireNonNull(BuiltInRegistries.FLUID.get(buf.readResourceLocation()));
         var amount = buf.readVarLong();
         var tag = buf.readNbt();
         if (fluid == Fluids.EMPTY) return FluidStack.empty();
@@ -62,7 +62,7 @@ public class FluidStackHooksImpl {
     }
     
     public static void write(FluidStack stack, FriendlyByteBuf buf) {
-        buf.writeResourceLocation(Registry.FLUID.getKey(stack.getFluid()));
+        buf.writeResourceLocation(BuiltInRegistries.FLUID.getKey(stack.getFluid()));
         buf.writeVarLong(stack.getAmount());
         buf.writeNbt(stack.getTag());
     }
@@ -72,7 +72,7 @@ public class FluidStackHooksImpl {
             return FluidStack.empty();
         }
         
-        var fluid = Registry.FLUID.get(new ResourceLocation(tag.getString("id")));
+        var fluid = BuiltInRegistries.FLUID.get(new ResourceLocation(tag.getString("id")));
         if (fluid == null || fluid == Fluids.EMPTY) {
             return FluidStack.empty();
         }
@@ -86,7 +86,7 @@ public class FluidStackHooksImpl {
     }
     
     public static CompoundTag write(FluidStack stack, CompoundTag tag) {
-        tag.putString("id", Registry.FLUID.getKey(stack.getFluid()).toString());
+        tag.putString("id", BuiltInRegistries.FLUID.getKey(stack.getFluid()).toString());
         tag.putLong("amount", stack.getAmount());
         if (stack.hasTag()) {
             tag.put("tag", stack.getTag());

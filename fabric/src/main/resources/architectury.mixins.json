@@ -19,7 +19,6 @@
     "client.MixinMouseHandler",
     "client.MixinMultiPlayerGameMode",
     "client.MixinScreen",
-    "client.MixinAtlasSet"
   ],
   "mixins": [
     "BiomeAccessor",

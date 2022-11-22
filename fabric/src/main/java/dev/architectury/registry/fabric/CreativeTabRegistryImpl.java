@@ -40,18 +40,8 @@ public class CreativeTabRegistryImpl {
     private static final Multimap<CreativeModeTab, Supplier<ItemStack>> APPENDS = MultimapBuilder.hashKeys().arrayListValues().build();
     
     @ApiStatus.Experimental
-    public static CreativeModeTab create(ResourceLocation name, Supplier<ItemStack> icon, CreativeTabRegistry.CreativeTabFiller filler) {
-        return new FabricItemGroup(name) {
-            @Override
-            public ItemStack makeIcon() {
-                return icon.get();
-            }
-            
-            @Override
-            protected void generateDisplayItems(FeatureFlagSet flags, Output output, boolean canUseGameMasterBlocks) {
-                filler.fill(flags, output, canUseGameMasterBlocks);
-            }
-        };
+    public static CreativeModeTab.Builder builder(ResourceLocation name) {
+        return FabricItemGroup.builder(name);
     }
     
     static {

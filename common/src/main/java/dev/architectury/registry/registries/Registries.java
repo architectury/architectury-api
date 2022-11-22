@@ -21,6 +21,7 @@ package dev.architectury.registry.registries;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus;
@@ -83,7 +84,7 @@ public final class Registries {
     public static <T> ResourceLocation getId(T object, @Nullable ResourceKey<Registry<T>> fallback) {
         if (fallback == null)
             return null;
-        return getId(object, (Registry<T>) Registry.REGISTRY.get(fallback.location()));
+        return getId(object, (Registry<T>) BuiltInRegistries.REGISTRY.get(fallback.location()));
     }
     
     /**

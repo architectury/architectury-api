@@ -19,7 +19,6 @@
 
 package dev.architectury.test.particle;
 
-import dev.architectury.event.events.client.ClientLifecycleEvent;
 import dev.architectury.platform.Platform;
 import dev.architectury.registry.client.particle.ParticleProviderRegistry;
 import dev.architectury.registry.registries.DeferredRegister;
@@ -27,12 +26,12 @@ import dev.architectury.registry.registries.RegistrySupplier;
 import dev.architectury.test.TestMod;
 import dev.architectury.utils.Env;
 import net.minecraft.client.particle.HeartParticle;
-import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.core.registries.Registries;
 
 public class TestParticles {
-    public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES = DeferredRegister.create(TestMod.MOD_ID, Registry.PARTICLE_TYPE_REGISTRY);
+    public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES = DeferredRegister.create(TestMod.MOD_ID, Registries.PARTICLE_TYPE);
     
     public static final RegistrySupplier<SimpleParticleType> TEST_PARTICLE = PARTICLE_TYPES.register("test_particle", () ->
             new SimpleParticleType(false) {});

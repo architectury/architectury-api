@@ -21,7 +21,6 @@ package dev.architectury.registry;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -36,14 +35,13 @@ public final class CreativeTabRegistry {
     
     // I am sorry, fabric wants a resource location instead of the translation key for whatever reason
     public static CreativeModeTab create(ResourceLocation name, Supplier<ItemStack> icon) {
-        return create(name, icon, (flags, output, canUseGameMasterBlocks) -> {
-        });
+        return builder(name).icon(icon).build();
     }
     
     // I am sorry, fabric wants a resource location instead of the translation key for whatever reason
     @ExpectPlatform
     @ApiStatus.Experimental
-    public static CreativeModeTab create(ResourceLocation name, Supplier<ItemStack> icon, CreativeTabFiller filler) {
+    public static CreativeModeTab.Builder builder(ResourceLocation name) {
         throw new AssertionError();
     }
     
@@ -99,9 +97,5 @@ public final class CreativeTabRegistry {
     @ApiStatus.Experimental
     public static <I extends ItemStack, T extends Supplier<I>> void appendStack(CreativeModeTab tab, T... items) {
         throw new AssertionError();
-    }
-    
-    public interface CreativeTabFiller {
-        void fill(FeatureFlagSet flags, CreativeModeTab.Output output, boolean canUseGameMasterBlocks);
     }
 }

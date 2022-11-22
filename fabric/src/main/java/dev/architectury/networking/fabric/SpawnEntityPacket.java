@@ -25,7 +25,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -43,7 +43,7 @@ public class SpawnEntityPacket {
             throw new IllegalStateException("SpawnPacketUtil.create called on the logical client!");
         }
         var buffer = PacketByteBufs.create();
-        buffer.writeVarInt(Registry.ENTITY_TYPE.getId(entity.getType()));
+        buffer.writeVarInt(BuiltInRegistries.ENTITY_TYPE.getId(entity.getType()));
         buffer.writeUUID(entity.getUUID());
         buffer.writeVarInt(entity.getId());
         var position = entity.position();
@@ -88,7 +88,7 @@ public class SpawnEntityPacket {
             // Retain this buffer so we can use it in the queued task (EntitySpawnExtension)
             buf.retain();
             context.queue(() -> {
-                var entityType = Registry.ENTITY_TYPE.byId(entityTypeId);
+                var entityType = BuiltInRegistries.ENTITY_TYPE.byId(entityTypeId);
                 if (entityType == null) {
                     throw new IllegalStateException("Entity type (" + entityTypeId + ") is unknown, spawning at (" + x + ", " + y + ", " + z + ")");
                 }

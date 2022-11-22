@@ -21,15 +21,14 @@ package dev.architectury.test.trade;
 
 import dev.architectury.registry.level.entity.trade.SimpleTrade;
 import dev.architectury.registry.level.entity.trade.TradeRegistry;
-import net.minecraft.core.Registry;
-import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public class TestTrades {
     public static void init() {
-        for (var villagerProfession : Registry.VILLAGER_PROFESSION) {
+        for (var villagerProfession : BuiltInRegistries.VILLAGER_PROFESSION) {
             TradeRegistry.registerVillagerTrade(villagerProfession, 1, TestTrades.createTrades());
         }
         TradeRegistry.registerTradeForWanderingTrader(false, TestTrades.createTrades());

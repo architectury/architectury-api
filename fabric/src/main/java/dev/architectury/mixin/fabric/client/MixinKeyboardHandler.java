@@ -42,9 +42,6 @@ public class MixinKeyboardHandler {
     @Final
     private Minecraft minecraft;
     
-    @Shadow
-    private boolean sendRepeatsToGui;
-    
     @ModifyVariable(method = {"method_1458", "lambda$charTyped$5"}, at = @At("HEAD"), ordinal = 0, argsOnly = true)
     private static GuiEventListener wrapCharTypedFirst(GuiEventListener screen) {
         if (screen instanceof ScreenInputDelegate delegate) {
@@ -66,7 +63,7 @@ public class MixinKeyboardHandler {
             ordinal = 0), cancellable = true)
     public void onKey(long long_1, int int_1, int int_2, int int_3, int int_4, CallbackInfo info) {
         if (!info.isCancelled()) {
-            if (int_3 != 1 && (int_3 != 2 || !this.sendRepeatsToGui)) {
+            if (int_3 != 1 && int_3 != 2) {
                 if (int_3 == 0) {
                     var result = ClientScreenInputEvent.KEY_RELEASED_PRE.invoker().keyReleased(minecraft, minecraft.screen, int_1, int_2, int_4);
                     if (result.isPresent())
@@ -87,7 +84,7 @@ public class MixinKeyboardHandler {
     public void onKeyAfter(long long_1, int int_1, int int_2, int int_3, int int_4, CallbackInfo info, Screen screen, boolean bls[]) {
         if (!info.isCancelled() && !bls[0]) {
             EventResult result;
-            if (int_3 != 1 && (int_3 != 2 || !this.sendRepeatsToGui)) {
+            if (int_3 != 1 && int_3 != 2) {
                 result = ClientScreenInputEvent.KEY_RELEASED_POST.invoker().keyReleased(minecraft, screen, int_1, int_2, int_4);
             } else {
                 result = ClientScreenInputEvent.KEY_PRESSED_POST.invoker().keyPressed(minecraft, screen, int_1, int_2, int_4);
