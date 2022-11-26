@@ -31,6 +31,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -96,7 +97,7 @@ public abstract class MixinScreen implements ScreenInputDelegate {
     }
     
     @Inject(method = "renderTooltipInternal", at = @At("HEAD"), cancellable = true)
-    private void renderTooltip(PoseStack poseStack, List<? extends ClientTooltipComponent> list, int x, int y, CallbackInfo ci) {
+    private void renderTooltip(PoseStack poseStack, List<? extends ClientTooltipComponent> list, int x, int y, ClientTooltipPositioner positioner, CallbackInfo ci) {
         if (!list.isEmpty()) {
             var colorContext = tooltipColorContext.get();
             colorContext.reset();
@@ -105,7 +106,7 @@ public abstract class MixinScreen implements ScreenInputDelegate {
             if (ClientTooltipEvent.RENDER_PRE.invoker().renderTooltip(poseStack, list, x, y).isFalse()) {
                 ci.cancel();
             } else {
-                ClientTooltipEvent.RENDER_MODIFY_COLOR.invoker().renderTooltip(poseStack, x, y, colorContext);
+                // ClientTooltipEvent.RENDER_MODIFY_COLOR.invoker().renderTooltip(poseStack, x, y, colorContext);
                 ClientTooltipEvent.RENDER_MODIFY_POSITION.invoker().renderTooltip(poseStack, positionContext);
             }
         }
@@ -123,18 +124,18 @@ public abstract class MixinScreen implements ScreenInputDelegate {
         return tooltipPositionContext.get().getTooltipY();
     }
     
-    @ModifyConstant(method = "renderTooltipInternal", constant = @Constant(intValue = 0xf0100010))
-    private int modifyTooltipBackgroundColor(int original) {
-        return tooltipColorContext.get().getBackgroundColor();
-    }
+    // @ModifyConstant(method = "renderTooltipInternal", constant = @Constant(intValue = 0xf0100010))
+    // private int modifyTooltipBackgroundColor(int original) {
+    //     return tooltipColorContext.get().getBackgroundColor();
+    // }
     
-    @ModifyConstant(method = "renderTooltipInternal", constant = @Constant(intValue = 0x505000ff))
-    private int modifyTooltipOutlineGradientTopColor(int original) {
-        return tooltipColorContext.get().getOutlineGradientTopColor();
-    }
+    // @ModifyConstant(method = "renderTooltipInternal", constant = @Constant(intValue = 0x505000ff))
+    // private int modifyTooltipOutlineGradientTopColor(int original) {
+    //     return tooltipColorContext.get().getOutlineGradientTopColor();
+    // }
     
-    @ModifyConstant(method = "renderTooltipInternal", constant = @Constant(intValue = 0x5028007f))
-    private int modifyTooltipOutlineGradientBottomColor(int original) {
-        return tooltipColorContext.get().getOutlineGradientBottomColor();
-    }
+    // @ModifyConstant(method = "renderTooltipInternal", constant = @Constant(intValue = 0x5028007f))
+    // private int modifyTooltipOutlineGradientBottomColor(int original) {
+    //     return tooltipColorContext.get().getOutlineGradientBottomColor();
+    // }
 }
