@@ -28,7 +28,7 @@ import dev.architectury.platform.Platform;
 import dev.architectury.registry.level.entity.EntityAttributeRegistry;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.Registrar;
-import dev.architectury.registry.registries.Registries;
+import dev.architectury.registry.registries.RegistrarManager;
 import dev.architectury.registry.registries.RegistrySupplier;
 import dev.architectury.test.TestMod;
 import dev.architectury.test.entity.TestEntity;
@@ -36,6 +36,7 @@ import dev.architectury.test.recipes.TestRecipeSerializer;
 import dev.architectury.test.registry.objects.EquippableTickingItem;
 import dev.architectury.test.tab.TestCreativeTabs;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -77,16 +78,16 @@ public class TestRegistries {
         Objects.requireNonNull(TestCreativeTabs.TEST_TAB);
     }
     
-    public static final Registrar<TestInt> INTS = Registries.get(TestMod.MOD_ID).<TestInt>builder(new ResourceLocation(TestMod.MOD_ID, "ints"))
+    public static final Registrar<TestInt> INTS = RegistrarManager.get(TestMod.MOD_ID).<TestInt>builder(new ResourceLocation(TestMod.MOD_ID, "ints"))
             .syncToClients()
             .build();
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(TestMod.MOD_ID, net.minecraft.core.registries.Registries.ITEM);
-    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(TestMod.MOD_ID, net.minecraft.core.registries.Registries.BLOCK);
-    public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(TestMod.MOD_ID, net.minecraft.core.registries.Registries.FLUID);
-    public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(TestMod.MOD_ID, net.minecraft.core.registries.Registries.ENTITY_TYPE);
-    public static final DeferredRegister<MobEffect> MOB_EFFECTS = DeferredRegister.create(TestMod.MOD_ID, net.minecraft.core.registries.Registries.MOB_EFFECT);
-    public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(TestMod.MOD_ID, net.minecraft.core.registries.Registries.RECIPE_SERIALIZER);
-    public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(TestMod.MOD_ID, net.minecraft.core.registries.Registries.RECIPE_TYPE);
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(TestMod.MOD_ID, Registries.ITEM);
+    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(TestMod.MOD_ID, Registries.BLOCK);
+    public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(TestMod.MOD_ID, Registries.FLUID);
+    public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(TestMod.MOD_ID, Registries.ENTITY_TYPE);
+    public static final DeferredRegister<MobEffect> MOB_EFFECTS = DeferredRegister.create(TestMod.MOD_ID, Registries.MOB_EFFECT);
+    public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(TestMod.MOD_ID, Registries.RECIPE_SERIALIZER);
+    public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(TestMod.MOD_ID, Registries.RECIPE_TYPE);
     
     public static final ArchitecturyFluidAttributes TEST_FLUID_ATTRIBUTES = SimpleArchitecturyFluidAttributes.ofSupplier(() -> TestRegistries.TEST_FLUID_FLOWING, () -> TestRegistries.TEST_FLUID)
             .convertToSource(true)

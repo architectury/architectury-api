@@ -32,7 +32,7 @@ import java.util.stream.Stream;
 
 @ApiStatus.NonExtendable
 public interface RegistrySupplier<T> extends Supplier<T> {
-    Registries getRegistries();
+    RegistrarManager getRegistrarManager();
     
     Registrar<T> getRegistrar();
     

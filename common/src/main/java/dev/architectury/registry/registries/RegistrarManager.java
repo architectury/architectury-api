@@ -34,16 +34,16 @@ import java.util.function.Consumer;
 /**
  * Platform-agnostic wrapper of minecraft registries, should be used to register content.
  */
-public final class Registries {
-    private static final Map<String, Registries> REGISTRIES = new ConcurrentHashMap<>();
+public final class RegistrarManager {
+    private static final Map<String, RegistrarManager> MANAGER = new ConcurrentHashMap<>();
     private final RegistryProvider provider;
     private final String modId;
     
-    public static Registries get(String modId) {
-        return REGISTRIES.computeIfAbsent(modId, Registries::new);
+    public static RegistrarManager get(String modId) {
+        return MANAGER.computeIfAbsent(modId, RegistrarManager::new);
     }
     
-    private Registries(String modId) {
+    private RegistrarManager(String modId) {
         this.provider = _get(modId);
         this.modId = modId;
     }
