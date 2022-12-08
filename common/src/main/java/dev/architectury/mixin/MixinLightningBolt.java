@@ -43,7 +43,7 @@ public abstract class MixinLightningBolt extends Entity {
     @Inject(method = "tick", at = @At(
             value = "INVOKE_ASSIGN",
             target = "Lnet/minecraft/world/level/Level;getEntities(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/phys/AABB;Ljava/util/function/Predicate;)Ljava/util/List;",
-            ordinal = 0,
+            ordinal = 1,
             shift = At.Shift.BY,
             by = 1
     ), locals = LocalCapture.CAPTURE_FAILHARD)
