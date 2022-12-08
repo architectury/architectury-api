@@ -113,7 +113,7 @@ unifiedPublishing {
         displayName = "[Fabric $rootProject.supported_version] v$project.version"
         releaseType = "$rootProject.artifact_type"
         changelog = releaseChangelog()
-        gameVersions = ["1.19.1", "1.19.2"]
+        gameVersions = ["1.19.2"]
         gameLoaders = ["fabric", "quilt"]
         mainPublication renameJarForPublication
         relations {
@@ -128,7 +128,7 @@ unifiedPublishing {
             curseforge {
                 token = CURSE_API_KEY
                 id = rootProject.curseforge_id
-                gameVersions.addAll "Java 17", "1.19-Snapshot"
+                gameVersions.addAll "Java 17", "1.19.2"
             }
         }
 
