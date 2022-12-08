@@ -31,6 +31,7 @@ import dev.architectury.utils.Env;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -181,7 +182,7 @@ public class NetworkManagerImpl {
     }
     
     public static Packet<ClientGamePacketListener> createAddEntityPacket(Entity entity) {
-        return NetworkHooks.getEntitySpawningPacket(entity);
+        return (Packet<ClientGamePacketListener>) NetworkHooks.getEntitySpawningPacket(entity);
     }
     
     static FriendlyByteBuf sendSyncPacket(Map<ResourceLocation, NetworkReceiver> map) {

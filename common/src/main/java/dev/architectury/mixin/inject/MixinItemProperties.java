@@ -21,6 +21,7 @@ package dev.architectury.mixin.inject;
 
 import dev.architectury.extensions.injected.InjectedItemPropertiesExtension;
 import dev.architectury.impl.ItemPropertiesExtensionImpl;
+import dev.architectury.registry.CreativeTabRegistry;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.Nullable;
@@ -31,10 +32,20 @@ import org.spongepowered.asm.mixin.Unique;
 public class MixinItemProperties implements InjectedItemPropertiesExtension, ItemPropertiesExtensionImpl {
     @Unique
     private CreativeModeTab tab;
+    @Unique
+    private CreativeTabRegistry.TabSupplier tabSupplier;
     
     @Override
     public Item.Properties arch$tab(CreativeModeTab tab) {
         this.tab = tab;
+        this.tabSupplier = null;
+        return (Item.Properties) (Object) this;
+    }
+    
+    @Override
+    public Item.Properties arch$tab(CreativeTabRegistry.TabSupplier tab) {
+        this.tab = null;
+        this.tabSupplier = tab;
         return (Item.Properties) (Object) this;
     }
     
@@ -42,5 +53,11 @@ public class MixinItemProperties implements InjectedItemPropertiesExtension, Ite
     @Nullable
     public CreativeModeTab arch$getTab() {
         return tab;
+    }
+    
+    @Override
+    @Nullable
+    public CreativeTabRegistry.TabSupplier arch$getTabSupplier() {
+        return tabSupplier;
     }
 }

@@ -19,6 +19,7 @@
 
 package dev.architectury.hooks.level.biome;
 
+import net.minecraft.core.Holder;
 import net.minecraft.sounds.Music;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.biome.AmbientAdditionsSettings;
@@ -47,7 +48,7 @@ public interface EffectsProperties {
     
     Optional<AmbientParticleSettings> getAmbientParticle();
     
-    Optional<SoundEvent> getAmbientLoopSound();
+    Optional<Holder<SoundEvent>> getAmbientLoopSound();
     
     Optional<AmbientMoodSettings> getAmbientMoodSound();
     
@@ -72,7 +73,7 @@ public interface EffectsProperties {
         
         EffectsProperties.Mutable setAmbientParticle(@Nullable AmbientParticleSettings settings);
         
-        EffectsProperties.Mutable setAmbientLoopSound(@Nullable SoundEvent sound);
+        EffectsProperties.Mutable setAmbientLoopSound(@Nullable Holder<SoundEvent> sound);
         
         EffectsProperties.Mutable setAmbientMoodSound(@Nullable AmbientMoodSettings settings);
         

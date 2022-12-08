@@ -4,6 +4,7 @@ accessible method net/minecraft/client/gui/screens/Screen addRenderableOnly (Lne
 accessible method net/minecraft/client/gui/screens/Screen addWidget (Lnet/minecraft/client/gui/components/events/GuiEventListener;)Lnet/minecraft/client/gui/components/events/GuiEventListener;
 accessible field net/minecraft/client/gui/screens/Screen narratables Ljava/util/List;
 accessible field net/minecraft/client/gui/screens/Screen renderables Ljava/util/List;
+accessible field net/minecraft/world/level/biome/BiomeGenerationSettings$PlainBuilder features Ljava/util/List;
 accessible field net/minecraft/world/level/block/state/BlockBehaviour properties Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;
 accessible field net/minecraft/world/level/block/state/BlockBehaviour$Properties material Lnet/minecraft/world/level/material/Material;
 mutable field net/minecraft/world/level/block/state/BlockBehaviour$Properties material Lnet/minecraft/world/level/material/Material;

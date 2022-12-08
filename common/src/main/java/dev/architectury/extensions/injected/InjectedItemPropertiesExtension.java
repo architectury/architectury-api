@@ -19,6 +19,7 @@
 
 package dev.architectury.extensions.injected;
 
+import dev.architectury.registry.CreativeTabRegistry;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.ApiStatus;
@@ -26,6 +27,11 @@ import org.jetbrains.annotations.ApiStatus;
 public interface InjectedItemPropertiesExtension {
     @ApiStatus.Experimental
     default Item.Properties arch$tab(CreativeModeTab tab) {
+        throw new UnsupportedOperationException();
+    }
+    
+    @ApiStatus.Experimental
+    default Item.Properties arch$tab(CreativeTabRegistry.TabSupplier tab) {
         throw new UnsupportedOperationException();
     }
 }

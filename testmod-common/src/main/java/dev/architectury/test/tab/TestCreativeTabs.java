@@ -23,10 +23,9 @@ import dev.architectury.registry.CreativeTabRegistry;
 import dev.architectury.test.TestMod;
 import dev.architectury.test.registry.TestRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 
 public class TestCreativeTabs {
-    public static final CreativeModeTab TEST_TAB = CreativeTabRegistry.create(new ResourceLocation(TestMod.MOD_ID, "test_tab"),
+    public static final CreativeTabRegistry.TabSupplier TEST_TAB = CreativeTabRegistry.create(new ResourceLocation(TestMod.MOD_ID, "test_tab"),
             () -> new ItemStack(TestRegistries.TEST_ITEM.get()));
 }

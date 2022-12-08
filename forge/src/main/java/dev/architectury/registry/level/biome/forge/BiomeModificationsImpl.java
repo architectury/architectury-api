@@ -28,6 +28,7 @@ import dev.architectury.registry.level.biome.BiomeModifications.BiomeContext;
 import dev.architectury.utils.GameInstance;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -68,10 +69,6 @@ public class BiomeModificationsImpl {
                 event.register(ForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, registry -> {
                     registry.register(new ResourceLocation(ArchitecturyForge.MOD_ID, "none_biome_mod_codec"),
                             noneBiomeModCodec = Codec.unit(BiomeModifierImpl.INSTANCE));
-                });
-                event.register(ForgeRegistries.Keys.BIOME_MODIFIERS, registry -> {
-                    registry.register(new ResourceLocation(ArchitecturyForge.MOD_ID, "impl"),
-                            BiomeModifierImpl.INSTANCE);
                 });
             });
         });
@@ -145,9 +142,9 @@ public class BiomeModificationsImpl {
             public boolean hasTag(TagKey<Biome> tag) {
                 MinecraftServer server = GameInstance.getServer();
                 if (server != null) {
-                    Optional<? extends Registry<Biome>> registry = server.registryAccess().registry(Registry.BIOME_REGISTRY);
+                    Optional<? extends Registry<Biome>> registry = server.registryAccess().registry(Registries.BIOME);
                     if (registry.isPresent()) {
-                        Optional<Holder<Biome>> holder = registry.get().getHolder(biomeResourceKey.get());
+                        Optional<Holder.Reference<Biome>> holder = registry.get().getHolder(biomeResourceKey.get());
                         if (holder.isPresent()) {
                             return holder.get().is(tag);
                         }
@@ -168,7 +165,7 @@ public class BiomeModificationsImpl {
         public BiomeWrapped(ModifiableBiomeInfo.BiomeInfo.Builder event) {
             this(event,
                     new MutableClimatePropertiesWrapped(event.getClimateSettings()),
-                    new MutableEffectsPropertiesWrapped(event.getEffects()),
+                    new MutableEffectsPropertiesWrapped(event.getSpecialEffects()),
                     new GenerationSettingsBuilderWrapped(event.getGenerationSettings()),
                     new SpawnSettingsBuilderWrapped(event.getMobSpawnSettings())
             );
@@ -253,7 +250,7 @@ public class BiomeModificationsImpl {
         public MutableBiomeWrapped(ModifiableBiomeInfo.BiomeInfo.Builder event) {
             super(event,
                     new MutableClimatePropertiesWrapped(event.getClimateSettings()),
-                    new MutableEffectsPropertiesWrapped(event.getEffects()),
+                    new MutableEffectsPropertiesWrapped(event.getSpecialEffects()),
                     new MutableGenerationSettingsBuilderWrapped(event.getGenerationSettings()),
                     new MutableSpawnSettingsBuilderWrapped(event.getMobSpawnSettings())
             );
@@ -385,7 +382,7 @@ public class BiomeModificationsImpl {
         }
         
         @Override
-        public Optional<SoundEvent> getAmbientLoopSound() {
+        public Optional<Holder<SoundEvent>> getAmbientLoopSound() {
             return builder.ambientLoopSoundEvent;
         }
         
@@ -453,7 +450,7 @@ public class BiomeModificationsImpl {
         }
         
         @Override
-        public Mutable setAmbientLoopSound(@Nullable SoundEvent sound) {
+        public Mutable setAmbientLoopSound(@Nullable Holder<SoundEvent> sound) {
             builder.ambientLoopSoundEvent = Optional.ofNullable(sound);
             return this;
         }
@@ -489,8 +486,42 @@ public class BiomeModificationsImpl {
         }
         
         @Override
+        public Mutable addFeature(GenerationStep.Decoration decoration, ResourceKey<PlacedFeature> feature) {
+            MinecraftServer server = GameInstance.getServer();
+            if (server != null) {
+                Optional<? extends Registry<PlacedFeature>> registry = server.registryAccess().registry(Registries.PLACED_FEATURE);
+                if (registry.isPresent()) {
+                    Optional<Holder.Reference<PlacedFeature>> holder = registry.get().getHolder(feature);
+                    if (holder.isPresent()) {
+                        return addFeature(decoration, holder.get());
+                    } else {
+                        throw new IllegalArgumentException("Unknown feature: " + feature);
+                    }
+                }
+            }
+            return this;
+        }
+        
+        @Override
         public Mutable addCarver(GenerationStep.Carving carving, Holder<ConfiguredWorldCarver<?>> feature) {
             generation.addCarver(carving, feature);
+            return this;
+        }
+        
+        @Override
+        public Mutable addCarver(GenerationStep.Carving carving, ResourceKey<ConfiguredWorldCarver<?>> feature) {
+            MinecraftServer server = GameInstance.getServer();
+            if (server != null) {
+                Optional<? extends Registry<ConfiguredWorldCarver<?>>> registry = server.registryAccess().registry(Registries.CONFIGURED_CARVER);
+                if (registry.isPresent()) {
+                    Optional<Holder.Reference<ConfiguredWorldCarver<?>>> holder = registry.get().getHolder(feature);
+                    if (holder.isPresent()) {
+                        return addCarver(carving, holder.get());
+                    } else {
+                        throw new IllegalArgumentException("Unknown carver: " + feature);
+                    }
+                }
+            }
             return this;
         }
         

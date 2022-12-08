@@ -26,12 +26,12 @@ import com.google.common.collect.Multimap;
 import dev.architectury.platform.forge.EventBuses;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarBuilder;
-import dev.architectury.registry.registries.Registries;
+import dev.architectury.registry.registries.RegistrarManager;
 import dev.architectury.registry.registries.RegistrySupplier;
 import dev.architectury.registry.registries.options.RegistrarOption;
 import dev.architectury.registry.registries.options.StandardRegistrarOption;
 import net.minecraft.core.Registry;
-import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -47,15 +47,15 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class RegistriesImpl {
-    private static final Logger LOGGER = LogManager.getLogger(RegistriesImpl.class);
+public class RegistrarManagerImpl {
+    private static final Logger LOGGER = LogManager.getLogger(RegistrarManagerImpl.class);
     private static final Multimap<RegistryEntryId<?>, Consumer<?>> LISTENERS = HashMultimap.create();
     
     private static void listen(ResourceKey<?> resourceKey, ResourceLocation id, Consumer<?> listener, boolean vanilla) {
         LISTENERS.put(new RegistryEntryId<>(resourceKey, id), listener);
     }
     
-    public static Registries.RegistryProvider _get(String modId) {
+    public static RegistrarManager.RegistryProvider _get(String modId) {
         return new RegistryProviderImpl(modId);
     }
     
@@ -107,7 +107,7 @@ public class RegistriesImpl {
         }
     }
     
-    public static class RegistryProviderImpl implements Registries.RegistryProvider {
+    public static class RegistryProviderImpl implements RegistrarManager.RegistryProvider {
         private static final Map<ResourceKey<Registry<?>>, Registrar<?>> CUSTOM_REGS = new HashMap<>();
         private final String modId;
         private final Supplier<IEventBus> eventBus;
@@ -141,8 +141,7 @@ public class RegistriesImpl {
             updateEventBus();
             ForgeRegistry<T> registry = RegistryManager.ACTIVE.getRegistry(registryKey.location());
             if (registry == null) {
-                Registry<T> ts = (Registry<T>) Registry.REGISTRY.get(registryKey.location());
-                if (ts == null) ts = (Registry<T>) BuiltinRegistries.REGISTRY.get(registryKey.location());
+                Registry<T> ts = (Registry<T>) BuiltInRegistries.REGISTRY.get(registryKey.location());
                 if (ts != null) {
                     return get(ts);
                 }
@@ -328,8 +327,8 @@ public class RegistriesImpl {
             Registrar<T> registrar = this;
             return new RegistrySupplier<>() {
                 @Override
-                public Registries getRegistries() {
-                    return Registries.get(modId);
+                public RegistrarManager getRegistrarManager() {
+                    return RegistrarManager.get(modId);
                 }
                 
                 @Override
@@ -446,7 +445,7 @@ public class RegistriesImpl {
             if (contains(id)) {
                 callback.accept(get(id));
             } else {
-                RegistriesImpl.listen(key(), id, callback, true);
+                RegistrarManagerImpl.listen(key(), id, callback, true);
             }
         }
     }
@@ -468,8 +467,8 @@ public class RegistriesImpl {
             Registrar<T> registrar = this;
             return new RegistrySupplier<>() {
                 @Override
-                public Registries getRegistries() {
-                    return Registries.get(modId);
+                public RegistrarManager getRegistrarManager() {
+                    return RegistrarManager.get(modId);
                 }
                 
                 @Override
@@ -525,8 +524,8 @@ public class RegistriesImpl {
             Registrar<T> registrar = this;
             return new RegistrySupplier<>() {
                 @Override
-                public Registries getRegistries() {
-                    return Registries.get(modId);
+                public RegistrarManager getRegistrarManager() {
+                    return RegistrarManager.get(modId);
                 }
                 
                 @Override
@@ -639,7 +638,7 @@ public class RegistriesImpl {
             if (contains(id)) {
                 callback.accept(get(id));
             } else {
-                RegistriesImpl.listen(key(), id, callback, false);
+                RegistrarManagerImpl.listen(key(), id, callback, false);
             }
         }
     }
@@ -674,8 +673,8 @@ public class RegistriesImpl {
             if (isReady()) return delegate.get().delegate(id);
             return new RegistrySupplier<>() {
                 @Override
-                public Registries getRegistries() {
-                    return Registries.get(modId);
+                public RegistrarManager getRegistrarManager() {
+                    return RegistrarManager.get(modId);
                 }
                 
                 @Override

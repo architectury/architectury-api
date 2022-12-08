@@ -207,7 +207,7 @@ public class EventHandlerImplClient {
             colorContext.setBackgroundColor(event.getBackgroundStart());
             colorContext.setOutlineGradientTopColor(event.getBorderStart());
             colorContext.setOutlineGradientBottomColor(event.getBorderEnd());
-            ClientTooltipEvent.RENDER_MODIFY_COLOR.invoker().renderTooltip(stack, event.getX(), event.getY(), colorContext);
+            // ClientTooltipEvent.RENDER_MODIFY_COLOR.invoker().renderTooltip(stack, event.getX(), event.getY(), colorContext);
             event.setBackground(colorContext.getBackgroundColor());
             event.setBorderEnd(colorContext.getOutlineGradientBottomColor());
             event.setBorderStart(colorContext.getOutlineGradientTopColor());
@@ -327,13 +327,8 @@ public class EventHandlerImplClient {
     @OnlyIn(Dist.CLIENT)
     public static class ModBasedEventHandler {
         @SubscribeEvent(priority = EventPriority.HIGH)
-        public static void eventTextureStitchEvent(TextureStitchEvent.Pre event) {
-            ClientTextureStitchEvent.PRE.invoker().stitch(event.getAtlas(), event::addSprite);
-        }
-        
-        @SubscribeEvent(priority = EventPriority.HIGH)
         public static void eventTextureStitchEvent(TextureStitchEvent.Post event) {
-            ClientTextureStitchEvent.POST.invoker().stitch(event.getAtlas());
+            // ClientTextureStitchEvent.POST.invoker().stitch(event.getAtlas());
         }
         
         @SubscribeEvent(priority = EventPriority.HIGH)
@@ -343,7 +338,7 @@ public class EventHandlerImplClient {
         
         @SubscribeEvent(priority = EventPriority.HIGH)
         public static void event(RegisterShadersEvent event) {
-            ClientReloadShadersEvent.EVENT.invoker().reload(event.getResourceManager(), event::registerShader);
+            ClientReloadShadersEvent.EVENT.invoker().reload(event.getResourceProvider(), event::registerShader);
         }
     }
 }

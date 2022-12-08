@@ -307,7 +307,7 @@ public class BiomeModificationsImpl {
             }
             
             @Override
-            public EffectsProperties.Mutable setAmbientLoopSound(@Nullable SoundEvent sound) {
+            public EffectsProperties.Mutable setAmbientLoopSound(@Nullable Holder<SoundEvent> sound) {
                 context.setAmbientSound(Optional.ofNullable(sound));
                 return this;
             }

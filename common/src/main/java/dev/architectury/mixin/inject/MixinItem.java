@@ -36,6 +36,11 @@ public class MixinItem implements InjectedItemExtension {
         CreativeModeTab tab = ((ItemPropertiesExtensionImpl) properties).arch$getTab();
         if (tab != null) {
             CreativeTabRegistry.append(tab, (Item) (Object) this);
+            return;
+        }
+        CreativeTabRegistry.TabSupplier tabSupplier = ((ItemPropertiesExtensionImpl) properties).arch$getTabSupplier();
+        if (tabSupplier != null) {
+            CreativeTabRegistry.append(tabSupplier, (Item) (Object) this);
         }
     }
 }

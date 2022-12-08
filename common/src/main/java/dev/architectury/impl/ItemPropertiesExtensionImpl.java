@@ -19,6 +19,7 @@
 
 package dev.architectury.impl;
 
+import dev.architectury.registry.CreativeTabRegistry;
 import net.minecraft.world.item.CreativeModeTab;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -27,4 +28,7 @@ import org.jetbrains.annotations.Nullable;
 public interface ItemPropertiesExtensionImpl {
     @Nullable
     CreativeModeTab arch$getTab();
+    
+    @Nullable
+    CreativeTabRegistry.TabSupplier arch$getTabSupplier();
 }

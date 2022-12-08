@@ -113,7 +113,7 @@ unifiedPublishing {
         displayName = "[Fabric $rootProject.supported_version] v$project.version"
         releaseType = "$rootProject.artifact_type"
         changelog = releaseChangelog()
-        gameVersions = []
+        gameVersions = ["1.19.3"]
         gameLoaders = ["fabric", "quilt"]
         mainPublication renameJarForPublication
         relations {
@@ -128,7 +128,7 @@ unifiedPublishing {
             curseforge {
                 token = CURSE_API_KEY
                 id = rootProject.curseforge_id
-                gameVersions.addAll "Java 17", "1.19.3"
+                gameVersions.addAll "Java 17"
             }
         }
 
@@ -138,7 +138,6 @@ unifiedPublishing {
                 token = MODRINTH_TOKEN
                 id = rootProject.modrinth_id
                 version = "$project.version+$project.name"
-                gameVersions.addAll project.minecraft_version.toString()
             }
         }
     }

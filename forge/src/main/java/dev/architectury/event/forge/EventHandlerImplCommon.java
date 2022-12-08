@@ -140,7 +140,7 @@ public class EventHandlerImplCommon {
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void event(ServerChatEvent.Preview event) {
+    public static void event(ServerChatEvent event) {
         class ChatComponentImpl implements ChatEvent.ChatComponent {
             @Override
             public Component get() {
@@ -155,8 +155,8 @@ public class EventHandlerImplCommon {
         ChatEvent.DECORATE.invoker().decorate(event.getPlayer(), new ChatComponentImpl());
     }
     
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void event(ServerChatEvent.Submitted event) {
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void eventAfter(ServerChatEvent event) {
         EventResult process = ChatEvent.RECEIVED.invoker().received(event.getPlayer(), event.getMessage());
         if (process.isFalse())
             event.setCanceled(true);

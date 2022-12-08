@@ -253,7 +253,7 @@ public final class BiomeHooks {
         }
         
         @Override
-        public EffectsProperties.Mutable setAmbientLoopSound(@Nullable SoundEvent sound) {
+        public EffectsProperties.Mutable setAmbientLoopSound(@Nullable Holder<SoundEvent> sound) {
             effects.ambientLoopSoundEvent = Optional.ofNullable(sound);
             return this;
         }
@@ -317,7 +317,7 @@ public final class BiomeHooks {
         }
         
         @Override
-        public Optional<SoundEvent> getAmbientLoopSound() {
+        public Optional<Holder<SoundEvent>> getAmbientLoopSound() {
             return effects.ambientLoopSoundEvent;
         }
         
