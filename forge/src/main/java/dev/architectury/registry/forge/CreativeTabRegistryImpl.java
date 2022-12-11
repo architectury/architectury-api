@@ -32,6 +32,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.CreativeModeTabRegistry;
+import net.minecraftforge.common.util.MutableHashedLinkedMap;
 import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -60,13 +61,17 @@ public class CreativeTabRegistryImpl {
                         .map(Supplier::get)
                         .toList());
                 if (keyEntry.getKey() instanceof TabKey.SupplierTabKey supplierTabKey) {
-                    event.register(supplierTabKey.supplier.getName(), (arg, populator, bl) -> {
-                        populator.acceptAll(stacks.get());
-                    });
+                    if (Objects.equals(CreativeModeTabRegistry.getName(event.getTab()), supplierTabKey.supplier().getName())) {
+                        for (ItemStack stack : stacks.get()) {
+                            event.getEntries().put(stack, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+                        }
+                    }
                 } else if (keyEntry.getKey() instanceof TabKey.DirectTabKey directTabKey) {
-                    event.register(directTabKey.tab, (arg, populator, bl) -> {
-                        populator.acceptAll(stacks.get());
-                    });
+                    if (event.getTab().equals(directTabKey.tab())) {
+                        for (ItemStack stack : stacks.get()) {
+                            event.getEntries().put(stack, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+                        }
+                    }
                 }
             }
         });
@@ -176,27 +181,33 @@ public class CreativeTabRegistryImpl {
     public static void modify(TabSupplier tab, CreativeTabRegistry.ModifyTabCallback filler) {
         BUILD_CONTENTS_LISTENERS.add(event -> {
             if (tab.isPresent()) {
-                event.register(tab.get(), (flags, populator, canUseGameMasterBlocks) -> {
-                    filler.accept(flags, wrapTabOutput(populator), canUseGameMasterBlocks);
-                });
-            } else {
-                event.register(tab.getName(), (flags, populator, canUseGameMasterBlocks) -> {
-                    filler.accept(flags, wrapTabOutput(populator), canUseGameMasterBlocks);
-                });
+                if (event.getTab().equals(tab.get())) {
+                    filler.accept(event.getFlags(), wrapTabOutput(event.getEntries()), event.hasPermissions());
+                }
+            } else if (Objects.equals(CreativeModeTabRegistry.getName(event.getTab()), tab.getName())) {
+                filler.accept(event.getFlags(), wrapTabOutput(event.getEntries()), event.hasPermissions());
             }
         });
     }
     
-    private static CreativeTabOutput wrapTabOutput(CreativeModeTabEvent.CreativeModeTabPopulator populator) {
+    private static CreativeTabOutput wrapTabOutput(MutableHashedLinkedMap<ItemStack, CreativeModeTab.TabVisibility> entries) {
         return new CreativeTabOutput() {
             @Override
             public void acceptAfter(ItemStack after, ItemStack stack, CreativeModeTab.TabVisibility visibility) {
-                populator.accept(stack, visibility, ItemStack.EMPTY, after);
+                if (after.isEmpty()) {
+                    entries.put(stack, visibility);
+                } else {
+                    entries.putAfter(after, stack, visibility);
+                }
             }
             
             @Override
             public void acceptBefore(ItemStack before, ItemStack stack, CreativeModeTab.TabVisibility visibility) {
-                populator.accept(stack, visibility, before, ItemStack.EMPTY);
+                if (before.isEmpty()) {
+                    entries.put(stack, visibility);
+                } else {
+                    entries.putBefore(before, stack, visibility);
+                }
             }
         };
     }
