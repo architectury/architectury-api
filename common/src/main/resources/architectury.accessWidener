@@ -139,20 +139,6 @@ accessible class net/minecraft/client/particle/ParticleEngine$MutableSpriteSet
 accessible field net/minecraft/client/particle/ParticleEngine$MutableSpriteSet sprites Ljava/util/List;
 transitive-accessible class net/minecraft/world/item/CreativeModeTab$Output
 transitive-accessible class net/minecraft/world/item/CreativeModeTab$TabVisibility
-transitive-accessible field net/minecraft/world/item/CreativeModeTabs BUILDING_BLOCKS Lnet/minecraft/world/item/CreativeModeTab;
-transitive-accessible field net/minecraft/world/item/CreativeModeTabs FUNCTIONAL_BLOCKS Lnet/minecraft/world/item/CreativeModeTab;
-transitive-accessible field net/minecraft/world/item/CreativeModeTabs REDSTONE_BLOCKS Lnet/minecraft/world/item/CreativeModeTab;
-transitive-accessible field net/minecraft/world/item/CreativeModeTabs HOTBAR Lnet/minecraft/world/item/CreativeModeTab;
-transitive-accessible field net/minecraft/world/item/CreativeModeTabs SEARCH Lnet/minecraft/world/item/CreativeModeTab;
-transitive-accessible field net/minecraft/world/item/CreativeModeTabs COMBAT Lnet/minecraft/world/item/CreativeModeTab;
-transitive-accessible field net/minecraft/world/item/CreativeModeTabs SPAWN_EGGS Lnet/minecraft/world/item/CreativeModeTab;
-transitive-accessible field net/minecraft/world/item/CreativeModeTabs INVENTORY Lnet/minecraft/world/item/CreativeModeTab;
-transitive-accessible field net/minecraft/world/item/CreativeModeTabs NATURAL_BLOCKS Lnet/minecraft/world/item/CreativeModeTab;
-transitive-accessible field net/minecraft/world/item/CreativeModeTabs COLORED_BLOCKS Lnet/minecraft/world/item/CreativeModeTab;
-transitive-accessible field net/minecraft/world/item/CreativeModeTabs TOOLS_AND_UTILITIES Lnet/minecraft/world/item/CreativeModeTab;
-transitive-accessible field net/minecraft/world/item/CreativeModeTabs FOOD_AND_DRINKS Lnet/minecraft/world/item/CreativeModeTab;
-transitive-accessible field net/minecraft/world/item/CreativeModeTabs INGREDIENTS Lnet/minecraft/world/item/CreativeModeTab;
-transitive-accessible field net/minecraft/world/item/CreativeModeTabs OP_BLOCKS Lnet/minecraft/world/item/CreativeModeTab;
 
 ##############################
 # This section is generated automatically with Gradle task generateAccessWidener!!!
@@ -368,3 +354,19 @@ transitive-accessible class net/minecraft/client/renderer/RenderStateShard$Outpu
 transitive-accessible class net/minecraft/client/renderer/RenderStateShard$LineStateShard
 transitive-accessible class net/minecraft/client/renderer/RenderStateShard$OffsetTexturingStateShard
 transitive-accessible class net/minecraft/client/renderer/RenderStateShard$MultiTextureStateShard
+
+# CreativeModeTabs fields
+transitive-accessible field net/minecraft/world/item/CreativeModeTabs BUILDING_BLOCKS Lnet/minecraft/world/item/CreativeModeTab;
+transitive-accessible field net/minecraft/world/item/CreativeModeTabs COLORED_BLOCKS Lnet/minecraft/world/item/CreativeModeTab;
+transitive-accessible field net/minecraft/world/item/CreativeModeTabs NATURAL_BLOCKS Lnet/minecraft/world/item/CreativeModeTab;
+transitive-accessible field net/minecraft/world/item/CreativeModeTabs FUNCTIONAL_BLOCKS Lnet/minecraft/world/item/CreativeModeTab;
+transitive-accessible field net/minecraft/world/item/CreativeModeTabs REDSTONE_BLOCKS Lnet/minecraft/world/item/CreativeModeTab;
+transitive-accessible field net/minecraft/world/item/CreativeModeTabs HOTBAR Lnet/minecraft/world/item/CreativeModeTab;
+transitive-accessible field net/minecraft/world/item/CreativeModeTabs SEARCH Lnet/minecraft/world/item/CreativeModeTab;
+transitive-accessible field net/minecraft/world/item/CreativeModeTabs TOOLS_AND_UTILITIES Lnet/minecraft/world/item/CreativeModeTab;
+transitive-accessible field net/minecraft/world/item/CreativeModeTabs COMBAT Lnet/minecraft/world/item/CreativeModeTab;
+transitive-accessible field net/minecraft/world/item/CreativeModeTabs FOOD_AND_DRINKS Lnet/minecraft/world/item/CreativeModeTab;
+transitive-accessible field net/minecraft/world/item/CreativeModeTabs INGREDIENTS Lnet/minecraft/world/item/CreativeModeTab;
+transitive-accessible field net/minecraft/world/item/CreativeModeTabs SPAWN_EGGS Lnet/minecraft/world/item/CreativeModeTab;
+transitive-accessible field net/minecraft/world/item/CreativeModeTabs OP_BLOCKS Lnet/minecraft/world/item/CreativeModeTab;
+transitive-accessible field net/minecraft/world/item/CreativeModeTabs INVENTORY Lnet/minecraft/world/item/CreativeModeTab;

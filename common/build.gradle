@@ -52,6 +52,8 @@ task generateAccessWidener {
             generateBlockConstructors(lines, fs)
             lines.add("")
             generateRenderTypeRelated(lines, fs)
+            lines.add("")
+            generateCreativeTabs(lines, fs)
         }
 
         file('.gradle/generated.accesswidener').text = String.join('\n', lines) + '\n'
@@ -123,6 +125,18 @@ static def generateRenderTypeRelated(List<String> lines, FileSystem fs) {
     for (def innerClass : node.innerClasses) {
         if ((innerClass.access & Opcodes.ACC_PROTECTED) != 0) {
             lines.add("transitive-accessible class $innerClass.name")
+        }
+    }
+}
+
+static def generateCreativeTabs(List<String> lines, FileSystem fs) {
+    lines.add("# CreativeModeTabs fields")
+    def node = loadClass(fs.getPath("net/minecraft/world/item/CreativeModeTabs.class"))
+    for (def field : node.fields) {
+        if ((field.access & Opcodes.ACC_STATIC) != 0 && field.desc == "Lnet/minecraft/world/item/CreativeModeTab;") {
+            if ((field.access & Opcodes.ACC_PUBLIC) == 0) {
+                lines.add("transitive-accessible field $node.name $field.name $field.desc")
+            }
         }
     }
 }
