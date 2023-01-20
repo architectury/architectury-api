@@ -19,11 +19,10 @@
 
 package dev.architectury.hooks.level.biome;
 
-import net.minecraft.world.level.biome.Biome.Precipitation;
 import net.minecraft.world.level.biome.Biome.TemperatureModifier;
 
 public interface ClimateProperties {
-    Precipitation getPrecipitation();
+    boolean hasPrecipitation();
     
     float getTemperature();
     
@@ -32,7 +31,7 @@ public interface ClimateProperties {
     float getDownfall();
     
     interface Mutable extends ClimateProperties {
-        Mutable setPrecipitation(Precipitation precipitation);
+        Mutable setHasPrecipitation(boolean hasPrecipitation);
         
         Mutable setTemperature(float temperature);
         

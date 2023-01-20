@@ -37,7 +37,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.*;
-import net.minecraft.world.level.biome.Biome.Precipitation;
 import net.minecraft.world.level.biome.Biome.TemperatureModifier;
 import net.minecraft.world.level.biome.BiomeSpecialEffects.GrassColorModifier;
 import net.minecraft.world.level.levelgen.GenerationStep;
@@ -231,8 +230,8 @@ public class BiomeModificationsImpl {
     private static ClimateProperties.Mutable wrapWeather(Biome biome, WeatherContext context) {
         return new BiomeHooks.ClimateWrapped(biome) {
             @Override
-            public ClimateProperties.Mutable setPrecipitation(Precipitation precipitation) {
-                context.setPrecipitation(precipitation);
+            public ClimateProperties.Mutable setHasPrecipitation(boolean hasPrecipitation) {
+                context.setPrecipitation(hasPrecipitation);
                 return this;
             }
             

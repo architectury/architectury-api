@@ -149,8 +149,8 @@ public final class BiomeHooks {
         }
         
         @Override
-        public Mutable setPrecipitation(Biome.Precipitation precipitation) {
-            climateSettings.precipitation = precipitation;
+        public Mutable setHasPrecipitation(boolean hasPrecipitation) {
+            climateSettings.hasPrecipitation = hasPrecipitation;
             return this;
         }
         
@@ -173,8 +173,8 @@ public final class BiomeHooks {
         }
         
         @Override
-        public Biome.Precipitation getPrecipitation() {
-            return climateSettings.precipitation;
+        public boolean hasPrecipitation() {
+            return climateSettings.hasPrecipitation;
         }
         
         @Override
