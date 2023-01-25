@@ -20,9 +20,12 @@
 package dev.architectury.networking.simple;
 
 import dev.architectury.networking.NetworkManager;
+import dev.architectury.networking.transformers.PacketTransformer;
 import dev.architectury.platform.Platform;
 import dev.architectury.utils.Env;
 import net.minecraft.resources.ResourceLocation;
+
+import java.util.List;
 
 /**
  * A simple wrapper for {@link NetworkManager} to make it easier to register messages and send them to clients/servers.
@@ -49,34 +52,54 @@ public class SimpleNetworkManager {
     }
     
     /**
-     * Registers a server -&gt; client message.
+     * Convenience method to register a server -&gt; client message with no packet transformers.
      *
-     * @param id      a unique ID for the message, must be a valid value for {@link ResourceLocation#getPath}
-     * @param decoder the message decoder for the message
-     * @return a {@link MessageType} describing the registered message
+     * @see #registerS2C(String, MessageDecoder, List)
      */
     public MessageType registerS2C(String id, MessageDecoder<BaseS2CMessage> decoder) {
+        return registerS2C(id, decoder, List.of());
+    }
+    
+    /**
+     * Registers a server -&gt; client message.
+     *
+     * @param id           a unique ID for the message, must be a valid value for {@link ResourceLocation#getPath}
+     * @param decoder      the message decoder for the message
+     * @param transformers a list of packet transformers to apply to the message packet
+     * @return a {@link MessageType} describing the registered message
+     */
+    public MessageType registerS2C(String id, MessageDecoder<BaseS2CMessage> decoder, List<PacketTransformer> transformers) {
         MessageType messageType = new MessageType(this, new ResourceLocation(namespace, id), NetworkManager.s2c());
         
         if (Platform.getEnvironment() == Env.CLIENT) {
             NetworkManager.NetworkReceiver receiver = decoder.createReceiver();
-            NetworkManager.registerReceiver(NetworkManager.s2c(), messageType.getId(), receiver);
+            NetworkManager.registerReceiver(NetworkManager.s2c(), messageType.getId(), transformers, receiver);
         }
         
         return messageType;
     }
     
     /**
-     * Registers a client -&gt; server message.
+     * Convenience method to register a client -&gt; server message with no packet transformers.
      *
-     * @param id      a unique ID for the message, must be a valid value for {@link ResourceLocation#getPath}
-     * @param decoder the message decoder for the message
-     * @return a {@link MessageType} describing the registered message
+     * @see #registerC2S(String, MessageDecoder, List)
      */
     public MessageType registerC2S(String id, MessageDecoder<BaseC2SMessage> decoder) {
+        return registerC2S(id, decoder, List.of());
+    }
+    
+    /**
+     * Registers a client -&gt; server message.
+     *
+     * @param id           a unique ID for the message, must be a valid value for {@link ResourceLocation#getPath}
+     * @param decoder      the message decoder for the message
+     * @param transformers a list of packet transformers to apply to the message packet
+     * @return a {@link MessageType} describing the registered message
+     */
+    public MessageType registerC2S(String id, MessageDecoder<BaseC2SMessage> decoder, List<PacketTransformer> transformers) {
         MessageType messageType = new MessageType(this, new ResourceLocation(namespace, id), NetworkManager.c2s());
         NetworkManager.NetworkReceiver receiver = decoder.createReceiver();
-        NetworkManager.registerReceiver(NetworkManager.c2s(), messageType.getId(), receiver);
+        NetworkManager.registerReceiver(NetworkManager.c2s(), messageType.getId(), transformers, receiver);
         return messageType;
     }
 }
