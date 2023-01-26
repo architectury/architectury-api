@@ -276,9 +276,9 @@ public interface PlayerEvent {
          * Equivalent to Forge's {@code AttackEntityEvent} and Fabric API's {@code AttackEntityCallback} events.
          *
          * @param player The player attacking the entity.
-         * @param level The level the player is in.
+         * @param level  The level the player is in.
          * @param target The entity about to be attacked.
-         * @param hand The hand the player is using.
+         * @param hand   The hand the player is using.
          * @param result The entity hit result.
          * @return An {@link EventResult} determining the outcome of the event,
          * the attack may be cancelled by the result.
