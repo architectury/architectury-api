@@ -27,11 +27,14 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.Nullable;
 
@@ -92,6 +95,10 @@ public interface PlayerEvent {
      * @see FillBucket#fill(Player, Level, ItemStack, HitResult)
      */
     Event<FillBucket> FILL_BUCKET = EventFactory.createCompoundEventResult();
+    /**
+     * @see AttackEntity#attack(Player, Level, Entity, InteractionHand, EntityHitResult)
+     */
+    Event<AttackEntity> ATTACK_ENTITY = EventFactory.createEventResult();
     
     interface PlayerJoin {
         /**
@@ -261,5 +268,21 @@ public interface PlayerEvent {
          * @return A {@link CompoundEventResult} determining the outcome of the event.
          */
         CompoundEventResult<ItemStack> fill(Player player, Level level, ItemStack stack, @Nullable HitResult target);
+    }
+    
+    interface AttackEntity {
+        /**
+         * Invoked when a player is about to attack an entity using left-click.
+         * Equivalent to Forge's {@code AttackEntityEvent} and Fabric API's {@code AttackEntityCallback} events.
+         *
+         * @param player The player attacking the entity.
+         * @param level The level the player is in.
+         * @param target The entity about to be attacked.
+         * @param hand The hand the player is using.
+         * @param result The entity hit result.
+         * @return An {@link EventResult} determining the outcome of the event,
+         * the attack may be cancelled by the result.
+         */
+        EventResult attack(Player player, Level level, Entity target, InteractionHand hand, @Nullable EntityHitResult result);
     }
 }
