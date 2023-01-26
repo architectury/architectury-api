@@ -53,7 +53,7 @@ public class SimpleNetworkManager {
     }
     
     /**
-     * Convenience method to register a server -&gt; client message with no packet transformers.
+     * Registers a server -&gt; client message with no packet transformers.
      *
      * @param id      a unique ID for the message, must be a valid value for {@link ResourceLocation#getPath}
      * @param decoder the message decoder for the message
