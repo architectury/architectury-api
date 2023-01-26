@@ -24,6 +24,7 @@ import dev.architectury.networking.transformers.PacketTransformer;
 import dev.architectury.platform.Platform;
 import dev.architectury.utils.Env;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.List;
 
@@ -54,6 +55,9 @@ public class SimpleNetworkManager {
     /**
      * Convenience method to register a server -&gt; client message with no packet transformers.
      *
+     * @param id      a unique ID for the message, must be a valid value for {@link ResourceLocation#getPath}
+     * @param decoder the message decoder for the message
+     * @return a {@link MessageType} describing the registered message
      * @see #registerS2C(String, MessageDecoder, List)
      */
     public MessageType registerS2C(String id, MessageDecoder<BaseS2CMessage> decoder) {
@@ -61,13 +65,14 @@ public class SimpleNetworkManager {
     }
     
     /**
-     * Registers a server -&gt; client message.
+     * Registers a server -&gt; client message using the given packet transformers.
      *
      * @param id           a unique ID for the message, must be a valid value for {@link ResourceLocation#getPath}
      * @param decoder      the message decoder for the message
      * @param transformers a list of packet transformers to apply to the message packet
      * @return a {@link MessageType} describing the registered message
      */
+    @ApiStatus.Experimental
     public MessageType registerS2C(String id, MessageDecoder<BaseS2CMessage> decoder, List<PacketTransformer> transformers) {
         MessageType messageType = new MessageType(this, new ResourceLocation(namespace, id), NetworkManager.s2c());
         
@@ -82,6 +87,9 @@ public class SimpleNetworkManager {
     /**
      * Convenience method to register a client -&gt; server message with no packet transformers.
      *
+     * @param id      a unique ID for the message, must be a valid value for {@link ResourceLocation#getPath}
+     * @param decoder the message decoder for the message
+     * @return a {@link MessageType} describing the registered message
      * @see #registerC2S(String, MessageDecoder, List)
      */
     public MessageType registerC2S(String id, MessageDecoder<BaseC2SMessage> decoder) {
@@ -89,13 +97,14 @@ public class SimpleNetworkManager {
     }
     
     /**
-     * Registers a client -&gt; server message.
+     * Registers a client -&gt; server message using the given packet transformers.
      *
      * @param id           a unique ID for the message, must be a valid value for {@link ResourceLocation#getPath}
      * @param decoder      the message decoder for the message
      * @param transformers a list of packet transformers to apply to the message packet
      * @return a {@link MessageType} describing the registered message
      */
+    @ApiStatus.Experimental
     public MessageType registerC2S(String id, MessageDecoder<BaseC2SMessage> decoder, List<PacketTransformer> transformers) {
         MessageType messageType = new MessageType(this, new ResourceLocation(namespace, id), NetworkManager.c2s());
         NetworkManager.NetworkReceiver receiver = decoder.createReceiver();
