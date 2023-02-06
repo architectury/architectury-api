@@ -423,6 +423,14 @@ public class EventHandlerImplCommon {
         LootEvent.MODIFY_LOOT_TABLE.invoker().modifyLootTable(event.getLootTableManager(), event.getName(), new LootTableModificationContextImpl(event.getTable()), true);
     }
     
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(AttackEntityEvent event) {
+        EventResult result = PlayerEvent.ATTACK_ENTITY.invoker().attack(event.getEntity(), event.getEntity().level, event.getTarget(), event.getEntity().getUsedItemHand(), null);
+        if (result.isFalse()) {
+            event.setCanceled(true);
+        }
+    }
+    
     public interface LevelEventAttachment {
         LevelAccessor architectury$getAttachedLevel();
         
