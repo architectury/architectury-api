@@ -18,7 +18,7 @@
     "client.MixinMinecraft",
     "client.MixinMouseHandler",
     "client.MixinMultiPlayerGameMode",
-    "client.MixinScreen",
+    "client.MixinScreen"
   ],
   "mixins": [
     "BiomeAccessor",
@@ -56,7 +56,10 @@
     "MixinServerPlayer",
     "MixinServerPlayerGameMode",
     "MixinTamableAnimal",
-    "PlayerAttackInvoker"
+    "PlayerAttackInvoker",
+    "RegistryDataLoaderAccessor",
+    "RegistryDataLoaderMixin",
+    "RegistrySynchronizationMixin"
   ],
   "injectors": {
     "maxShiftBy": 5,

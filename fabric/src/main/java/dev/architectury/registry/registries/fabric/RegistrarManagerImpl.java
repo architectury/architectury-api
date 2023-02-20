@@ -23,18 +23,21 @@ import com.google.common.base.Objects;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import dev.architectury.mixin.fabric.RegistryDataLoaderAccessor;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarBuilder;
 import dev.architectury.registry.registries.RegistrarManager;
 import dev.architectury.registry.registries.RegistrySupplier;
-import dev.architectury.registry.registries.options.RegistrarOption;
-import dev.architectury.registry.registries.options.StandardRegistrarOption;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistrySynchronization;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.RegistryDataLoader;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
@@ -46,6 +49,9 @@ import java.util.function.Supplier;
 public class RegistrarManagerImpl {
     private static final Multimap<RegistryEntryId<?>, Consumer<?>> LISTENERS = HashMultimap.create();
     private static final Set<ResourceKey<?>> LISTENED_REGISTRIES = new HashSet<>();
+    private static final List<RegistryDataLoader.RegistryData<?>> DATA_REGISTRARS = new ArrayList<>(RegistryDataLoader.WORLDGEN_REGISTRIES);
+    private static final Map<ResourceKey<? extends Registry<?>>, RegistrySynchronization.NetworkedRegistryData<?>> NETWORKABLE_DATA_REGISTRARS = new HashMap<>();
+    private static final Set<ResourceLocation> DATA_REGISTRAR_KEYS = new HashSet<>();
     
     private static void listen(ResourceKey<?> resourceKey, ResourceLocation id, Consumer<?> listener) {
         if (LISTENED_REGISTRIES.add(resourceKey)) {
@@ -64,6 +70,14 @@ public class RegistrarManagerImpl {
     
     public static RegistrarManager.RegistryProvider _get(String modId) {
         return new RegistryProviderImpl(modId);
+    }
+    
+    public static Map<ResourceKey<? extends Registry<?>>, RegistrySynchronization.NetworkedRegistryData<?>> getNetworkableDataRegistrars() {
+        return NETWORKABLE_DATA_REGISTRARS;
+    }
+    
+    public static boolean shouldBePrefixed(ResourceLocation key) {
+        return !key.getNamespace().equals("minecraft") && DATA_REGISTRAR_KEYS.contains(key);
     }
     
     public static class RegistryProviderImpl implements RegistrarManager.RegistryProvider {
@@ -90,7 +104,7 @@ public class RegistrarManagerImpl {
         
         @Override
         public <T> RegistrarBuilder<T> builder(Class<T> type, ResourceLocation registryId) {
-            return new RegistrarBuilderWrapper<>(modId, FabricRegistryBuilder.createSimple(type, registryId));
+            return new RegistrarBuilderWrapper<>(type, registryId);
         }
     }
     
@@ -118,27 +132,63 @@ public class RegistrarManagerImpl {
     }
     
     public static class RegistrarBuilderWrapper<T> implements RegistrarBuilder<T> {
-        private final String modId;
-        private FabricRegistryBuilder<T, MappedRegistry<T>> builder;
+    
+        private final Class<T> type;
+        private final ResourceLocation registryId;
+        private final List<OnAddCallback<T>> callbacks = new ArrayList<>();
+        private boolean saveToDisk;
+        private boolean sync;
+        private DataPackRegistryData<T> dataPackRegistryData;
         
-        public RegistrarBuilderWrapper(String modId, FabricRegistryBuilder<T, MappedRegistry<T>> builder) {
-            this.modId = modId;
-            this.builder = builder;
+        public RegistrarBuilderWrapper(Class<T> type, ResourceLocation registryId) {
+            this.type = type;
+            this.registryId = registryId;
+        }
+    
+        @Override
+        public RegistrarBuilder<T> saveToDisc() {
+            this.saveToDisk = true;
+            return this;
+        }
+    
+        @Override
+        public RegistrarBuilder<T> syncToClients() {
+            this.sync = true;
+            return this;
+        }
+    
+        @Override
+        public RegistrarBuilder<T> onAdd(OnAddCallback<T> callback) {
+            this.callbacks.add(callback);
+            return this;
+        }
+    
+        @Override
+        public RegistrarBuilder<T> dataPackRegistry(Codec<T> codec, @Nullable Codec<T> networkCodec) {
+            ResourceKey<? extends Registry<T>> key = ResourceKey.createRegistryKey(this.registryId);
+            this.dataPackRegistryData = new DataPackRegistryData<>(new RegistryDataLoader.RegistryData<>(key, codec), networkCodec);
+            return this;
         }
         
         @Override
         public Registrar<T> build() {
-            return RegistrarManager.get(modId).get(builder.buildAndRegister());
-        }
-        
-        @Override
-        public RegistrarBuilder<T> option(RegistrarOption option) {
-            if (option == StandardRegistrarOption.SAVE_TO_DISC) {
-                this.builder.attribute(RegistryAttribute.PERSISTED);
-            } else if (option == StandardRegistrarOption.SYNC_TO_CLIENTS) {
-                this.builder.attribute(RegistryAttribute.SYNCED);
+            FabricRegistryBuilder<T, MappedRegistry<T>> fabricBuilder = FabricRegistryBuilder.createSimple(this.type, this.registryId);
+            if (this.saveToDisk)
+                fabricBuilder.attribute(RegistryAttribute.PERSISTED);
+            if (this.sync)
+                fabricBuilder.attribute(RegistryAttribute.SYNCED);
+            if (this.dataPackRegistryData != null) {
+                RegistryDataLoader.RegistryData<T> data = this.dataPackRegistryData.loaderData();
+                DATA_REGISTRARS.add(data);
+                DATA_REGISTRAR_KEYS.add(this.registryId);
+                RegistryDataLoaderAccessor.setWorldgenRegistries(DATA_REGISTRARS);
+                if (this.dataPackRegistryData.networkCodec() != null)
+                    NETWORKABLE_DATA_REGISTRARS.put(data.key(), new RegistrySynchronization.NetworkedRegistryData<>(data.key(), this.dataPackRegistryData.networkCodec()));
             }
-            return this;
+            Registry<T> registry = fabricBuilder.buildAndRegister();
+            if (!this.callbacks.isEmpty())
+                RegistryEntryAddedCallback.event(registry).register((rawId, id, object) -> this.callbacks.forEach(callback -> callback.onAdd(rawId, id, object)));
+            return RegistrarManager.get(this.registryId.getNamespace()).get(registry);
         }
     }
     
@@ -275,4 +325,6 @@ public class RegistrarManagerImpl {
             }
         }
     }
+    
+    record DataPackRegistryData<T>(RegistryDataLoader.RegistryData<T> loaderData, @Nullable Codec<T> networkCodec) {}
 }

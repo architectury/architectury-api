@@ -139,6 +139,8 @@ accessible class net/minecraft/client/particle/ParticleEngine$MutableSpriteSet
 accessible field net/minecraft/client/particle/ParticleEngine$MutableSpriteSet sprites Ljava/util/List;
 transitive-accessible class net/minecraft/world/item/CreativeModeTab$Output
 transitive-accessible class net/minecraft/world/item/CreativeModeTab$TabVisibility
+accessible class net/minecraft/core/RegistrySynchronization$NetworkedRegistryData
+accessible method net/minecraft/core/RegistrySynchronization$NetworkedRegistryData <init> (Lnet/minecraft/resources/ResourceKey;Lcom/mojang/serialization/Codec;)V
 
 ##############################
 # This section is generated automatically with Gradle task generateAccessWidener!!!
