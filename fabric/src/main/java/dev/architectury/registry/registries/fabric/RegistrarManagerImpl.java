@@ -141,7 +141,8 @@ public class RegistrarManagerImpl {
     
         private final Class<T> type;
         private final ResourceLocation registryId;
-        private final List<OnAddCallback<T>> callbacks = new ArrayList<>();
+        private final List<OnAddCallback<T>> onAdd = new ArrayList<>();
+        private final List<Consumer<Registrar<T>>> onFill = new ArrayList<>();
         private boolean saveToDisk;
         private boolean syncToClients;
         private Pair<Codec<T>, @Nullable Codec<T>> codecs;
@@ -164,7 +165,13 @@ public class RegistrarManagerImpl {
     
         @Override
         public RegistrarBuilder<T> onAdd(OnAddCallback<T> callback) {
-            this.callbacks.add(callback);
+            this.onAdd.add(callback);
+            return this;
+        }
+    
+        @Override
+        public RegistrarBuilder<T> onFill(Consumer<Registrar<T>> callback) {
+            this.onFill.add(callback);
             return this;
         }
     
@@ -195,9 +202,12 @@ public class RegistrarManagerImpl {
                 BuiltInRegistriesAccessor.getWritableRegistry().register((ResourceKey<WritableRegistry<?>>) untypedKey, registry, Lifecycle.stable());
             }
             
-            if (!this.callbacks.isEmpty())
-                RegistryEntryAddedCallback.event(registry).register((rawId, id, object) -> this.callbacks.forEach(callback -> callback.onAdd(rawId, id, object)));
-            return RegistrarManager.get(this.registryId.getNamespace()).get(registry);
+            if (!this.onAdd.isEmpty())
+                RegistryEntryAddedCallback.event(registry).register((rawId, id, object) -> this.onAdd.forEach(callback -> callback.onAdd(rawId, id, object)));
+            Registrar<T> registrar = RegistrarManager.get(this.registryId.getNamespace()).get(registry);
+            if (!this.onFill.isEmpty())
+                this.onFill.forEach(consumer -> consumer.accept(registrar));
+            return registrar;
         }
     }
     

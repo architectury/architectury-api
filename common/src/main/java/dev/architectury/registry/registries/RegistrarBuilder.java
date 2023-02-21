@@ -23,6 +23,8 @@ import com.mojang.serialization.Codec;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.function.Consumer;
+
 /**
  * A builder to create a new {@link Registrar}.
  *
@@ -50,6 +52,13 @@ public interface RegistrarBuilder<T> {
      * @param callback The callback to run
      */
     RegistrarBuilder<T> onAdd(OnAddCallback<T> callback);
+    
+    /**
+     * Adds code to run when the registry is created.
+     *
+     * @param callback The callback to run
+     */
+    RegistrarBuilder<T> onFill(Consumer<Registrar<T>> callback);
     
     /**
      * Allows the built registrar to load contents from JSON files located in a directory corresponding to the registry name.

@@ -271,7 +271,8 @@ public class RegistrarManagerImpl {
         private final RegistryProviderImpl provider;
         private final net.minecraftforge.registries.RegistryBuilder<?> builder;
         private final ResourceLocation registryId;
-        private final List<OnAddCallback<T>> callbacks = new ArrayList<>();
+        private final List<OnAddCallback<T>> onAdd = new ArrayList<>();
+        private final List<Consumer<Registrar<T>>> onFill = new ArrayList<>();
         private Pair<Codec<T>, @Nullable Codec<T>> codecs;
         private boolean saveToDisk = false;
         private boolean syncToClients = false;
@@ -296,7 +297,13 @@ public class RegistrarManagerImpl {
     
         @Override
         public RegistrarBuilder<T> onAdd(OnAddCallback<T> callback) {
-            this.callbacks.add(callback);
+            this.onAdd.add(callback);
+            return this;
+        }
+    
+        @Override
+        public RegistrarBuilder<T> onFill(Consumer<Registrar<T>> callback) {
+            this.onFill.add(callback);
             return this;
         }
     
@@ -310,7 +317,7 @@ public class RegistrarManagerImpl {
         public Registrar<T> build() {
             if (!syncToClients) builder.disableSync();
             if (!saveToDisk) builder.disableSaving();
-            if (!callbacks.isEmpty()) builder.onAdd((internal, registryManager, i, key, object, oldObject) -> callbacks.forEach(callback -> callback.onAdd(i, key.location(), (T) object)));
+            if (!onAdd.isEmpty()) builder.onAdd((internal, registryManager, i, key, object, oldObject) -> onAdd.forEach(callback -> callback.onAdd(i, key.location(), (T) object)));
             if (provider.builders == null) {
                 throw new IllegalStateException("Cannot create registries when registries are already aggregated!");
             }
@@ -319,6 +326,8 @@ public class RegistrarManagerImpl {
             var entry = new RegistryProviderImpl.RegistryBuilderEntry(builder, forgeRegistry -> {
                 registrarRef[0] = provider.get(forgeRegistry);
                 registrar.onRegister();
+                if (!this.onFill.isEmpty())
+                    this.onFill.forEach(consumer -> consumer.accept(registrar));
             });
             provider.builders.add(entry);
             //noinspection rawtypes
