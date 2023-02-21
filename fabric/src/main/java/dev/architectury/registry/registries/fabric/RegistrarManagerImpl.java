@@ -109,8 +109,8 @@ public class RegistrarManagerImpl {
         }
         
         @Override
-        public <T> RegistrarBuilder<T> builder(Class<T> type, ResourceLocation registryId) {
-            return new RegistrarBuilderWrapper<>(type, registryId);
+        public <T> RegistrarBuilder<T> builder(ResourceLocation registryId) {
+            return new RegistrarBuilderWrapper<>(registryId);
         }
     }
     
@@ -139,15 +139,13 @@ public class RegistrarManagerImpl {
     
     public static class RegistrarBuilderWrapper<T> implements RegistrarBuilder<T> {
     
-        private final Class<T> type;
         private final ResourceLocation registryId;
         private final List<OnAddCallback<T>> onAdd = new ArrayList<>();
         private final List<Consumer<Registrar<T>>> onFill = new ArrayList<>();
         private boolean saveToDisk;
         private boolean syncToClients;
         private Pair<Codec<T>, @Nullable Codec<T>> codecs;
-        public RegistrarBuilderWrapper(Class<T> type, ResourceLocation registryId) {
-            this.type = type;
+        public RegistrarBuilderWrapper(ResourceLocation registryId) {
             this.registryId = registryId;
         }
     

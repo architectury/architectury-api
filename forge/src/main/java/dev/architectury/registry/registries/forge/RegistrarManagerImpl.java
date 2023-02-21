@@ -170,7 +170,7 @@ public class RegistrarManagerImpl {
         }
         
         @Override
-        public <T> RegistrarBuilder<T> builder(Class<T> type, ResourceLocation registryId) {
+        public <T> RegistrarBuilder<T> builder(ResourceLocation registryId) {
             return new RegistryBuilderWrapper<>(this, new net.minecraftforge.registries.RegistryBuilder<>()
                     .setName(registryId), registryId);
         }

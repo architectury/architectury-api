@@ -70,10 +70,8 @@ public final class RegistrarManager {
         this.provider.forRegistry(key, callback);
     }
     
-    @SafeVarargs
-    public final <T> RegistrarBuilder<T> builder(ResourceLocation registryId, T... typeGetter) {
-        if (typeGetter.length != 0) throw new IllegalStateException("array must be empty!");
-        return this.provider.builder((Class<T>) typeGetter.getClass().getComponentType(), registryId);
+    public <T> RegistrarBuilder<T> builder(ResourceLocation registryId) {
+        return this.provider.builder(registryId);
     }
     
     /**
@@ -117,6 +115,6 @@ public final class RegistrarManager {
         
         <T> void forRegistry(ResourceKey<Registry<T>> key, Consumer<Registrar<T>> consumer);
         
-        <T> RegistrarBuilder<T> builder(Class<T> type, ResourceLocation registryId);
+        <T> RegistrarBuilder<T> builder(ResourceLocation registryId);
     }
 }
