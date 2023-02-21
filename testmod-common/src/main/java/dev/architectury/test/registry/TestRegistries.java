@@ -20,6 +20,7 @@
 package dev.architectury.test.registry;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.architectury.core.fluid.ArchitecturyFluidAttributes;
 import dev.architectury.core.fluid.SimpleArchitecturyFluidAttributes;
 import dev.architectury.core.item.ArchitecturySpawnEggItem;
@@ -72,7 +73,9 @@ import static dev.architectury.test.TestMod.SINK;
 public class TestRegistries {
     
     public record TestInt(int value) {
-        public static final Codec<TestInt> CODEC = Codec.INT.xmap(TestInt::new, TestInt::value).fieldOf("value").codec();
+        public static final Codec<TestInt> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+                Codec.INT.fieldOf("value").forGetter(TestInt::value)
+        ).apply(builder, TestInt::new));
     }
     
     static {
@@ -81,6 +84,7 @@ public class TestRegistries {
     
     public static final Registrar<TestInt> INTS = RegistrarManager.get(TestMod.MOD_ID).<TestInt>builder(new ResourceLocation(TestMod.MOD_ID, "ints"))
             .onAdd((id, name, object) -> System.out.println("On-Add callback test passed for the number " + name.getPath()))
+            .onFill(registrar -> System.out.println("Test registrar was created!"))
             .dataPackRegistry(TestInt.CODEC, null)
             .build();
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(TestMod.MOD_ID, Registries.ITEM);
