@@ -21,7 +21,6 @@ package dev.architectury.registry.registries;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.resources.ResourceLocation;
-import org.apache.logging.log4j.util.TriConsumer;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -33,9 +32,6 @@ import org.jetbrains.annotations.Nullable;
  */
 public interface RegistrarBuilder<T> {
     
-    /**
-     * @return A new registrar with the given properties
-     */
     Registrar<T> build();
     
     /**
@@ -45,7 +41,6 @@ public interface RegistrarBuilder<T> {
     
     /**
      * Specifies that the registrar should sync its contents between servers and clients.
-     * <p>If the registrar can {@link #dataPackRegistry(Codec, Codec) load contents via datapack} this will be enabled by default.
      */
     RegistrarBuilder<T> syncToClients();
     
@@ -61,14 +56,13 @@ public interface RegistrarBuilder<T> {
      * <p>Data JSONs will be loaded from {@code data/<datapack_namespace>/modid/registryname/}, where {@code modid} is the namespace of the registry key.
      *
      * @param codec        The codec to (de)serialize registrar entries from JSON
-     * @param networkCodec An optional codec to sync contents to the server
+     * @param networkCodec An optional codec to sync contents to clients
      */
     RegistrarBuilder<T> dataPackRegistry(Codec<T> codec, @Nullable Codec<T> networkCodec);
     
     /**
      * Allows the built registrar to load contents from JSON files located in a directory corresponding to the registry name.
      * <p>Data JSONs will be loaded from {@code data/<datapack_namespace>/modid/registryname/}, where {@code modid} is the namespace of the registry key.
-     * <p>The built registrar will not be required to be present on the client when joining a server.
      *
      * @param codec The codec to (de)serialize registrar entries from JSON
      */

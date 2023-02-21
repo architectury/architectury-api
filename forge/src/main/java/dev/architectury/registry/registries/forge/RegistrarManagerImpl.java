@@ -23,13 +23,13 @@ import com.google.common.base.Objects;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
 import dev.architectury.platform.forge.EventBuses;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarBuilder;
 import dev.architectury.registry.registries.RegistrarManager;
 import dev.architectury.registry.registries.RegistrySupplier;
-import dev.architectury.registry.registries.options.RegistrarOption;
-import dev.architectury.registry.registries.options.StandardRegistrarOption;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
@@ -271,6 +271,8 @@ public class RegistrarManagerImpl {
         private final RegistryProviderImpl provider;
         private final net.minecraftforge.registries.RegistryBuilder<?> builder;
         private final ResourceLocation registryId;
+        private final List<OnAddCallback<T>> callbacks = new ArrayList<>();
+        private Pair<Codec<T>, @Nullable Codec<T>> codecs;
         private boolean saveToDisk = false;
         private boolean syncToClients = false;
         
@@ -279,11 +281,36 @@ public class RegistrarManagerImpl {
             this.builder = builder;
             this.registryId = registryId;
         }
-        
+    
+        @Override
+        public RegistrarBuilder<T> saveToDisc() {
+            this.saveToDisk = true;
+            return this;
+        }
+    
+        @Override
+        public RegistrarBuilder<T> syncToClients() {
+            this.syncToClients = true;
+            return this;
+        }
+    
+        @Override
+        public RegistrarBuilder<T> onAdd(OnAddCallback<T> callback) {
+            this.callbacks.add(callback);
+            return this;
+        }
+    
+        @Override
+        public RegistrarBuilder<T> dataPackRegistry(Codec<T> codec, @Nullable Codec<T> networkCodec) {
+            this.codecs = Pair.of(codec, networkCodec);
+            return this;
+        }
+    
         @Override
         public Registrar<T> build() {
             if (!syncToClients) builder.disableSync();
             if (!saveToDisk) builder.disableSaving();
+            if (!callbacks.isEmpty()) builder.onAdd((internal, registryManager, i, key, object, oldObject) -> callbacks.forEach(callback -> callback.onAdd(i, key.location(), (T) object)));
             if (provider.builders == null) {
                 throw new IllegalStateException("Cannot create registries when registries are already aggregated!");
             }
@@ -295,18 +322,13 @@ public class RegistrarManagerImpl {
             });
             provider.builders.add(entry);
             //noinspection rawtypes
+            if (this.codecs != null) {
+                EventBuses.onRegistered(this.registryId.getNamespace(), bus -> bus.<DataPackRegistryEvent.NewRegistry>addListener(event ->
+                        event.dataPackRegistry((ResourceKey<Registry<T>>) registrar.key(), this.codecs.getFirst(), this.codecs.getSecond())
+                ));
+            }
             RegistryProviderImpl.CUSTOM_REGS.put((ResourceKey) registrar.key(), registrar);
             return registrar;
-        }
-        
-        @Override
-        public RegistrarBuilder<T> option(RegistrarOption option) {
-            if (option == StandardRegistrarOption.SAVE_TO_DISC) {
-                this.saveToDisk = true;
-            } else if (option == StandardRegistrarOption.SYNC_TO_CLIENTS) {
-                this.syncToClients = true;
-            }
-            return this;
         }
     }
     

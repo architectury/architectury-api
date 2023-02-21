@@ -9,12 +9,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(RegistryDataLoader.class)
-public class RegistryDataLoaderMixin {
+public class MixinRegistryDataLoader {
     
     // Mirror forge's directory style for architectury registrars
     @Inject(method = "registryDirPath", at = @At("HEAD"), cancellable = true)
     private static void registryDirPath(ResourceLocation key, CallbackInfoReturnable<String> cir) {
-        if (RegistrarManagerImpl.shouldBePrefixed(key))
+        if (RegistrarManagerImpl.shouldPrefix(key))
             cir.setReturnValue(key.getNamespace() + "/" + key.getPath());
     }
 }

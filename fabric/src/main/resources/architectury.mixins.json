@@ -23,6 +23,7 @@
   "mixins": [
     "BiomeAccessor",
     "BucketItemAccessor",
+    "BuiltInRegistriesAccessor",
     "HorseTameInvoker",
     "LiquidBlockAccessor",
     "LivingDeathInvoker",
@@ -51,15 +52,15 @@
     "MixinPlayer",
     "MixinPlayerAdvancements",
     "MixinPlayerList",
+    "MixinRegistryDataLoader",
+    "MixinRegistrySynchronization",
     "MixinResultSlot",
     "MixinServerLevel",
     "MixinServerPlayer",
     "MixinServerPlayerGameMode",
     "MixinTamableAnimal",
-    "PlayerAttackInvoker",
-    "RegistryDataLoaderAccessor",
-    "RegistryDataLoaderMixin",
-    "RegistrySynchronizationMixin"
+    "MixinWorldLoader",
+    "PlayerAttackInvoker"
   ],
   "injectors": {
     "maxShiftBy": 5,
