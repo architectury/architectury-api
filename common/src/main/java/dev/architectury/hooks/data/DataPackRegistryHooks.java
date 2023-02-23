@@ -21,13 +21,9 @@ package dev.architectury.hooks.data;
 
 import com.mojang.serialization.Codec;
 import dev.architectury.injectables.annotations.ExpectPlatform;
-import dev.architectury.utils.GameInstance;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.MinecraftServer;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Optional;
 
 public final class DataPackRegistryHooks {
     
