@@ -1,5 +1,6 @@
 package dev.architectury.mixin.fabric;
 
+import dev.architectury.hooks.data.fabric.DataPackRegistryHooksImpl;
 import dev.architectury.registry.registries.fabric.RegistrarManagerImpl;
 import net.minecraft.resources.RegistryDataLoader;
 import net.minecraft.server.WorldLoader;
@@ -17,7 +18,7 @@ public class MixinWorldLoader {
     @Redirect(method = "load", at = @At(value = "FIELD", target = "Lnet/minecraft/resources/RegistryDataLoader;WORLDGEN_REGISTRIES:Ljava/util/List;", opcode = Opcodes.GETSTATIC))
     private static List<RegistryDataLoader.RegistryData<?>> load() {
         List<RegistryDataLoader.RegistryData<?>> data = new ArrayList<>(RegistryDataLoader.WORLDGEN_REGISTRIES);
-        data.addAll(RegistrarManagerImpl.getDataRegistrars());
+        data.addAll(DataPackRegistryHooksImpl.getDataRegistries());
         return data;
     }
 }

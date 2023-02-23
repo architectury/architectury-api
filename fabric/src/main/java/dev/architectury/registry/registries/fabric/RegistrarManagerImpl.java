@@ -31,6 +31,11 @@ import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarBuilder;
 import dev.architectury.registry.registries.RegistrarManager;
 import dev.architectury.registry.registries.RegistrySupplier;
+import dev.architectury.registry.registries.options.OnAddCallback;
+import dev.architectury.registry.registries.options.OnCreateCallback;
+import dev.architectury.registry.registries.options.RegistrarOption;
+import dev.architectury.registry.registries.options.StandardRegistrarOptions;
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
@@ -51,9 +56,6 @@ import java.util.function.Supplier;
 public class RegistrarManagerImpl {
     private static final Multimap<RegistryEntryId<?>, Consumer<?>> LISTENERS = HashMultimap.create();
     private static final Set<ResourceKey<?>> LISTENED_REGISTRIES = new HashSet<>();
-    private static final List<RegistryDataLoader.RegistryData<?>> DATA_REGISTRARS = new ArrayList<>();
-    private static final Set<ResourceLocation> REGISTRIES_TO_PREFIX = new HashSet<>();
-    private static final Map<ResourceKey<? extends Registry<?>>, RegistrySynchronization.NetworkedRegistryData<?>> NETWORKABLE_DATA_REGISTRARS = new HashMap<>();
     
     private static void listen(ResourceKey<?> resourceKey, ResourceLocation id, Consumer<?> listener) {
         if (LISTENED_REGISTRIES.add(resourceKey)) {
@@ -72,18 +74,6 @@ public class RegistrarManagerImpl {
     
     public static RegistrarManager.RegistryProvider _get(String modId) {
         return new RegistryProviderImpl(modId);
-    }
-    
-    public static List<RegistryDataLoader.RegistryData<?>> getDataRegistrars() {
-        return DATA_REGISTRARS;
-    }
-    
-    public static Map<ResourceKey<? extends Registry<?>>, RegistrySynchronization.NetworkedRegistryData<?>> getNetworkableDataRegistrars() {
-        return NETWORKABLE_DATA_REGISTRARS;
-    }
-    
-    public static boolean shouldPrefix(ResourceLocation l) {
-        return !l.getNamespace().equals("minecraft") && REGISTRIES_TO_PREFIX.contains(l);
     }
     
     public static class RegistryProviderImpl implements RegistrarManager.RegistryProvider {
@@ -109,8 +99,8 @@ public class RegistrarManagerImpl {
         }
         
         @Override
-        public <T> RegistrarBuilder<T> builder(ResourceLocation registryId) {
-            return new RegistrarBuilderWrapper<>(registryId);
+        public <T> RegistrarBuilder<T> builder(Class<T> type, ResourceLocation registryId) {
+            return new RegistrarBuilderWrapper<>(FabricRegistryBuilder.createSimple(type, registryId));
         }
     }
     
@@ -139,73 +129,38 @@ public class RegistrarManagerImpl {
     
     public static class RegistrarBuilderWrapper<T> implements RegistrarBuilder<T> {
     
-        private final ResourceLocation registryId;
         private final List<OnAddCallback<T>> onAdd = new ArrayList<>();
-        private final List<Consumer<Registrar<T>>> onFill = new ArrayList<>();
-        private boolean saveToDisk;
-        private boolean syncToClients;
-        private Pair<Codec<T>, @Nullable Codec<T>> codecs;
-        public RegistrarBuilderWrapper(ResourceLocation registryId) {
-            this.registryId = registryId;
-        }
+        private final List<Consumer<Registrar<T>>> onCreate = new ArrayList<>();
+        private final FabricRegistryBuilder<T, MappedRegistry<T>> builder;
     
-        @Override
-        public RegistrarBuilder<T> saveToDisc() {
-            this.saveToDisk = true;
-            return this;
-        }
-    
-        @Override
-        public RegistrarBuilder<T> syncToClients() {
-            this.syncToClients = true;
-            return this;
-        }
-    
-        @Override
-        public RegistrarBuilder<T> onAdd(OnAddCallback<T> callback) {
-            this.onAdd.add(callback);
-            return this;
-        }
-    
-        @Override
-        public RegistrarBuilder<T> onFill(Consumer<Registrar<T>> callback) {
-            this.onFill.add(callback);
-            return this;
-        }
-    
-        @Override
-        public RegistrarBuilder<T> dataPackRegistry(Codec<T> codec, @Nullable Codec<T> networkCodec) {
-            this.codecs = Pair.of(codec, networkCodec);
-            return this;
+        public RegistrarBuilderWrapper(FabricRegistryBuilder<T, MappedRegistry<T>> builder) {
+            this.builder = builder;
         }
     
         @Override
         public Registrar<T> build() {
-            ResourceKey<? extends Registry<T>> key = ResourceKey.createRegistryKey(this.registryId);
-            WritableRegistry<T> registry = new MappedRegistry<>(key, Lifecycle.stable());
-            
-            RegistryAttributeHolder attributeHolder = RegistryAttributeHolder.get(registry);
-            attributeHolder.addAttribute(RegistryAttribute.MODDED);
-            if (this.saveToDisk)
-                attributeHolder.addAttribute(RegistryAttribute.PERSISTED);
-            if (this.syncToClients)
-                attributeHolder.addAttribute(RegistryAttribute.SYNCED);
-            if (this.codecs != null) {
-                DATA_REGISTRARS.add(new RegistryDataLoader.RegistryData<>(key, this.codecs.getFirst()));
-                REGISTRIES_TO_PREFIX.add(this.registryId);
-                if (this.codecs.getSecond() != null)
-                    NETWORKABLE_DATA_REGISTRARS.put(key, new RegistrySynchronization.NetworkedRegistryData<>(key, this.codecs.getSecond()));
-            } else {
-                ResourceKey<?> untypedKey = registry.key();
-                BuiltInRegistriesAccessor.getWritableRegistry().register((ResourceKey<WritableRegistry<?>>) untypedKey, registry, Lifecycle.stable());
-            }
-            
+            Registry<T> registry = builder.buildAndRegister();
+            Registrar<T> registrar = RegistrarManager.get(registry.key().location().getNamespace()).get(registry);
             if (!this.onAdd.isEmpty())
                 RegistryEntryAddedCallback.event(registry).register((rawId, id, object) -> this.onAdd.forEach(callback -> callback.onAdd(rawId, id, object)));
-            Registrar<T> registrar = RegistrarManager.get(this.registryId.getNamespace()).get(registry);
-            if (!this.onFill.isEmpty())
-                this.onFill.forEach(consumer -> consumer.accept(registrar));
+            if (!this.onCreate.isEmpty())
+                this.onCreate.forEach(callback -> callback.accept(registrar));
             return registrar;
+        }
+    
+        @Override
+        @SuppressWarnings("unchecked")
+        public RegistrarBuilder<T> option(RegistrarOption option) {
+            if (option == StandardRegistrarOptions.SAVE_TO_DISC) {
+                this.builder.attribute(RegistryAttribute.PERSISTED);
+            } else if (option == StandardRegistrarOptions.SYNC_TO_CLIENTS) {
+                this.builder.attribute(RegistryAttribute.SYNCED);
+            } else if (option instanceof OnAddCallback<?> callback) {
+                this.onAdd.add((OnAddCallback<T>) callback);
+            } else if (option instanceof OnCreateCallback<?> callback) {
+                this.onCreate.add((OnCreateCallback<T>) callback);
+            }
+            return this;
         }
     }
     

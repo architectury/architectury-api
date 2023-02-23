@@ -25,6 +25,7 @@ import dev.architectury.core.fluid.ArchitecturyFluidAttributes;
 import dev.architectury.core.fluid.SimpleArchitecturyFluidAttributes;
 import dev.architectury.core.item.ArchitecturySpawnEggItem;
 import dev.architectury.event.events.common.LifecycleEvent;
+import dev.architectury.hooks.data.DataPackRegistryHooks;
 import dev.architectury.hooks.item.food.FoodPropertiesHooks;
 import dev.architectury.hooks.level.entity.EntityHooks;
 import dev.architectury.injectables.annotations.ExpectPlatform;
@@ -42,6 +43,7 @@ import dev.architectury.test.tab.TestCreativeTabs;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -73,9 +75,12 @@ import static dev.architectury.test.TestMod.SINK;
 public class TestRegistries {
     
     public record TestInt(int value) {
-        public static final Codec<TestInt> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-                Codec.INT.fieldOf("value").forGetter(TestInt::value)
-        ).apply(builder, TestInt::new));
+    }
+    
+    public record TestString(String string) {
+        public static final Codec<TestString> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+                Codec.STRING.fieldOf("string").forGetter(TestString::string)
+        ).apply(builder, TestString::new));
     }
     
     static {
@@ -83,10 +88,12 @@ public class TestRegistries {
     }
     
     public static final Registrar<TestInt> INTS = RegistrarManager.get(TestMod.MOD_ID).<TestInt>builder(new ResourceLocation(TestMod.MOD_ID, "ints"))
+            .syncToClients()
             .onAdd((id, name, object) -> System.out.println("On-Add callback test passed for the number " + name.getPath()))
-            .onFill(registrar -> System.out.println("Test registrar was created!"))
-            .dataPackRegistry(TestInt.CODEC, null)
+            .onCreate(registrar -> System.out.println("Test registrar was created!"))
             .build();
+    
+    public static final ResourceKey<Registry<TestString>> STRINGS = ResourceKey.createRegistryKey(new ResourceLocation(TestMod.MOD_ID, "strings"));
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(TestMod.MOD_ID, Registries.ITEM);
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(TestMod.MOD_ID, Registries.BLOCK);
     public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(TestMod.MOD_ID, Registries.FLUID);
@@ -221,9 +228,12 @@ public class TestRegistries {
         TEST_RECIPE_TYPE.listen(type -> {
             System.out.println("Registered recipe type!");
         });
+        DataPackRegistryHooks.addRegistryCodec(STRINGS, TestString.CODEC);
         LifecycleEvent.SERVER_STARTING.register(server -> {
-            Registry<TestInt> registry = server.registryAccess().registryOrThrow(INTS.key());
-            registry.keySet().forEach(key -> System.out.println("Found the number " + key.getPath() + " in a datapack!"));
+            Registry<TestString> registry = server.registryAccess().registryOrThrow(STRINGS);
+            registry.entrySet().forEach(entry -> {
+                System.out.println("Found a string called " + entry.getKey().location() + " that says '" + entry.getValue().string() + "'!");
+            });
         });
     }
 }

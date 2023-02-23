@@ -30,6 +30,10 @@ import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarBuilder;
 import dev.architectury.registry.registries.RegistrarManager;
 import dev.architectury.registry.registries.RegistrySupplier;
+import dev.architectury.registry.registries.options.OnAddCallback;
+import dev.architectury.registry.registries.options.OnCreateCallback;
+import dev.architectury.registry.registries.options.RegistrarOption;
+import dev.architectury.registry.registries.options.StandardRegistrarOptions;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
@@ -170,7 +174,7 @@ public class RegistrarManagerImpl {
         }
         
         @Override
-        public <T> RegistrarBuilder<T> builder(ResourceLocation registryId) {
+        public <T> RegistrarBuilder<T> builder(Class<T> type, ResourceLocation registryId) {
             return new RegistryBuilderWrapper<>(this, new net.minecraftforge.registries.RegistryBuilder<>()
                     .setName(registryId), registryId);
         }
@@ -269,14 +273,13 @@ public class RegistrarManagerImpl {
     
     public static class RegistryBuilderWrapper<T> implements RegistrarBuilder<T> {
         private final RegistryProviderImpl provider;
+        private final List<OnAddCallback<T>> onAdd = new ArrayList<>();
+        private final List<OnCreateCallback<T>> onCreate = new ArrayList<>();
         private final net.minecraftforge.registries.RegistryBuilder<?> builder;
         private final ResourceLocation registryId;
-        private final List<OnAddCallback<T>> onAdd = new ArrayList<>();
-        private final List<Consumer<Registrar<T>>> onFill = new ArrayList<>();
-        private Pair<Codec<T>, @Nullable Codec<T>> codecs;
         private boolean saveToDisk = false;
         private boolean syncToClients = false;
-        
+    
         public RegistryBuilderWrapper(RegistryProviderImpl provider, RegistryBuilder<?> builder, ResourceLocation registryId) {
             this.provider = provider;
             this.builder = builder;
@@ -284,40 +287,11 @@ public class RegistrarManagerImpl {
         }
     
         @Override
-        public RegistrarBuilder<T> saveToDisc() {
-            this.saveToDisk = true;
-            return this;
-        }
-    
-        @Override
-        public RegistrarBuilder<T> syncToClients() {
-            this.syncToClients = true;
-            return this;
-        }
-    
-        @Override
-        public RegistrarBuilder<T> onAdd(OnAddCallback<T> callback) {
-            this.onAdd.add(callback);
-            return this;
-        }
-    
-        @Override
-        public RegistrarBuilder<T> onFill(Consumer<Registrar<T>> callback) {
-            this.onFill.add(callback);
-            return this;
-        }
-    
-        @Override
-        public RegistrarBuilder<T> dataPackRegistry(Codec<T> codec, @Nullable Codec<T> networkCodec) {
-            this.codecs = Pair.of(codec, networkCodec);
-            return this;
-        }
-    
-        @Override
+        @SuppressWarnings("unchecked")
         public Registrar<T> build() {
             if (!syncToClients) builder.disableSync();
             if (!saveToDisk) builder.disableSaving();
-            if (!onAdd.isEmpty()) builder.onAdd((internal, registryManager, i, key, object, oldObject) -> onAdd.forEach(callback -> callback.onAdd(i, key.location(), (T) object)));
+            if (!onAdd.isEmpty()) builder.onAdd((intern, registryManager, id, key, object, old) -> onAdd.forEach(callback -> callback.onAdd(id, key.location(), (T) object)));
             if (provider.builders == null) {
                 throw new IllegalStateException("Cannot create registries when registries are already aggregated!");
             }
@@ -325,19 +299,29 @@ public class RegistrarManagerImpl {
             var registrar = (DelegatedRegistrar<T>) new DelegatedRegistrar<>(provider.modId, () -> java.util.Objects.requireNonNull(registrarRef[0], "Registry not yet initialized!"), registryId);
             var entry = new RegistryProviderImpl.RegistryBuilderEntry(builder, forgeRegistry -> {
                 registrarRef[0] = provider.get(forgeRegistry);
+                if (!onCreate.isEmpty())
+                    onCreate.forEach(callback -> callback.accept(registrar));
                 registrar.onRegister();
-                if (!this.onFill.isEmpty())
-                    this.onFill.forEach(consumer -> consumer.accept(registrar));
             });
             provider.builders.add(entry);
             //noinspection rawtypes
-            if (this.codecs != null) {
-                EventBuses.onRegistered(this.registryId.getNamespace(), bus -> bus.<DataPackRegistryEvent.NewRegistry>addListener(event ->
-                        event.dataPackRegistry((ResourceKey<Registry<T>>) registrar.key(), this.codecs.getFirst(), this.codecs.getSecond())
-                ));
-            }
             RegistryProviderImpl.CUSTOM_REGS.put((ResourceKey) registrar.key(), registrar);
             return registrar;
+        }
+    
+        @Override
+        @SuppressWarnings("unchecked")
+        public RegistrarBuilder<T> option(RegistrarOption option) {
+            if (option == StandardRegistrarOptions.SAVE_TO_DISC) {
+                this.saveToDisk = true;
+            } else if (option == StandardRegistrarOptions.SYNC_TO_CLIENTS) {
+                this.syncToClients = true;
+            } else if (option instanceof OnCreateCallback<?> callback) {
+                this.onCreate.add((OnCreateCallback<T>) callback);
+            } else if (option instanceof OnAddCallback<?> callback) {
+                this.onAdd.add((OnAddCallback<T>) callback);
+            }
+            return this;
         }
     }
     

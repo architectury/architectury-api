@@ -19,11 +19,10 @@
 
 package dev.architectury.registry.registries;
 
-import com.mojang.serialization.Codec;
-import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Consumer;
+import dev.architectury.registry.registries.options.OnAddCallback;
+import dev.architectury.registry.registries.options.OnCreateCallback;
+import dev.architectury.registry.registries.options.RegistrarOption;
+import dev.architectury.registry.registries.options.StandardRegistrarOptions;
 
 /**
  * A builder to create a new {@link Registrar}.
@@ -36,51 +35,21 @@ public interface RegistrarBuilder<T> {
     
     Registrar<T> build();
     
-    /**
-     * Specifies that the registrar should save its contents to the disk (persist).
-     */
-    RegistrarBuilder<T> saveToDisc();
+    RegistrarBuilder<T> option(RegistrarOption option);
     
-    /**
-     * Specifies that the registrar should sync its contents between servers and clients.
-     */
-    RegistrarBuilder<T> syncToClients();
-    
-    /**
-     * Adds code to run when a new registry entry is added.
-     *
-     * @param callback The callback to run
-     */
-    RegistrarBuilder<T> onAdd(OnAddCallback<T> callback);
-    
-    /**
-     * Adds code to run when the registry is created.
-     *
-     * @param callback The callback to run
-     */
-    RegistrarBuilder<T> onFill(Consumer<Registrar<T>> callback);
-    
-    /**
-     * Allows the built registrar to load contents from JSON files located in a directory corresponding to the registry name.
-     * <p>Data JSONs will be loaded from {@code data/<datapack_namespace>/modid/registryname/}, where {@code modid} is the namespace of the registry key.
-     *
-     * @param codec        The codec to (de)serialize registrar entries from JSON
-     * @param networkCodec An optional codec to sync contents to clients
-     */
-    RegistrarBuilder<T> dataPackRegistry(Codec<T> codec, @Nullable Codec<T> networkCodec);
-    
-    /**
-     * Allows the built registrar to load contents from JSON files located in a directory corresponding to the registry name.
-     * <p>Data JSONs will be loaded from {@code data/<datapack_namespace>/modid/registryname/}, where {@code modid} is the namespace of the registry key.
-     *
-     * @param codec The codec to (de)serialize registrar entries from JSON
-     */
-    default RegistrarBuilder<T> dataPackRegistry(Codec<T> codec) {
-        return this.dataPackRegistry(codec, null);
+    default RegistrarBuilder<T> saveToDisc() {
+        return this.option(StandardRegistrarOptions.SAVE_TO_DISC);
     }
     
-    @FunctionalInterface
-    interface OnAddCallback<T> {
-        void onAdd(int id, ResourceLocation name, T object);
+    default RegistrarBuilder<T> syncToClients() {
+        return this.option(StandardRegistrarOptions.SYNC_TO_CLIENTS);
+    }
+    
+    default RegistrarBuilder<T> onAdd(OnAddCallback<T> callback) {
+        return this.option(callback);
+    }
+    
+    default RegistrarBuilder<T> onCreate(OnCreateCallback<T> callback) {
+        return this.option(callback);
     }
 }
