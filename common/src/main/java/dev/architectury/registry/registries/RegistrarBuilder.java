@@ -29,7 +29,6 @@ import dev.architectury.registry.registries.options.StandardRegistrarOptions;
  *
  * @param <T> The type of registry object
  * @author ebo2022
- * @since
  */
 public interface RegistrarBuilder<T> {
     
