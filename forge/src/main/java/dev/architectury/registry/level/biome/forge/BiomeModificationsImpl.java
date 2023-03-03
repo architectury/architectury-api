@@ -568,13 +568,13 @@ public class BiomeModificationsImpl {
         
         @Override
         public Mutable setSpawnCost(EntityType<?> entityType, MobSpawnSettings.MobSpawnCost cost) {
-            builder.addMobCharge(entityType, cost.getCharge(), cost.getEnergyBudget());
+            builder.addMobCharge(entityType, cost.charge(), cost.energyBudget());
             return this;
         }
         
         @Override
-        public Mutable setSpawnCost(EntityType<?> entityType, double mass, double gravityLimit) {
-            builder.addMobCharge(entityType, mass, gravityLimit);
+        public Mutable setSpawnCost(EntityType<?> entityType, double charge, double energyBudget) {
+            builder.addMobCharge(entityType, charge, energyBudget);
             return this;
         }
         

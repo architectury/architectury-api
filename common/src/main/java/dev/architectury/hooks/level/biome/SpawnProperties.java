@@ -43,7 +43,7 @@ public interface SpawnProperties {
         
         Mutable setSpawnCost(EntityType<?> entityType, MobSpawnSettings.MobSpawnCost cost);
         
-        Mutable setSpawnCost(EntityType<?> entityType, double mass, double gravityLimit);
+        Mutable setSpawnCost(EntityType<?> entityType, double charge, double energyBudget);
         
         Mutable clearSpawnCost(EntityType<?> entityType);
     }

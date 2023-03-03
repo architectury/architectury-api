@@ -50,7 +50,7 @@ public final class ItemStackHooks {
             var entity = player.drop(stack, false);
             if (entity != null) {
                 entity.setNoPickUpDelay();
-                entity.setOwner(player.getUUID());
+                entity.setTarget(player.getUUID());
             }
         }
     }
