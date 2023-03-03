@@ -44,7 +44,8 @@ import java.nio.file.Path
 task generateAccessWidener {
     doLast {
         List<String> lines = ["", "##############################", "# This section is generated automatically with Gradle task generateAccessWidener!!!", "##############################", ""]
-        Path inputJar = loom.namedMinecraftProvider.parentMinecraftProvider.mergedJar
+        Path inputJar = loom.namedMinecraftProvider.parentMinecraftProvider.mergedJar.path
+        logger.lifecycle("Generating access widener for $inputJar")
 
         try (def fs = FileSystems.newFileSystem(URI.create("jar:${inputJar.toUri()}"), [create: false])) {
             generateItemConstructors(lines, fs)

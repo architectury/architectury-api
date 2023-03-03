@@ -48,7 +48,7 @@ shadowJar {
     exclude "architectury.common.json"
 
     configurations = [project.configurations.shadowCommon]
-    classifier "dev-shadow"
+    archiveClassifier = "dev-shadow"
 
     // Replace classes with forge's version
     exclude "dev/architectury/core/block/ArchitecturyLiquidBlock.class"
@@ -65,21 +65,21 @@ shadowJar {
 remapJar {
     input.set shadowJar.archiveFile
     dependsOn shadowJar
-    classifier null
+    archiveClassifier = null
 }
 
 task renameJarForPublication(type: Zip, dependsOn: remapJar) {
     from remapJar.archiveFile.map { zipTree(it) }
-    extension "jar"
+    archiveExtension = "jar"
     metadataCharset "UTF-8"
     destinationDirectory = base.libsDirectory
-    classifier project.name
+    archiveClassifier = project.name
 }
 
 assemble.dependsOn renameJarForPublication
 
 jar {
-    classifier "dev"
+    archiveClassifier = "dev"
 }
 
 sourcesJar {
