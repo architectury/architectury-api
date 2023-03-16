@@ -22,6 +22,7 @@ package dev.architectury.mixin.forge;
 import dev.architectury.event.events.client.ClientTickEvent;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.Holder;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.Level;
@@ -36,8 +37,8 @@ import java.util.function.Supplier;
 
 @Mixin(ClientLevel.class)
 public abstract class MixinClientLevel extends Level {
-    protected MixinClientLevel(WritableLevelData arg, ResourceKey<Level> arg2, Holder<DimensionType> arg3, Supplier<ProfilerFiller> supplier, boolean bl, boolean bl2, long l, int i) {
-        super(arg, arg2, arg3, supplier, bl, bl2, l, i);
+    protected MixinClientLevel(WritableLevelData arg, ResourceKey<Level> arg2, RegistryAccess arg3, Holder<DimensionType> arg4, Supplier<ProfilerFiller> supplier, boolean bl, boolean bl2, long l, int i) {
+        super(arg, arg2, arg3, arg4, supplier, bl, bl2, l, i);
     }
     
     @Inject(method = "tickEntities", at = @At("HEAD"))

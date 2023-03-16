@@ -285,8 +285,8 @@ public class BiomeModificationsImpl {
         }
         
         @Override
-        public Biome.Precipitation getPrecipitation() {
-            return builder.getPrecipitation();
+        public boolean hasPrecipitation() {
+            return builder.hasPrecipitation();
         }
         
         @Override
@@ -305,8 +305,8 @@ public class BiomeModificationsImpl {
         }
         
         @Override
-        public Mutable setPrecipitation(Biome.Precipitation precipitation) {
-            this.builder.setPrecipitation(precipitation);
+        public Mutable setHasPrecipitation(boolean hasPrecipitation) {
+            this.builder.setHasPrecipitation(hasPrecipitation);
             return this;
         }
         
