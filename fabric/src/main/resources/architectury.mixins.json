@@ -23,7 +23,6 @@
   "mixins": [
     "BiomeAccessor",
     "BucketItemAccessor",
-    "BuiltInRegistriesAccessor",
     "HorseTameInvoker",
     "LiquidBlockAccessor",
     "LivingDeathInvoker",
