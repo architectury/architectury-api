@@ -25,10 +25,9 @@ import dev.architectury.core.fluid.ArchitecturyFluidAttributes;
 import dev.architectury.core.fluid.SimpleArchitecturyFluidAttributes;
 import dev.architectury.core.item.ArchitecturySpawnEggItem;
 import dev.architectury.event.events.common.LifecycleEvent;
-import dev.architectury.hooks.data.DataPackRegistryHooks;
+import dev.architectury.hooks.data.DynamicRegistryHooks;
 import dev.architectury.hooks.item.food.FoodPropertiesHooks;
 import dev.architectury.hooks.level.entity.EntityHooks;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.platform.Platform;
 import dev.architectury.registry.level.entity.EntityAttributeRegistry;
 import dev.architectury.registry.registries.DeferredRegister;
@@ -93,7 +92,7 @@ public class TestRegistries {
             .onCreate(registrar -> System.out.println("Test registrar was created!"))
             .build();
     
-    public static final ResourceKey<Registry<TestString>> STRINGS = ResourceKey.createRegistryKey(new ResourceLocation(TestMod.MOD_ID, "strings"));
+    public static final ResourceKey<Registry<TestString>> STRINGS = DynamicRegistryHooks.create(new ResourceLocation(TestMod.MOD_ID, "strings"), TestString.CODEC);
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(TestMod.MOD_ID, Registries.ITEM);
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(TestMod.MOD_ID, Registries.BLOCK);
     public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(TestMod.MOD_ID, Registries.FLUID);
@@ -228,7 +227,6 @@ public class TestRegistries {
         TEST_RECIPE_TYPE.listen(type -> {
             System.out.println("Registered recipe type!");
         });
-        DataPackRegistryHooks.addRegistryCodec(STRINGS, TestString.CODEC);
         LifecycleEvent.SERVER_STARTING.register(server -> {
             Registry<TestString> registry = server.registryAccess().registryOrThrow(STRINGS);
             registry.entrySet().forEach(entry -> {

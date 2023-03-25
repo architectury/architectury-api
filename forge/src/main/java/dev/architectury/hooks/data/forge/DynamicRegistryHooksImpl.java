@@ -23,15 +23,18 @@ import com.mojang.serialization.Codec;
 import dev.architectury.platform.forge.EventBuses;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.DataPackRegistryEvent;
 import org.jetbrains.annotations.Nullable;
 
-public class DataPackRegistryHooksImpl {
+public class DynamicRegistryHooksImpl {
     
     @SuppressWarnings("unchecked")
-    public static <T> void addRegistryCodec(ResourceKey<? extends Registry<T>> key, Codec<T> codec, @Nullable Codec<T> networkCodec) {
-        EventBuses.onRegistered(key.location().getNamespace(), bus -> bus.<DataPackRegistryEvent.NewRegistry>addListener(
-                event -> event.dataPackRegistry((ResourceKey<Registry<T>>) key, codec, networkCodec)
+    public static <T> ResourceKey<Registry<T>> create(ResourceLocation id, Codec<T> codec, @Nullable Codec<T> networkCodec) {
+        ResourceKey<Registry<T>> key = ResourceKey.createRegistryKey(id);
+        EventBuses.onRegistered(id.getNamespace(), bus -> bus.<DataPackRegistryEvent.NewRegistry>addListener(e ->
+                e.dataPackRegistry(key, codec, networkCodec)
         ));
+        return key;
     }
 }
