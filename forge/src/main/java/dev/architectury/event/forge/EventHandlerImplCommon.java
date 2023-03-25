@@ -43,7 +43,7 @@ import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.AnimalTameEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.living.LivingSpawnEvent;
+import net.minecraftforge.event.entity.living.MobSpawnEvent;
 import net.minecraftforge.event.entity.player.*;
 import net.minecraftforge.event.entity.player.PlayerEvent.*;
 import net.minecraftforge.event.level.BlockEvent.BreakEvent;
@@ -194,7 +194,7 @@ public class EventHandlerImplCommon {
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void event(AdvancementEvent event) {
+    public static void event(AdvancementEvent.AdvancementEarnEvent event) {
         if (event.getEntity() instanceof ServerPlayer) {
             PlayerEvent.PLAYER_ADVANCEMENT.invoker().award((ServerPlayer) event.getEntity(), event.getAdvancement());
         }
@@ -261,8 +261,8 @@ public class EventHandlerImplCommon {
     //    }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void eventLivingSpawnEvent(LivingSpawnEvent.CheckSpawn event) {
-        EventResult result = EntityEvent.LIVING_CHECK_SPAWN.invoker().canSpawn(event.getEntity(), event.getLevel(), event.getX(), event.getY(), event.getZ(), event.getSpawnReason(), event.getSpawner());
+    public static void eventLivingSpawnEvent(MobSpawnEvent.FinalizeSpawn event) {
+        EventResult result = EntityEvent.LIVING_CHECK_SPAWN.invoker().canSpawn(event.getEntity(), event.getLevel(), event.getX(), event.getY(), event.getZ(), event.getSpawnType(), event.getSpawner());
         if (result.interruptsFurtherEvaluation()) {
             if (result.isEmpty()) {
                 event.setResult(Event.Result.DEFAULT);
