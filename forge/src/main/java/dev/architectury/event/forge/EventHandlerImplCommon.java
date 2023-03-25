@@ -264,10 +264,8 @@ public class EventHandlerImplCommon {
     public static void eventLivingSpawnEvent(MobSpawnEvent.FinalizeSpawn event) {
         EventResult result = EntityEvent.LIVING_CHECK_SPAWN.invoker().canSpawn(event.getEntity(), event.getLevel(), event.getX(), event.getY(), event.getZ(), event.getSpawnType(), event.getSpawner());
         if (result.interruptsFurtherEvaluation()) {
-            if (result.isEmpty()) {
-                event.setResult(Event.Result.DEFAULT);
-            } else {
-                event.setResult(result.value() ? Event.Result.ALLOW : Event.Result.DENY);
+            if (!result.isEmpty()) {
+                event.setSpawnCancelled(result.value());
             }
         }
     }
