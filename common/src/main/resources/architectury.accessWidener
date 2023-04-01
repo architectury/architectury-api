@@ -170,6 +170,7 @@ transitive-accessible method net/minecraft/world/level/block/CakeBlock <init> (L
 transitive-accessible method net/minecraft/world/level/block/CandleCakeBlock <init> (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/CartographyTableBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/CarvedPumpkinBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
+transitive-accessible method net/minecraft/world/level/block/CheeseBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/ChestBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;Ljava/util/function/Supplier;)V
 transitive-accessible method net/minecraft/world/level/block/ChorusFlowerBlock <init> (Lnet/minecraft/world/level/block/ChorusPlantBlock;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/ChorusPlantBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
@@ -211,8 +212,11 @@ transitive-accessible method net/minecraft/world/level/block/MangroveRootsBlock 
 transitive-accessible method net/minecraft/world/level/block/MelonBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/NetherWartBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/NyliumBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
+transitive-accessible method net/minecraft/world/level/block/PackedAirBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
+transitive-accessible method net/minecraft/world/level/block/PickaxeBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/PinkPetalsBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/PipeBlock <init> (FLnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
+transitive-accessible method net/minecraft/world/level/block/PlaceBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/PlayerHeadBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/PlayerWallHeadBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/PoweredRailBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
@@ -332,6 +336,7 @@ transitive-accessible field net/minecraft/client/renderer/RenderStateShard LEQUA
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard COLOR_DEPTH_WRITE Lnet/minecraft/client/renderer/RenderStateShard$WriteMaskStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard COLOR_WRITE Lnet/minecraft/client/renderer/RenderStateShard$WriteMaskStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard DEPTH_WRITE Lnet/minecraft/client/renderer/RenderStateShard$WriteMaskStateShard;
+transitive-accessible field net/minecraft/client/renderer/RenderStateShard NO_WRITE Lnet/minecraft/client/renderer/RenderStateShard$WriteMaskStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard NO_LAYERING Lnet/minecraft/client/renderer/RenderStateShard$LayeringStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard POLYGON_OFFSET_LAYERING Lnet/minecraft/client/renderer/RenderStateShard$LayeringStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard VIEW_OFFSET_Z_LAYERING Lnet/minecraft/client/renderer/RenderStateShard$LayeringStateShard;

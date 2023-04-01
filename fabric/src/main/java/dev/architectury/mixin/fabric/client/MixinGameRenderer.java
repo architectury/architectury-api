@@ -29,6 +29,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.server.packs.resources.ResourceProvider;
+import net.minecraft.voting.rules.Rules;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -50,7 +51,7 @@ public abstract class MixinGameRenderer {
     @Inject(method = "render(FJZ)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;renderWithTooltip(Lcom/mojang/blaze3d/vertex/PoseStack;IIF)V",
                     ordinal = 0), locals = LocalCapture.CAPTURE_FAILEXCEPTION, cancellable = true)
-    public void renderScreenPre(float tickDelta, long startTime, boolean tick, CallbackInfo ci, int mouseX, int mouseY, Window window, Matrix4f matrix, PoseStack matrices, PoseStack matrices2) {
+    public void renderScreenPre(float tickDelta, long startTime, boolean tick, CallbackInfo ci, boolean hasBloomRule, boolean hasBloomEffect, int mouseX, int mouseY, Window window, Matrix4f matrix, PoseStack matrices, PoseStack matrices2) {
         if (ClientGuiEvent.RENDER_PRE.invoker().render(minecraft.screen, matrices2, mouseX, mouseY, minecraft.getDeltaFrameTime()).isFalse()) {
             ci.cancel();
         }
@@ -59,7 +60,7 @@ public abstract class MixinGameRenderer {
     @Inject(method = "render(FJZ)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;renderWithTooltip(Lcom/mojang/blaze3d/vertex/PoseStack;IIF)V",
                     shift = At.Shift.AFTER, ordinal = 0), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-    public void renderScreenPost(float tickDelta, long startTime, boolean tick, CallbackInfo ci, int mouseX, int mouseY, Window window, Matrix4f matrix, PoseStack matrices, PoseStack matrices2) {
+    public void renderScreenPost(float tickDelta, long startTime, boolean tick, CallbackInfo ci, boolean hasBloomRule, boolean hasBloomEffect, int mouseX, int mouseY, Window window, Matrix4f matrix, PoseStack matrices, PoseStack matrices2) {
         ClientGuiEvent.RENDER_POST.invoker().render(minecraft.screen, matrices2, mouseX, mouseY, minecraft.getDeltaFrameTime());
     }
     
