@@ -37,7 +37,7 @@ import java.util.OptionalInt;
 public class MixinServerPlayer {
     @Inject(method = "restoreFrom", at = @At("RETURN"))
     private void restoreFrom(ServerPlayer serverPlayer, boolean bl, CallbackInfo ci) {
-        PlayerEvent.PLAYER_CLONE.invoker().clone((ServerPlayer) (Object) this, serverPlayer, bl);
+        PlayerEvent.PLAYER_CLONE.invoker().clone(serverPlayer, (ServerPlayer) (Object) this, bl);
     }
     
     @Inject(method = "openMenu", at = @At("RETURN"))
