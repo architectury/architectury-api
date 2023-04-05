@@ -30,10 +30,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(BlockItem.class)
 public abstract class MixinBlockItem {
-    @Inject(method = "place",
-            at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/world/item/context/BlockPlaceContext;getClickedPos()Lnet/minecraft/core/BlockPos;"),
-            cancellable = true)
+    @Inject(method = "place", at = @At("HEAD"), cancellable = true)
     private void place(BlockPlaceContext context, CallbackInfoReturnable<InteractionResult> cir) {
         var result = BlockEvent.PLACE.invoker().placeBlock(context.getLevel(), context.getClickedPos(), context.getLevel().getBlockState(context.getClickedPos()), context.getPlayer());
         if (result.isPresent()) {
