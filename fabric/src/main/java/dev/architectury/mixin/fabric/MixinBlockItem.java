@@ -23,18 +23,24 @@ import dev.architectury.event.events.common.BlockEvent;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(BlockItem.class)
 public abstract class MixinBlockItem {
-    @Inject(method = "place", at = @At("HEAD"), cancellable = true)
-    private void place(BlockPlaceContext context, CallbackInfoReturnable<InteractionResult> cir) {
-        var result = BlockEvent.PLACE.invoker().placeBlock(context.getLevel(), context.getClickedPos(), context.getLevel().getBlockState(context.getClickedPos()), context.getPlayer());
-        if (result.isPresent()) {
-            cir.setReturnValue(result.isTrue() ? InteractionResult.SUCCESS : InteractionResult.FAIL);
+    @Inject(method = "place",
+            at = @At(value = "INVOKE",
+                    target = "Lnet/minecraft/world/item/BlockItem;placeBlock(Lnet/minecraft/world/item/context/BlockPlaceContext;Lnet/minecraft/world/level/block/state/BlockState;)Z"),
+            locals = LocalCapture.CAPTURE_FAILHARD,
+            cancellable = true)
+    private void place(BlockPlaceContext _0, CallbackInfoReturnable<InteractionResult> cir, BlockPlaceContext context, BlockState placedState) {
+        var result = BlockEvent.PLACE.invoker().placeBlock(context.getLevel(), context.getClickedPos(), placedState, context.getPlayer());
+        if (result.isFalse()) {
+            cir.setReturnValue(InteractionResult.FAIL);
         }
     }
 }
