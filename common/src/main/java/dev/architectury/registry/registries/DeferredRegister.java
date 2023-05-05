@@ -35,7 +35,7 @@ public class DeferredRegister<T> implements Iterable<RegistrySupplier<T>> {
     private final List<RegistrySupplier<T>> entryView = Collections.unmodifiableList(this.entries);
     private boolean registered = false;
     @Nullable
-    private String modId;
+    private final String modId;
     
     private DeferredRegister(Supplier<RegistrarManager> registriesSupplier, ResourceKey<Registry<T>> key, @Nullable String modId) {
         this.registriesSupplier = Objects.requireNonNull(registriesSupplier);
@@ -148,6 +148,11 @@ public class DeferredRegister<T> implements Iterable<RegistrySupplier<T>> {
         @Override
         public String toString() {
             return getRegistryId().toString() + "@" + id.toString();
+        }
+        
+        public Collection<RegistrySupplier<T>> getEntries()
+        {
+            return entryView;
         }
     }
 }
