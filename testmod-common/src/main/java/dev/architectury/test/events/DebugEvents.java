@@ -54,7 +54,7 @@ public class DebugEvents {
     
     public static void debugEvents() {
         BlockEvent.BREAK.register((world, pos, state, player, xp) -> {
-            TestMod.SINK.accept(player.getScoreboardName() + " breaks " + toShortString(pos) + logSide(player.level));
+            TestMod.SINK.accept(player.getScoreboardName() + " breaks " + toShortString(pos) + logSide(player.level()));
             return EventResult.pass();
         });
         BlockEvent.PLACE.register((world, pos, state, placer) -> {
@@ -80,13 +80,13 @@ public class DebugEvents {
         });
         EntityEvent.LIVING_DEATH.register((entity, source) -> {
             if (entity instanceof Player) {
-                TestMod.SINK.accept(entity.getScoreboardName() + " died to " + source.getMsgId() + logSide(entity.level));
+                TestMod.SINK.accept(entity.getScoreboardName() + " died to " + source.getMsgId() + logSide(entity.level()));
             }
             return EventResult.pass();
         });
         EntityEvent.LIVING_HURT.register((entity, source, amount) -> {
             if (source.getDirectEntity() instanceof Player) {
-                TestMod.SINK.accept(source.getDirectEntity().getScoreboardName() + " deals %.2f damage" + logSide(entity.level), amount);
+                TestMod.SINK.accept(source.getDirectEntity().getScoreboardName() + " deals %.2f damage" + logSide(entity.level()), amount);
             }
             return EventResult.pass();
         });
@@ -131,19 +131,19 @@ public class DebugEvents {
             TestMod.SINK.accept(world.dimension().location() + " explodes at " + toShortString(ExplosionHooks.getPosition(explosion)) + logSide(world));
         });
         InteractionEvent.LEFT_CLICK_BLOCK.register((player, hand, pos, face) -> {
-            TestMod.SINK.accept(player.getScoreboardName() + " left clicks " + toShortString(pos) + logSide(player.level));
+            TestMod.SINK.accept(player.getScoreboardName() + " left clicks " + toShortString(pos) + logSide(player.level()));
             return EventResult.pass();
         });
         InteractionEvent.RIGHT_CLICK_BLOCK.register((player, hand, pos, face) -> {
-            TestMod.SINK.accept(player.getScoreboardName() + " right clicks " + toShortString(pos) + logSide(player.level));
+            TestMod.SINK.accept(player.getScoreboardName() + " right clicks " + toShortString(pos) + logSide(player.level()));
             return EventResult.pass();
         });
         InteractionEvent.RIGHT_CLICK_ITEM.register((player, hand) -> {
-            TestMod.SINK.accept(player.getScoreboardName() + " uses " + (hand == InteractionHand.MAIN_HAND ? "main hand" : "off hand") + logSide(player.level));
+            TestMod.SINK.accept(player.getScoreboardName() + " uses " + (hand == InteractionHand.MAIN_HAND ? "main hand" : "off hand") + logSide(player.level()));
             return CompoundEventResult.pass();
         });
         InteractionEvent.INTERACT_ENTITY.register((player, entity, hand) -> {
-            TestMod.SINK.accept(player.getScoreboardName() + " interacts with " + entity.getScoreboardName() + " using " + (hand == InteractionHand.MAIN_HAND ? "main hand" : "off hand") + logSide(player.level));
+            TestMod.SINK.accept(player.getScoreboardName() + " interacts with " + entity.getScoreboardName() + " using " + (hand == InteractionHand.MAIN_HAND ? "main hand" : "off hand") + logSide(player.level()));
             return EventResult.pass();
         });
         InteractionEvent.FARMLAND_TRAMPLE.register((level, pos, state, distance, entity) -> {
@@ -178,43 +178,43 @@ public class DebugEvents {
             TestMod.SINK.accept("Server world saved: " + instance.dimension().location());
         });
         PlayerEvent.PLAYER_JOIN.register(player -> {
-            TestMod.SINK.accept(player.getScoreboardName() + " joined" + logSide(player.level));
+            TestMod.SINK.accept(player.getScoreboardName() + " joined" + logSide(player.level()));
         });
         PlayerEvent.PLAYER_QUIT.register(player -> {
-            TestMod.SINK.accept(player.getScoreboardName() + " quit" + logSide(player.level));
+            TestMod.SINK.accept(player.getScoreboardName() + " quit" + logSide(player.level()));
         });
         PlayerEvent.PLAYER_RESPAWN.register((player, conqueredEnd) -> {
             if (!conqueredEnd) {
-                TestMod.SINK.accept(player.getScoreboardName() + " respawns " + logSide(player.level));
+                TestMod.SINK.accept(player.getScoreboardName() + " respawns " + logSide(player.level()));
             }
         });
         PlayerEvent.PLAYER_CLONE.register((oldPlayer, newPlayer, wonGame) -> {
-            TestMod.SINK.accept("Player cloned: " + newPlayer.getScoreboardName() + logSide(newPlayer.level));
+            TestMod.SINK.accept("Player cloned: " + newPlayer.getScoreboardName() + logSide(newPlayer.level()));
         });
         PlayerEvent.PLAYER_ADVANCEMENT.register((player, advancement) -> {
-            TestMod.SINK.accept(player.getScoreboardName() + " was awarded with %s" + logSide(player.level), advancement.getChatComponent().getString());
+            TestMod.SINK.accept(player.getScoreboardName() + " was awarded with %s" + logSide(player.level()), advancement.getChatComponent().getString());
         });
         PlayerEvent.CRAFT_ITEM.register((player, constructed, inventory) -> {
-            TestMod.SINK.accept(player.getScoreboardName() + " crafts " + Component.translatable(constructed.getDescriptionId()).getString() + logSide(player.level));
+            TestMod.SINK.accept(player.getScoreboardName() + " crafts " + Component.translatable(constructed.getDescriptionId()).getString() + logSide(player.level()));
         });
         PlayerEvent.SMELT_ITEM.register((player, smelted) -> {
-            TestMod.SINK.accept(player.getScoreboardName() + " smelts " + Component.translatable(smelted.getDescriptionId()).getString() + logSide(player.level));
+            TestMod.SINK.accept(player.getScoreboardName() + " smelts " + Component.translatable(smelted.getDescriptionId()).getString() + logSide(player.level()));
         });
         PlayerEvent.PICKUP_ITEM_POST.register((player, entity, stack) -> {
-            TestMod.SINK.accept(player.getScoreboardName() + " picks up " + Component.translatable(stack.getDescriptionId()).getString() + logSide(player.level));
+            TestMod.SINK.accept(player.getScoreboardName() + " picks up " + Component.translatable(stack.getDescriptionId()).getString() + logSide(player.level()));
         });
         PlayerEvent.DROP_ITEM.register((player, entity) -> {
-            TestMod.SINK.accept(player.getScoreboardName() + " drops " + Component.translatable(entity.getItem().getDescriptionId()).getString() + logSide(player.level));
+            TestMod.SINK.accept(player.getScoreboardName() + " drops " + Component.translatable(entity.getItem().getDescriptionId()).getString() + logSide(player.level()));
             return EventResult.pass();
         });
         PlayerEvent.OPEN_MENU.register((player, menu) -> {
-            TestMod.SINK.accept(player.getScoreboardName() + " opens " + toSimpleName(menu) + logSide(player.level));
+            TestMod.SINK.accept(player.getScoreboardName() + " opens " + toSimpleName(menu) + logSide(player.level()));
         });
         PlayerEvent.CLOSE_MENU.register((player, menu) -> {
-            TestMod.SINK.accept(player.getScoreboardName() + " closes " + toSimpleName(menu) + logSide(player.level));
+            TestMod.SINK.accept(player.getScoreboardName() + " closes " + toSimpleName(menu) + logSide(player.level()));
         });
         PlayerEvent.CHANGE_DIMENSION.register((player, oldLevel, newLevel) -> {
-            TestMod.SINK.accept(player.getScoreboardName() + " switched from " + oldLevel.location() + " to " + newLevel.location() + logSide(player.level));
+            TestMod.SINK.accept(player.getScoreboardName() + " switched from " + oldLevel.location() + " to " + newLevel.location() + logSide(player.level()));
         });
         PlayerEvent.FILL_BUCKET.register(((player, level, stack, target) -> {
             TestMod.SINK.accept("%s used a bucket (%s) in %s%s while looking at %s", player.getScoreboardName(), stack, level.dimension().location(), logSide(level), target == null ? "nothing" : target.getLocation());
@@ -291,10 +291,10 @@ public class DebugEvents {
             return EventResult.pass();
         });
         InteractionEvent.CLIENT_LEFT_CLICK_AIR.register((player, hand) -> {
-            TestMod.SINK.accept(player.getScoreboardName() + " left clicks air" + logSide(player.level));
+            TestMod.SINK.accept(player.getScoreboardName() + " left clicks air" + logSide(player.level()));
         });
         InteractionEvent.CLIENT_RIGHT_CLICK_AIR.register((player, hand) -> {
-            TestMod.SINK.accept(player.getScoreboardName() + " right clicks air" + logSide(player.level));
+            TestMod.SINK.accept(player.getScoreboardName() + " right clicks air" + logSide(player.level()));
         });
         ClientRecipeUpdateEvent.EVENT.register(recipeManager -> {
             TestMod.SINK.accept("Client recipes received");

@@ -6,10 +6,6 @@ accessible field net/minecraft/client/gui/screens/Screen narratables Ljava/util/
 accessible field net/minecraft/client/gui/screens/Screen renderables Ljava/util/List;
 accessible field net/minecraft/world/level/biome/BiomeGenerationSettings$PlainBuilder features Ljava/util/List;
 accessible field net/minecraft/world/level/block/state/BlockBehaviour properties Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;
-accessible field net/minecraft/world/level/block/state/BlockBehaviour$Properties material Lnet/minecraft/world/level/material/Material;
-mutable field net/minecraft/world/level/block/state/BlockBehaviour$Properties material Lnet/minecraft/world/level/material/Material;
-accessible field net/minecraft/world/level/block/state/BlockBehaviour$Properties materialColor Ljava/util/function/Function;
-mutable field net/minecraft/world/level/block/state/BlockBehaviour$Properties materialColor Ljava/util/function/Function;
 accessible field net/minecraft/world/level/block/state/BlockBehaviour$Properties hasCollision Z
 mutable field net/minecraft/world/level/block/state/BlockBehaviour$Properties hasCollision Z
 accessible field net/minecraft/world/level/block/state/BlockBehaviour$Properties soundType Lnet/minecraft/world/level/block/SoundType;
@@ -50,7 +46,7 @@ accessible field net/minecraft/world/level/block/state/BlockBehaviour$Properties
 mutable field net/minecraft/world/level/block/state/BlockBehaviour$Properties emissiveRendering Lnet/minecraft/world/level/block/state/BlockBehaviour$StatePredicate;
 accessible field net/minecraft/world/level/block/state/BlockBehaviour$Properties dynamicShape Z
 mutable field net/minecraft/world/level/block/state/BlockBehaviour$Properties dynamicShape Z
-accessible method net/minecraft/world/level/block/state/BlockBehaviour$Properties <init> (Lnet/minecraft/world/level/material/Material;Ljava/util/function/Function;)V
+accessible method net/minecraft/world/level/block/state/BlockBehaviour$Properties <init> ()V
 transitive-accessible method net/minecraft/world/entity/player/Player closeContainer ()V
 transitive-accessible method net/minecraft/advancements/CriteriaTriggers register (Lnet/minecraft/advancements/CriterionTrigger;)Lnet/minecraft/advancements/CriterionTrigger;
 transitive-accessible method net/minecraft/world/inventory/MenuType <init> (Lnet/minecraft/world/inventory/MenuType$MenuSupplier;Lnet/minecraft/world/flag/FeatureFlagSet;)V
@@ -261,8 +257,6 @@ transitive-accessible field net/minecraft/client/renderer/RenderStateShard GLINT
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard CRUMBLING_TRANSPARENCY Lnet/minecraft/client/renderer/RenderStateShard$TransparencyStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard TRANSLUCENT_TRANSPARENCY Lnet/minecraft/client/renderer/RenderStateShard$TransparencyStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard NO_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
-transitive-accessible field net/minecraft/client/renderer/RenderStateShard BLOCK_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
-transitive-accessible field net/minecraft/client/renderer/RenderStateShard NEW_ENTITY_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard POSITION_COLOR_LIGHTMAP_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard POSITION_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard POSITION_COLOR_TEX_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
@@ -314,6 +308,10 @@ transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDE
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_END_PORTAL_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_END_GATEWAY_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_LINES_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
+transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_GUI_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
+transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_GUI_OVERLAY_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
+transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_GUI_TEXT_HIGHLIGHT_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
+transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_GUI_GHOST_RECIPE_OVERLAY_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard BLOCK_SHEET_MIPPED Lnet/minecraft/client/renderer/RenderStateShard$TextureStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard BLOCK_SHEET Lnet/minecraft/client/renderer/RenderStateShard$TextureStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard NO_TEXTURE Lnet/minecraft/client/renderer/RenderStateShard$EmptyTextureStateShard;
@@ -329,6 +327,7 @@ transitive-accessible field net/minecraft/client/renderer/RenderStateShard NO_CU
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard NO_DEPTH_TEST Lnet/minecraft/client/renderer/RenderStateShard$DepthTestStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard EQUAL_DEPTH_TEST Lnet/minecraft/client/renderer/RenderStateShard$DepthTestStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard LEQUAL_DEPTH_TEST Lnet/minecraft/client/renderer/RenderStateShard$DepthTestStateShard;
+transitive-accessible field net/minecraft/client/renderer/RenderStateShard GREATER_DEPTH_TEST Lnet/minecraft/client/renderer/RenderStateShard$DepthTestStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard COLOR_DEPTH_WRITE Lnet/minecraft/client/renderer/RenderStateShard$WriteMaskStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard COLOR_WRITE Lnet/minecraft/client/renderer/RenderStateShard$WriteMaskStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard DEPTH_WRITE Lnet/minecraft/client/renderer/RenderStateShard$WriteMaskStateShard;
@@ -343,6 +342,8 @@ transitive-accessible field net/minecraft/client/renderer/RenderStateShard WEATH
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard CLOUDS_TARGET Lnet/minecraft/client/renderer/RenderStateShard$OutputStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard ITEM_ENTITY_TARGET Lnet/minecraft/client/renderer/RenderStateShard$OutputStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard DEFAULT_LINE Lnet/minecraft/client/renderer/RenderStateShard$LineStateShard;
+transitive-accessible field net/minecraft/client/renderer/RenderStateShard NO_COLOR_LOGIC Lnet/minecraft/client/renderer/RenderStateShard$ColorLogicStateShard;
+transitive-accessible field net/minecraft/client/renderer/RenderStateShard OR_REVERSE_COLOR_LOGIC Lnet/minecraft/client/renderer/RenderStateShard$ColorLogicStateShard;
 transitive-accessible class net/minecraft/client/renderer/RenderStateShard$TransparencyStateShard
 transitive-accessible class net/minecraft/client/renderer/RenderStateShard$ShaderStateShard
 transitive-accessible class net/minecraft/client/renderer/RenderStateShard$TextureStateShard
@@ -356,21 +357,22 @@ transitive-accessible class net/minecraft/client/renderer/RenderStateShard$Write
 transitive-accessible class net/minecraft/client/renderer/RenderStateShard$LayeringStateShard
 transitive-accessible class net/minecraft/client/renderer/RenderStateShard$OutputStateShard
 transitive-accessible class net/minecraft/client/renderer/RenderStateShard$LineStateShard
+transitive-accessible class net/minecraft/client/renderer/RenderStateShard$ColorLogicStateShard
 transitive-accessible class net/minecraft/client/renderer/RenderStateShard$OffsetTexturingStateShard
 transitive-accessible class net/minecraft/client/renderer/RenderStateShard$MultiTextureStateShard
 
 # CreativeModeTabs fields
-transitive-accessible field net/minecraft/world/item/CreativeModeTabs BUILDING_BLOCKS Lnet/minecraft/world/item/CreativeModeTab;
-transitive-accessible field net/minecraft/world/item/CreativeModeTabs COLORED_BLOCKS Lnet/minecraft/world/item/CreativeModeTab;
-transitive-accessible field net/minecraft/world/item/CreativeModeTabs NATURAL_BLOCKS Lnet/minecraft/world/item/CreativeModeTab;
-transitive-accessible field net/minecraft/world/item/CreativeModeTabs FUNCTIONAL_BLOCKS Lnet/minecraft/world/item/CreativeModeTab;
-transitive-accessible field net/minecraft/world/item/CreativeModeTabs REDSTONE_BLOCKS Lnet/minecraft/world/item/CreativeModeTab;
-transitive-accessible field net/minecraft/world/item/CreativeModeTabs HOTBAR Lnet/minecraft/world/item/CreativeModeTab;
-transitive-accessible field net/minecraft/world/item/CreativeModeTabs SEARCH Lnet/minecraft/world/item/CreativeModeTab;
-transitive-accessible field net/minecraft/world/item/CreativeModeTabs TOOLS_AND_UTILITIES Lnet/minecraft/world/item/CreativeModeTab;
-transitive-accessible field net/minecraft/world/item/CreativeModeTabs COMBAT Lnet/minecraft/world/item/CreativeModeTab;
-transitive-accessible field net/minecraft/world/item/CreativeModeTabs FOOD_AND_DRINKS Lnet/minecraft/world/item/CreativeModeTab;
-transitive-accessible field net/minecraft/world/item/CreativeModeTabs INGREDIENTS Lnet/minecraft/world/item/CreativeModeTab;
-transitive-accessible field net/minecraft/world/item/CreativeModeTabs SPAWN_EGGS Lnet/minecraft/world/item/CreativeModeTab;
-transitive-accessible field net/minecraft/world/item/CreativeModeTabs OP_BLOCKS Lnet/minecraft/world/item/CreativeModeTab;
-transitive-accessible field net/minecraft/world/item/CreativeModeTabs INVENTORY Lnet/minecraft/world/item/CreativeModeTab;
+transitive-accessible field net/minecraft/world/item/CreativeModeTabs BUILDING_BLOCKS Lnet/minecraft/resources/ResourceKey;
+transitive-accessible field net/minecraft/world/item/CreativeModeTabs COLORED_BLOCKS Lnet/minecraft/resources/ResourceKey;
+transitive-accessible field net/minecraft/world/item/CreativeModeTabs NATURAL_BLOCKS Lnet/minecraft/resources/ResourceKey;
+transitive-accessible field net/minecraft/world/item/CreativeModeTabs FUNCTIONAL_BLOCKS Lnet/minecraft/resources/ResourceKey;
+transitive-accessible field net/minecraft/world/item/CreativeModeTabs REDSTONE_BLOCKS Lnet/minecraft/resources/ResourceKey;
+transitive-accessible field net/minecraft/world/item/CreativeModeTabs HOTBAR Lnet/minecraft/resources/ResourceKey;
+transitive-accessible field net/minecraft/world/item/CreativeModeTabs SEARCH Lnet/minecraft/resources/ResourceKey;
+transitive-accessible field net/minecraft/world/item/CreativeModeTabs TOOLS_AND_UTILITIES Lnet/minecraft/resources/ResourceKey;
+transitive-accessible field net/minecraft/world/item/CreativeModeTabs COMBAT Lnet/minecraft/resources/ResourceKey;
+transitive-accessible field net/minecraft/world/item/CreativeModeTabs FOOD_AND_DRINKS Lnet/minecraft/resources/ResourceKey;
+transitive-accessible field net/minecraft/world/item/CreativeModeTabs INGREDIENTS Lnet/minecraft/resources/ResourceKey;
+transitive-accessible field net/minecraft/world/item/CreativeModeTabs SPAWN_EGGS Lnet/minecraft/resources/ResourceKey;
+transitive-accessible field net/minecraft/world/item/CreativeModeTabs OP_BLOCKS Lnet/minecraft/resources/ResourceKey;
+transitive-accessible field net/minecraft/world/item/CreativeModeTabs INVENTORY Lnet/minecraft/resources/ResourceKey;

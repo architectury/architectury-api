@@ -61,6 +61,6 @@ public class MixinServerPlayer {
     
     @Inject(method = "triggerDimensionChangeTriggers", at = @At("HEAD"))
     private void changeDimension(ServerLevel serverLevel, CallbackInfo ci) {
-        PlayerEvent.CHANGE_DIMENSION.invoker().change((ServerPlayer) (Object) this, serverLevel.dimension(), ((ServerPlayer) (Object) this).level.dimension());
+        PlayerEvent.CHANGE_DIMENSION.invoker().change((ServerPlayer) (Object) this, serverLevel.dimension(), ((ServerPlayer) (Object) this).level().dimension());
     }
 }

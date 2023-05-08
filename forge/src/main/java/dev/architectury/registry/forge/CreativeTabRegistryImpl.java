@@ -130,7 +130,7 @@ public class CreativeTabRegistryImpl {
     }
     
     @ApiStatus.Experimental
-    public static TabSupplier of(CreativeModeTab tab) {
+    public static TabSupplier ofBuiltin(CreativeModeTab tab) {
         ResourceLocation location = CreativeModeTabRegistry.getName(tab);
         if (location == null) {
             throw new IllegalArgumentException("Tab %s is not registered!".formatted(tab));

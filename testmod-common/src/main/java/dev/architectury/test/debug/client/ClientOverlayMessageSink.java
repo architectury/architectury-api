@@ -21,14 +21,13 @@ package dev.architectury.test.debug.client;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.test.debug.ConsoleMessageSink;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
@@ -40,10 +39,10 @@ public class ClientOverlayMessageSink extends ConsoleMessageSink {
     private final List<Message> messages = Collections.synchronizedList(Lists.newArrayList());
     
     public ClientOverlayMessageSink() {
-        ClientGuiEvent.RENDER_POST.register((screen, matrices, mouseX, mouseY, delta) -> render(matrices, delta));
-        ClientGuiEvent.RENDER_HUD.register((matrices, tickDelta) -> {
+        ClientGuiEvent.RENDER_POST.register((screen, graphics, mouseX, mouseY, delta) -> render(graphics, delta));
+        ClientGuiEvent.RENDER_HUD.register((graphics, tickDelta) -> {
             if (Minecraft.getInstance().screen == null && !Minecraft.getInstance().options.renderDebug) {
-                render(matrices, tickDelta);
+                render(graphics, tickDelta);
             }
         });
     }
@@ -54,9 +53,9 @@ public class ClientOverlayMessageSink extends ConsoleMessageSink {
         messages.add(0, new Message(Component.literal(message), Util.getMillis()));
     }
     
-    public void render(PoseStack matrices, float delta) {
-        matrices.pushPose();
-        matrices.scale(0.5f, 0.5f, 1f);
+    public void render(GuiGraphics graphics, float delta) {
+        graphics.pose().pushPose();
+        graphics.pose().scale(0.5f, 0.5f, 1f);
         var minecraft = Minecraft.getInstance();
         var currentMills = Util.getMillis();
         var lineHeight = minecraft.font.lineHeight;
@@ -77,8 +76,8 @@ public class ClientOverlayMessageSink extends ConsoleMessageSink {
                     if (y - 1 < minecraft.getWindow().getGuiScaledHeight()) {
                         var textWidth = minecraft.font.width(message.text);
                         var alpha = (int) Mth.clamp((5000 - timeExisted) / 5000f * 400f + 8, 0, 255);
-                        GuiComponent.fill(matrices, 0, y - 1, 2 + textWidth + 1, y + lineHeight - 1, 0x505050 + ((alpha * 144 / 255) << 24));
-                        minecraft.font.draw(matrices, message.text, 1, y, 0xE0E0E0 + (alpha << 24));
+                        graphics.fill(0, y - 1, 2 + textWidth + 1, y + lineHeight - 1, 0x505050 + ((alpha * 144 / 255) << 24));
+                        graphics.drawString(minecraft.font, message.text, 1, y, 0xE0E0E0 + (alpha << 24));
                     }
                     y += lineHeight;
                 }
@@ -86,7 +85,7 @@ public class ClientOverlayMessageSink extends ConsoleMessageSink {
         }
         
         RenderSystem.disableBlend();
-        matrices.popPose();
+        graphics.pose().popPose();
     }
     
     private record Message(Component text, long created) {

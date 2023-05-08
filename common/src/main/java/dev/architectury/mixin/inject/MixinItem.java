@@ -22,6 +22,7 @@ package dev.architectury.mixin.inject;
 import dev.architectury.extensions.injected.InjectedItemExtension;
 import dev.architectury.impl.ItemPropertiesExtensionImpl;
 import dev.architectury.registry.CreativeTabRegistry;
+import dev.architectury.registry.registries.DeferredSupplier;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import org.spongepowered.asm.mixin.Mixin;
@@ -35,10 +36,10 @@ public class MixinItem implements InjectedItemExtension {
     private void init(Item.Properties properties, CallbackInfo ci) {
         CreativeModeTab tab = ((ItemPropertiesExtensionImpl) properties).arch$getTab();
         if (tab != null) {
-            CreativeTabRegistry.append(tab, (Item) (Object) this);
+            CreativeTabRegistry.appendBuiltin(tab, (Item) (Object) this);
             return;
         }
-        CreativeTabRegistry.TabSupplier tabSupplier = ((ItemPropertiesExtensionImpl) properties).arch$getTabSupplier();
+        DeferredSupplier<CreativeModeTab> tabSupplier = ((ItemPropertiesExtensionImpl) properties).arch$getTabSupplier();
         if (tabSupplier != null) {
             CreativeTabRegistry.append(tabSupplier, (Item) (Object) this);
         }

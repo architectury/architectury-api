@@ -26,6 +26,7 @@ import com.mojang.datafixers.util.Pair;
 import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.event.events.client.ClientReloadShadersEvent;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.server.packs.resources.ResourceProvider;
@@ -48,19 +49,19 @@ public abstract class MixinGameRenderer {
     private Minecraft minecraft;
     
     @Inject(method = "render(FJZ)V",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;renderWithTooltip(Lcom/mojang/blaze3d/vertex/PoseStack;IIF)V",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;renderWithTooltip(Lnet/minecraft/client/gui/GuiGraphics;IIF)V",
                     ordinal = 0), locals = LocalCapture.CAPTURE_FAILEXCEPTION, cancellable = true)
-    public void renderScreenPre(float tickDelta, long startTime, boolean tick, CallbackInfo ci, int mouseX, int mouseY, Window window, Matrix4f matrix, PoseStack matrices, PoseStack matrices2) {
-        if (ClientGuiEvent.RENDER_PRE.invoker().render(minecraft.screen, matrices2, mouseX, mouseY, minecraft.getDeltaFrameTime()).isFalse()) {
+    public void renderScreenPre(float tickDelta, long startTime, boolean tick, CallbackInfo ci, int mouseX, int mouseY, Window window, Matrix4f matrix, PoseStack matrices, GuiGraphics graphics) {
+        if (ClientGuiEvent.RENDER_PRE.invoker().render(minecraft.screen, graphics, mouseX, mouseY, minecraft.getDeltaFrameTime()).isFalse()) {
             ci.cancel();
         }
     }
     
     @Inject(method = "render(FJZ)V",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;renderWithTooltip(Lcom/mojang/blaze3d/vertex/PoseStack;IIF)V",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;renderWithTooltip(Lnet/minecraft/client/gui/GuiGraphics;IIF)V",
                     shift = At.Shift.AFTER, ordinal = 0), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-    public void renderScreenPost(float tickDelta, long startTime, boolean tick, CallbackInfo ci, int mouseX, int mouseY, Window window, Matrix4f matrix, PoseStack matrices, PoseStack matrices2) {
-        ClientGuiEvent.RENDER_POST.invoker().render(minecraft.screen, matrices2, mouseX, mouseY, minecraft.getDeltaFrameTime());
+    public void renderScreenPost(float tickDelta, long startTime, boolean tick, CallbackInfo ci, int mouseX, int mouseY, Window window, Matrix4f matrix, PoseStack matrices, GuiGraphics graphics) {
+        ClientGuiEvent.RENDER_POST.invoker().render(minecraft.screen, graphics, mouseX, mouseY, minecraft.getDeltaFrameTime());
     }
     
     @Inject(method = "reloadShaders",

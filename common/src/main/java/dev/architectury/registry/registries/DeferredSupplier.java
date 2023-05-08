@@ -17,15 +17,37 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.test.tab;
+package dev.architectury.registry.registries;
 
-import dev.architectury.registry.CreativeTabRegistry;
-import dev.architectury.test.TestMod;
-import dev.architectury.test.registry.TestRegistries;
+import dev.architectury.utils.OptionalSupplier;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 
-public class TestCreativeTabs {
-    public static final CreativeTabRegistry.TabSupplier TEST_TAB = CreativeTabRegistry.create(new ResourceLocation(TestMod.MOD_ID, "test_tab"),
-            () -> new ItemStack(TestRegistries.TEST_ITEM.get()));
+public interface DeferredSupplier<T> extends OptionalSupplier<T> {
+    /**
+     * @return the identifier of the registry
+     */
+    ResourceLocation getRegistryId();
+    
+    /**
+     * @return the identifier of the registry
+     */
+    default ResourceKey<Registry<T>> getRegistryKey() {
+        return ResourceKey.createRegistryKey(getRegistryId());
+    }
+    
+    /**
+     * @return the identifier of the entry
+     */
+    ResourceLocation getId();
+    
+    /**
+     * Returns the registry key of the creative tab.
+     *
+     * @return The registry key of the creative tab.
+     */
+    default ResourceKey<T> getKey() {
+        return ResourceKey.create(getRegistryKey(), getId());
+    }
 }

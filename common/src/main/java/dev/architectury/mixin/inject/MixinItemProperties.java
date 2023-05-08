@@ -22,6 +22,8 @@ package dev.architectury.mixin.inject;
 import dev.architectury.extensions.injected.InjectedItemPropertiesExtension;
 import dev.architectury.impl.ItemPropertiesExtensionImpl;
 import dev.architectury.registry.CreativeTabRegistry;
+import dev.architectury.registry.registries.DeferredSupplier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.Nullable;
@@ -33,7 +35,7 @@ public class MixinItemProperties implements InjectedItemPropertiesExtension, Ite
     @Unique
     private CreativeModeTab tab;
     @Unique
-    private CreativeTabRegistry.TabSupplier tabSupplier;
+    private DeferredSupplier<CreativeModeTab> tabSupplier;
     
     @Override
     public Item.Properties arch$tab(CreativeModeTab tab) {
@@ -43,9 +45,16 @@ public class MixinItemProperties implements InjectedItemPropertiesExtension, Ite
     }
     
     @Override
-    public Item.Properties arch$tab(CreativeTabRegistry.TabSupplier tab) {
+    public Item.Properties arch$tab(DeferredSupplier<CreativeModeTab> tab) {
         this.tab = null;
         this.tabSupplier = tab;
+        return (Item.Properties) (Object) this;
+    }
+    
+    @Override
+    public Item.Properties arch$tab(ResourceKey<CreativeModeTab> tab) {
+        this.tab = null;
+        this.tabSupplier = CreativeTabRegistry.defer(tab);
         return (Item.Properties) (Object) this;
     }
     
@@ -57,7 +66,7 @@ public class MixinItemProperties implements InjectedItemPropertiesExtension, Ite
     
     @Override
     @Nullable
-    public CreativeTabRegistry.TabSupplier arch$getTabSupplier() {
+    public DeferredSupplier<CreativeModeTab> arch$getTabSupplier() {
         return tabSupplier;
     }
 }

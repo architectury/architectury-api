@@ -39,7 +39,7 @@ public class SpawnEntityPacket {
     private static final ResourceLocation PACKET_ID = new ResourceLocation("architectury", "spawn_entity_packet");
     
     public static Packet<ClientGamePacketListener> create(Entity entity) {
-        if (entity.level.isClientSide()) {
+        if (entity.level().isClientSide()) {
             throw new IllegalStateException("SpawnPacketUtil.create called on the logical client!");
         }
         var buffer = PacketByteBufs.create();

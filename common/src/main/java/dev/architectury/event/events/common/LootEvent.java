@@ -22,8 +22,8 @@ package dev.architectury.event.events.common;
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.storage.loot.LootDataManager;
 import net.minecraft.world.level.storage.loot.LootPool;
-import net.minecraft.world.level.storage.loot.LootTables;
 import org.jetbrains.annotations.ApiStatus;
 
 /**
@@ -56,7 +56,7 @@ public interface LootEvent {
      * });
      * }</pre>
      *
-     * @see ModifyLootTable#modifyLootTable(LootTables, ResourceLocation, LootTableModificationContext, boolean)
+     * @see ModifyLootTable#modifyLootTable(LootDataManager, ResourceLocation, LootTableModificationContext, boolean)
      */
     Event<ModifyLootTable> MODIFY_LOOT_TABLE = EventFactory.createLoop();
     
@@ -65,13 +65,13 @@ public interface LootEvent {
         /**
          * Modifies a loot table.
          *
-         * @param lootTables the {@link LootTables} instance containing all loot tables
+         * @param lootDataManager the {@link LootDataManager} instance containing all loot tables
          * @param id         the loot table ID
          * @param context    the context used to modify the loot table
          * @param builtin    if {@code true}, the loot table is built-in;
          *                   if {@code false}, it is from a user data pack
          */
-        void modifyLootTable(LootTables lootTables, ResourceLocation id, LootTableModificationContext context, boolean builtin);
+        void modifyLootTable(LootDataManager lootDataManager, ResourceLocation id, LootTableModificationContext context, boolean builtin);
     }
     
     /**

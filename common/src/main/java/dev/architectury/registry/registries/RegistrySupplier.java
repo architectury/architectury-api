@@ -19,86 +19,15 @@
 
 package dev.architectury.registry.registries;
 
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 @ApiStatus.NonExtendable
-public interface RegistrySupplier<T> extends Supplier<T> {
+public interface RegistrySupplier<T> extends DeferredSupplier<T> {
     RegistrarManager getRegistrarManager();
     
     Registrar<T> getRegistrar();
-    
-    /**
-     * @return the identifier of the registry
-     */
-    ResourceLocation getRegistryId();
-    
-    /**
-     * @return the identifier of the registry
-     */
-    default ResourceKey<Registry<T>> getRegistryKey() {
-        return ResourceKey.createRegistryKey(getRegistryId());
-    }
-    
-    /**
-     * @return the identifier of the entry
-     */
-    ResourceLocation getId();
-    
-    /**
-     * @return whether the entry has been registered
-     */
-    boolean isPresent();
-    
-    @Nullable
-    default T getOrNull() {
-        if (isPresent()) {
-            return get();
-        }
-        return null;
-    }
-    
-    default Optional<T> toOptional() {
-        return Optional.ofNullable(getOrNull());
-    }
-    
-    default void ifPresent(Consumer<? super T> action) {
-        if (isPresent()) {
-            action.accept(get());
-        }
-    }
-    
-    default void ifPresentOrElse(Consumer<? super T> action, Runnable emptyAction) {
-        if (isPresent()) {
-            action.accept(get());
-        } else {
-            emptyAction.run();
-        }
-    }
-    
-    default Stream<T> stream() {
-        if (!isPresent()) {
-            return Stream.empty();
-        } else {
-            return Stream.of(get());
-        }
-    }
-    
-    default T orElse(T other) {
-        return isPresent() ? get() : other;
-    }
-    
-    default T orElseGet(Supplier<? extends T> supplier) {
-        return isPresent() ? get() : supplier.get();
-    }
     
     /**
      * Listens to when the registry entry is registered, and calls the given action.

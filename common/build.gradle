@@ -134,7 +134,7 @@ static def generateCreativeTabs(List<String> lines, FileSystem fs) {
     lines.add("# CreativeModeTabs fields")
     def node = loadClass(fs.getPath("net/minecraft/world/item/CreativeModeTabs.class"))
     for (def field : node.fields) {
-        if ((field.access & Opcodes.ACC_STATIC) != 0 && field.desc == "Lnet/minecraft/world/item/CreativeModeTab;") {
+        if ((field.access & Opcodes.ACC_STATIC) != 0 && field.desc == "Lnet/minecraft/resources/ResourceKey;") {
             if ((field.access & Opcodes.ACC_PUBLIC) == 0) {
                 lines.add("transitive-accessible field $node.name $field.name $field.desc")
             }

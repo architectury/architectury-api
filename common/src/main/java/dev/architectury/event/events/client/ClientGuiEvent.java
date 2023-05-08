@@ -19,7 +19,6 @@
 
 package dev.architectury.event.events.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import dev.architectury.event.CompoundEventResult;
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
@@ -27,6 +26,7 @@ import dev.architectury.event.EventResult;
 import dev.architectury.hooks.client.screen.ScreenAccess;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 
@@ -35,7 +35,7 @@ import java.util.List;
 @Environment(EnvType.CLIENT)
 public interface ClientGuiEvent {
     /**
-     * @see RenderHud#renderHud(PoseStack, float)
+     * @see RenderHud#renderHud(GuiGraphics, float)
      */
     Event<RenderHud> RENDER_HUD = EventFactory.createLoop();
     /**
@@ -52,19 +52,19 @@ public interface ClientGuiEvent {
      */
     Event<ScreenInitPost> INIT_POST = EventFactory.createLoop();
     /**
-     * @see ScreenRenderPre#render(Screen, PoseStack, int, int, float)
+     * @see ScreenRenderPre#render(Screen, GuiGraphics, int, int, float)
      */
     Event<ScreenRenderPre> RENDER_PRE = EventFactory.createEventResult();
     /**
-     * @see ScreenRenderPost#render(Screen, PoseStack, int, int, float)
+     * @see ScreenRenderPost#render(Screen, GuiGraphics, int, int, float)
      */
     Event<ScreenRenderPost> RENDER_POST = EventFactory.createLoop();
     /**
-     * @see ContainerScreenRenderBackground#render(AbstractContainerScreen, PoseStack, int, int, float)
+     * @see ContainerScreenRenderBackground#render(AbstractContainerScreen, GuiGraphics, int, int, float)
      */
     Event<ContainerScreenRenderBackground> RENDER_CONTAINER_BACKGROUND = EventFactory.createLoop();
     /**
-     * @see ContainerScreenRenderForeground#render(AbstractContainerScreen, PoseStack, int, int, float)
+     * @see ContainerScreenRenderForeground#render(AbstractContainerScreen, GuiGraphics, int, int, float)
      */
     Event<ContainerScreenRenderForeground> RENDER_CONTAINER_FOREGROUND = EventFactory.createLoop();
     /**
@@ -78,10 +78,10 @@ public interface ClientGuiEvent {
          * Invoked after the in-game hud has been rendered.
          * Equivalent to Forge's {@code RenderGameOverlayEvent.Post@ElementType#ALL} and Fabric's {@code HudRenderCallback}.
          *
-         * @param matrices  The pose stack.
+         * @param graphics  The graphics context.
          * @param tickDelta The tick delta.
          */
-        void renderHud(PoseStack matrices, float tickDelta);
+        void renderHud(GuiGraphics graphics, float tickDelta);
     }
     
     @Environment(EnvType.CLIENT)
@@ -129,14 +129,14 @@ public interface ClientGuiEvent {
          * Equivalent to Forge's {@code GuiScreenEvent.DrawScreenEvent.Pre} event.
          *
          * @param screen   The screen.
-         * @param matrices The pose stack.
+         * @param graphics The graphics context.
          * @param mouseX   The scaled x-coordinate of the mouse cursor.
          * @param mouseY   The scaled y-coordinate of the mouse cursor.
          * @param delta    The current tick delta.
          * @return A {@link EventResult} determining the outcome of the event,
          * the vanilla render may be cancelled by the result.
          */
-        EventResult render(Screen screen, PoseStack matrices, int mouseX, int mouseY, float delta);
+        EventResult render(Screen screen, GuiGraphics graphics, int mouseX, int mouseY, float delta);
     }
     
     @Environment(EnvType.CLIENT)
@@ -146,12 +146,12 @@ public interface ClientGuiEvent {
          * Equivalent to Forge's {@code GuiScreenEvent.DrawScreenEvent.Post} event.
          *
          * @param screen   The screen.
-         * @param matrices The pose stack.
+         * @param graphics The graphics context.
          * @param mouseX   The scaled x-coordinate of the mouse cursor.
          * @param mouseY   The scaled y-coordinate of the mouse cursor.
          * @param delta    The current tick delta.
          */
-        void render(Screen screen, PoseStack matrices, int mouseX, int mouseY, float delta);
+        void render(Screen screen, GuiGraphics graphics, int mouseX, int mouseY, float delta);
     }
     
     @Environment(EnvType.CLIENT)
@@ -161,12 +161,12 @@ public interface ClientGuiEvent {
          * Equivalent to Forge's {@code ContainerScreenEvent.DrawBackground} event.
          *
          * @param screen   The screen.
-         * @param matrices The pose stack.
+         * @param graphics The graphics context.
          * @param mouseX   The scaled x-coordinate of the mouse cursor.
          * @param mouseY   The scaled y-coordinate of the mouse cursor.
          * @param delta    The current tick delta.
          */
-        void render(AbstractContainerScreen<?> screen, PoseStack matrices, int mouseX, int mouseY, float delta);
+        void render(AbstractContainerScreen<?> screen, GuiGraphics graphics, int mouseX, int mouseY, float delta);
     }
     
     @Environment(EnvType.CLIENT)
@@ -176,12 +176,12 @@ public interface ClientGuiEvent {
          * Equivalent to Forge's {@code ContainerScreenEvent.DrawForeground} event.
          *
          * @param screen   The screen.
-         * @param matrices The pose stack.
+         * @param graphics The graphics context.
          * @param mouseX   The scaled x-coordinate of the mouse cursor.
          * @param mouseY   The scaled y-coordinate of the mouse cursor.
          * @param delta    The current tick delta.
          */
-        void render(AbstractContainerScreen<?> screen, PoseStack matrices, int mouseX, int mouseY, float delta);
+        void render(AbstractContainerScreen<?> screen, GuiGraphics graphics, int mouseX, int mouseY, float delta);
     }
     
     @Environment(EnvType.CLIENT)

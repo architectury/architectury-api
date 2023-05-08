@@ -47,6 +47,6 @@ public abstract class MixinFallingBlockEntity extends Entity {
             target = "Lnet/minecraft/world/level/block/Fallable;onLand(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/entity/item/FallingBlockEntity;)V"),
             locals = LocalCapture.CAPTURE_FAILHARD)
     public void handleLand(CallbackInfo ci, Block block, BlockPos blockPos2, boolean bl, boolean bl2, double d, BlockState blockState) {
-        BlockEvent.FALLING_LAND.invoker().onLand(this.level, blockPos2, this.blockState, blockState, (FallingBlockEntity) (Object) this);
+        BlockEvent.FALLING_LAND.invoker().onLand(this.level(), blockPos2, this.blockState, blockState, (FallingBlockEntity) (Object) this);
     }
 }

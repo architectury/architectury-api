@@ -19,13 +19,13 @@
 
 package dev.architectury.event.events.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
 import dev.architectury.event.EventResult;
 import dev.architectury.impl.TooltipAdditionalContextsImpl;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -42,15 +42,15 @@ public interface ClientTooltipEvent {
      */
     Event<Item> ITEM = EventFactory.createLoop();
     /**
-     * @see Render#renderTooltip(PoseStack, List, int, int)
+     * @see Render#renderTooltip(GuiGraphics, List, int, int)
      */
     Event<Render> RENDER_PRE = EventFactory.createEventResult();
     /**
-     * @see RenderModifyPosition#renderTooltip(PoseStack, PositionContext)
+     * @see RenderModifyPosition#renderTooltip(GuiGraphics, PositionContext)
      */
     Event<RenderModifyPosition> RENDER_MODIFY_POSITION = EventFactory.createLoop();
     /**
-     * @see RenderModifyColor#renderTooltip(PoseStack, int, int, ColorContext)
+     * @see RenderModifyColor#renderTooltip(GuiGraphics, int, int, ColorContext)
      */
     // Event<RenderModifyColor> RENDER_MODIFY_COLOR = EventFactory.createLoop();
     
@@ -85,14 +85,14 @@ public interface ClientTooltipEvent {
         /**
          * Invoked before the tooltip for a tooltip is rendered.
          *
-         * @param matrices The pose stack.
+         * @param graphics The graphics context.
          * @param texts    The mutable list of components that are rendered.
          * @param x        The x-coordinate of the tooltip.
          * @param y        The y-coordinate of the tooltip.
          * @return A {@link EventResult} determining the outcome of the event,
          * the execution of the vanilla tooltip rendering may be cancelled by the result.
          */
-        EventResult renderTooltip(PoseStack matrices, List<? extends ClientTooltipComponent> texts, int x, int y);
+        EventResult renderTooltip(GuiGraphics graphics, List<? extends ClientTooltipComponent> texts, int x, int y);
     }
     
     @Environment(EnvType.CLIENT)
@@ -100,10 +100,10 @@ public interface ClientTooltipEvent {
         /**
          * Event to manipulate the position of the tooltip.
          *
-         * @param matrices The pose stack.
+         * @param graphics The graphics context.
          * @param context  The current position context.
          */
-        void renderTooltip(PoseStack matrices, PositionContext context);
+        void renderTooltip(GuiGraphics graphics, PositionContext context);
     }
     
     @Environment(EnvType.CLIENT)
@@ -111,12 +111,12 @@ public interface ClientTooltipEvent {
         /**
          * Event to manipulate the color of the tooltip.
          *
-         * @param matrices The pose stack.
+         * @param graphics The graphics context.
          * @param x        The x-coordinate of the tooltip.
          * @param y        The y-coordinate of the tooltip.
          * @param context  The current color context.
          */
-        void renderTooltip(PoseStack matrices, int x, int y, ColorContext context);
+        void renderTooltip(GuiGraphics graphics, int x, int y, ColorContext context);
     }
     
     @Environment(EnvType.CLIENT)
