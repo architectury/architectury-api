@@ -56,7 +56,7 @@ public abstract class MixinPhantomSpawner {
             locals = LocalCapture.CAPTURE_FAILSOFT // SOFT, because this will break in 2 seconds
     )
     private void checkPhantomSpawn(ServerLevel level, boolean bl, boolean bl2, CallbackInfoReturnable<Integer> cir,
-                                   RandomSource random, int i, Iterator<ServerPlayer> it, Player player, BlockPos pos, DifficultyInstance diff,
+                                   RandomSource random, int i, Iterator<ServerPlayer> it, ServerPlayer player, BlockPos pos, DifficultyInstance diff,
                                    ServerStatsCounter serverStatsCounter, int j, int k, BlockPos pos2,
                                    BlockState blockState, FluidState fluidState, SpawnGroupData sgd, int l, int m, Phantom entity) {
         if (EntityEvent.LIVING_CHECK_SPAWN.invoker().canSpawn(entity, level, pos.getX(), pos.getY(), pos.getZ(), MobSpawnType.NATURAL, null).value() == Boolean.FALSE) {
