@@ -25,6 +25,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.LootDataManager;
 import net.minecraft.world.level.storage.loot.LootPool;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Events related to loot tables and loot generation.
@@ -65,13 +66,14 @@ public interface LootEvent {
         /**
          * Modifies a loot table.
          *
-         * @param lootDataManager the {@link LootDataManager} instance containing all loot tables
-         * @param id         the loot table ID
-         * @param context    the context used to modify the loot table
-         * @param builtin    if {@code true}, the loot table is built-in;
-         *                   if {@code false}, it is from a user data pack
+         * @param lootDataManager the {@link LootDataManager} instance containing all loot tables,
+         *                        may be {@code null}
+         * @param id              the loot table ID
+         * @param context         the context used to modify the loot table
+         * @param builtin         if {@code true}, the loot table is built-in;
+         *                        if {@code false}, it is from a user data pack
          */
-        void modifyLootTable(LootDataManager lootDataManager, ResourceLocation id, LootTableModificationContext context, boolean builtin);
+        void modifyLootTable(@Nullable LootDataManager lootDataManager, ResourceLocation id, LootTableModificationContext context, boolean builtin);
     }
     
     /**

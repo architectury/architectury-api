@@ -13,7 +13,8 @@
     "MixinEntitySpawnExtension",
     "MixinFallingBlockEntity",
     "MixinItemExtension",
-    "MixinLevelEvent"
+    "MixinLevelEvent",
+    "MixinLootDataManager"
   ],
   "injectors": {
     "defaultRequire": 1

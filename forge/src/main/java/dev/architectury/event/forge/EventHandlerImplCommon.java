@@ -30,6 +30,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.storage.loot.LootDataManager;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -61,7 +62,11 @@ import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
+import java.lang.ref.WeakReference;
+
 public class EventHandlerImplCommon {
+    public static WeakReference<LootDataManager> lootDataManagerRef = null;
+    
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(ServerTickEvent event) {
         if (event.phase == Phase.START)
@@ -418,12 +423,12 @@ public class EventHandlerImplCommon {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(LootTableLoadEvent event) {
-        LootEvent.MODIFY_LOOT_TABLE.invoker().modifyLootTable(event.getLootTableManager(), event.getName(), new LootTableModificationContextImpl(event.getTable()), true);
+        LootEvent.MODIFY_LOOT_TABLE.invoker().modifyLootTable(lootDataManagerRef == null ? null : lootDataManagerRef.get(), event.getName(), new LootTableModificationContextImpl(event.getTable()), true);
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(AttackEntityEvent event) {
-        EventResult result = PlayerEvent.ATTACK_ENTITY.invoker().attack(event.getEntity(), event.getEntity().level, event.getTarget(), event.getEntity().getUsedItemHand(), null);
+        EventResult result = PlayerEvent.ATTACK_ENTITY.invoker().attack(event.getEntity(), event.getEntity().level(), event.getTarget(), event.getEntity().getUsedItemHand(), null);
         if (result.isFalse()) {
             event.setCanceled(true);
         }

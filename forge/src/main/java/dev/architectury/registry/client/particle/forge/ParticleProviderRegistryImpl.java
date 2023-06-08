@@ -127,12 +127,12 @@ public class ParticleProviderRegistryImpl {
             return new ParticleProviderRegistrar() {
                 @Override
                 public <T extends ParticleOptions> void register(ParticleType<T> type, ParticleProvider<T> provider) {
-                    event.register(type, provider);
+                    event.registerSpecial(type, provider);
                 }
                 
                 @Override
                 public <T extends ParticleOptions> void register(ParticleType<T> type, ParticleEngine.SpriteParticleRegistration<T> registration) {
-                    event.register(type, registration);
+                    event.registerSpriteSet(type, registration);
                 }
             };
         }

@@ -19,7 +19,6 @@
 
 package dev.architectury.event.forge;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import dev.architectury.event.CompoundEventResult;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientChatEvent;
@@ -29,6 +28,7 @@ import dev.architectury.impl.ScreenAccessImpl;
 import dev.architectury.impl.TooltipEventColorContextImpl;
 import dev.architectury.impl.TooltipEventPositionContextImpl;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
@@ -59,7 +59,7 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventRenderGameOverlayEvent(RenderGuiEvent.Post event) {
-        ClientGuiEvent.RENDER_HUD.invoker().renderHud(event.getPoseStack(), event.getPartialTick());
+        ClientGuiEvent.RENDER_HUD.invoker().renderHud(event.getGuiGraphics(), event.getPartialTick());
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
@@ -137,24 +137,24 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventDrawScreenEvent(ScreenEvent.Render.Pre event) {
-        if (ClientGuiEvent.RENDER_PRE.invoker().render(event.getScreen(), event.getPoseStack(), event.getMouseX(), event.getMouseY(), event.getPartialTick()).isFalse()) {
+        if (ClientGuiEvent.RENDER_PRE.invoker().render(event.getScreen(), event.getGuiGraphics(), event.getMouseX(), event.getMouseY(), event.getPartialTick()).isFalse()) {
             event.setCanceled(true);
         }
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventDrawScreenEvent(ScreenEvent.Render.Post event) {
-        ClientGuiEvent.RENDER_POST.invoker().render(event.getScreen(), event.getPoseStack(), event.getMouseX(), event.getMouseY(), event.getPartialTick());
+        ClientGuiEvent.RENDER_POST.invoker().render(event.getScreen(), event.getGuiGraphics(), event.getMouseX(), event.getMouseY(), event.getPartialTick());
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventContainerScreenEvent(ContainerScreenEvent.Render.Background event) {
-        ClientGuiEvent.RENDER_CONTAINER_BACKGROUND.invoker().render(event.getContainerScreen(), event.getPoseStack(), event.getMouseX(), event.getMouseY(), Minecraft.getInstance().getDeltaFrameTime());
+        ClientGuiEvent.RENDER_CONTAINER_BACKGROUND.invoker().render(event.getContainerScreen(), event.getGuiGraphics(), event.getMouseX(), event.getMouseY(), Minecraft.getInstance().getDeltaFrameTime());
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventContainerScreenEvent(ContainerScreenEvent.Render.Foreground event) {
-        ClientGuiEvent.RENDER_CONTAINER_FOREGROUND.invoker().render(event.getContainerScreen(), event.getPoseStack(), event.getMouseX(), event.getMouseY(), Minecraft.getInstance().getDeltaFrameTime());
+        ClientGuiEvent.RENDER_CONTAINER_FOREGROUND.invoker().render(event.getContainerScreen(), event.getGuiGraphics(), event.getMouseX(), event.getMouseY(), Minecraft.getInstance().getDeltaFrameTime());
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
@@ -177,18 +177,18 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventRenderTooltipEvent(RenderTooltipEvent.Pre event) {
-        PoseStack stack = event.getPoseStack();
+        GuiGraphics graphics = event.getGraphics();
         ClientTooltipEvent.additionalContexts().setItem(event.getItemStack());
         
         try {
-            if (ClientTooltipEvent.RENDER_PRE.invoker().renderTooltip(stack, event.getComponents(), event.getX(), event.getY()).isFalse()) {
+            if (ClientTooltipEvent.RENDER_PRE.invoker().renderTooltip(graphics, event.getComponents(), event.getX(), event.getY()).isFalse()) {
                 event.setCanceled(true);
                 return;
             }
             
             TooltipEventPositionContextImpl positionContext = tooltipPositionContext.get();
             positionContext.reset(event.getX(), event.getY());
-            ClientTooltipEvent.RENDER_MODIFY_POSITION.invoker().renderTooltip(stack, positionContext);
+            ClientTooltipEvent.RENDER_MODIFY_POSITION.invoker().renderTooltip(graphics, positionContext);
             event.setX(positionContext.getTooltipX());
             event.setY(positionContext.getTooltipY());
         } finally {
@@ -198,7 +198,7 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventRenderTooltipEvent(RenderTooltipEvent.Color event) {
-        PoseStack stack = event.getPoseStack();
+        GuiGraphics graphics = event.getGraphics();
         ClientTooltipEvent.additionalContexts().setItem(event.getItemStack());
         
         try {
@@ -207,7 +207,7 @@ public class EventHandlerImplClient {
             colorContext.setBackgroundColor(event.getBackgroundStart());
             colorContext.setOutlineGradientTopColor(event.getBorderStart());
             colorContext.setOutlineGradientBottomColor(event.getBorderEnd());
-            // ClientTooltipEvent.RENDER_MODIFY_COLOR.invoker().renderTooltip(stack, event.getX(), event.getY(), colorContext);
+            // ClientTooltipEvent.RENDER_MODIFY_COLOR.invoker().renderTooltip(graphics, event.getX(), event.getY(), colorContext);
             event.setBackground(colorContext.getBackgroundColor());
             event.setBorderEnd(colorContext.getOutlineGradientBottomColor());
             event.setBorderStart(colorContext.getOutlineGradientTopColor());

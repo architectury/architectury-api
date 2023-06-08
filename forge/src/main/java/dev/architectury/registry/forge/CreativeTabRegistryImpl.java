@@ -25,15 +25,16 @@ import com.google.common.collect.MultimapBuilder;
 import dev.architectury.forge.ArchitecturyForge;
 import dev.architectury.registry.CreativeTabOutput;
 import dev.architectury.registry.CreativeTabRegistry;
-import dev.architectury.registry.CreativeTabRegistry.TabSupplier;
-import net.minecraft.network.chat.Component;
+import dev.architectury.registry.registries.DeferredSupplier;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.CreativeModeTabRegistry;
 import net.minecraftforge.common.util.MutableHashedLinkedMap;
-import net.minecraftforge.event.CreativeModeTabEvent;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
@@ -49,9 +50,7 @@ import java.util.function.Supplier;
 public class CreativeTabRegistryImpl {
     private static final Logger LOGGER = LogManager.getLogger(CreativeTabRegistryImpl.class);
     
-    @Nullable
-    private static List<Consumer<CreativeModeTabEvent.Register>> registerListeners = new ArrayList<>();
-    private static final List<Consumer<CreativeModeTabEvent.BuildContents>> BUILD_CONTENTS_LISTENERS = new ArrayList<>();
+    private static final List<Consumer<BuildCreativeModeTabContentsEvent>> BUILD_CONTENTS_LISTENERS = new ArrayList<>();
     private static final Multimap<TabKey, Supplier<ItemStack>> APPENDS = MultimapBuilder.hashKeys().arrayListValues().build();
     
     static {
@@ -61,7 +60,7 @@ public class CreativeTabRegistryImpl {
                         .map(Supplier::get)
                         .toList());
                 if (keyEntry.getKey() instanceof TabKey.SupplierTabKey supplierTabKey) {
-                    if (Objects.equals(CreativeModeTabRegistry.getName(event.getTab()), supplierTabKey.supplier().getName())) {
+                    if (Objects.equals(CreativeModeTabRegistry.getName(event.getTab()), supplierTabKey.supplier().getId())) {
                         for (ItemStack stack : stacks.get()) {
                             event.getEntries().put(stack, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
                         }
@@ -78,67 +77,34 @@ public class CreativeTabRegistryImpl {
     }
     
     @SubscribeEvent
-    public static void event(CreativeModeTabEvent.Register event) {
-        if (registerListeners != null) {
-            for (Consumer<CreativeModeTabEvent.Register> listener : registerListeners) {
-                listener.accept(event);
-            }
-            registerListeners = null;
-        } else {
-            LOGGER.warn("Creative tab listeners were already registered!");
-        }
-    }
-    
-    @SubscribeEvent
-    public static void event(CreativeModeTabEvent.BuildContents event) {
-        for (Consumer<CreativeModeTabEvent.BuildContents> listener : BUILD_CONTENTS_LISTENERS) {
+    public static void event(BuildCreativeModeTabContentsEvent event) {
+        for (Consumer<BuildCreativeModeTabContentsEvent> listener : BUILD_CONTENTS_LISTENERS) {
             listener.accept(event);
         }
     }
     
-    public static TabSupplier create(ResourceLocation name, Consumer<CreativeModeTab.Builder> callback) {
-        if (registerListeners == null) {
-            throw new IllegalStateException("Creative tab listeners were already registered!");
-        }
-        CreativeModeTab[] tab = new CreativeModeTab[1];
-        registerListeners.add(register -> {
-            tab[0] = register.registerCreativeModeTab(name, builder -> {
-                builder.title(Component.translatable("itemGroup.%s.%s".formatted(name.getNamespace(), name.getPath())));
-                callback.accept(builder);
-            });
-        });
-        return new TabSupplier() {
-            @Override
-            public ResourceLocation getName() {
-                return name;
-            }
-            
-            @Override
-            public CreativeModeTab get() {
-                if (tab[0] == null) {
-                    throw new IllegalStateException("Creative tab %s was not registered yet!".formatted(name));
-                }
-                
-                return tab[0];
-            }
-            
-            @Override
-            public boolean isPresent() {
-                return tab[0] != null;
-            }
-        };
+    @ApiStatus.Experimental
+    public static CreativeModeTab create(Consumer<CreativeModeTab.Builder> callback) {
+        CreativeModeTab.Builder builder = CreativeModeTab.builder();
+        callback.accept(builder);
+        return builder.build();
     }
     
     @ApiStatus.Experimental
-    public static TabSupplier ofBuiltin(CreativeModeTab tab) {
-        ResourceLocation location = CreativeModeTabRegistry.getName(tab);
-        if (location == null) {
-            throw new IllegalArgumentException("Tab %s is not registered!".formatted(tab));
+    public static DeferredSupplier<CreativeModeTab> ofBuiltin(CreativeModeTab tab) {
+        ResourceLocation key = BuiltInRegistries.CREATIVE_MODE_TAB.getKey(tab);
+        if (key == null) {
+            throw new IllegalArgumentException("Builtin tab %s is not registered!".formatted(tab));
         }
-        return new TabSupplier() {
+        return new DeferredSupplier<>() {
             @Override
-            public ResourceLocation getName() {
-                return location;
+            public ResourceLocation getRegistryId() {
+                return Registries.CREATIVE_MODE_TAB.location();
+            }
+            
+            @Override
+            public ResourceLocation getId() {
+                return BuiltInRegistries.CREATIVE_MODE_TAB.getKey(tab);
             }
             
             @Override
@@ -154,37 +120,50 @@ public class CreativeTabRegistryImpl {
     }
     
     @ApiStatus.Experimental
-    public static TabSupplier defer(ResourceLocation name) {
-        return new TabSupplier() {
+    public static DeferredSupplier<CreativeModeTab> defer(ResourceLocation name) {
+        return new DeferredSupplier<>() {
+            @Nullable
+            private CreativeModeTab tab;
+            
             @Override
-            public ResourceLocation getName() {
+            public ResourceLocation getRegistryId() {
+                return Registries.CREATIVE_MODE_TAB.location();
+            }
+            
+            @Override
+            public ResourceLocation getId() {
                 return name;
             }
             
             @Override
-            public boolean isPresent() {
-                return CreativeModeTabRegistry.getTab(name) != null;
+            public CreativeModeTab get() {
+                resolve();
+                if (tab == null)
+                    throw new IllegalStateException("Creative tab %s was not registered yet!".formatted(name));
+                return tab;
             }
             
             @Override
-            public CreativeModeTab get() {
-                CreativeModeTab tab = CreativeModeTabRegistry.getTab(name);
-                if (tab == null) {
-                    throw new IllegalStateException("Creative tab %s was not registered yet!".formatted(name));
-                } else {
-                    return tab;
+            public boolean isPresent() {
+                resolve();
+                return tab != null;
+            }
+            
+            private void resolve() {
+                if (this.tab == null) {
+                    this.tab = BuiltInRegistries.CREATIVE_MODE_TAB.get(name);
                 }
             }
         };
     }
     
-    public static void modify(TabSupplier tab, CreativeTabRegistry.ModifyTabCallback filler) {
+    public static void modify(DeferredSupplier<CreativeModeTab> tab, CreativeTabRegistry.ModifyTabCallback filler) {
         BUILD_CONTENTS_LISTENERS.add(event -> {
             if (tab.isPresent()) {
                 if (event.getTab().equals(tab.get())) {
                     filler.accept(event.getFlags(), wrapTabOutput(event.getEntries()), event.hasPermissions());
                 }
-            } else if (Objects.equals(CreativeModeTabRegistry.getName(event.getTab()), tab.getName())) {
+            } else if (Objects.equals(CreativeModeTabRegistry.getName(event.getTab()), tab.getId())) {
                 filler.accept(event.getFlags(), wrapTabOutput(event.getEntries()), event.hasPermissions());
             }
         });
@@ -213,22 +192,22 @@ public class CreativeTabRegistryImpl {
     }
     
     @ApiStatus.Experimental
-    public static void appendStack(TabSupplier tab, Supplier<ItemStack> item) {
+    public static void appendStack(DeferredSupplier<CreativeModeTab> tab, Supplier<ItemStack> item) {
         APPENDS.put(new TabKey.SupplierTabKey(tab), item);
     }
     
     private interface TabKey {
-        record SupplierTabKey(TabSupplier supplier) implements TabKey {
+        record SupplierTabKey(DeferredSupplier<CreativeModeTab> supplier) implements TabKey {
             @Override
             public boolean equals(Object o) {
                 if (this == o) return true;
                 if (!(o instanceof SupplierTabKey that)) return false;
-                return Objects.equals(supplier.getName(), that.supplier.getName());
+                return Objects.equals(supplier.getId(), that.supplier.getId());
             }
             
             @Override
             public int hashCode() {
-                return Objects.hash(supplier.getName());
+                return Objects.hash(supplier.getId());
             }
         }
         
