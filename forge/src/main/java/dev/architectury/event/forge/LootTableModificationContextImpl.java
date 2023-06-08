@@ -19,6 +19,7 @@
 
 package dev.architectury.event.forge;
 
+import cpw.mods.modlauncher.api.INameMappingService;
 import dev.architectury.event.events.common.LootEvent;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -38,22 +39,39 @@ final class LootTableModificationContextImpl implements LootEvent.LootTableModif
         // Since this is rather unsafe, we are making sure 100% we are getting it
         List<LootPool> pools = null;
         try {
-            pools = ObfuscationReflectionHelper.getPrivateValue(LootTable.class, table, "f_79109_");
-        } catch (ObfuscationReflectionHelper.UnableToFindFieldException ignored) {
-            for (Field field : LootTable.class.getDeclaredFields()) {
-                if (field.getType().equals(List.class)) {
-                    // This is probably the field
-                    field.setAccessible(true);
-                    try {
-                        pools = (List<LootPool>) field.get(table);
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException(e);
+            Field field = LootTable.class.getDeclaredField("f_79109_");
+            field.setAccessible(true);
+            try {
+                pools = (List<LootPool>) field.get(table);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        } catch (NoSuchFieldException ignored) {
+            try {
+                String remapped = ObfuscationReflectionHelper.remapName(INameMappingService.Domain.FIELD, "f_79109_");
+                Field field = LootTable.class.getDeclaredField(remapped);
+                field.setAccessible(true);
+                try {
+                    pools = (List<LootPool>) field.get(table);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+            } catch (NoSuchFieldException ignored2) {
+                for (Field field : LootTable.class.getDeclaredFields()) {
+                    if (field.getType().equals(List.class)) {
+                        // This is probably the field
+                        field.setAccessible(true);
+                        try {
+                            pools = (List<LootPool>) field.get(table);
+                        } catch (IllegalAccessException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 }
-            }
-            
-            if (pools == null) {
-                throw new RuntimeException("Unable to find pools field in LootTable!");
+                
+                if (pools == null) {
+                    throw new RuntimeException("Unable to find pools field in LootTable!");
+                }
             }
         }
         
