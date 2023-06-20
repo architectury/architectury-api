@@ -24,6 +24,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 @ApiStatus.Internal
 public class TooltipEventColorContextImpl implements ClientTooltipEvent.ColorContext {
+    public static ThreadLocal<TooltipEventColorContextImpl> tooltipColorContext = ThreadLocal.withInitial(TooltipEventColorContextImpl::new);
     private int backgroundColor;
     private int outlineGradientTopColor;
     private int outlineGradientBottomColor;

@@ -52,7 +52,7 @@ public interface ClientTooltipEvent {
     /**
      * @see RenderModifyColor#renderTooltip(PoseStack, int, int, ColorContext)
      */
-    // Event<RenderModifyColor> RENDER_MODIFY_COLOR = EventFactory.createLoop();
+    Event<RenderModifyColor> RENDER_MODIFY_COLOR = EventFactory.createLoop();
     
     static AdditionalContexts additionalContexts() {
         return TooltipAdditionalContextsImpl.get();
