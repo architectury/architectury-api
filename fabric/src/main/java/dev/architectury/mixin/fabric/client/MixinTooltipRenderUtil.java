@@ -29,16 +29,16 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 public abstract class MixinTooltipRenderUtil {
     @ModifyConstant(method = "renderTooltipBackground", constant = @Constant(intValue = 0xf0100010))
     private static int modifyTooltipBackgroundColor(int original) {
-        return TooltipEventColorContextImpl.tooltipColorContext.get().getBackgroundColor();
+        return TooltipEventColorContextImpl.CONTEXT.get().getBackgroundColor();
     }
     
     @ModifyConstant(method = "renderTooltipBackground", constant = @Constant(intValue = 0x505000ff))
     private static int modifyTooltipOutlineGradientTopColor(int original) {
-        return TooltipEventColorContextImpl.tooltipColorContext.get().getOutlineGradientTopColor();
+        return TooltipEventColorContextImpl.CONTEXT.get().getOutlineGradientTopColor();
     }
     
     @ModifyConstant(method = "renderTooltipBackground", constant = @Constant(intValue = 0x5028007f))
     private static int modifyTooltipOutlineGradientBottomColor(int original) {
-        return TooltipEventColorContextImpl.tooltipColorContext.get().getOutlineGradientBottomColor();
+        return TooltipEventColorContextImpl.CONTEXT.get().getOutlineGradientBottomColor();
     }
 }

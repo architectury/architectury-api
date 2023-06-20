@@ -201,7 +201,7 @@ public class EventHandlerImplClient {
         ClientTooltipEvent.additionalContexts().setItem(event.getItemStack());
         
         try {
-            TooltipEventColorContextImpl colorContext = TooltipEventColorContextImpl.tooltipColorContext.get();
+            TooltipEventColorContextImpl colorContext = TooltipEventColorContextImpl.CONTEXT.get();
             colorContext.reset();
             colorContext.setBackgroundColor(event.getBackgroundStart());
             colorContext.setOutlineGradientTopColor(event.getBorderStart());

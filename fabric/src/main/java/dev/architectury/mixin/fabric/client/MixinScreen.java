@@ -97,7 +97,7 @@ public abstract class MixinScreen implements ScreenInputDelegate {
     @Inject(method = "renderTooltipInternal", at = @At("HEAD"), cancellable = true)
     private void renderTooltip(PoseStack poseStack, List<? extends ClientTooltipComponent> list, int x, int y, ClientTooltipPositioner positioner, CallbackInfo ci) {
         if (!list.isEmpty()) {
-            var colorContext = TooltipEventColorContextImpl.tooltipColorContext.get();
+            var colorContext = TooltipEventColorContextImpl.CONTEXT.get();
             colorContext.reset();
             var positionContext = tooltipPositionContext.get();
             positionContext.reset(x, y);
