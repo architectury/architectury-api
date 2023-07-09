@@ -113,7 +113,7 @@ unifiedPublishing {
         displayName = "[Fabric $rootProject.supported_version] v$project.version"
         releaseType = "$rootProject.artifact_type"
         changelog = releaseChangelog()
-        gameVersions = ["1.20"]
+        gameVersions = ["1.20", "1.20.1"]
         gameLoaders = ["fabric", "quilt"]
         mainPublication renameJarForPublication
         relations {
