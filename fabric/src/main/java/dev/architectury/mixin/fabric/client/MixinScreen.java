@@ -46,8 +46,6 @@ public abstract class MixinScreen implements ScreenInputDelegate {
     @Unique
     private static ThreadLocal<TooltipEventPositionContextImpl> tooltipPositionContext = ThreadLocal.withInitial(TooltipEventPositionContextImpl::new);
     @Unique
-    private static ThreadLocal<TooltipEventColorContextImpl> tooltipColorContext = ThreadLocal.withInitial(TooltipEventColorContextImpl::new);
-    @Unique
     private ScreenAccessImpl access;
     
     @Shadow
@@ -99,14 +97,14 @@ public abstract class MixinScreen implements ScreenInputDelegate {
     @Inject(method = "renderTooltipInternal", at = @At("HEAD"), cancellable = true)
     private void renderTooltip(PoseStack poseStack, List<? extends ClientTooltipComponent> list, int x, int y, ClientTooltipPositioner positioner, CallbackInfo ci) {
         if (!list.isEmpty()) {
-            var colorContext = tooltipColorContext.get();
+            var colorContext = TooltipEventColorContextImpl.CONTEXT.get();
             colorContext.reset();
             var positionContext = tooltipPositionContext.get();
             positionContext.reset(x, y);
             if (ClientTooltipEvent.RENDER_PRE.invoker().renderTooltip(poseStack, list, x, y).isFalse()) {
                 ci.cancel();
             } else {
-                // ClientTooltipEvent.RENDER_MODIFY_COLOR.invoker().renderTooltip(poseStack, x, y, colorContext);
+                ClientTooltipEvent.RENDER_MODIFY_COLOR.invoker().renderTooltip(poseStack, x, y, colorContext);
                 ClientTooltipEvent.RENDER_MODIFY_POSITION.invoker().renderTooltip(poseStack, positionContext);
             }
         }
@@ -123,19 +121,4 @@ public abstract class MixinScreen implements ScreenInputDelegate {
     private int modifyTooltipY(int original) {
         return tooltipPositionContext.get().getTooltipY();
     }
-    
-    // @ModifyConstant(method = "renderTooltipInternal", constant = @Constant(intValue = 0xf0100010))
-    // private int modifyTooltipBackgroundColor(int original) {
-    //     return tooltipColorContext.get().getBackgroundColor();
-    // }
-    
-    // @ModifyConstant(method = "renderTooltipInternal", constant = @Constant(intValue = 0x505000ff))
-    // private int modifyTooltipOutlineGradientTopColor(int original) {
-    //     return tooltipColorContext.get().getOutlineGradientTopColor();
-    // }
-    
-    // @ModifyConstant(method = "renderTooltipInternal", constant = @Constant(intValue = 0x5028007f))
-    // private int modifyTooltipOutlineGradientBottomColor(int original) {
-    //     return tooltipColorContext.get().getOutlineGradientBottomColor();
-    // }
 }
