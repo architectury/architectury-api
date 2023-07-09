@@ -350,6 +350,11 @@ public class DebugEvents {
             TestMod.SINK.accept("Screen has been changed to " + toSimpleName(screen));
             return CompoundEventResult.pass();
         });
+        ClientTooltipEvent.RENDER_MODIFY_COLOR.register((matrices, x, y, context) -> {
+            context.setBackgroundColor(0xf0ffeded);
+            context.setOutlineGradientTopColor(0xf0ff5c5c);
+            context.setOutlineGradientBottomColor(0xf0f74d4d);
+        });
     }
     
     private static String chunkPos(int x, int z) {

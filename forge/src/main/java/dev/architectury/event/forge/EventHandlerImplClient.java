@@ -172,7 +172,6 @@ public class EventHandlerImplClient {
         ClientRecipeUpdateEvent.EVENT.invoker().update(event.getRecipeManager());
     }
     
-    private static final ThreadLocal<TooltipEventColorContextImpl> tooltipColorContext = ThreadLocal.withInitial(TooltipEventColorContextImpl::new);
     private static final ThreadLocal<TooltipEventPositionContextImpl> tooltipPositionContext = ThreadLocal.withInitial(TooltipEventPositionContextImpl::new);
     
     @SubscribeEvent(priority = EventPriority.HIGH)
@@ -202,12 +201,12 @@ public class EventHandlerImplClient {
         ClientTooltipEvent.additionalContexts().setItem(event.getItemStack());
         
         try {
-            TooltipEventColorContextImpl colorContext = tooltipColorContext.get();
+            TooltipEventColorContextImpl colorContext = TooltipEventColorContextImpl.CONTEXT.get();
             colorContext.reset();
             colorContext.setBackgroundColor(event.getBackgroundStart());
             colorContext.setOutlineGradientTopColor(event.getBorderStart());
             colorContext.setOutlineGradientBottomColor(event.getBorderEnd());
-            // ClientTooltipEvent.RENDER_MODIFY_COLOR.invoker().renderTooltip(graphics, event.getX(), event.getY(), colorContext);
+            ClientTooltipEvent.RENDER_MODIFY_COLOR.invoker().renderTooltip(graphics, event.getX(), event.getY(), colorContext);
             event.setBackground(colorContext.getBackgroundColor());
             event.setBorderEnd(colorContext.getOutlineGradientBottomColor());
             event.setBorderStart(colorContext.getOutlineGradientTopColor());

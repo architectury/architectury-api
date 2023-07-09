@@ -40,8 +40,6 @@ import java.util.List;
 public abstract class MixinGuiGraphics {
     @Unique
     private static ThreadLocal<TooltipEventPositionContextImpl> tooltipPositionContext = ThreadLocal.withInitial(TooltipEventPositionContextImpl::new);
-    @Unique
-    private static ThreadLocal<TooltipEventColorContextImpl> tooltipColorContext = ThreadLocal.withInitial(TooltipEventColorContextImpl::new);
     
     @Inject(method = "renderTooltip(Lnet/minecraft/client/gui/Font;Lnet/minecraft/world/item/ItemStack;II)V", at = @At("HEAD"))
     private void preRenderTooltipItem(Font font, ItemStack stack, int x, int y, CallbackInfo ci) {
@@ -56,14 +54,14 @@ public abstract class MixinGuiGraphics {
     @Inject(method = "renderTooltipInternal", at = @At("HEAD"), cancellable = true)
     private void renderTooltip(Font font, List<? extends ClientTooltipComponent> list, int x, int y, ClientTooltipPositioner positioner, CallbackInfo ci) {
         if (!list.isEmpty()) {
-            var colorContext = tooltipColorContext.get();
+            var colorContext = TooltipEventColorContextImpl.CONTEXT.get();
             colorContext.reset();
             var positionContext = tooltipPositionContext.get();
             positionContext.reset(x, y);
             if (ClientTooltipEvent.RENDER_PRE.invoker().renderTooltip((GuiGraphics) (Object) this, list, x, y).isFalse()) {
                 ci.cancel();
             } else {
-                // ClientTooltipEvent.RENDER_MODIFY_COLOR.invoker().renderTooltip((GuiGraphics) (Object) this, x, y, colorContext);
+                ClientTooltipEvent.RENDER_MODIFY_COLOR.invoker().renderTooltip((GuiGraphics) (Object) this, x, y, colorContext);
                 ClientTooltipEvent.RENDER_MODIFY_POSITION.invoker().renderTooltip((GuiGraphics) (Object) this, positionContext);
             }
         }
@@ -80,19 +78,4 @@ public abstract class MixinGuiGraphics {
     private int modifyTooltipY(int original) {
         return tooltipPositionContext.get().getTooltipY();
     }
-
-//    @ModifyConstant(method = "renderTooltipInternal(Lnet/minecraft/client/gui/Font;Ljava/util/List;IILnet/minecraft/client/gui/screens/inventory/tooltip/ClientTooltipPositioner;)V", constant = @Constant(intValue = 0xf0100010))
-//    private int modifyTooltipBackgroundColor(int original) {
-//        return tooltipColorContext.get().getBackgroundColor();
-//    }
-//    
-//    @ModifyConstant(method = "renderTooltipInternal(Lnet/minecraft/client/gui/Font;Ljava/util/List;IILnet/minecraft/client/gui/screens/inventory/tooltip/ClientTooltipPositioner;)V", constant = @Constant(intValue = 0x505000ff))
-//    private int modifyTooltipOutlineGradientTopColor(int original) {
-//        return tooltipColorContext.get().getOutlineGradientTopColor();
-//    }
-//    
-//    @ModifyConstant(method = "renderTooltipInternal(Lnet/minecraft/client/gui/Font;Ljava/util/List;IILnet/minecraft/client/gui/screens/inventory/tooltip/ClientTooltipPositioner;)V", constant = @Constant(intValue = 0x5028007f))
-//    private int modifyTooltipOutlineGradientBottomColor(int original) {
-//        return tooltipColorContext.get().getOutlineGradientBottomColor();
-//    }
 }
