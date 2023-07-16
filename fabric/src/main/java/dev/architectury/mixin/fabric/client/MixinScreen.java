@@ -72,7 +72,7 @@ public abstract class MixinScreen implements ScreenInputDelegate {
     }
     
     @Inject(method = "rebuildWidgets", at = @At(value = "RETURN"))
-    private void postInit(CallbackInfo ci ) {
+    private void postInit(CallbackInfo ci) {
         ClientGuiEvent.INIT_POST.invoker().init((Screen) (Object) this, getAccess());
     }
 }
