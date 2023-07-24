@@ -71,8 +71,8 @@ public abstract class MixinScreen implements ScreenInputDelegate {
         }
     }
     
-    @Inject(method = "init(Lnet/minecraft/client/Minecraft;II)V", at = @At(value = "RETURN"))
-    private void postInit(Minecraft minecraft, int i, int j, CallbackInfo ci) {
+    @Inject(method = "rebuildWidgets", at = @At(value = "RETURN"))
+    private void postInit(CallbackInfo ci) {
         ClientGuiEvent.INIT_POST.invoker().init((Screen) (Object) this, getAccess());
     }
 }
