@@ -64,15 +64,31 @@ public abstract class MixinScreen implements ScreenInputDelegate {
         return inputDelegate;
     }
     
-    @Inject(method = "rebuildWidgets", at = @At(value = "HEAD"), cancellable = true)
-    private void preInit(CallbackInfo ci) {
+    @Inject(method = "init(Lnet/minecraft/client/Minecraft;II)V", at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/client/gui/screens/Screen;init()V"), cancellable = true)
+    private void preInit(Minecraft minecraft, int width, int height, CallbackInfo ci) {
         if (ClientGuiEvent.INIT_PRE.invoker().init((Screen) (Object) this, getAccess()).isFalse()) {
             ci.cancel();
         }
     }
     
-    @Inject(method = "rebuildWidgets", at = @At(value = "RETURN"))
+    @Inject(method = "init(Lnet/minecraft/client/Minecraft;II)V", at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/client/gui/screens/Screen;init()V", shift = At.Shift.AFTER))
     private void postInit(CallbackInfo ci) {
+        ClientGuiEvent.INIT_POST.invoker().init((Screen) (Object) this, getAccess());
+    }
+    
+    @Inject(method = "rebuildWidgets", at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/client/gui/screens/Screen;init()V"), cancellable = true)
+    private void preInit2(CallbackInfo ci) {
+        if (ClientGuiEvent.INIT_PRE.invoker().init((Screen) (Object) this, getAccess()).isFalse()) {
+            ci.cancel();
+        }
+    }
+    
+    @Inject(method = "rebuildWidgets", at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/client/gui/screens/Screen;init()V", shift = At.Shift.AFTER))
+    private void postInit2(CallbackInfo ci) {
         ClientGuiEvent.INIT_POST.invoker().init((Screen) (Object) this, getAccess());
     }
 }
