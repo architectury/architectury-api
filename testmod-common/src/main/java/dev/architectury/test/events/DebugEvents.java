@@ -290,9 +290,6 @@ public class DebugEvents {
             TestMod.SINK.accept(toSimpleName(screen) + " initializes");
             return EventResult.pass();
         });
-        ClientGuiEvent.INIT_POST.register(((screen, access) -> {
-            TestMod.SINK.accept(toSimpleName(screen) + " initialized");
-        }));
         InteractionEvent.CLIENT_LEFT_CLICK_AIR.register((player, hand) -> {
             TestMod.SINK.accept(player.getScoreboardName() + " left clicks air" + logSide(player.level()));
         });
