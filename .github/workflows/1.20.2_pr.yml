@@ -7,7 +7,7 @@ on:
       - '**.properties'
       - '**/src/**'
     branches:
-      - "1.20"
+      - "1.20.2"
     types: [ opened, synchronize, reopened ]
 jobs:
   validate-gradle:

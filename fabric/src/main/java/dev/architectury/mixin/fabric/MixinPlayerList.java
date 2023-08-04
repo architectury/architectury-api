@@ -32,7 +32,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(PlayerList.class)
 public class MixinPlayerList {
     @Inject(method = "placeNewPlayer", at = @At("RETURN"))
-    private void placeNewPlayer(Connection connection, ServerPlayer serverPlayer, CallbackInfo ci) {
+    private void placeNewPlayer(Connection connection, ServerPlayer serverPlayer, int latency, CallbackInfo ci) {
         PlayerEvent.PLAYER_JOIN.invoker().join(serverPlayer);
     }
     

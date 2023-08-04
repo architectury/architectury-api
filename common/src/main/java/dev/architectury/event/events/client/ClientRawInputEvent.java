@@ -29,7 +29,7 @@ import net.minecraft.client.Minecraft;
 @Environment(EnvType.CLIENT)
 public interface ClientRawInputEvent {
     /**
-     * @see MouseScrolled#mouseScrolled(Minecraft, double)
+     * @see MouseScrolled#mouseScrolled(Minecraft, double, double)
      */
     Event<MouseScrolled> MOUSE_SCROLLED = EventFactory.createEventResult();
     /**
@@ -63,12 +63,13 @@ public interface ClientRawInputEvent {
          * Invoked whenever the mouse scroll wheel is used.
          * Equivalent to Forge's {@code InputEvent.MouseScrollEvent} event.
          *
-         * @param client The Minecraft instance performing it.
-         * @param amount The amount of movement.
+         * @param client  The Minecraft instance performing it.
+         * @param amountX The amount of movement on the X axis.
+         * @param amountY The amount of movement on the Y axis.
          * @return A {@link EventResult} determining the outcome of the event,
          * the execution of the vanilla scrolling mechanism may be cancelled by the result.
          */
-        EventResult mouseScrolled(Minecraft client, double amount);
+        EventResult mouseScrolled(Minecraft client, double amountX, double amountY);
     }
     
     interface MouseClicked {

@@ -49,31 +49,31 @@ public class MixinMouseHandler {
     private double ypos;
     
     @Inject(method = "onScroll",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;mouseScrolled(DDD)Z",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;mouseScrolled(DDDD)Z",
                     ordinal = 0), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-    public void onMouseScrolled(long handle, double xOffset, double yOffset, CallbackInfo info, double amount, double x, double y) {
+    public void onMouseScrolled(long handle, double xOffset, double yOffset, CallbackInfo info, boolean discreteMouseScroll, double mouseWheelSensitivity, double amountX, double amountY, double x, double y) {
         if (!info.isCancelled()) {
-            var result = ClientScreenInputEvent.MOUSE_SCROLLED_PRE.invoker().mouseScrolled(minecraft, minecraft.screen, x, y, amount);
+            var result = ClientScreenInputEvent.MOUSE_SCROLLED_PRE.invoker().mouseScrolled(minecraft, minecraft.screen, x, y, amountX, amountY);
             if (result.isPresent())
                 info.cancel();
         }
     }
     
     @Inject(method = "onScroll",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;mouseScrolled(DDD)Z",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;mouseScrolled(DDDD)Z",
                     ordinal = 0, shift = At.Shift.AFTER), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-    public void onMouseScrolledPost(long handle, double xOffset, double yOffset, CallbackInfo info, double amount, double x, double y) {
+    public void onMouseScrolledPost(long handle, double xOffset, double yOffset, CallbackInfo info, boolean discreteMouseScroll, double mouseWheelSensitivity, double amountX, double amountY, double x, double y) {
         if (!info.isCancelled()) {
-            var result = ClientScreenInputEvent.MOUSE_SCROLLED_POST.invoker().mouseScrolled(minecraft, minecraft.screen, x, y, amount);
+            var result = ClientScreenInputEvent.MOUSE_SCROLLED_POST.invoker().mouseScrolled(minecraft, minecraft.screen, x, y, amountX, amountY);
         }
     }
     
     @Inject(method = "onScroll",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isSpectator()Z",
                     ordinal = 0), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-    public void onRawMouseScrolled(long handle, double xOffset, double yOffset, CallbackInfo info, double amount) {
+    public void onRawMouseScrolled(long handle, double xOffset, double yOffset, CallbackInfo info, boolean discreteMouseScroll, double mouseWheelSensitivity, double amountX, double doubleY) {
         if (!info.isCancelled()) {
-            var result = ClientRawInputEvent.MOUSE_SCROLLED.invoker().mouseScrolled(minecraft, amount);
+            var result = ClientRawInputEvent.MOUSE_SCROLLED.invoker().mouseScrolled(minecraft, amountX, doubleY);
             if (result.isPresent())
                 info.cancel();
         }

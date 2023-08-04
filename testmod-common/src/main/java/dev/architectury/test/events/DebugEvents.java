@@ -305,8 +305,8 @@ public class DebugEvents {
 //        ClientTextureStitchEvent.POST.register(atlas -> {
 //            TestMod.SINK.accept("Client texture stitched: " + atlas.location());
 //        });
-        ClientScreenInputEvent.MOUSE_SCROLLED_PRE.register((client, screen, mouseX, mouseY, amount) -> {
-            TestMod.SINK.accept("Screen Mouse scrolled: %.2f distance", amount);
+        ClientScreenInputEvent.MOUSE_SCROLLED_PRE.register((client, screen, mouseX, mouseY, amountX, amountY) -> {
+            TestMod.SINK.accept("Screen Mouse scrolled: %.2f x-distance %.2f y-distance", amountX, amountY);
             return EventResult.pass();
         });
         ClientScreenInputEvent.MOUSE_CLICKED_PRE.register((client, screen, mouseX, mouseY, button) -> {
@@ -333,8 +333,8 @@ public class DebugEvents {
             TestMod.SINK.accept("Screen Key released: " + InputConstants.getKey(keyCode, scanCode).getDisplayName().getString());
             return EventResult.pass();
         });
-        ClientRawInputEvent.MOUSE_SCROLLED.register((client, amount) -> {
-            TestMod.SINK.accept("Raw Mouse scrolled: %.2f distance", amount);
+        ClientRawInputEvent.MOUSE_SCROLLED.register((client, amountX, amountY) -> {
+            TestMod.SINK.accept("Raw Mouse scrolled: %.2f x-distance %.2f y-distance", amountX, amountY);
             return EventResult.pass();
         });
         ClientRawInputEvent.MOUSE_CLICKED_PRE.register((client, button, action, mods) -> {

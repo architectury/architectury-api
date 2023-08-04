@@ -30,7 +30,7 @@ import net.minecraft.client.gui.screens.Screen;
 @Environment(EnvType.CLIENT)
 public interface ClientScreenInputEvent {
     /**
-     * @see MouseScrolled#mouseScrolled(Minecraft, Screen, double, double, double)
+     * @see MouseScrolled#mouseScrolled(Minecraft, Screen, double, double, double, double)
      */
     Event<MouseScrolled> MOUSE_SCROLLED_PRE = EventFactory.createEventResult();
     Event<MouseScrolled> MOUSE_SCROLLED_POST = EventFactory.createEventResult();
@@ -129,15 +129,16 @@ public interface ClientScreenInputEvent {
          * <p> This event is handled in two phases PRE and POST, which are invoked
          * before and after the keys have been processed by the screen, respectively.
          *
-         * @param client The Minecraft instance performing it.
-         * @param screen The screen this keystroke was performed in.
-         * @param mouseX The scaled x-coordinate of the mouse cursor.
-         * @param mouseY The scaled y-coordinate of the mouse cursor.
-         * @param amount The amount the scroll wheel is moved.
+         * @param client  The Minecraft instance performing it.
+         * @param screen  The screen this keystroke was performed in.
+         * @param mouseX  The scaled x-coordinate of the mouse cursor.
+         * @param mouseY  The scaled y-coordinate of the mouse cursor.
+         * @param amountX The amount the scroll wheel is moved horizontally.
+         * @param amountY The amount the scroll wheel is moved vertically.
          * @return A {@link EventResult} determining the outcome of the event,
          * the execution of the vanilla scrolling mechanism may be cancelled by the result.
          */
-        EventResult mouseScrolled(Minecraft client, Screen screen, double mouseX, double mouseY, double amount);
+        EventResult mouseScrolled(Minecraft client, Screen screen, double mouseX, double mouseY, double amountX, double amountY);
     }
     
     interface MouseReleased {

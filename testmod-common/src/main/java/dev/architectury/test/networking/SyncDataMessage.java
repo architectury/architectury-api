@@ -39,7 +39,7 @@ public class SyncDataMessage extends BaseS2CMessage {
     }
     
     public SyncDataMessage(FriendlyByteBuf buf) {
-        serverData = buf.readAnySizeNbt();
+        serverData = buf.readNbt();
     }
     
     @Override

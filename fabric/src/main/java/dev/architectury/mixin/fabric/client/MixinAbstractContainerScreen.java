@@ -35,7 +35,7 @@ public abstract class MixinAbstractContainerScreen extends Screen {
         super(component);
     }
     
-    @Inject(method = "render",
+    @Inject(method = "renderBackground",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;renderBg(Lnet/minecraft/client/gui/GuiGraphics;FII)V",
                     ordinal = 0, shift = At.Shift.AFTER))
     public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float delta, CallbackInfo ci) {
