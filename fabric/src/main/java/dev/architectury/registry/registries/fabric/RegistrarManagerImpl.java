@@ -133,9 +133,7 @@ public class RegistrarManagerImpl {
         
         @Override
         public RegistrarBuilder<T> option(RegistrarOption option) {
-            if (option == StandardRegistrarOption.SAVE_TO_DISC) {
-                this.builder.attribute(RegistryAttribute.PERSISTED);
-            } else if (option == StandardRegistrarOption.SYNC_TO_CLIENTS) {
+            if (option == StandardRegistrarOption.SYNC_TO_CLIENTS) {
                 this.builder.attribute(RegistryAttribute.SYNCED);
             }
             return this;

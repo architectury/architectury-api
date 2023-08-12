@@ -27,10 +27,6 @@ public interface RegistrarBuilder<T> {
     
     RegistrarBuilder<T> option(RegistrarOption option);
     
-    default RegistrarBuilder<T> saveToDisc() {
-        return option(StandardRegistrarOption.SAVE_TO_DISC);
-    }
-    
     default RegistrarBuilder<T> syncToClients() {
         return option(StandardRegistrarOption.SYNC_TO_CLIENTS);
     }
