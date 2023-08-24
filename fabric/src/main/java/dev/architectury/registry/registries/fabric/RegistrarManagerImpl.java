@@ -207,8 +207,8 @@ public class RegistrarManagerImpl {
         
         @Override
         public <E extends T> RegistrySupplier<E> register(ResourceLocation id, Supplier<E> supplier) {
-            if (id.getNamespace().equals("minecraft")) {
-                var reference = supplier.get();
+            var reference = supplier.get();
+            if (getId(reference) != null) {
                 var rawId = getRawId(get(id));
                 Registry.registerMapping((Registry) delegate, rawId, id.toString(), reference);
             } else {
