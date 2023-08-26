@@ -208,7 +208,7 @@ public class RegistrarManagerImpl {
         @Override
         public <E extends T> RegistrySupplier<E> register(ResourceLocation id, Supplier<E> supplier) {
             var reference = supplier.get();
-            if (getId(reference) != null) {
+            if (contains(id)) {
                 var rawId = getRawId(get(id));
                 Registry.registerMapping((Registry) delegate, rawId, id.toString(), reference);
             } else {
