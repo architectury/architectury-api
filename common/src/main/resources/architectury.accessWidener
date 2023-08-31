@@ -48,7 +48,7 @@ accessible field net/minecraft/world/level/block/state/BlockBehaviour$Properties
 mutable field net/minecraft/world/level/block/state/BlockBehaviour$Properties dynamicShape Z
 accessible method net/minecraft/world/level/block/state/BlockBehaviour$Properties <init> ()V
 transitive-accessible method net/minecraft/world/entity/player/Player closeContainer ()V
-transitive-accessible method net/minecraft/advancements/CriteriaTriggers register (Lnet/minecraft/advancements/CriterionTrigger;)Lnet/minecraft/advancements/CriterionTrigger;
+transitive-accessible method net/minecraft/advancements/CriteriaTriggers register (Ljava/lang/String;Lnet/minecraft/advancements/CriterionTrigger;)Lnet/minecraft/advancements/CriterionTrigger;
 transitive-accessible method net/minecraft/world/inventory/MenuType <init> (Lnet/minecraft/world/inventory/MenuType$MenuSupplier;Lnet/minecraft/world/flag/FeatureFlagSet;)V
 transitive-accessible class net/minecraft/world/inventory/MenuType$MenuSupplier
 accessible method net/minecraft/world/entity/Entity getEncodeId ()Ljava/lang/String;

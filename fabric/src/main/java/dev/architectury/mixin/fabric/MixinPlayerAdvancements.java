@@ -20,7 +20,7 @@
 package dev.architectury.mixin.fabric;
 
 import dev.architectury.event.events.common.PlayerEvent;
-import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.server.PlayerAdvancements;
 import net.minecraft.server.level.ServerPlayer;
 import org.spongepowered.asm.mixin.Mixin;
@@ -37,7 +37,7 @@ public class MixinPlayerAdvancements {
     @Inject(method = "award",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/advancements/AdvancementRewards;grant(Lnet/minecraft/server/level/ServerPlayer;)V",
                     shift = At.Shift.AFTER))
-    private void award(Advancement advancement, String string, CallbackInfoReturnable<Boolean> cir) {
+    private void award(AdvancementHolder advancement, String string, CallbackInfoReturnable<Boolean> cir) {
         PlayerEvent.PLAYER_ADVANCEMENT.invoker().award(player, advancement);
     }
 }

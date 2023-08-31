@@ -19,29 +19,28 @@
 
 package dev.architectury.test.recipes;
 
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.CustomRecipe;
-import net.minecraft.world.item.crafting.FireworkRocketRecipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-
-import java.util.Objects;
+import net.minecraft.world.item.crafting.*;
 
 public class TestRecipeSerializer implements RecipeSerializer<CustomRecipe> {
+    private static final Codec<CustomRecipe> CODEC = RecordCodecBuilder.create(instance ->
+            instance.group(CraftingBookCategory.CODEC.fieldOf("category")
+                    .orElse(CraftingBookCategory.MISC)
+                    .forGetter(CraftingRecipe::category)
+            ).apply(instance, FireworkRocketRecipe::new)
+    );
+    
     @Override
-    public CustomRecipe fromJson(ResourceLocation id, JsonObject json) {
-        CraftingBookCategory category = Objects.requireNonNullElse(
-                CraftingBookCategory.CODEC.byName(GsonHelper.getAsString(json, "category", null)), CraftingBookCategory.MISC);
-        return new FireworkRocketRecipe(id, category);
+    public Codec<CustomRecipe> codec() {
+        return CODEC;
     }
     
     @Override
-    public CustomRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
+    public CustomRecipe fromNetwork(FriendlyByteBuf buf) {
         CraftingBookCategory category = buf.readEnum(CraftingBookCategory.class);
-        return new FireworkRocketRecipe(id, category);
+        return new FireworkRocketRecipe(category);
     }
     
     @Override

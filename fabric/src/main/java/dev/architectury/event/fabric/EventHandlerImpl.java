@@ -86,7 +86,7 @@ public class EventHandlerImpl {
         ServerMessageDecoratorEvent.EVENT.register(ServerMessageDecoratorEvent.CONTENT_PHASE, (player, component) -> {
             ChatEvent.ChatComponent chatComponent = new ChatComponentImpl(component);
             ChatEvent.DECORATE.invoker().decorate(player, chatComponent);
-            return CompletableFuture.completedFuture(chatComponent.get());
+            return chatComponent.get();
         });
         ServerMessageEvents.ALLOW_CHAT_MESSAGE.register((message, sender, params) -> {
             return !ChatEvent.RECEIVED.invoker().received(sender, message.decoratedContent()).isFalse();
@@ -95,6 +95,6 @@ public class EventHandlerImpl {
     
     @Environment(EnvType.SERVER)
     public static void registerServer() {
-        
+    
     }
 }

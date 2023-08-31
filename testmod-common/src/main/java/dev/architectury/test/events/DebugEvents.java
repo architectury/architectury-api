@@ -31,6 +31,7 @@ import dev.architectury.utils.Env;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.client.gui.screens.inventory.AnvilScreen;
 import net.minecraft.core.Position;
 import net.minecraft.core.Vec3i;
@@ -192,7 +193,7 @@ public class DebugEvents {
             TestMod.SINK.accept("Player cloned: " + newPlayer.getScoreboardName() + logSide(newPlayer.level()));
         });
         PlayerEvent.PLAYER_ADVANCEMENT.register((player, advancement) -> {
-            TestMod.SINK.accept(player.getScoreboardName() + " was awarded with %s" + logSide(player.level()), advancement.getChatComponent().getString());
+            TestMod.SINK.accept(player.getScoreboardName() + " was awarded with %s" + logSide(player.level()), Advancement.name(advancement));
         });
         PlayerEvent.CRAFT_ITEM.register((player, constructed, inventory) -> {
             TestMod.SINK.accept(player.getScoreboardName() + " crafts " + Component.translatable(constructed.getDescriptionId()).getString() + logSide(player.level()));

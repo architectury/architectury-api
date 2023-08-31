@@ -23,7 +23,7 @@ import dev.architectury.event.CompoundEventResult;
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
 import dev.architectury.event.EventResult;
-import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -52,7 +52,7 @@ public interface PlayerEvent {
      */
     Event<PlayerRespawn> PLAYER_RESPAWN = EventFactory.createLoop();
     /**
-     * @see PlayerAdvancement#award(ServerPlayer, Advancement)
+     * @see PlayerAdvancement#award(ServerPlayer, AdvancementHolder)
      */
     Event<PlayerAdvancement> PLAYER_ADVANCEMENT = EventFactory.createLoop();
     /**
@@ -153,7 +153,7 @@ public interface PlayerEvent {
          * @param player      The player who got the advancement.
          * @param advancement The advancement the player got.
          */
-        void award(ServerPlayer player, Advancement advancement);
+        void award(ServerPlayer player, AdvancementHolder advancement);
     }
     
     interface CraftItem {
