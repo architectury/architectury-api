@@ -56,7 +56,7 @@ public abstract class MixinClientPacketListener extends ClientCommonPacketListen
         super(minecraft, connection, commonListenerCookie);
     }
     
-    @Inject(method = "handleLogin", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Options;broadcastOptions()V"))
+    @Inject(method = "handleLogin", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Options;setServerRenderDistance(I)V", shift = At.Shift.AFTER))
     private void handleLogin(ClientboundLoginPacket packet, CallbackInfo ci) {
         ClientPlayerEvent.CLIENT_PLAYER_JOIN.invoker().join(minecraft.player);
     }
