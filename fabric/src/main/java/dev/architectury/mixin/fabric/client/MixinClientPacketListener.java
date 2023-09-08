@@ -67,7 +67,7 @@ public abstract class MixinClientPacketListener extends ClientCommonPacketListen
     }
     
     @Inject(method = "handleRespawn", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/client/multiplayer/ClientLevel;addPlayer(ILnet/minecraft/client/player/AbstractClientPlayer;)V"))
+            target = "Lnet/minecraft/client/multiplayer/ClientLevel;addEntity(Lnet/minecraft/world/entity/Entity;)V"))
     private void handleRespawn(ClientboundRespawnPacket packet, CallbackInfo ci) {
         ClientPlayerEvent.CLIENT_PLAYER_RESPAWN.invoker().respawn(tmpPlayer, minecraft.player);
         this.tmpPlayer = null;

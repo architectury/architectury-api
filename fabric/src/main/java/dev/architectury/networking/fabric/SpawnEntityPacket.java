@@ -111,7 +111,7 @@ public class SpawnEntityPacket {
                     ext.loadAdditionalSpawnData(buf);
                 }
                 buf.release();
-                Minecraft.getInstance().level.putNonPlayerEntity(id, entity);
+                Minecraft.getInstance().level.addEntity(entity);
                 entity.lerpMotion(deltaX, deltaY, deltaZ);
             });
         }

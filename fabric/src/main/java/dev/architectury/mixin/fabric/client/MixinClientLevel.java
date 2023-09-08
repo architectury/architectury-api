@@ -45,7 +45,7 @@ public class MixinClientLevel {
     }
     
     @Inject(method = "addEntity", at = @At("HEAD"), cancellable = true)
-    private void addEntity(int i, Entity entity, CallbackInfo ci) {
+    private void addEntity(Entity entity, CallbackInfo ci) {
         if (EntityEvent.ADD.invoker().add(entity, (ClientLevel) (Object) this).isFalse()) {
             ci.cancel();
         }
