@@ -20,8 +20,8 @@
 package dev.architectury.core.item;
 
 import dev.architectury.registry.registries.RegistrySupplier;
-import net.minecraft.core.BlockSource;
 import net.minecraft.core.Direction;
+import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.nbt.CompoundTag;
@@ -47,18 +47,18 @@ public class ArchitecturySpawnEggItem extends SpawnEggItem {
         return new DefaultDispenseItemBehavior() {
             @Override
             public ItemStack execute(BlockSource source, ItemStack stack) {
-                Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
+                Direction direction = source.state().getValue(DispenserBlock.FACING);
                 EntityType<?> entityType = ((SpawnEggItem) stack.getItem()).getType(stack.getTag());
                 
                 try {
-                    entityType.spawn(source.getLevel(), stack, null, source.getPos().relative(direction), MobSpawnType.DISPENSER, direction != Direction.UP, false);
+                    entityType.spawn(source.level(), stack, null, source.pos().relative(direction), MobSpawnType.DISPENSER, direction != Direction.UP, false);
                 } catch (Exception var6) {
-                    LOGGER.error("Error while dispensing spawn egg from dispenser at {}", source.getPos(), var6);
+                    LOGGER.error("Error while dispensing spawn egg from dispenser at {}", source.pos(), var6);
                     return ItemStack.EMPTY;
                 }
                 
                 stack.shrink(1);
-                source.getLevel().gameEvent(null, GameEvent.ENTITY_PLACE, source.getPos());
+                source.level().gameEvent(null, GameEvent.ENTITY_PLACE, source.pos());
                 return stack;
             }
         };
