@@ -19,18 +19,12 @@
 
 package dev.architectury.event;
 
-public interface Event<T> {
-    T invoker();
+public enum EventPriority {
+    HIGHEST,
+    HIGH,
+    NORMAL,
+    LOW,
+    LOWEST;
     
-    T invoker(EventPriority priority);
-    
-    void register(T listener);
-    
-    void register(EventPriority priority, T listener);
-    
-    void unregister(T listener);
-    
-    boolean isRegistered(T listener);
-    
-    void clearListeners();
+    public static final EventPriority[] VALUES = values();
 }

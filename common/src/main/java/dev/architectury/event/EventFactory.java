@@ -28,9 +28,7 @@ import org.jetbrains.annotations.ApiStatus;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -196,45 +194,111 @@ public final class EventFactory {
     
     private static class EventImpl<T> implements Event<T> {
         private final Function<List<T>, T> function;
-        private T invoker = null;
-        private ArrayList<T> listeners;
+        private final Map<EventPriority, IndividualInvoker<T>> invokers;
+        private List<T> listeners;
+        private final Invoker<T> overallInvoker;
+        private final T emptyInvoker;
         
         public EventImpl(Function<List<T>, T> function) {
+            this.function = function;
+            this.invokers = new EnumMap<>(EventPriority.class);
+            this.invokers.put(EventPriority.NORMAL, new IndividualInvoker<>(this.function));
+            this.overallInvoker = new Invoker<>(this.function, this.listeners);
+            this.buildListeners();
+            this.emptyInvoker = this.function.apply(Collections.emptyList());
+        }
+        
+        private void buildListeners() {
+            if (this.invokers.size() == 1) {
+                this.listeners = this.invokers.values().iterator().next().listeners;
+            } else {
+                this.listeners = new ArrayList<>();
+                for (var invoker : this.invokers.values()) {
+                    this.listeners.addAll(invoker.listeners);
+                }
+            }
+            this.overallInvoker.listeners = this.listeners;
+            this.overallInvoker.invoker = null;
+        }
+        
+        @Override
+        public T invoker() {
+            return this.overallInvoker.invoker();
+        }
+        
+        @Override
+        public T invoker(EventPriority priority) {
+            IndividualInvoker<T> invoker = this.invokers.get(priority);
+            
+            if (invoker != null) {
+                return invoker.invoker();
+            } else {
+                return emptyInvoker;
+            }
+        }
+        
+        @Override
+        public void register(T listener) {
+            this.register(EventPriority.NORMAL, listener);
+        }
+        
+        @Override
+        public void register(EventPriority priority, T listener) {
+            this.getOrCreatePriority(priority).register(listener);
+            this.buildListeners();
+        }
+        
+        @Override
+        public void unregister(T listener) {
+            for (var invoker : this.invokers.values()) {
+                invoker.unregister(listener);
+            }
+            this.buildListeners();
+        }
+        
+        @Override
+        public boolean isRegistered(T listener) {
+            return overallInvoker.listeners.contains(listener);
+        }
+        
+        private IndividualInvoker<T> getOrCreatePriority(EventPriority priority) {
+            IndividualInvoker<T> invoker = this.invokers.get(priority);
+            
+            if (invoker == null) {
+                invoker = new IndividualInvoker<>(this.function);
+                this.invokers.put(priority, invoker);
+            }
+            
+            return invoker;
+        }
+        
+        @Override
+        public void clearListeners() {
+            this.invokers.put(EventPriority.NORMAL, new IndividualInvoker<>(this.function));
+            this.buildListeners();
+        }
+    }
+    
+    private static class Invoker<T> {
+        protected final Function<List<T>, T> function;
+        protected T invoker = null;
+        protected List<T> listeners;
+        
+        public Invoker(Function<List<T>, T> function) {
             this.function = function;
             this.listeners = new ArrayList<>();
         }
         
-        @Override
+        public Invoker(Function<List<T>, T> function, List<T> listeners) {
+            this.function = function;
+            this.listeners = listeners;
+        }
+        
         public T invoker() {
             if (invoker == null) {
                 update();
             }
             return invoker;
-        }
-        
-        @Override
-        public void register(T listener) {
-            listeners.add(listener);
-            invoker = null;
-        }
-        
-        @Override
-        public void unregister(T listener) {
-            listeners.remove(listener);
-            listeners.trimToSize();
-            invoker = null;
-        }
-        
-        @Override
-        public boolean isRegistered(T listener) {
-            return listeners.contains(listener);
-        }
-        
-        @Override
-        public void clearListeners() {
-            listeners.clear();
-            listeners.trimToSize();
-            invoker = null;
         }
         
         public void update() {
@@ -243,6 +307,37 @@ public final class EventFactory {
             } else {
                 invoker = function.apply(listeners);
             }
+        }
+    }
+    
+    private static class IndividualInvoker<T> extends Invoker<T> {
+        public IndividualInvoker(Function<List<T>, T> function) {
+            super(function);
+        }
+        
+        public IndividualInvoker(Function<List<T>, T> function, ArrayList<T> listeners) {
+            super(function, listeners);
+        }
+        
+        public void register(T listener) {
+            listeners.add(listener);
+            invoker = null;
+        }
+        
+        public void unregister(T listener) {
+            listeners.remove(listener);
+            if (listeners instanceof ArrayList<T> arrayList) {
+                arrayList.trimToSize();
+            }
+            invoker = null;
+        }
+        
+        public void clearListeners() {
+            listeners.clear();
+            if (listeners instanceof ArrayList<T> arrayList) {
+                arrayList.trimToSize();
+            }
+            invoker = null;
         }
     }
 }

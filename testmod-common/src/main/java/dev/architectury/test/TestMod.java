@@ -26,6 +26,7 @@ import dev.architectury.test.debug.MessageSink;
 import dev.architectury.test.debug.client.ClientOverlayMessageSink;
 import dev.architectury.test.entity.TestEntity;
 import dev.architectury.test.events.DebugEvents;
+import dev.architectury.test.events.TestEvents;
 import dev.architectury.test.gamerule.TestGameRules;
 import dev.architectury.test.item.TestBlockInteractions;
 import dev.architectury.test.loot.TestLoot;
@@ -49,6 +50,7 @@ public class TestMod {
     public static final String MOD_ID = "architectury_test";
     
     public static void initialize() {
+        TestEvents.test();
         DebugEvents.initialize();
         TestRegistries.initialize();
         TestGameRules.init();

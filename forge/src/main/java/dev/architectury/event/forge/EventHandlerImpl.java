@@ -28,17 +28,13 @@ import net.minecraftforge.common.MinecraftForge;
 public class EventHandlerImpl {
     @OnlyIn(Dist.CLIENT)
     public static void registerClient() {
-        MinecraftForge.EVENT_BUS.register(EventHandlerImplClient.class);
-        EventBuses.onRegistered(ArchitecturyForge.MOD_ID, bus -> {
-            bus.register(EventHandlerImplClient.ModBasedEventHandler.class);
-        });
+        EventHandlerImplClient.init();
+        EventBuses.onRegistered(ArchitecturyForge.MOD_ID, EventHandlerImplClient.ModBasedEventHandler::init);
     }
     
     public static void registerCommon() {
-        MinecraftForge.EVENT_BUS.register(EventHandlerImplCommon.class);
-        EventBuses.onRegistered(ArchitecturyForge.MOD_ID, bus -> {
-            bus.register(EventHandlerImplCommon.ModBasedEventHandler.class);
-        });
+        EventHandlerImplCommon.init();
+        EventBuses.onRegistered(ArchitecturyForge.MOD_ID, EventHandlerImplCommon.ModBasedEventHandler::init);
     }
     
     @OnlyIn(Dist.DEDICATED_SERVER)

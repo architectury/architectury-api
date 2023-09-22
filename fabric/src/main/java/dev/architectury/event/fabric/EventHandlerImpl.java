@@ -19,6 +19,7 @@
 
 package dev.architectury.event.fabric;
 
+import dev.architectury.event.EventPriority;
 import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.event.events.client.ClientLifecycleEvent;
 import dev.architectury.event.events.client.ClientTickEvent;
@@ -42,55 +43,72 @@ import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
 import net.fabricmc.fabric.api.message.v1.ServerMessageDecoratorEvent;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
+import net.minecraft.resources.ResourceLocation;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 public class EventHandlerImpl {
+    public static final ResourceLocation HIGHEST = new ResourceLocation("architectury", "highest");
+    public static final ResourceLocation HIGH = new ResourceLocation("architectury", "high");
+    public static final ResourceLocation LOW = new ResourceLocation("architectury", "low");
+    public static final ResourceLocation LOWEST = new ResourceLocation("architectury", "lowest");
+    public static final ResourceLocation[] PHASES = new ResourceLocation[]{HIGHEST, HIGH, net.fabricmc.fabric.api.event.Event.DEFAULT_PHASE, LOW, LOWEST};
+    
     @Environment(EnvType.CLIENT)
     public static void registerClient() {
-        ClientLifecycleEvents.CLIENT_STARTED.register(instance -> ClientLifecycleEvent.CLIENT_STARTED.invoker().stateChanged(instance));
-        ClientLifecycleEvents.CLIENT_STOPPING.register(instance -> ClientLifecycleEvent.CLIENT_STOPPING.invoker().stateChanged(instance));
+        registerWithPriority(ClientLifecycleEvents.CLIENT_STARTED, priority -> instance -> ClientLifecycleEvent.CLIENT_STARTED.invoker(priority).stateChanged(instance));
+        registerWithPriority(ClientLifecycleEvents.CLIENT_STOPPING, priority -> instance -> ClientLifecycleEvent.CLIENT_STOPPING.invoker(priority).stateChanged(instance));
         
-        ClientTickEvents.START_CLIENT_TICK.register(instance -> ClientTickEvent.CLIENT_PRE.invoker().tick(instance));
-        ClientTickEvents.END_CLIENT_TICK.register(instance -> ClientTickEvent.CLIENT_POST.invoker().tick(instance));
-        ClientTickEvents.START_WORLD_TICK.register(instance -> ClientTickEvent.CLIENT_LEVEL_PRE.invoker().tick(instance));
-        ClientTickEvents.END_WORLD_TICK.register(instance -> ClientTickEvent.CLIENT_LEVEL_POST.invoker().tick(instance));
+        registerWithPriority(ClientTickEvents.START_CLIENT_TICK, priority -> instance -> ClientTickEvent.CLIENT_PRE.invoker(priority).tick(instance));
+        registerWithPriority(ClientTickEvents.END_CLIENT_TICK, priority -> instance -> ClientTickEvent.CLIENT_POST.invoker(priority).tick(instance));
+        registerWithPriority(ClientTickEvents.START_WORLD_TICK, priority -> instance -> ClientTickEvent.CLIENT_LEVEL_PRE.invoker(priority).tick(instance));
+        registerWithPriority(ClientTickEvents.END_WORLD_TICK, priority -> instance -> ClientTickEvent.CLIENT_LEVEL_POST.invoker(priority).tick(instance));
         
-        ItemTooltipCallback.EVENT.register((itemStack, tooltipFlag, list) -> ClientTooltipEvent.ITEM.invoker().append(itemStack, list, tooltipFlag));
-        HudRenderCallback.EVENT.register((graphics, tickDelta) -> ClientGuiEvent.RENDER_HUD.invoker().renderHud(graphics, tickDelta));
+        registerWithPriority(ItemTooltipCallback.EVENT, priority -> (itemStack, tooltipFlag, list) -> ClientTooltipEvent.ITEM.invoker(priority).append(itemStack, list, tooltipFlag));
+        registerWithPriority(HudRenderCallback.EVENT, priority -> (graphics, tickDelta) -> ClientGuiEvent.RENDER_HUD.invoker(priority).renderHud(graphics, tickDelta));
     }
     
     public static void registerCommon() {
-        ServerLifecycleEvents.SERVER_STARTING.register(instance -> LifecycleEvent.SERVER_BEFORE_START.invoker().stateChanged(instance));
-        ServerLifecycleEvents.SERVER_STARTED.register(instance -> LifecycleEvent.SERVER_STARTED.invoker().stateChanged(instance));
-        ServerLifecycleEvents.SERVER_STOPPING.register(instance -> LifecycleEvent.SERVER_STOPPING.invoker().stateChanged(instance));
-        ServerLifecycleEvents.SERVER_STOPPED.register(instance -> LifecycleEvent.SERVER_STOPPED.invoker().stateChanged(instance));
+        registerWithPriority(ServerLifecycleEvents.SERVER_STARTING, priority -> instance -> LifecycleEvent.SERVER_BEFORE_START.invoker(priority).stateChanged(instance));
+        registerWithPriority(ServerLifecycleEvents.SERVER_STARTED, priority -> instance -> LifecycleEvent.SERVER_STARTED.invoker(priority).stateChanged(instance));
+        registerWithPriority(ServerLifecycleEvents.SERVER_STOPPING, priority -> instance -> LifecycleEvent.SERVER_STOPPING.invoker(priority).stateChanged(instance));
+        registerWithPriority(ServerLifecycleEvents.SERVER_STOPPED, priority -> instance -> LifecycleEvent.SERVER_STOPPED.invoker(priority).stateChanged(instance));
         
-        ServerTickEvents.START_SERVER_TICK.register(instance -> TickEvent.SERVER_PRE.invoker().tick(instance));
-        ServerTickEvents.END_SERVER_TICK.register(instance -> TickEvent.SERVER_POST.invoker().tick(instance));
-        ServerTickEvents.START_WORLD_TICK.register(instance -> TickEvent.SERVER_LEVEL_PRE.invoker().tick(instance));
-        ServerTickEvents.END_WORLD_TICK.register(instance -> TickEvent.SERVER_LEVEL_POST.invoker().tick(instance));
+        registerWithPriority(ServerTickEvents.START_SERVER_TICK, priority -> instance -> TickEvent.SERVER_PRE.invoker(priority).tick(instance));
+        registerWithPriority(ServerTickEvents.END_SERVER_TICK, priority -> instance -> TickEvent.SERVER_POST.invoker(priority).tick(instance));
+        registerWithPriority(ServerTickEvents.START_WORLD_TICK, priority -> instance -> TickEvent.SERVER_LEVEL_PRE.invoker(priority).tick(instance));
+        registerWithPriority(ServerTickEvents.END_WORLD_TICK, priority -> instance -> TickEvent.SERVER_LEVEL_POST.invoker(priority).tick(instance));
         
-        ServerWorldEvents.LOAD.register((server, world) -> LifecycleEvent.SERVER_LEVEL_LOAD.invoker().act(world));
-        ServerWorldEvents.UNLOAD.register((server, world) -> LifecycleEvent.SERVER_LEVEL_UNLOAD.invoker().act(world));
+        registerWithPriority(ServerWorldEvents.LOAD, priority -> (server, world) -> LifecycleEvent.SERVER_LEVEL_LOAD.invoker(priority).act(world));
+        registerWithPriority(ServerWorldEvents.UNLOAD, priority -> (server, world) -> LifecycleEvent.SERVER_LEVEL_UNLOAD.invoker(priority).act(world));
         
-        CommandRegistrationCallback.EVENT.register((dispatcher, registry, selection) -> CommandRegistrationEvent.EVENT.invoker().register(dispatcher, registry, selection));
+        registerWithPriority(CommandRegistrationCallback.EVENT, priority -> (dispatcher, registry, selection) -> CommandRegistrationEvent.EVENT.invoker(priority).register(dispatcher, registry, selection));
         
-        UseItemCallback.EVENT.register((player, world, hand) -> InteractionEvent.RIGHT_CLICK_ITEM.invoker().click(player, hand).asMinecraft());
-        UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> InteractionEvent.RIGHT_CLICK_BLOCK.invoker().click(player, hand, hitResult.getBlockPos(), hitResult.getDirection()).asMinecraft());
-        AttackBlockCallback.EVENT.register((player, world, hand, pos, face) -> InteractionEvent.LEFT_CLICK_BLOCK.invoker().click(player, hand, pos, face).asMinecraft());
-        AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> PlayerEvent.ATTACK_ENTITY.invoker().attack(player, world, entity, hand, hitResult).asMinecraft());
+        registerWithPriority(UseItemCallback.EVENT, priority -> (player, world, hand) -> InteractionEvent.RIGHT_CLICK_ITEM.invoker(priority).click(player, hand).asMinecraft());
+        registerWithPriority(UseBlockCallback.EVENT, priority -> (player, world, hand, hitResult) -> InteractionEvent.RIGHT_CLICK_BLOCK.invoker(priority).click(player, hand, hitResult.getBlockPos(), hitResult.getDirection()).asMinecraft());
+        registerWithPriority(AttackBlockCallback.EVENT, priority -> (player, world, hand, pos, face) -> InteractionEvent.LEFT_CLICK_BLOCK.invoker(priority).click(player, hand, pos, face).asMinecraft());
+        registerWithPriority(AttackEntityCallback.EVENT, priority -> (player, world, hand, entity, hitResult) -> PlayerEvent.ATTACK_ENTITY.invoker(priority).attack(player, world, entity, hand, hitResult).asMinecraft());
         
-        LootTableEvents.MODIFY.register((resourceManager, lootManager, id, tableBuilder, source) -> LootEvent.MODIFY_LOOT_TABLE.invoker().modifyLootTable(lootManager, id, new LootTableModificationContextImpl(tableBuilder), source.isBuiltin()));
+        registerWithPriority(LootTableEvents.MODIFY, priority -> (resourceManager, lootManager, id, tableBuilder, source) -> LootEvent.MODIFY_LOOT_TABLE.invoker(priority).modifyLootTable(lootManager, id, new LootTableModificationContextImpl(tableBuilder), source.isBuiltin()));
         
         ServerMessageDecoratorEvent.EVENT.register(ServerMessageDecoratorEvent.CONTENT_PHASE, (player, component) -> {
             ChatEvent.ChatComponent chatComponent = new ChatComponentImpl(component);
             ChatEvent.DECORATE.invoker().decorate(player, chatComponent);
             return chatComponent.get();
         });
-        ServerMessageEvents.ALLOW_CHAT_MESSAGE.register((message, sender, params) -> {
-            return !ChatEvent.RECEIVED.invoker().received(sender, message.decoratedContent()).isFalse();
+        registerWithPriority(ServerMessageEvents.ALLOW_CHAT_MESSAGE, priority -> (message, sender, params) -> {
+            return !ChatEvent.RECEIVED.invoker(priority).received(sender, message.decoratedContent()).isFalse();
         });
+    }
+    
+    private static <T> void registerWithPriority(net.fabricmc.fabric.api.event.Event<T> fabricEvent, Function<EventPriority, T> listener) {
+        fabricEvent.addPhaseOrdering(HIGH, net.fabricmc.fabric.api.event.Event.DEFAULT_PHASE);
+        fabricEvent.addPhaseOrdering(HIGHEST, HIGH);
+        fabricEvent.addPhaseOrdering(net.fabricmc.fabric.api.event.Event.DEFAULT_PHASE, LOW);
+        fabricEvent.addPhaseOrdering(LOW, LOWEST);
+        for (EventPriority priority : EventPriority.VALUES) {
+            fabricEvent.register(PHASES[priority.ordinal()], listener.apply(priority));
+        }
     }
     
     @Environment(EnvType.SERVER)
