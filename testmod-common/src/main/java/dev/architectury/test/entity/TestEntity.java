@@ -41,7 +41,6 @@ public class TestEntity extends Cow {
     @Override
     public Packet<ClientGamePacketListener> getAddEntityPacket() {
         // Custom packets broken in BundlePacket
-        // return NetworkManager.createAddEntityPacket(this);
-        return super.getAddEntityPacket();
+        return NetworkManager.createAddEntityPacket(this);
     }
 }
