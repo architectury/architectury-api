@@ -39,18 +39,16 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.network.event.EventNetworkChannel;
-import org.apache.commons.lang3.tuple.Pair;
+import net.minecraftforge.network.*;
 import org.slf4j.Logger;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -71,7 +69,7 @@ public class NetworkManagerImpl {
         FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
         packetBuffer.writeResourceLocation(id);
         packetBuffer.writeBytes(buffer);
-        return (side == NetworkManager.Side.C2S ? NetworkDirection.PLAY_TO_SERVER : NetworkDirection.PLAY_TO_CLIENT).buildPacket(Pair.of(packetBuffer, 0), CHANNEL_ID).getThis();
+        return (side == NetworkManager.Side.C2S ? NetworkDirection.PLAY_TO_SERVER : NetworkDirection.PLAY_TO_CLIENT).buildPacket(packetBuffer, CHANNEL_ID).getThis();
     }
     
     public static void collectPackets(PacketSink sink, NetworkManager.Side side, ResourceLocation id, FriendlyByteBuf buf) {
@@ -88,7 +86,7 @@ public class NetworkManagerImpl {
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final ResourceLocation CHANNEL_ID = new ResourceLocation("architectury:network");
     static final ResourceLocation SYNC_IDS = new ResourceLocation("architectury:sync_ids");
-    static final EventNetworkChannel CHANNEL = NetworkRegistry.newEventChannel(CHANNEL_ID, () -> "1", version -> true, version -> true);
+    static final EventNetworkChannel CHANNEL = ChannelBuilder.named(CHANNEL_ID).acceptedVersions((status, version) -> true).optional().eventNetworkChannel();
     static final Map<ResourceLocation, NetworkReceiver> S2C = Maps.newHashMap();
     static final Map<ResourceLocation, NetworkReceiver> C2S = Maps.newHashMap();
     static final Map<ResourceLocation, PacketTransformer> S2C_TRANSFORMERS = Maps.newHashMap();
@@ -97,7 +95,7 @@ public class NetworkManagerImpl {
     private static final Multimap<Player, ResourceLocation> clientReceivables = Multimaps.newMultimap(Maps.newHashMap(), Sets::newHashSet);
     
     static {
-        CHANNEL.addListener(createPacketHandler(NetworkEvent.ClientCustomPayloadEvent.class, C2S_TRANSFORMERS));
+        CHANNEL.addListener(createPacketHandler(NetworkDirection.PLAY_TO_SERVER, C2S_TRANSFORMERS));
         
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> ClientNetworkingManager::initClient);
         
@@ -111,10 +109,10 @@ public class NetworkManagerImpl {
         });
     }
     
-    static <T extends NetworkEvent> Consumer<T> createPacketHandler(Class<T> clazz, Map<ResourceLocation, PacketTransformer> map) {
+    static <T extends CustomPayloadEvent> Consumer<T> createPacketHandler(NetworkDirection direction, Map<ResourceLocation, PacketTransformer> map) {
         return event -> {
-            if (event.getClass() != clazz) return;
-            NetworkEvent.Context context = event.getSource().get();
+            CustomPayloadEvent.Context context = event.getSource();
+            if (context.getDirection() != direction) return;
             if (context.getPacketHandled()) return;
             FriendlyByteBuf buffer = event.getPayload();
             if (buffer == null) return;
@@ -182,7 +180,19 @@ public class NetworkManagerImpl {
     }
     
     public static Packet<ClientGamePacketListener> createAddEntityPacket(Entity entity) {
-        return (Packet<ClientGamePacketListener>) NetworkHooks.getEntitySpawningPacket(entity);
+        try {
+            // I love forge
+            Constructor<?> constructor = Class.forName("net.minecraftforge.network.packets.SpawnEntity").getDeclaredConstructor(Entity.class);
+            constructor.setAccessible(true);
+            Object message = constructor.newInstance(entity);
+            Packet<ClientGamePacketListener>[] packet = new Packet[1];
+            NetworkInitialization.PLAY.send(message, new PacketDistributor.PacketTarget(p -> {
+                packet[0] = (Packet<ClientGamePacketListener>) p;
+            }, NetworkDirection.PLAY_TO_CLIENT));
+            return Objects.requireNonNull(packet[0], "Expected packet to be sent!");
+        } catch (InstantiationException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
     
     static FriendlyByteBuf sendSyncPacket(Map<ResourceLocation, NetworkReceiver> map) {

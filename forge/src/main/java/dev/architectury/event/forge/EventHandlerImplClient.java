@@ -91,7 +91,7 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventRenderGameOverlayEvent(CustomizeGuiOverlayEvent.DebugText event) {
-        if (Minecraft.getInstance().options.renderDebug) {
+        if (Minecraft.getInstance().gui.getDebugOverlay().showDebugScreen()) {
             ClientGuiEvent.DEBUG_TEXT_LEFT.invoker().gatherText(event.getLeft());
             ClientGuiEvent.DEBUG_TEXT_RIGHT.invoker().gatherText(event.getRight());
         }
@@ -217,14 +217,14 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventMouseScrollEvent(ScreenEvent.MouseScrolled.Pre event) {
-        if (ClientScreenInputEvent.MOUSE_SCROLLED_PRE.invoker().mouseScrolled(Minecraft.getInstance(), event.getScreen(), event.getMouseX(), event.getMouseY(), event.getScrollDelta()).isFalse()) {
+        if (ClientScreenInputEvent.MOUSE_SCROLLED_PRE.invoker().mouseScrolled(Minecraft.getInstance(), event.getScreen(), event.getMouseX(), event.getMouseY(), event.getDeltaX(), event.getDeltaY()).isFalse()) {
             event.setCanceled(true);
         }
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventMouseScrollEvent(ScreenEvent.MouseScrolled.Post event) {
-        ClientScreenInputEvent.MOUSE_SCROLLED_POST.invoker().mouseScrolled(Minecraft.getInstance(), event.getScreen(), event.getMouseX(), event.getMouseY(), event.getScrollDelta());
+        ClientScreenInputEvent.MOUSE_SCROLLED_POST.invoker().mouseScrolled(Minecraft.getInstance(), event.getScreen(), event.getMouseX(), event.getMouseY(), event.getDeltaX(), event.getDeltaY());
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
@@ -301,7 +301,7 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventInputEvent(InputEvent.MouseScrollingEvent event) {
-        if (ClientRawInputEvent.MOUSE_SCROLLED.invoker().mouseScrolled(Minecraft.getInstance(), event.getScrollDelta()).isFalse()) {
+        if (ClientRawInputEvent.MOUSE_SCROLLED.invoker().mouseScrolled(Minecraft.getInstance(), event.getDeltaX(), event.getDeltaY()).isFalse()) {
             event.setCanceled(true);
         }
     }

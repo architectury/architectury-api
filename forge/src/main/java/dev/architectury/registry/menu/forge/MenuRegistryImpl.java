@@ -33,11 +33,10 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.extensions.IForgeMenuType;
-import net.minecraftforge.network.NetworkHooks;
 
 public class MenuRegistryImpl {
     public static void openExtendedMenu(ServerPlayer player, ExtendedMenuProvider provider) {
-        NetworkHooks.openScreen(player, provider, provider::saveExtraData);
+        player.openMenu(provider, provider::saveExtraData);
     }
     
     public static <T extends AbstractContainerMenu> MenuType<T> of(SimpleMenuTypeFactory<T> factory) {

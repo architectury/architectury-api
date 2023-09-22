@@ -271,7 +271,6 @@ public class RegistrarManagerImpl {
         private final RegistryProviderImpl provider;
         private final net.minecraftforge.registries.RegistryBuilder<?> builder;
         private final ResourceLocation registryId;
-        private boolean saveToDisk = false;
         private boolean syncToClients = false;
         
         public RegistryBuilderWrapper(RegistryProviderImpl provider, RegistryBuilder<?> builder, ResourceLocation registryId) {
@@ -283,7 +282,7 @@ public class RegistrarManagerImpl {
         @Override
         public Registrar<T> build() {
             if (!syncToClients) builder.disableSync();
-            if (!saveToDisk) builder.disableSaving();
+            builder.disableSaving();
             if (provider.builders == null) {
                 throw new IllegalStateException("Cannot create registries when registries are already aggregated!");
             }
@@ -301,9 +300,7 @@ public class RegistrarManagerImpl {
         
         @Override
         public RegistrarBuilder<T> option(RegistrarOption option) {
-            if (option == StandardRegistrarOption.SAVE_TO_DISC) {
-                this.saveToDisk = true;
-            } else if (option == StandardRegistrarOption.SYNC_TO_CLIENTS) {
+            if (option == StandardRegistrarOption.SYNC_TO_CLIENTS) {
                 this.syncToClients = true;
             }
             return this;

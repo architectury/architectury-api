@@ -123,10 +123,10 @@ publishing {
 
 unifiedPublishing {
     project {
-        displayName = "[Forge $rootProject.supported_version] v$project.version"
+        displayName = "[LexForge $rootProject.supported_version] v$project.version"
         releaseType = "$rootProject.artifact_type"
         changelog = releaseChangelog()
-        gameVersions = ["1.20", "1.20.1"]
+        gameVersions = ["1.20.2"]
         gameLoaders = ["forge"]
         mainPublication renameJarForPublication
 
