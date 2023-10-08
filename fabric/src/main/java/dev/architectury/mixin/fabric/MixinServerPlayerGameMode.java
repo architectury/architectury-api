@@ -24,6 +24,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerPlayerGameMode;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -46,7 +47,7 @@ public class MixinServerPlayerGameMode {
             target = "Lnet/minecraft/world/level/block/state/BlockState;getBlock()Lnet/minecraft/world/level/block/Block;",
             ordinal = 0),
             locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void onBreak(BlockPos blockPos, CallbackInfoReturnable<Boolean> cir, BlockState state) {
+    private void onBreak(BlockPos blockPos, CallbackInfoReturnable<Boolean> cir, BlockEntity entity, BlockState state) {
         if (BlockEvent.BREAK.invoker().breakBlock(this.level, blockPos, state, this.player, null).isFalse()) {
             cir.setReturnValue(false);
         }
