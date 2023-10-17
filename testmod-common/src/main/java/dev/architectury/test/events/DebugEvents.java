@@ -73,6 +73,11 @@ public class DebugEvents {
             return EventResult.interruptTrue();
         });
         CommandPerformEvent.EVENT.register(event -> {
+            if (event.getResults().getReader().getString().startsWith("help")) {
+                TestMod.SINK.accept("Cancelling help command as a test!");
+                return EventResult.interruptFalse();
+            }
+            
             TestMod.SINK.accept("Server command performed: " + event.getResults().getReader().getString());
             return EventResult.pass();
         });
