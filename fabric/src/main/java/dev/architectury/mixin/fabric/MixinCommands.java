@@ -21,6 +21,7 @@ package dev.architectury.mixin.fabric;
 
 import com.google.common.base.Throwables;
 import com.mojang.brigadier.ParseResults;
+import com.mojang.brigadier.context.ContextChain;
 import dev.architectury.event.events.common.CommandPerformEvent;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -28,13 +29,13 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Commands.class)
 public class MixinCommands {
-    @ModifyVariable(method = "performCommand",
+    @ModifyVariable(method = "finishParsing",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/commands/Commands;validateParseResults(Lcom/mojang/brigadier/ParseResults;)V", remap = false), argsOnly = true)
-    private ParseResults<CommandSourceStack> performCommand(ParseResults<CommandSourceStack> results) {
+    private static ParseResults<CommandSourceStack> finishParsing(ParseResults<CommandSourceStack> results) {
         var event = new CommandPerformEvent(results, null);
         if (CommandPerformEvent.EVENT.invoker().act(event).isPresent()) {
             if (event.getThrowable() != null) {
@@ -45,9 +46,9 @@ public class MixinCommands {
         return event.getResults();
     }
     
-    @Inject(method = "performCommand",
+    @Inject(method = "finishParsing",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/commands/Commands;validateParseResults(Lcom/mojang/brigadier/ParseResults;)V", remap = false), cancellable = true)
-    private void performCommand(ParseResults<CommandSourceStack> results, String command, CallbackInfo ci) {
-        if (results == null) ci.cancel();
+    private static void finishParsing(ParseResults<CommandSourceStack> results, String command, CommandSourceStack stack, CallbackInfoReturnable<ContextChain<CommandSourceStack>> cir) {
+        if (results == null) cir.setReturnValue(null);
     }
 }
