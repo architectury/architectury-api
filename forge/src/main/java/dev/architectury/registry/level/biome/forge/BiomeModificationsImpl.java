@@ -21,10 +21,10 @@ package dev.architectury.registry.level.biome.forge;
 
 import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
-import dev.architectury.forge.ArchitecturyForge;
 import dev.architectury.hooks.level.biome.*;
-import dev.architectury.platform.forge.EventBuses;
+import dev.architectury.platform.hooks.EventBusesHooks;
 import dev.architectury.registry.level.biome.BiomeModifications.BiomeContext;
+import dev.architectury.utils.ArchitecturyConstants;
 import dev.architectury.utils.GameInstance;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -64,10 +64,10 @@ public class BiomeModificationsImpl {
     private static Codec<BiomeModifierImpl> noneBiomeModCodec = null;
     
     public static void init() {
-        EventBuses.onRegistered(ArchitecturyForge.MOD_ID, bus -> {
+        EventBusesHooks.whenAvailable(ArchitecturyConstants.MOD_ID,bus -> {
             bus.<RegisterEvent>addListener(event -> {
                 event.register(ForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, registry -> {
-                    registry.register(new ResourceLocation(ArchitecturyForge.MOD_ID, "none_biome_mod_codec"),
+                    registry.register(new ResourceLocation(ArchitecturyConstants.MOD_ID, "none_biome_mod_codec"),
                             noneBiomeModCodec = Codec.unit(BiomeModifierImpl.INSTANCE));
                 });
             });

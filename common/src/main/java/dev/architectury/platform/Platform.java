@@ -41,9 +41,23 @@ public final class Platform {
         return simpleLoaderCache == 0;
     }
     
+    @Deprecated(forRemoval = true)
     public static boolean isForge() {
+        return isForgeLike();
+    }
+    
+    public static boolean isForgeLike() {
+        return isMinecraftForge() || isNeoForge();
+    }
+    
+    public static boolean isMinecraftForge() {
         updateLoaderCache();
         return simpleLoaderCache == 1;
+    }
+    
+    public static boolean isNeoForge() {
+        updateLoaderCache();
+        return simpleLoaderCache == 2;
     }
     
     private static void updateLoaderCache() {
@@ -54,6 +68,7 @@ public final class Platform {
         switch (ArchitecturyTarget.getCurrentTarget()) {
             case "fabric" -> simpleLoaderCache = 0;
             case "forge" -> simpleLoaderCache = 1;
+            case "neoforge" -> simpleLoaderCache = 2;
         }
     }
     

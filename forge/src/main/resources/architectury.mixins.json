@@ -9,7 +9,6 @@
     "MixinMinecraft"
   ],
   "mixins": [
-    "MixinChunkSerializer",
     "MixinEntitySpawnExtension",
     "MixinFallingBlockEntity",
     "MixinItemExtension",

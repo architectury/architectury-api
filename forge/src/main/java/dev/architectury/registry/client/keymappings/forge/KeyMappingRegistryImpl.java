@@ -19,14 +19,12 @@
 
 package dev.architectury.registry.client.keymappings.forge;
 
-import dev.architectury.forge.ArchitecturyForge;
+import dev.architectury.platform.hooks.EventBusesHooks;
+import dev.architectury.utils.ArchitecturyConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,11 +32,16 @@ import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mod.EventBusSubscriber(modid = ArchitecturyForge.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class KeyMappingRegistryImpl {
     private static final Logger LOGGER = LogManager.getLogger(KeyMappingRegistryImpl.class);
     private static final List<KeyMapping> MAPPINGS = new ArrayList<>();
     private static boolean eventCalled = false;
+    
+    static {
+        EventBusesHooks.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
+            bus.addListener(KeyMappingRegistryImpl::event);
+        });
+    }
     
     public static void register(KeyMapping mapping) {
         if (eventCalled) {
@@ -50,7 +53,6 @@ public class KeyMappingRegistryImpl {
         }
     }
     
-    @SubscribeEvent
     public static void event(RegisterKeyMappingsEvent event) {
         MAPPINGS.forEach(event::register);
         eventCalled = true;

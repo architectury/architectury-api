@@ -1,0 +1,154 @@
+plugins {
+    id "com.github.johnrengelman.shadow" version "7.1.2"
+    id "me.shedaniel.unified-publishing"
+}
+
+loom {
+    accessWidenerPath = project(":common").loom.accessWidenerPath
+
+    forge {
+        mixinConfig "architectury.mixins.json"
+        mixinConfig "architectury-common.mixins.json"
+
+        convertAccessWideners = true
+        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
+    }
+}
+
+architectury {
+    platformSetupLoomIde()
+    forge()
+}
+
+configurations {
+    common
+    shadowCommon // Don't use shadow from the shadow plugin because we don't want IDEA to index this.
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentForge.extendsFrom common
+}
+
+dependencies {
+    forge "net.minecraftforge:forge:${rootProject.architectury.minecraft}-${rootProject.forge_version}"
+
+    common(project(path: ":common", configuration: "namedElements")) { transitive false }
+    common(project(path: ":forge", configuration: "namedElements")) { transitive false }
+    shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive false }
+    shadowCommon(project(path: ":forge", configuration: "transformProductionForge")) { transitive false }
+}
+
+processResources {
+    filesMatching("META-INF/mods.toml") {
+        expand "version": project.version
+    }
+    inputs.property "META-INF/mods.toml", project.version
+}
+
+shadowJar {
+    exclude "fabric.mod.json"
+    exclude "architectury-common.accessWidener"
+    exclude "architectury.common.json"
+
+    configurations = [project.configurations.shadowCommon]
+    archiveClassifier = "dev-shadow"
+
+    // Replace classes with forge's version
+    exclude "dev/architectury/core/block/ArchitecturyLiquidBlock.class"
+    exclude "dev/architectury/core/fluid/ArchitecturyFlowingFluid.class"
+    exclude 'dev/architectury/core/fluid/ArchitecturyFlowingFluid$Source.class'
+    exclude 'dev/architectury/core/fluid/ArchitecturyFlowingFluid$Flowing.class'
+    exclude 'dev/architectury/core/item/ArchitecturyBucketItem.class'
+    exclude 'dev/architectury/core/item/ArchitecturyMobBucketItem.class'
+    relocate "dev.architectury.core.block.forge.imitator", "dev.architectury.core.block"
+    relocate "dev.architectury.core.fluid.forge.imitator", "dev.architectury.core.fluid"
+    relocate "dev.architectury.core.item.forge.imitator", "dev.architectury.core.item"
+}
+
+remapJar {
+    input.set shadowJar.archiveFile
+    dependsOn shadowJar
+    archiveClassifier = null
+}
+
+task renameJarForPublication(type: Zip, dependsOn: remapJar) {
+    from remapJar.archiveFile.map { zipTree(it) }
+    archiveExtension = "jar"
+    metadataCharset "UTF-8"
+    destinationDirectory = base.libsDirectory
+    archiveClassifier = project.name
+}
+
+assemble.dependsOn renameJarForPublication
+
+jar {
+    archiveClassifier = "dev"
+}
+
+sourcesJar {
+    afterEvaluate {
+        [":common"].forEach {
+            def depSources = project(it).sourcesJar
+            dependsOn depSources
+            from(depSources.archiveFile.map { zipTree(it) }) {
+                exclude "architectury.accessWidener"
+            }
+        }
+    }
+}
+
+components.java {
+    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
+        skip()
+    }
+}
+
+publishing {
+    publications {
+        mavenMinecraftForge(MavenPublication) {
+            artifactId = rootProject.archivesBaseName + "-forge"
+            from components.java
+        }
+    }
+
+    repositories {
+        if (System.getenv("MAVEN_PASS") != null) {
+            maven {
+                url = "https://deploy.shedaniel.me/"
+                credentials {
+                    username = "shedaniel"
+                    password = System.getenv("MAVEN_PASS")
+                }
+            }
+        }
+    }
+}
+
+unifiedPublishing {
+    project {
+        displayName = "[MinecraftForge $rootProject.supported_version] v$project.version"
+        releaseType = "$rootProject.artifact_type"
+        changelog = releaseChangelog()
+        gameVersions = ["1.20.2"]
+        gameLoaders = ["forge"]
+        mainPublication renameJarForPublication
+
+        var CURSE_API_KEY = project.findProperty("CURSE_API_KEY") ?: System.getenv("CURSE_API_KEY")
+        if (CURSE_API_KEY != null) {
+            curseforge {
+                token = CURSE_API_KEY
+                id = rootProject.curseforge_id
+                gameVersions.addAll "Java 17"
+            }
+        }
+
+        var MODRINTH_TOKEN = project.findProperty("MODRINTH_TOKEN") ?: System.getenv("MODRINTH_TOKEN")
+        if (MODRINTH_TOKEN != null) {
+            modrinth {
+                token = MODRINTH_TOKEN
+                id = rootProject.modrinth_id
+                version = "$project.version+$project.name"
+            }
+        }
+    }
+}
+

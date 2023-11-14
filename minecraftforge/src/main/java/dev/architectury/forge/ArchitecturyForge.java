@@ -19,18 +19,17 @@
 
 package dev.architectury.forge;
 
-import dev.architectury.platform.forge.EventBuses;
 import dev.architectury.event.EventHandler;
+import dev.architectury.platform.forge.EventBuses;
 import dev.architectury.registry.level.biome.forge.BiomeModificationsImpl;
+import dev.architectury.utils.ArchitecturyConstants;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-@Mod(ArchitecturyForge.MOD_ID)
+@Mod(ArchitecturyConstants.MOD_ID)
 public class ArchitecturyForge {
-    public static final String MOD_ID = "architectury";
-    
     public ArchitecturyForge() {
-        EventBuses.registerModEventBus(ArchitecturyForge.MOD_ID, FMLJavaModLoadingContext.get().getModEventBus());
+        EventBuses.registerModEventBus(ArchitecturyConstants.MOD_ID, FMLJavaModLoadingContext.get().getModEventBus());
         EventHandler.init();
         BiomeModificationsImpl.init();
     }

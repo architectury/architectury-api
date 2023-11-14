@@ -29,6 +29,11 @@ subprojects {
         minecraft "com.mojang:minecraft:${rootProject.architectury.minecraft}"
         mappings loom.officialMojangMappings()
     }
+
+    repositories {
+        mavenLocal()
+        maven { url "https://maven.neoforged.net/releases/" }
+    }
 }
 
 allprojects {
