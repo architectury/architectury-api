@@ -27,6 +27,7 @@ import dev.architectury.event.events.common.InteractionEvent;
 import dev.architectury.impl.ScreenAccessImpl;
 import dev.architectury.impl.TooltipEventColorContextImpl;
 import dev.architectury.impl.TooltipEventPositionContextImpl;
+import dev.architectury.platform.Platform;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -41,6 +42,8 @@ import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+
+import java.lang.reflect.InvocationTargetException;
 
 @OnlyIn(Dist.CLIENT)
 public class EventHandlerImplClient {
@@ -217,14 +220,40 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventMouseScrollEvent(ScreenEvent.MouseScrolled.Pre event) {
-        if (ClientScreenInputEvent.MOUSE_SCROLLED_PRE.invoker().mouseScrolled(Minecraft.getInstance(), event.getScreen(), event.getMouseX(), event.getMouseY(), event.getDeltaX(), event.getDeltaY()).isFalse()) {
+        double deltaX, deltaY;
+        if (Platform.isNeoForge()) {
+            try {
+                deltaX = (double) event.getClass().getMethod("getScrollDeltaX").invoke(event);
+                deltaY = (double) event.getClass().getMethod("getScrollDeltaY").invoke(event);
+            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            deltaX = event.getDeltaX();
+            deltaY = event.getDeltaY();
+        }
+        
+        if (ClientScreenInputEvent.MOUSE_SCROLLED_PRE.invoker().mouseScrolled(Minecraft.getInstance(), event.getScreen(), event.getMouseX(), event.getMouseY(), deltaX, deltaY).isFalse()) {
             event.setCanceled(true);
         }
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventMouseScrollEvent(ScreenEvent.MouseScrolled.Post event) {
-        ClientScreenInputEvent.MOUSE_SCROLLED_POST.invoker().mouseScrolled(Minecraft.getInstance(), event.getScreen(), event.getMouseX(), event.getMouseY(), event.getDeltaX(), event.getDeltaY());
+        double deltaX, deltaY;
+        if (Platform.isNeoForge()) {
+            try {
+                deltaX = (double) event.getClass().getMethod("getScrollDeltaX").invoke(event);
+                deltaY = (double) event.getClass().getMethod("getScrollDeltaY").invoke(event);
+            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            deltaX = event.getDeltaX();
+            deltaY = event.getDeltaY();
+        }
+        
+        ClientScreenInputEvent.MOUSE_SCROLLED_POST.invoker().mouseScrolled(Minecraft.getInstance(), event.getScreen(), event.getMouseX(), event.getMouseY(), deltaX, deltaY);
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)

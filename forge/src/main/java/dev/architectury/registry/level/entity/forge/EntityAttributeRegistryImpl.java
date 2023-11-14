@@ -19,8 +19,8 @@
 
 package dev.architectury.registry.level.entity.forge;
 
-import dev.architectury.forge.ArchitecturyForge;
-import dev.architectury.platform.forge.EventBuses;
+import dev.architectury.platform.hooks.EventBusesHooks;
+import dev.architectury.utils.ArchitecturyConstants;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -39,7 +39,7 @@ public class EntityAttributeRegistryImpl {
     }
     
     static {
-        EventBuses.onRegistered(ArchitecturyForge.MOD_ID, bus -> {
+        EventBusesHooks.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
             bus.register(EntityAttributeRegistryImpl.class);
         });
     }

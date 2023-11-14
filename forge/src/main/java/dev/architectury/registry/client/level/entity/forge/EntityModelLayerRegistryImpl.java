@@ -19,8 +19,8 @@
 
 package dev.architectury.registry.client.level.entity.forge;
 
-import dev.architectury.forge.ArchitecturyForge;
-import dev.architectury.platform.forge.EventBuses;
+import dev.architectury.platform.hooks.EventBusesHooks;
+import dev.architectury.utils.ArchitecturyConstants;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -34,7 +34,7 @@ public class EntityModelLayerRegistryImpl {
     private static final Map<ModelLayerLocation, Supplier<LayerDefinition>> DEFINITIONS = new ConcurrentHashMap<>();
     
     static {
-        EventBuses.onRegistered(ArchitecturyForge.MOD_ID, bus -> {
+        EventBusesHooks.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
             bus.register(EntityModelLayerRegistryImpl.class);
         });
     }

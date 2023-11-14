@@ -20,8 +20,9 @@
 package dev.architectury.registry.client.particle.forge;
 
 import com.mojang.logging.LogUtils;
-import dev.architectury.forge.ArchitecturyForge;
+import dev.architectury.platform.hooks.EventBusesHooks;
 import dev.architectury.registry.client.particle.ParticleProviderRegistry;
+import dev.architectury.utils.ArchitecturyConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.ParticleProvider;
@@ -31,20 +32,21 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.util.RandomSource;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-@Mod.EventBusSubscriber(modid = ArchitecturyForge.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ParticleProviderRegistryImpl {
-    
     public static final Logger LOGGER = LogUtils.getLogger();
+    
+    static {
+        EventBusesHooks.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
+            bus.addListener(ParticleProviderRegistryImpl::onParticleFactoryRegister);
+        });
+    }
     
     private static final class ExtendedSpriteSetImpl implements ParticleProviderRegistry.ExtendedSpriteSet {
         private final ParticleEngine engine;
@@ -105,7 +107,6 @@ public class ParticleProviderRegistryImpl {
         }
     }
     
-    @SubscribeEvent
     public static void onParticleFactoryRegister(RegisterParticleProvidersEvent event) {
         if (deferred != null) {
             ParticleProviderRegistrar registrar = ParticleProviderRegistrar.ofForge(event);

@@ -20,7 +20,8 @@
 package dev.architectury.registry.forge;
 
 import com.google.common.collect.Lists;
-import dev.architectury.forge.ArchitecturyForge;
+import dev.architectury.platform.hooks.EventBusesHooks;
+import dev.architectury.utils.ArchitecturyConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
@@ -28,17 +29,19 @@ import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
 
-@Mod.EventBusSubscriber(modid = ArchitecturyForge.MOD_ID)
 public class ReloadListenerRegistryImpl {
     private static List<PreparableReloadListener> serverDataReloadListeners = Lists.newArrayList();
+    
+    static {
+        MinecraftForge.EVENT_BUS.addListener(ReloadListenerRegistryImpl::addReloadListeners);
+    }
     
     public static void register(PackType type, PreparableReloadListener listener, @Nullable ResourceLocation listenerId, Collection<ResourceLocation> dependencies) {
         if (type == PackType.SERVER_DATA) {
@@ -53,7 +56,6 @@ public class ReloadListenerRegistryImpl {
         ((ReloadableResourceManager) Minecraft.getInstance().getResourceManager()).registerReloadListener(listener);
     }
     
-    @SubscribeEvent
     public static void addReloadListeners(AddReloadListenerEvent event) {
         for (PreparableReloadListener listener : serverDataReloadListeners) {
             event.addListener(listener);

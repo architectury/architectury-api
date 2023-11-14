@@ -1,0 +1,35 @@
+modLoader = "javafml"
+loaderVersion = "[1,)"
+issueTrackerURL = "https://github.com/shedaniel/architectury/issues"
+license = "GNU LGPLv3"
+
+[[mods]]
+modId = "architectury"
+version = "${version}"
+displayName = "Architectury"
+authors = "shedaniel"
+description = '''
+A intermediary api aimed to ease developing multiplatform mods.
+'''
+logoFile = "icon.png"
+license = "LGPL-3"
+
+[[dependencies.architectury]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20.2,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.architectury]]
+modId = "neoforge"
+mandatory = true
+versionRange = "[20.2,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[mixins]]
+config = "architectury.mixins.json"
+
+[[mixins]]
+config = "architectury-common.mixins.json"
