@@ -354,10 +354,10 @@ public class EventHandlerImplClient {
     
     @OnlyIn(Dist.CLIENT)
     public static class ModBasedEventHandler {
-        @SubscribeEvent(priority = EventPriority.HIGH)
-        public static void eventTextureStitchEvent(TextureStitchEvent.Post event) {
+        // @SubscribeEvent(priority = EventPriority.HIGH)
+        // public static void eventTextureStitchEvent(TextureStitchEvent.Post event) {
             // ClientTextureStitchEvent.POST.invoker().stitch(event.getAtlas());
-        }
+        // }
         
         @SubscribeEvent(priority = EventPriority.HIGH)
         public static void event(FMLClientSetupEvent event) {
