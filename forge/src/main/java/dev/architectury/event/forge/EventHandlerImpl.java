@@ -43,9 +43,9 @@ public class EventHandlerImpl {
     
     @OnlyIn(Dist.DEDICATED_SERVER)
     public static void registerServer() {
-        MinecraftForge.EVENT_BUS.register(EventHandlerImplServer.class);
-        EventBusesHooks.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
-            bus.register(EventHandlerImplServer.ModBasedEventHandler.class);
-        });
+        // MinecraftForge.EVENT_BUS.register(EventHandlerImplServer.class);
+        // EventBusesHooks.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
+        //     bus.register(EventHandlerImplServer.ModBasedEventHandler.class);
+        // });
     }
 }
