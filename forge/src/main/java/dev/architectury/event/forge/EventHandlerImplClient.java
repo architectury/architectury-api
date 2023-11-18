@@ -93,8 +93,8 @@ public class EventHandlerImplClient {
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventRenderGameOverlayEvent(CustomizeGuiOverlayEvent.DebugText event) {
         if (Minecraft.getInstance().gui.getDebugOverlay().showDebugScreen()) {
-            ClientGuiEvent.DEBUG_TEXT_LEFT.invoker().gatherText(event.getLeft());
-            ClientGuiEvent.DEBUG_TEXT_RIGHT.invoker().gatherText(event.getRight());
+            ClientGuiEvent.DEBUG_TEXT_LEFT.invoker().gatherText(ForgeLikeClientHooks.getLeft(event));
+            ClientGuiEvent.DEBUG_TEXT_RIGHT.invoker().gatherText(ForgeLikeClientHooks.getRight(event));
         }
     }
     

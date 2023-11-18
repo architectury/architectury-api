@@ -22,8 +22,11 @@ package dev.architectury.hooks.forgelike.forge;
 import dev.architectury.event.events.client.ClientRawInputEvent;
 import dev.architectury.event.events.client.ClientScreenInputEvent;
 import net.minecraft.client.Minecraft;
+import net.neoforged.neoforge.client.event.CustomizeGuiOverlayEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
+
+import java.util.List;
 
 public class ForgeLikeClientHooksImpl {
     public static void preMouseScroll(ScreenEvent.MouseScrolled.Pre event) {
@@ -40,5 +43,13 @@ public class ForgeLikeClientHooksImpl {
         if (ClientRawInputEvent.MOUSE_SCROLLED.invoker().mouseScrolled(Minecraft.getInstance(), event.getScrollDeltaX(), event.getScrollDeltaY()).isFalse()) {
             event.setCanceled(true);
         }
+    }
+    
+    public static List<String> getLeft(CustomizeGuiOverlayEvent.DebugText event) {
+        return event.getLeft();
+    }
+    
+    public static List<String> getRight(CustomizeGuiOverlayEvent.DebugText event) {
+        return event.getRight();
     }
 }

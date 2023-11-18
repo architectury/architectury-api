@@ -20,9 +20,12 @@
 package dev.architectury.hooks.forgelike;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import net.minecraftforge.client.event.CustomizeGuiOverlayEvent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.ScreenEvent;
 import org.jetbrains.annotations.ApiStatus;
+
+import java.util.List;
 
 @ApiStatus.Internal
 public class ForgeLikeClientHooks {
@@ -38,6 +41,16 @@ public class ForgeLikeClientHooks {
     
     @ExpectPlatform
     public static void inputMouseScroll(InputEvent.MouseScrollingEvent event) {
+        throw new AssertionError();
+    }
+    
+    @ExpectPlatform
+    public static List<String> getLeft(CustomizeGuiOverlayEvent.DebugText event) {
+        throw new AssertionError();
+    }
+    
+    @ExpectPlatform
+    public static List<String> getRight(CustomizeGuiOverlayEvent.DebugText event) {
         throw new AssertionError();
     }
 }
