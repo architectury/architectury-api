@@ -24,10 +24,10 @@ import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientChatEvent;
 import dev.architectury.event.events.client.*;
 import dev.architectury.event.events.common.InteractionEvent;
+import dev.architectury.hooks.forgelike.ForgeLikeClientHooks;
 import dev.architectury.impl.ScreenAccessImpl;
 import dev.architectury.impl.TooltipEventColorContextImpl;
 import dev.architectury.impl.TooltipEventPositionContextImpl;
-import dev.architectury.platform.Platform;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -42,8 +42,6 @@ import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-
-import java.lang.reflect.InvocationTargetException;
 
 @OnlyIn(Dist.CLIENT)
 public class EventHandlerImplClient {
@@ -220,40 +218,12 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventMouseScrollEvent(ScreenEvent.MouseScrolled.Pre event) {
-        double deltaX, deltaY;
-        if (Platform.isNeoForge()) {
-            try {
-                deltaX = (double) event.getClass().getMethod("getScrollDeltaX").invoke(event);
-                deltaY = (double) event.getClass().getMethod("getScrollDeltaY").invoke(event);
-            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            deltaX = event.getDeltaX();
-            deltaY = event.getDeltaY();
-        }
-        
-        if (ClientScreenInputEvent.MOUSE_SCROLLED_PRE.invoker().mouseScrolled(Minecraft.getInstance(), event.getScreen(), event.getMouseX(), event.getMouseY(), deltaX, deltaY).isFalse()) {
-            event.setCanceled(true);
-        }
+        ForgeLikeClientHooks.preMouseScroll(event);
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventMouseScrollEvent(ScreenEvent.MouseScrolled.Post event) {
-        double deltaX, deltaY;
-        if (Platform.isNeoForge()) {
-            try {
-                deltaX = (double) event.getClass().getMethod("getScrollDeltaX").invoke(event);
-                deltaY = (double) event.getClass().getMethod("getScrollDeltaY").invoke(event);
-            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            deltaX = event.getDeltaX();
-            deltaY = event.getDeltaY();
-        }
-        
-        ClientScreenInputEvent.MOUSE_SCROLLED_POST.invoker().mouseScrolled(Minecraft.getInstance(), event.getScreen(), event.getMouseX(), event.getMouseY(), deltaX, deltaY);
+        ForgeLikeClientHooks.postMouseScroll(event);
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
@@ -330,9 +300,7 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventInputEvent(InputEvent.MouseScrollingEvent event) {
-        if (ClientRawInputEvent.MOUSE_SCROLLED.invoker().mouseScrolled(Minecraft.getInstance(), event.getDeltaX(), event.getDeltaY()).isFalse()) {
-            event.setCanceled(true);
-        }
+        ForgeLikeClientHooks.inputMouseScroll(event);
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
@@ -356,7 +324,7 @@ public class EventHandlerImplClient {
     public static class ModBasedEventHandler {
         // @SubscribeEvent(priority = EventPriority.HIGH)
         // public static void eventTextureStitchEvent(TextureStitchEvent.Post event) {
-            // ClientTextureStitchEvent.POST.invoker().stitch(event.getAtlas());
+        // ClientTextureStitchEvent.POST.invoker().stitch(event.getAtlas());
         // }
         
         @SubscribeEvent(priority = EventPriority.HIGH)
