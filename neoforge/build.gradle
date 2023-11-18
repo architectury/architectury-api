@@ -69,6 +69,7 @@ remapJar {
     input.set shadowJar.archiveFile
     dependsOn shadowJar
     archiveClassifier = null
+    atAccessWideners.add "architectury.accessWidener"
 }
 
 task renameJarForPublication(type: Zip, dependsOn: remapJar) {

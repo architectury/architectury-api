@@ -51,7 +51,7 @@ public class ArchitecturyMixinPlugin implements IMixinConfigPlugin {
     @Override
     public List<String> getMixins() {
         return ArchitecturyTarget.getCurrentTarget().equals("forge")
-                ? List.of("minecraftforge.MixinChunkSerializer")
+                ? List.of()
                 : List.of("neoforge.MixinChunkSerializer");
     }
     

@@ -19,7 +19,6 @@
 
 package dev.architectury.hooks.client.screen.forge;
 
-import dev.architectury.mixin.forge.ScreenAccessor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -38,14 +37,14 @@ public class ScreenHooksImpl {
     }
     
     public static <T extends AbstractWidget & Renderable & NarratableEntry> T addRenderableWidget(Screen screen, T widget) {
-        return ((ScreenAccessor) screen).invokeAddRenderableWidget(widget);
+        return screen.addRenderableWidget(widget);
     }
     
     public static <T extends Renderable> T addRenderableOnly(Screen screen, T listener) {
-        return ((ScreenAccessor) screen).invokeAddRenderableOnly(listener);
+        return screen.addRenderableOnly(listener);
     }
     
     public static <T extends GuiEventListener & NarratableEntry> T addWidget(Screen screen, T listener) {
-        return ((ScreenAccessor) screen).invokeAddWidget(listener);
+        return screen.addWidget(listener);
     }
 }

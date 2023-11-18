@@ -6,8 +6,7 @@
   "minVersion": "0.8",
   "client": [
     "MixinClientLevel",
-    "MixinMinecraft",
-    "ScreenAccessor"
+    "MixinMinecraft"
   ],
   "mixins": [
     "MixinEntitySpawnExtension",

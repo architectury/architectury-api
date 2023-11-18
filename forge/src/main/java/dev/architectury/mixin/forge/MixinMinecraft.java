@@ -29,7 +29,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 // adopted from fabric
 @Mixin(Minecraft.class)
 public abstract class MixinMinecraft {
-    @Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;gameThread:Ljava/lang/Thread;", shift = At.Shift.AFTER, ordinal = 0), method = "run")
+    @Inject(at = @At(value = "INVOKE", target = "Ljava/lang/Runtime;getRuntime()Ljava/lang/Runtime;", ordinal = 0), method = "run")
     private void onStart(CallbackInfo ci) {
         ClientLifecycleEvent.CLIENT_STARTED.invoker().stateChanged((Minecraft) (Object) this);
     }
