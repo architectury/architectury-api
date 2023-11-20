@@ -8,7 +8,7 @@ loom {
 
     mods {
         forge {
-            sourceSet project(":forge").sourceSets.main
+            sourceSet project(":minecraftforge").sourceSets.main
         }
     }
 
@@ -32,7 +32,8 @@ configurations {
 dependencies {
     forge "net.minecraftforge:forge:${gradle.rootProject.architectury.minecraft}-${rootProject.forge_version}"
 
-    implementation project(path: ":forge", configuration: "namedElements")
+    implementation project(path: ":minecraftforge", configuration: "namedElements")
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     common(project(path: ":testmod-common", configuration: "namedElements")) { transitive false }
+    common(project(path: ":forge", configuration: "namedElements")) { transitive false }
 }

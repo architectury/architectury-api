@@ -20,8 +20,8 @@
 package dev.architectury.registry.client.rendering.forge;
 
 import com.google.common.collect.Lists;
-import dev.architectury.forge.ArchitecturyForge;
-import dev.architectury.platform.forge.EventBuses;
+import dev.architectury.platform.hooks.EventBusesHooks;
+import dev.architectury.utils.ArchitecturyConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
@@ -40,7 +40,7 @@ public class ColorHandlerRegistryImpl {
     private static final List<Pair<BlockColor, Supplier<? extends Block>[]>> BLOCK_COLORS = Lists.newArrayList();
     
     static {
-        EventBuses.onRegistered(ArchitecturyForge.MOD_ID, bus -> {
+        EventBusesHooks.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
             bus.register(ColorHandlerRegistryImpl.class);
         });
     }

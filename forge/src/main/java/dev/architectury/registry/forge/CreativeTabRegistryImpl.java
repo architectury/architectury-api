@@ -22,21 +22,19 @@ package dev.architectury.registry.forge;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
-import dev.architectury.forge.ArchitecturyForge;
+import dev.architectury.platform.hooks.EventBusesHooks;
 import dev.architectury.registry.CreativeTabOutput;
 import dev.architectury.registry.CreativeTabRegistry;
 import dev.architectury.registry.registries.DeferredSupplier;
+import dev.architectury.utils.ArchitecturyConstants;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.CreativeModeTabRegistry;
 import net.minecraftforge.common.util.MutableHashedLinkedMap;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.ApiStatus;
@@ -46,7 +44,6 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-@Mod.EventBusSubscriber(modid = ArchitecturyForge.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class CreativeTabRegistryImpl {
     private static final Logger LOGGER = LogManager.getLogger(CreativeTabRegistryImpl.class);
     
@@ -54,6 +51,10 @@ public class CreativeTabRegistryImpl {
     private static final Multimap<TabKey, Supplier<ItemStack>> APPENDS = MultimapBuilder.hashKeys().arrayListValues().build();
     
     static {
+        EventBusesHooks.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
+            bus.addListener(CreativeTabRegistryImpl::event);
+        });
+        
         BUILD_CONTENTS_LISTENERS.add(event -> {
             for (Map.Entry<TabKey, Collection<Supplier<ItemStack>>> keyEntry : APPENDS.asMap().entrySet()) {
                 Supplier<List<ItemStack>> stacks = Suppliers.memoize(() -> keyEntry.getValue().stream()
@@ -76,7 +77,6 @@ public class CreativeTabRegistryImpl {
         });
     }
     
-    @SubscribeEvent
     public static void event(BuildCreativeModeTabContentsEvent event) {
         for (Consumer<BuildCreativeModeTabContentsEvent> listener : BUILD_CONTENTS_LISTENERS) {
             listener.accept(event);

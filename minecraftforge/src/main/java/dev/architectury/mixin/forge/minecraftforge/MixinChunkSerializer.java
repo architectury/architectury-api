@@ -17,7 +17,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.mixin.forge;
+package dev.architectury.mixin.forge.minecraftforge;
 
 import dev.architectury.event.forge.EventHandlerImplCommon;
 import net.minecraft.nbt.CompoundTag;

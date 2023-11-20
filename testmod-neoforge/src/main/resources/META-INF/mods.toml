@@ -1,0 +1,14 @@
+modLoader = "javafml"
+loaderVersion = "[1,)"
+issueTrackerURL = "https://github.com/shedaniel/architectury/issues"
+license = "LGPL-3"
+
+[[mods]]
+modId = "architectury_test"
+version = "${file.jarVersion}"
+displayName = "Architectury Test"
+authors = "shedaniel"
+description = '''
+A intermediary api aimed to ease developing multiplatform mods.
+'''
+license = "LGPL-3"

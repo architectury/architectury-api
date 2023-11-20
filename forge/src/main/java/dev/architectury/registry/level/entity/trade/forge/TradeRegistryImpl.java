@@ -21,22 +21,24 @@ package dev.architectury.registry.level.entity.trade.forge;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import dev.architectury.forge.ArchitecturyForge;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.event.village.WandererTradesEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 
 import java.util.*;
 
-@Mod.EventBusSubscriber(modid = ArchitecturyForge.MOD_ID)
 public class TradeRegistryImpl {
     private static final Map<VillagerProfession, Int2ObjectMap<List<VillagerTrades.ItemListing>>> TRADES_TO_ADD = new HashMap<>();
     private static final List<VillagerTrades.ItemListing> WANDERER_TRADER_TRADES_GENERIC = new ArrayList<>();
     private static final List<VillagerTrades.ItemListing> WANDERER_TRADER_TRADES_RARE = new ArrayList<>();
+    
+    static {
+        MinecraftForge.EVENT_BUS.addListener(TradeRegistryImpl::onTradeRegistering);
+        MinecraftForge.EVENT_BUS.addListener(TradeRegistryImpl::onWanderingTradeRegistering);
+    }
     
     public static void registerVillagerTrade0(VillagerProfession profession, int level, VillagerTrades.ItemListing... trades) {
         Int2ObjectMap<List<VillagerTrades.ItemListing>> tradesForProfession = TRADES_TO_ADD.computeIfAbsent(profession, $ -> new Int2ObjectOpenHashMap<>());
@@ -52,7 +54,6 @@ public class TradeRegistryImpl {
         }
     }
     
-    @SubscribeEvent
     public static void onTradeRegistering(VillagerTradesEvent event) {
         Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = TRADES_TO_ADD.get(event.getType());
         
@@ -63,7 +64,6 @@ public class TradeRegistryImpl {
         }
     }
     
-    @SubscribeEvent
     public static void onWanderingTradeRegistering(WandererTradesEvent event) {
         if (!WANDERER_TRADER_TRADES_GENERIC.isEmpty()) {
             event.getGenericTrades().addAll(WANDERER_TRADER_TRADES_GENERIC);

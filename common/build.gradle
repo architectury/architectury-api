@@ -9,7 +9,9 @@ dependencies {
 }
 
 architectury {
-    common(rootProject.platforms.split(","))
+    common(rootProject.platforms.split(",")) {
+        it.platformPackage "neoforge", "forge"
+    }
 }
 
 /**

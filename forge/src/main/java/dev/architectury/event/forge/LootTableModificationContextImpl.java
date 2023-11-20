@@ -57,20 +57,30 @@ final class LootTableModificationContextImpl implements LootEvent.LootTableModif
                     throw new RuntimeException(e);
                 }
             } catch (NoSuchFieldException ignored2) {
-                for (Field field : LootTable.class.getDeclaredFields()) {
-                    if (field.getType().equals(List.class)) {
-                        // This is probably the field
-                        field.setAccessible(true);
-                        try {
-                            pools = (List<LootPool>) field.get(table);
-                        } catch (IllegalAccessException e) {
-                            throw new RuntimeException(e);
+                try {
+                    Field field = LootTable.class.getDeclaredField("pools");
+                    field.setAccessible(true);
+                    try {
+                        pools = (List<LootPool>) field.get(table);
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                } catch (NoSuchFieldException ignored3) {
+                    for (Field field : LootTable.class.getDeclaredFields()) {
+                        if (field.getType().equals(List.class)) {
+                            // This is probably the field
+                            field.setAccessible(true);
+                            try {
+                                pools = (List<LootPool>) field.get(table);
+                            } catch (IllegalAccessException e) {
+                                throw new RuntimeException(e);
+                            }
                         }
                     }
-                }
-                
-                if (pools == null) {
-                    throw new RuntimeException("Unable to find pools field in LootTable!");
+                    
+                    if (pools == null) {
+                        throw new RuntimeException("Unable to find pools field in LootTable!");
+                    }
                 }
             }
         }

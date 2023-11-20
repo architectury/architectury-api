@@ -24,9 +24,7 @@ import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 public class ScreenHooksImpl {
@@ -39,26 +37,14 @@ public class ScreenHooksImpl {
     }
     
     public static <T extends AbstractWidget & Renderable & NarratableEntry> T addRenderableWidget(Screen screen, T widget) {
-        try {
-            return (T) ObfuscationReflectionHelper.findMethod(Screen.class, "m_142416_", GuiEventListener.class).invoke(screen, widget);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException(e);
-        }
+        return screen.addRenderableWidget(widget);
     }
     
     public static <T extends Renderable> T addRenderableOnly(Screen screen, T listener) {
-        try {
-            return (T) ObfuscationReflectionHelper.findMethod(Screen.class, "m_169394_", Renderable.class).invoke(screen, listener);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException(e);
-        }
+        return screen.addRenderableOnly(listener);
     }
     
     public static <T extends GuiEventListener & NarratableEntry> T addWidget(Screen screen, T listener) {
-        try {
-            return (T) ObfuscationReflectionHelper.findMethod(Screen.class, "m_7787_", GuiEventListener.class).invoke(screen, listener);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException(e);
-        }
+        return screen.addWidget(listener);
     }
 }

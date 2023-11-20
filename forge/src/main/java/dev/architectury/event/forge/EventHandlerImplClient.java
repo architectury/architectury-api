@@ -24,6 +24,7 @@ import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientChatEvent;
 import dev.architectury.event.events.client.*;
 import dev.architectury.event.events.common.InteractionEvent;
+import dev.architectury.hooks.forgelike.ForgeLikeClientHooks;
 import dev.architectury.impl.ScreenAccessImpl;
 import dev.architectury.impl.TooltipEventColorContextImpl;
 import dev.architectury.impl.TooltipEventPositionContextImpl;
@@ -92,8 +93,8 @@ public class EventHandlerImplClient {
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventRenderGameOverlayEvent(CustomizeGuiOverlayEvent.DebugText event) {
         if (Minecraft.getInstance().gui.getDebugOverlay().showDebugScreen()) {
-            ClientGuiEvent.DEBUG_TEXT_LEFT.invoker().gatherText(event.getLeft());
-            ClientGuiEvent.DEBUG_TEXT_RIGHT.invoker().gatherText(event.getRight());
+            ClientGuiEvent.DEBUG_TEXT_LEFT.invoker().gatherText(ForgeLikeClientHooks.getLeft(event));
+            ClientGuiEvent.DEBUG_TEXT_RIGHT.invoker().gatherText(ForgeLikeClientHooks.getRight(event));
         }
     }
     
@@ -217,14 +218,12 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventMouseScrollEvent(ScreenEvent.MouseScrolled.Pre event) {
-        if (ClientScreenInputEvent.MOUSE_SCROLLED_PRE.invoker().mouseScrolled(Minecraft.getInstance(), event.getScreen(), event.getMouseX(), event.getMouseY(), event.getDeltaX(), event.getDeltaY()).isFalse()) {
-            event.setCanceled(true);
-        }
+        ForgeLikeClientHooks.preMouseScroll(event);
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventMouseScrollEvent(ScreenEvent.MouseScrolled.Post event) {
-        ClientScreenInputEvent.MOUSE_SCROLLED_POST.invoker().mouseScrolled(Minecraft.getInstance(), event.getScreen(), event.getMouseX(), event.getMouseY(), event.getDeltaX(), event.getDeltaY());
+        ForgeLikeClientHooks.postMouseScroll(event);
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
@@ -301,9 +300,7 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventInputEvent(InputEvent.MouseScrollingEvent event) {
-        if (ClientRawInputEvent.MOUSE_SCROLLED.invoker().mouseScrolled(Minecraft.getInstance(), event.getDeltaX(), event.getDeltaY()).isFalse()) {
-            event.setCanceled(true);
-        }
+        ForgeLikeClientHooks.inputMouseScroll(event);
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
@@ -325,10 +322,10 @@ public class EventHandlerImplClient {
     
     @OnlyIn(Dist.CLIENT)
     public static class ModBasedEventHandler {
-        @SubscribeEvent(priority = EventPriority.HIGH)
-        public static void eventTextureStitchEvent(TextureStitchEvent.Post event) {
-            // ClientTextureStitchEvent.POST.invoker().stitch(event.getAtlas());
-        }
+        // @SubscribeEvent(priority = EventPriority.HIGH)
+        // public static void eventTextureStitchEvent(TextureStitchEvent.Post event) {
+        // ClientTextureStitchEvent.POST.invoker().stitch(event.getAtlas());
+        // }
         
         @SubscribeEvent(priority = EventPriority.HIGH)
         public static void event(FMLClientSetupEvent event) {

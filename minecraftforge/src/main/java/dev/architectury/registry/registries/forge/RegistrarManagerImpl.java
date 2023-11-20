@@ -23,13 +23,15 @@ import com.google.common.base.Objects;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import dev.architectury.platform.forge.EventBuses;
+import dev.architectury.impl.RegistrySupplierImpl;
+import dev.architectury.platform.hooks.EventBusesHooks;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarBuilder;
 import dev.architectury.registry.registries.RegistrarManager;
 import dev.architectury.registry.registries.RegistrySupplier;
 import dev.architectury.registry.registries.options.RegistrarOption;
 import dev.architectury.registry.registries.options.StandardRegistrarOption;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
@@ -123,7 +125,7 @@ public class RegistrarManagerImpl {
         public RegistryProviderImpl(String modId) {
             this.modId = modId;
             this.eventBus = Suppliers.memoize(() -> {
-                IEventBus eventBus = EventBuses.getModEventBus(modId).orElseThrow(() -> new IllegalStateException("Can't get event bus for mod '" + modId + "' because it was not registered!"));
+                IEventBus eventBus = EventBusesHooks.getModEventBus(modId).orElseThrow(() -> new IllegalStateException("Can't get event bus for mod '" + modId + "' because it was not registered!"));
                 eventBus.register(new EventListener());
                 return eventBus;
             });
@@ -322,7 +324,17 @@ public class RegistrarManagerImpl {
         public RegistrySupplier<T> delegate(ResourceLocation id) {
             Supplier<T> value = Suppliers.memoize(() -> get(id));
             Registrar<T> registrar = this;
-            return new RegistrySupplier<>() {
+            return new RegistrySupplierImpl<T>() {
+                @Nullable
+                Holder<T> holder = null;
+                
+                @Nullable
+                @Override
+                public Holder<T> getHolder() {
+                    if (holder != null) return holder;
+                    return holder = registrar.getHolder(getId());
+                }
+                
                 @Override
                 public RegistrarManager getRegistrarManager() {
                     return RegistrarManager.get(modId);
@@ -433,6 +445,12 @@ public class RegistrarManagerImpl {
         }
         
         @Override
+        @Nullable
+        public Holder<T> getHolder(ResourceKey<T> key) {
+            return delegate.getHolder(key).orElse(null);
+        }
+        
+        @Override
         public Iterator<T> iterator() {
             return delegate.iterator();
         }
@@ -462,7 +480,17 @@ public class RegistrarManagerImpl {
         public RegistrySupplier<T> delegate(ResourceLocation id) {
             Supplier<T> value = Suppliers.memoize(() -> get(id));
             Registrar<T> registrar = this;
-            return new RegistrySupplier<>() {
+            return new RegistrySupplierImpl<T>() {
+                @Nullable
+                Holder<T> holder = null;
+                
+                @Nullable
+                @Override
+                public Holder<T> getHolder() {
+                    if (holder != null) return holder;
+                    return holder = registrar.getHolder(getId());
+                }
+                
                 @Override
                 public RegistrarManager getRegistrarManager() {
                     return RegistrarManager.get(modId);
@@ -519,7 +547,17 @@ public class RegistrarManagerImpl {
             Data<T> data = (Data<T>) registry.computeIfAbsent(key(), type -> new Data<>());
             data.registerForForge(delegate, id, objectArr, supplier);
             Registrar<T> registrar = this;
-            return new RegistrySupplier<>() {
+            return new RegistrySupplierImpl<E>() {
+                @Nullable
+                Holder<E> holder = null;
+                
+                @Nullable
+                @Override
+                public Holder<E> getHolder() {
+                    if (holder != null) return holder;
+                    return holder = getRegistrar().getHolder(getId());
+                }
+                
                 @Override
                 public RegistrarManager getRegistrarManager() {
                     return RegistrarManager.get(modId);
@@ -626,6 +664,12 @@ public class RegistrarManagerImpl {
         }
         
         @Override
+        @Nullable
+        public Holder<T> getHolder(ResourceKey<T> key) {
+            return delegate.getHolder(key).orElse(null);
+        }
+        
+        @Override
         public Iterator<T> iterator() {
             return delegate.iterator();
         }
@@ -668,7 +712,17 @@ public class RegistrarManagerImpl {
         @Override
         public RegistrySupplier<T> delegate(ResourceLocation id) {
             if (isReady()) return delegate.get().delegate(id);
-            return new RegistrySupplier<>() {
+            return new RegistrySupplierImpl<T>() {
+                @Nullable
+                Holder<T> holder = null;
+                
+                @Nullable
+                @Override
+                public Holder<T> getHolder() {
+                    if (holder != null || !isReady()) return holder;
+                    return holder = delegate.get().getHolder(getId());
+                }
+                
                 @Override
                 public RegistrarManager getRegistrarManager() {
                     return RegistrarManager.get(modId);
@@ -759,6 +813,12 @@ public class RegistrarManagerImpl {
         @Override
         public ResourceKey<? extends Registry<T>> key() {
             return isReady() ? delegate.get().key() : ResourceKey.createRegistryKey(registryId);
+        }
+        
+        @Override
+        @Nullable
+        public Holder<T> getHolder(ResourceKey<T> key) {
+            return isReady() ? delegate.get().getHolder(key) : null;
         }
         
         @Override

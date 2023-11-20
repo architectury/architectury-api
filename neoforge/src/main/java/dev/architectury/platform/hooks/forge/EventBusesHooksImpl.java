@@ -17,21 +17,23 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.forge;
+package dev.architectury.platform.hooks.forge;
 
-import dev.architectury.platform.forge.EventBuses;
-import dev.architectury.event.EventHandler;
-import dev.architectury.registry.level.biome.forge.BiomeModificationsImpl;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
 
-@Mod(ArchitecturyForge.MOD_ID)
-public class ArchitecturyForge {
-    public static final String MOD_ID = "architectury";
+import java.util.Optional;
+import java.util.function.Consumer;
+
+public class EventBusesHooksImpl {
+    public static void whenAvailable(String modId, Consumer<IEventBus> busConsumer) {
+        IEventBus bus = getModEventBus(modId).orElseThrow(() -> new IllegalStateException("Mod '" + modId + "' is not available!"));
+        busConsumer.accept(bus);
+    }
     
-    public ArchitecturyForge() {
-        EventBuses.registerModEventBus(ArchitecturyForge.MOD_ID, FMLJavaModLoadingContext.get().getModEventBus());
-        EventHandler.init();
-        BiomeModificationsImpl.init();
+    public static Optional<IEventBus> getModEventBus(String modId) {
+        return ModList.get().getModContainerById(modId)
+                .map(ModContainer::getEventBus);
     }
 }
