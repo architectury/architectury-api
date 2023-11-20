@@ -19,6 +19,7 @@
 
 package dev.architectury.registry.registries;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -67,6 +68,14 @@ public interface Registrar<T> extends Iterable<T> {
     Set<Map.Entry<ResourceKey<T>, T>> entrySet();
     
     ResourceKey<? extends Registry<T>> key();
+    
+    @Nullable
+    Holder<T> getHolder(ResourceKey<T> key);
+    
+    @Nullable
+    default Holder<T> getHolder(ResourceLocation id) {
+        return getHolder(ResourceKey.create(key(), id));
+    }
     
     /**
      * Listens to when the registry entry is registered, and calls the given action.

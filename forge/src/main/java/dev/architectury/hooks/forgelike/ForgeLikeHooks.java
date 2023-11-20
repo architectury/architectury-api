@@ -17,26 +17,20 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.registry.registries;
+package dev.architectury.hooks.forgelike;
 
-import net.minecraft.core.Holder;
+import com.mojang.serialization.Codec;
+import dev.architectury.injectables.annotations.ExpectPlatform;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.common.world.BiomeModifier;
 import org.jetbrains.annotations.ApiStatus;
 
-import java.util.function.Consumer;
+import java.util.function.Supplier;
 
-@ApiStatus.NonExtendable
-public interface RegistrySupplier<T> extends DeferredSupplier<T>, Holder<T> {
-    RegistrarManager getRegistrarManager();
-    
-    Registrar<T> getRegistrar();
-    
-    /**
-     * Listens to when the registry entry is registered, and calls the given action.
-     * Evaluates immediately if the entry is already registered.
-     *
-     * @param callback the action to call when the registry entry is registered
-     */
-    default void listen(Consumer<T> callback) {
-        getRegistrar().listen(this, callback);
+@ApiStatus.Internal
+public class ForgeLikeHooks {
+    @ExpectPlatform
+    public static void registerBiomeModifier(ResourceLocation id, Supplier<Codec<? extends BiomeModifier>> codecSupplier) {
+        throw new AssertionError();
     }
 }

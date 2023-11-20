@@ -21,8 +21,8 @@ package dev.architectury.registry.level.biome.forge;
 
 import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
+import dev.architectury.hooks.forgelike.ForgeLikeHooks;
 import dev.architectury.hooks.level.biome.*;
-import dev.architectury.platform.hooks.EventBusesHooks;
 import dev.architectury.registry.level.biome.BiomeModifications.BiomeContext;
 import dev.architectury.utils.ArchitecturyConstants;
 import dev.architectury.utils.GameInstance;
@@ -42,8 +42,6 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraftforge.common.world.*;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegisterEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
@@ -64,14 +62,8 @@ public class BiomeModificationsImpl {
     private static Codec<BiomeModifierImpl> noneBiomeModCodec = null;
     
     public static void init() {
-        EventBusesHooks.whenAvailable(ArchitecturyConstants.MOD_ID,bus -> {
-            bus.<RegisterEvent>addListener(event -> {
-                event.register(ForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, registry -> {
-                    registry.register(new ResourceLocation(ArchitecturyConstants.MOD_ID, "none_biome_mod_codec"),
-                            noneBiomeModCodec = Codec.unit(BiomeModifierImpl.INSTANCE));
-                });
-            });
-        });
+        ForgeLikeHooks.registerBiomeModifier(new ResourceLocation(ArchitecturyConstants.MOD_ID, "none_biome_mod_codec"),
+                () -> noneBiomeModCodec = Codec.unit(BiomeModifierImpl.INSTANCE));
     }
     
     public static void addProperties(Predicate<BiomeContext> predicate, BiConsumer<BiomeContext, BiomeProperties.Mutable> modifier) {

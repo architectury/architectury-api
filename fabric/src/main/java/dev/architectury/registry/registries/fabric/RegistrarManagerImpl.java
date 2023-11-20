@@ -23,6 +23,7 @@ import com.google.common.base.Objects;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import dev.architectury.impl.RegistrySupplierImpl;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarBuilder;
 import dev.architectury.registry.registries.RegistrarManager;
@@ -32,6 +33,7 @@ import dev.architectury.registry.registries.options.StandardRegistrarOption;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
+import net.minecraft.core.Holder;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -153,7 +155,17 @@ public class RegistrarManagerImpl {
         public RegistrySupplier<T> delegate(ResourceLocation id) {
             Supplier<T> value = Suppliers.memoize(() -> get(id));
             RegistrarImpl<T> registrar = this;
-            return new RegistrySupplier<>() {
+            return new RegistrySupplierImpl<T>() {
+                @Nullable
+                Holder<T> holder = null;
+                
+                @Nullable
+                @Override
+                public Holder<T> getHolder() {
+                    if (holder != null) return holder;
+                    return holder = registrar.getHolder(getId());
+                }
+                
                 @Override
                 public RegistrarManager getRegistrarManager() {
                     return RegistrarManager.get(modId);
@@ -257,6 +269,12 @@ public class RegistrarManagerImpl {
         @Override
         public ResourceKey<? extends Registry<T>> key() {
             return delegate.key();
+        }
+        
+        @Override
+        @Nullable
+        public Holder<T> getHolder(ResourceKey<T> key) {
+            return delegate.getHolder(key).orElse(null);
         }
         
         @Override
