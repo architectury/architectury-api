@@ -51,7 +51,7 @@ public abstract class MixinGameRenderer {
     @Inject(method = "render(FJZ)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;renderWithTooltip(Lnet/minecraft/client/gui/GuiGraphics;IIF)V",
                     ordinal = 0), locals = LocalCapture.CAPTURE_FAILEXCEPTION, cancellable = true)
-    public void renderScreenPre(float tickDelta, long startTime, boolean tick, CallbackInfo ci, boolean isGameLoadFinished, int mouseX, int mouseY, Window window, Matrix4f matrix, PoseStack matrices, GuiGraphics graphics) {
+    public void renderScreenPre(float tickDelta, long startTime, boolean tick, CallbackInfo ci, float speedAppliedTickDelta, boolean isGameLoadFinished, int mouseX, int mouseY, Window window, Matrix4f matrix, PoseStack matrices, GuiGraphics graphics) {
         if (ClientGuiEvent.RENDER_PRE.invoker().render(minecraft.screen, graphics, mouseX, mouseY, minecraft.getDeltaFrameTime()).isFalse()) {
             ci.cancel();
         }
@@ -60,7 +60,7 @@ public abstract class MixinGameRenderer {
     @Inject(method = "render(FJZ)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;renderWithTooltip(Lnet/minecraft/client/gui/GuiGraphics;IIF)V",
                     shift = At.Shift.AFTER, ordinal = 0), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-    public void renderScreenPost(float tickDelta, long startTime, boolean tick, CallbackInfo ci, boolean isGameLoadFinished, int mouseX, int mouseY, Window window, Matrix4f matrix, PoseStack matrices, GuiGraphics graphics) {
+    public void renderScreenPost(float tickDelta, long startTime, boolean tick, CallbackInfo ci, float speedAppliedTickDelta, boolean isGameLoadFinished, int mouseX, int mouseY, Window window, Matrix4f matrix, PoseStack matrices, GuiGraphics graphics) {
         ClientGuiEvent.RENDER_POST.invoker().render(minecraft.screen, graphics, mouseX, mouseY, minecraft.getDeltaFrameTime());
     }
     

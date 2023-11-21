@@ -20,6 +20,8 @@
 package dev.architectury.mixin.fabric;
 
 import dev.architectury.event.events.common.ExplosionEvent;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Explosion;
@@ -33,9 +35,9 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(Level.class)
 public class MixinLevel {
-    @Inject(method = "explode(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/damagesource/DamageSource;Lnet/minecraft/world/level/ExplosionDamageCalculator;DDDFZLnet/minecraft/world/level/Level$ExplosionInteraction;Z)Lnet/minecraft/world/level/Explosion;",
+    @Inject(method = "explode(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/damagesource/DamageSource;Lnet/minecraft/world/level/ExplosionDamageCalculator;DDDFZLnet/minecraft/world/level/Level$ExplosionInteraction;ZLnet/minecraft/core/particles/ParticleOptions;Lnet/minecraft/core/particles/ParticleOptions;Lnet/minecraft/sounds/SoundEvent;)Lnet/minecraft/world/level/Explosion;",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Explosion;explode()V"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-    private void explodePre(Entity entity, DamageSource damageSource, ExplosionDamageCalculator explosionDamageCalculator, double d, double e, double f, float g, boolean bl, Level.ExplosionInteraction explosionInteraction, boolean bl2, CallbackInfoReturnable<Explosion> cir, Explosion.BlockInteraction blockInteraction, Explosion explosion) {
+    private void explodePre(Entity entity, DamageSource damageSource, ExplosionDamageCalculator explosionDamageCalculator, double d, double e, double f, float g, boolean bl, Level.ExplosionInteraction explosionInteraction, boolean bl2, ParticleOptions particleOptions, ParticleOptions particleOptions2, SoundEvent soundEvent, CallbackInfoReturnable<Explosion> cir, Explosion.BlockInteraction blockInteraction, Explosion explosion) {
         if (ExplosionEvent.PRE.invoker().explode((Level) (Object) this, explosion).isFalse()) {
             cir.setReturnValue(explosion);
         }
