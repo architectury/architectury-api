@@ -231,10 +231,15 @@ transitive-accessible method net/minecraft/world/level/block/StructureVoidBlock 
 transitive-accessible method net/minecraft/world/level/block/SugarCaneBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/TallGrassBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/TorchBlock <init> (Lnet/minecraft/core/particles/SimpleParticleType;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
+transitive-accessible method net/minecraft/world/level/block/TransparentBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/TrapDoorBlock <init> (Lnet/minecraft/world/level/block/state/properties/BlockSetType;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/WallSkullBlock <init> (Lnet/minecraft/world/level/block/SkullBlock$Type;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/WallTorchBlock <init> (Lnet/minecraft/core/particles/SimpleParticleType;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/WaterlilyBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
+transitive-accessible method net/minecraft/world/level/block/WaterloggedTransparentBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
+transitive-accessible method net/minecraft/world/level/block/WeatheringCopperDoorBlock <init> (Lnet/minecraft/world/level/block/state/properties/BlockSetType;Lnet/minecraft/world/level/block/WeatheringCopper$WeatherState;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
+transitive-accessible method net/minecraft/world/level/block/WeatheringCopperGrateBlock <init> (Lnet/minecraft/world/level/block/WeatheringCopper$WeatherState;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
+transitive-accessible method net/minecraft/world/level/block/WeatheringCopperTrapDoorBlock <init> (Lnet/minecraft/world/level/block/state/properties/BlockSetType;Lnet/minecraft/world/level/block/WeatheringCopper$WeatherState;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/WeightedPressurePlateBlock <init> (ILnet/minecraft/world/level/block/state/properties/BlockSetType;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/WetSpongeBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/WitherSkullBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
@@ -261,7 +266,6 @@ transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDE
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_CUTOUT_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_TRANSLUCENT_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_TRANSLUCENT_MOVING_BLOCK_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
-transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_TRANSLUCENT_NO_CRUMBLING_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_ARMOR_CUTOUT_NO_CULL_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_ENTITY_SOLID_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_ENTITY_CUTOUT_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
@@ -305,6 +309,7 @@ transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDE
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_GUI_OVERLAY_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_GUI_TEXT_HIGHLIGHT_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_GUI_GHOST_RECIPE_OVERLAY_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
+transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_BREEZE_WIND_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard BLOCK_SHEET_MIPPED Lnet/minecraft/client/renderer/RenderStateShard$TextureStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard BLOCK_SHEET Lnet/minecraft/client/renderer/RenderStateShard$TextureStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard NO_TEXTURE Lnet/minecraft/client/renderer/RenderStateShard$EmptyTextureStateShard;
