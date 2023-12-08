@@ -24,6 +24,6 @@ side = "BOTH"
 [[dependencies.architectury]]
 modId = "forge"
 mandatory = true
-versionRange = "[48,)"
+versionRange = "[49,)"
 ordering = "NONE"
 side = "BOTH"

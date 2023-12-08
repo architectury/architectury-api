@@ -23,6 +23,7 @@ import com.mojang.serialization.Codec;
 import dev.architectury.platform.hooks.EventBusesHooks;
 import dev.architectury.utils.ArchitecturyConstants;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
@@ -38,5 +39,8 @@ public class ForgeLikeHooksImpl {
                 });
             });
         });
+    }
+    
+    public static void registerBucketItemCapability(Item item) {
     }
 }

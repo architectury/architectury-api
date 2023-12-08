@@ -22,20 +22,41 @@ package dev.architectury.hooks.forgelike.forge;
 import com.mojang.serialization.Codec;
 import dev.architectury.platform.hooks.forge.EventBusesHooksImpl;
 import dev.architectury.utils.ArchitecturyConstants;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.world.BiomeModifier;
+import net.neoforged.neoforge.fluids.capability.wrappers.FluidBucketWrapper;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.neoforged.neoforge.registries.RegisterEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.function.Supplier;
 
 public class ForgeLikeHooksImpl {
+    private static final Logger LOGGER = LogManager.getLogger(ForgeLikeHooksImpl.class);
+    
     public static void registerBiomeModifier(ResourceLocation id, Supplier<Codec<? extends BiomeModifier>> codecSupplier) {
         EventBusesHooksImpl.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
             bus.<RegisterEvent>addListener(event -> {
                 event.register(NeoForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, registry -> {
                     registry.register(id, codecSupplier.get());
                 });
+            });
+        });
+    }
+    
+    public static void registerBucketItemCapability(Item item) {
+        EventBusesHooksImpl.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
+            bus.<RegisterCapabilitiesEvent>addListener(event -> {
+                if (BuiltInRegistries.ITEM.containsValue(item)) {
+                    event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ctx) -> new FluidBucketWrapper(stack), item);
+                } else {
+                    LOGGER.warn("Tried to register a bucket item capability for an item that is not registered: {}", item);
+                }
             });
         });
     }

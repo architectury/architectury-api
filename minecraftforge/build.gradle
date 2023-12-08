@@ -129,7 +129,7 @@ unifiedPublishing {
         displayName = "[MinecraftForge $rootProject.supported_version] v$project.version"
         releaseType = "$rootProject.artifact_type"
         changelog = releaseChangelog()
-        gameVersions = ["1.20.2"]
+        gameVersions = ["1.20.4"]
         gameLoaders = ["forge"]
         mainPublication renameJarForPublication
 

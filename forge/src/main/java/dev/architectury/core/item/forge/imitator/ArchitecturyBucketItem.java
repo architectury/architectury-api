@@ -19,6 +19,8 @@
 
 package dev.architectury.core.item.forge.imitator;
 
+import dev.architectury.hooks.forgelike.ForgeLikeHooks;
+import dev.architectury.injectables.annotations.PlatformOnly;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
@@ -32,6 +34,7 @@ import java.util.function.Supplier;
 public class ArchitecturyBucketItem extends BucketItem {
     public ArchitecturyBucketItem(Supplier<? extends Fluid> fluid, Properties properties) {
         super(fluid, properties);
+        ForgeLikeHooks.registerBucketItemCapability(this);
     }
     
     public final Fluid getContainedFluid() {
@@ -39,6 +42,7 @@ public class ArchitecturyBucketItem extends BucketItem {
     }
     
     @Override
+    @PlatformOnly(PlatformOnly.FORGE)
     public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
         return this.getClass() == ArchitecturyBucketItem.class ? new FluidBucketWrapper(stack) : super.initCapabilities(stack, nbt);
     }
