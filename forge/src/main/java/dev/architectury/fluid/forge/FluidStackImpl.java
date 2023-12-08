@@ -19,10 +19,10 @@
 
 package dev.architectury.fluid.forge;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.function.Function;
@@ -54,7 +54,7 @@ public enum FluidStackImpl implements dev.architectury.fluid.FluidStack.FluidSta
     
     @Override
     public Supplier<Fluid> getRawFluidSupplier(FluidStack object) {
-        return ForgeRegistries.FLUIDS.getDelegateOrThrow(object.getRawFluid());
+        return BuiltInRegistries.FLUID.getHolderOrThrow(BuiltInRegistries.FLUID.getResourceKey(object.getRawFluid()).orElseThrow());
     }
     
     @Override

@@ -24,6 +24,7 @@ import dev.architectury.core.fluid.ArchitecturyFluidAttributes;
 import dev.architectury.hooks.fluid.forge.FluidStackHooksForge;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -40,7 +41,6 @@ import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.common.SoundAction;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
@@ -55,7 +55,7 @@ class ArchitecturyFluidAttributesForge extends FluidType {
     public ArchitecturyFluidAttributesForge(Properties builder, Fluid fluid, ArchitecturyFluidAttributes attributes) {
         super(addArchIntoBuilder(builder, attributes));
         this.attributes = attributes;
-        this.defaultTranslationKey = Util.makeDescriptionId("fluid", ForgeRegistries.FLUIDS.getKey(fluid));
+        this.defaultTranslationKey = Util.makeDescriptionId("fluid", BuiltInRegistries.FLUID.getKey(fluid));
     }
     
     private static Properties addArchIntoBuilder(Properties builder, ArchitecturyFluidAttributes attributes) {
