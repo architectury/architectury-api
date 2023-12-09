@@ -34,7 +34,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Commands.class)
 public class MixinCommands {
     @ModifyVariable(method = "finishParsing",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/commands/Commands;validateParseResults(Lcom/mojang/brigadier/ParseResults;)V", remap = false), argsOnly = true)
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/commands/Commands;validateParseResults(Lcom/mojang/brigadier/ParseResults;)V"), argsOnly = true)
     private static ParseResults<CommandSourceStack> finishParsing(ParseResults<CommandSourceStack> results) {
         var event = new CommandPerformEvent(results, null);
         if (CommandPerformEvent.EVENT.invoker().act(event).isPresent()) {
@@ -47,7 +47,7 @@ public class MixinCommands {
     }
     
     @Inject(method = "finishParsing",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/commands/Commands;validateParseResults(Lcom/mojang/brigadier/ParseResults;)V", remap = false), cancellable = true)
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/commands/Commands;validateParseResults(Lcom/mojang/brigadier/ParseResults;)V"), cancellable = true)
     private static void finishParsing(ParseResults<CommandSourceStack> results, String command, CommandSourceStack stack, CallbackInfoReturnable<ContextChain<CommandSourceStack>> cir) {
         if (results == null) cir.setReturnValue(null);
     }
