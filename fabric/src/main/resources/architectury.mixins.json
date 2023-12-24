@@ -10,6 +10,7 @@
     "client.MixinChatListener",
     "client.MixinClientLevel",
     "client.MixinClientPacketListener",
+    "client.MixinClientTooltipComponent",
     "client.MixinDebugScreenOverlay",
     "client.MixinEffectInstance",
     "client.MixinGameRenderer",

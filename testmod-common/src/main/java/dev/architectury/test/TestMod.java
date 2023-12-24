@@ -20,6 +20,7 @@
 package dev.architectury.test;
 
 import dev.architectury.event.events.client.ClientLifecycleEvent;
+import dev.architectury.registry.client.gui.ClientTooltipComponentManager;
 import dev.architectury.registry.client.level.entity.EntityRendererRegistry;
 import dev.architectury.test.debug.ConsoleMessageSink;
 import dev.architectury.test.debug.MessageSink;
@@ -33,6 +34,7 @@ import dev.architectury.test.networking.TestModNet;
 import dev.architectury.test.particle.TestParticles;
 import dev.architectury.test.registry.TestRegistries;
 import dev.architectury.test.registry.client.TestKeybinds;
+import dev.architectury.test.registry.objects.ItemWithTooltip;
 import dev.architectury.test.tags.TestTags;
 import dev.architectury.test.trade.TestTrades;
 import dev.architectury.test.worldgen.TestWorldGeneration;
@@ -72,6 +74,7 @@ public class TestMod {
             TestModNet.initializeClient();
             EntityRendererRegistry.register(TestRegistries.TEST_ENTITY, CowRenderer::new);
             EntityRendererRegistry.register(TestRegistries.TEST_ENTITY_2, CowRenderer::new);
+            ClientTooltipComponentManager.register(ItemWithTooltip.MyTooltipComponent.class, ItemWithTooltip.MyClientTooltipComponent::new);
         }
     }
 }
