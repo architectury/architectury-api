@@ -23,6 +23,7 @@ import com.google.common.base.Objects;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.mojang.serialization.Codec;
 import dev.architectury.impl.RegistrySupplierImpl;
 import dev.architectury.platform.hooks.forge.EventBusesHooksImpl;
 import dev.architectury.registry.registries.Registrar;
@@ -39,6 +40,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
@@ -108,6 +110,9 @@ public class RegistrarManagerImpl {
         @Nullable
         private List<Registry<?>> newRegistries = new ArrayList<>();
         
+        @Nullable
+        private List<DynamicRegistryData<?>> newDynamicRegistries = new ArrayList<>();
+
         public RegistryProviderImpl(String modId) {
             this.modId = modId;
             this.eventBus = Suppliers.memoize(() -> {
@@ -151,6 +156,35 @@ public class RegistrarManagerImpl {
         @Override
         public <T> RegistrarBuilder<T> builder(Class<T> type, ResourceLocation registryId) {
             return new RegistryBuilderWrapper<>(this, new RegistryBuilder<>(ResourceKey.createRegistryKey(registryId)));
+        }
+        
+        @Override
+        public <T> void registerDynamicRegistry(ResourceKey<Registry<T>> key, Codec<T> dataCodec) {
+            if (newDynamicRegistries == null) {
+                throw new IllegalStateException("Cannot create registries when registries are already aggregated!");
+            }
+            newDynamicRegistries.add(new DynamicRegistryData<>(key, dataCodec, null));
+        }
+        
+        @Override
+        public <T> void registerDynamicRegistrySynced(ResourceKey<Registry<T>> key, Codec<T> dataCodec, Codec<T> networkCodec) {
+            if (newDynamicRegistries == null) {
+                throw new IllegalStateException("Cannot create registries when registries are already aggregated!");
+            }
+            newDynamicRegistries.add(new DynamicRegistryData<>(key, dataCodec, networkCodec));
+        }
+        
+        private record DynamicRegistryData<T>(
+                ResourceKey<Registry<T>> key,
+                Codec<T> dataCodec,
+                @Nullable Codec<T> networkCodec) {
+            public void register(DataPackRegistryEvent.NewRegistry event) {
+                if (networkCodec != null) {
+                    event.dataPackRegistry(key, dataCodec, networkCodec);
+                } else {
+                    event.dataPackRegistry(key, dataCodec);
+                }
+            }
         }
         
         public class EventListener {
@@ -223,6 +257,16 @@ public class RegistrarManagerImpl {
                         event.register(registry);
                     }
                     newRegistries = null;
+                }
+            }
+            
+            @SubscribeEvent
+            public void handleEvent(DataPackRegistryEvent.NewRegistry event) {
+                if (newDynamicRegistries != null) {
+                    for (DynamicRegistryData<?> data : newDynamicRegistries) {
+                        data.register(event);
+                    }
+                    newDynamicRegistries = null;
                 }
             }
         }
