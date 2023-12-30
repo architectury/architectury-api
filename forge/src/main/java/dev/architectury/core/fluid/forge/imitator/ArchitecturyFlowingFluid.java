@@ -42,25 +42,28 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 public abstract class ArchitecturyFlowingFluid extends ForgeFlowingFluid {
     private final ArchitecturyFluidAttributes attributes;
-    private final Supplier<FluidType> forgeType;
+    private static final Map<ArchitecturyFluidAttributes, Properties> cachedProperties;
+    static {
+        cachedProperties = new HashMap<>();
+    }
     
     ArchitecturyFlowingFluid(ArchitecturyFluidAttributes attributes) {
         super(toForgeProperties(attributes));
         this.attributes = attributes;
-        this.forgeType = Suppliers.memoize(() -> {
-            return new ArchitecturyFluidAttributesForge(FluidType.Properties.create(), this, attributes);
-        });
     }
     
     private static Properties toForgeProperties(ArchitecturyFluidAttributes attributes) {
-        Properties forge = new Properties(Suppliers.memoize(() -> {
-            return new ArchitecturyFluidAttributesForge(FluidType.Properties.create(), attributes.getSourceFluid(), attributes);
-        }), attributes::getSourceFluid, attributes::getFlowingFluid);
+        Properties forge = cachedProperties.computeIfAbsent(attributes, (_a) -> {
+            FluidType ft = new ArchitecturyFluidAttributesForge(FluidType.Properties.create(), attributes.getSourceFluid(),
+                        attributes);
+            return new Properties(Suppliers.memoize(() -> ft), attributes::getSourceFluid, attributes::getFlowingFluid);
+        });
         forge.slopeFindDistance(attributes.getSlopeFindDistance());
         forge.levelDecreasePerBlock(attributes.getDropOff());
         forge.bucket(() -> MoreObjects.firstNonNull(attributes.getBucketItem(), Items.AIR));
@@ -68,11 +71,6 @@ public abstract class ArchitecturyFlowingFluid extends ForgeFlowingFluid {
         forge.explosionResistance(attributes.getExplosionResistance());
         forge.block(() -> MoreObjects.firstNonNull(attributes.getBlock(), (LiquidBlock) Blocks.WATER));
         return forge;
-    }
-    
-    @Override
-    public FluidType getFluidType() {
-        return forgeType.get();
     }
     
     @Override
