@@ -28,7 +28,6 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.network.PlayNetworkDirection;
 
 import java.util.Collections;
 import java.util.Set;
@@ -36,7 +35,7 @@ import java.util.Set;
 @OnlyIn(Dist.CLIENT)
 public class ClientNetworkingManager {
     public static void initClient() {
-        NetworkManagerImpl.CHANNEL.addListener(NetworkManagerImpl.createPacketHandler(PlayNetworkDirection.PLAY_TO_CLIENT, NetworkManagerImpl.S2C_TRANSFORMERS));
+        NetworkManagerImpl.s2c = NetworkManagerImpl.createPacketHandler(NetworkManager.Side.S2C, NetworkManagerImpl.S2C_TRANSFORMERS);
         NeoForge.EVENT_BUS.register(ClientNetworkingManager.class);
         
         NetworkManagerImpl.registerS2CReceiver(NetworkManagerImpl.SYNC_IDS, Collections.emptyList(), (buffer, context) -> {

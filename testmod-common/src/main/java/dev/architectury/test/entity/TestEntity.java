@@ -20,6 +20,7 @@
 package dev.architectury.test.entity;
 
 import com.google.common.base.Suppliers;
+import dev.architectury.injectables.targets.ArchitecturyTarget;
 import dev.architectury.networking.NetworkManager;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -41,6 +42,7 @@ public class TestEntity extends Cow {
     @Override
     public Packet<ClientGamePacketListener> getAddEntityPacket() {
         // Custom packets broken in BundlePacket
+        if (ArchitecturyTarget.getCurrentTarget().equals("neoforge")) return super.getAddEntityPacket();
         return NetworkManager.createAddEntityPacket(this);
     }
 }
