@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Set;
 
 @Mixin(Explosion.class)
-public class MixinExplosion implements ExplosionHooksImpl.ExplosionExtensions {
+public class MixinExplosion {
     @Shadow
     @Final
     private Level level;
@@ -50,20 +50,10 @@ public class MixinExplosion implements ExplosionHooksImpl.ExplosionExtensions {
     @Shadow
     @Final
     private double z;
-    @Unique
-    Vec3 position;
     
     @Inject(method = "explode", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/Vec3;<init>(DDD)V", ordinal = 1),
             locals = LocalCapture.CAPTURE_FAILHARD)
     private void explodePost(CallbackInfo ci, Set<BlockPos> set, int i, float q, int r, int s, int t, int u, int v, int w, List<Entity> list) {
         ExplosionEvent.DETONATE.invoker().explode(level, (Explosion) (Object) this, list);
-    }
-    
-    @Override
-    public Vec3 architectury_getPosition() {
-        if (position == null) {
-            return position = new Vec3(x, y, z);
-        }
-        return position;
     }
 }

@@ -27,8 +27,12 @@ public final class ExplosionHooks {
     private ExplosionHooks() {
     }
     
-    @ExpectPlatform
+    /**
+     * @deprecated no longer needed.
+     * @see Explosion#center()
+     */
+    @Deprecated(forRemoval = true)
     public static Vec3 getPosition(Explosion explosion) {
-        throw new AssertionError();
+        return explosion.center();
     }
 }
