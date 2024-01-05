@@ -87,9 +87,8 @@ public class NetworkManagerImpl {
     }
     
     private static final Logger LOGGER = LogUtils.getLogger();
-    private static final ResourceLocation CHANNEL_ID = new ResourceLocation("architectury:network");
+    static final ResourceLocation CHANNEL_ID = new ResourceLocation("architectury:network");
     static final ResourceLocation SYNC_IDS = new ResourceLocation("architectury:sync_ids");
-    //static final EventNetworkChannel CHANNEL = NetworkRegistry.ChannelBuilder.named(CHANNEL_ID).networkProtocolVersion(() -> "").clientAcceptedVersions(version -> true).serverAcceptedVersions(version -> true).eventNetworkChannel();
     static final Map<ResourceLocation, NetworkReceiver> S2C = Maps.newHashMap();
     static final Map<ResourceLocation, NetworkReceiver> C2S = Maps.newHashMap();
     static final Map<ResourceLocation, PacketTransformer> S2C_TRANSFORMERS = Maps.newHashMap();
@@ -98,9 +97,8 @@ public class NetworkManagerImpl {
     private static final Multimap<Player, ResourceLocation> clientReceivables = Multimaps.newMultimap(Maps.newHashMap(), Sets::newHashSet);
     
     static IPlayPayloadHandler<BufCustomPacketPayload> createPacketHandler(NetworkManager.Side direction, Map<ResourceLocation, PacketTransformer> map) {
-        return (arg, iPayloadContext) -> {
-            IPayloadContext context = iPayloadContext;
-            
+        return (arg, context) -> {
+    
             NetworkManager.Side side = side(context.flow());
             if (side != direction) return;
             ResourceLocation type = arg.buf().readResourceLocation();
@@ -170,6 +168,7 @@ public class NetworkManagerImpl {
         return entity.getAddEntityPacket();
     }
     
+    @SuppressWarnings("SameParameterValue")
     static FriendlyByteBuf sendSyncPacket(Map<ResourceLocation, NetworkReceiver> map) {
         List<ResourceLocation> availableIds = Lists.newArrayList(map.keySet());
         FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
@@ -190,12 +189,14 @@ public class NetworkManagerImpl {
         clientReceivables.removeAll(event.getEntity());
     }
     
+    /**
+     * Needs to be on the mod bus for some reason...
+     */
     @Mod.EventBusSubscriber(modid = ArchitecturyConstants.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
     static class P {
         @SubscribeEvent
         public static void registerPackets(RegisterPayloadHandlerEvent event) {
             //noinspection removal
-            LOGGER.info("Architectury Packet registered.");
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> ClientNetworkingManager::initClient);
         
             IPayloadRegistrar registrar = event.registrar("architectury")/*.versioned(Platform.getMod("architectury-api").getVersion())*/.optional();
