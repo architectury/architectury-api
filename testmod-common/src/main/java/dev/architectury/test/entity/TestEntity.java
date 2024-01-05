@@ -22,8 +22,13 @@ package dev.architectury.test.entity;
 import com.google.common.base.Suppliers;
 import dev.architectury.injectables.targets.ArchitecturyTarget;
 import dev.architectury.networking.NetworkManager;
+import io.netty.buffer.Unpooled;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.animal.Cow;
@@ -44,5 +49,19 @@ public class TestEntity extends Cow {
         // Custom packets broken in BundlePacket
         if (ArchitecturyTarget.getCurrentTarget().equals("neoforge")) return super.getAddEntityPacket();
         return NetworkManager.createAddEntityPacket(this);
+    }
+    
+    @Override
+    protected void tickDeath() {
+        super.tickDeath();
+        if (!this.level().isClientSide()) {
+            if (this.getLastAttacker() instanceof ServerPlayer player) {
+                CompoundTag compoundTag = new CompoundTag();
+                compoundTag.putString("DeathCauser", player.getStringUUID());
+                FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+                buf.writeNbt(compoundTag);
+                NetworkManager.sendToPlayer(player, new ResourceLocation("architectury_test", "sync_data"), buf);
+            }
+        }
     }
 }
