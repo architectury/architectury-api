@@ -51,6 +51,7 @@ public class MixinExplosion {
     @Final
     private double z;
     
+    @SuppressWarnings("InvalidInjectorMethodSignature")
     @Inject(method = "explode", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/Vec3;<init>(DDD)V", ordinal = 1),
             locals = LocalCapture.CAPTURE_FAILHARD)
     private void explodePost(CallbackInfo ci, Set<BlockPos> set, int i, float q, int r, int s, int t, int u, int v, int w, List<Entity> list) {
