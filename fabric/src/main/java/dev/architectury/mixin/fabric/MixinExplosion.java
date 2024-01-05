@@ -41,15 +41,6 @@ public class MixinExplosion {
     @Shadow
     @Final
     private Level level;
-    @Shadow
-    @Final
-    private double x;
-    @Shadow
-    @Final
-    private double y;
-    @Shadow
-    @Final
-    private double z;
     
     @SuppressWarnings("InvalidInjectorMethodSignature")
     @Inject(method = "explode", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/Vec3;<init>(DDD)V", ordinal = 1),
