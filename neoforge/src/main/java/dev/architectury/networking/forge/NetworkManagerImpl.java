@@ -103,7 +103,7 @@ public class NetworkManagerImpl {
             
             NetworkManager.Side side = side(context.flow());
             if (side != direction) return;
-            ResourceLocation type = arg.getBuf().readResourceLocation();
+            ResourceLocation type = arg.buf().readResourceLocation();
             PacketTransformer transformer = map.get(type);
             
             
@@ -130,7 +130,7 @@ public class NetworkManagerImpl {
                     }
                 };
                 
-                transformer.inbound(side, type, arg.getBuf(), packetContext, (side1, id1, buf1) -> {
+                transformer.inbound(side, type, arg.buf(), packetContext, (side1, id1, buf1) -> {
                     NetworkReceiver networkReceiver = side == NetworkManager.Side.C2S ? C2S.get(id1) : S2C.get(id1);
                     if (networkReceiver == null) {
                         throw new IllegalArgumentException("Network Receiver not found! " + id1);
