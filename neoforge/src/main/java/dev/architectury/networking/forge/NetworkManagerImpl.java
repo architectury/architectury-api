@@ -46,7 +46,6 @@ import net.neoforged.fml.DistExecutor;
 import net.neoforged.fml.LogicalSide;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
-// import net.neoforged.neoforge.network.event.EventNetworkChannel;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.handling.IPlayPayloadHandler;
@@ -100,20 +99,15 @@ public class NetworkManagerImpl {
     
     static IPlayPayloadHandler<BufCustomPacketPayload> createPacketHandler(NetworkManager.Side direction, Map<ResourceLocation, PacketTransformer> map) {
         return (arg, iPayloadContext) -> {
-            LOGGER.info("handling packet " + arg + " " + iPayloadContext.flow().getReceptionSide());
             IPayloadContext context = iPayloadContext;
             
             NetworkManager.Side side = side(context.flow());
             if (side != direction) return;
-            // TODO: if (context.getPacketHandled()) return;
-            // TODO: FriendlyByteBuf buffer = event.getPayload();
-            // if (buffer == null) return;
             ResourceLocation type = arg.getBuf().readResourceLocation();
             PacketTransformer transformer = map.get(type);
             
             
             if (transformer != null) {
-                //NetworkManager.Side side = context.getDirection().getReceptionSide() == LogicalSide.CLIENT ? NetworkManager.Side.S2C : NetworkManager.Side.C2S;
                 NetworkManager.PacketContext packetContext = new NetworkManager.PacketContext() {
                     @Override
                     public Player getPlayer() {
