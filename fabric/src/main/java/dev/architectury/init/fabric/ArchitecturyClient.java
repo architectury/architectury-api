@@ -21,7 +21,7 @@ package dev.architectury.init.fabric;
 
 import dev.architectury.event.events.client.ClientLifecycleEvent;
 import dev.architectury.event.events.common.LifecycleEvent;
-import dev.architectury.networking.fabric.SpawnEntityPacket;
+import dev.architectury.networking.SpawnEntityPacket;
 import net.minecraft.client.Minecraft;
 
 public class ArchitecturyClient {

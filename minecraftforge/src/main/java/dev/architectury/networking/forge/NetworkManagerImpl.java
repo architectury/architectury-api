@@ -37,17 +37,18 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.network.CustomPayloadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.network.*;
+import net.minecraftforge.network.ChannelBuilder;
+import net.minecraftforge.network.EventNetworkChannel;
+import net.minecraftforge.network.NetworkDirection;
 import org.slf4j.Logger;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -179,19 +180,7 @@ public class NetworkManagerImpl {
     }
     
     public static Packet<ClientGamePacketListener> createAddEntityPacket(Entity entity) {
-        try {
-            // I love forge
-            Constructor<?> constructor = Class.forName("net.minecraftforge.network.packets.SpawnEntity").getDeclaredConstructor(Entity.class);
-            constructor.setAccessible(true);
-            Object message = constructor.newInstance(entity);
-            Packet<ClientGamePacketListener>[] packet = new Packet[1];
-            NetworkInitialization.PLAY.send(message, new PacketDistributor.PacketTarget(p -> {
-                packet[0] = (Packet<ClientGamePacketListener>) p;
-            }, NetworkDirection.PLAY_TO_CLIENT));
-            return Objects.requireNonNull(packet[0], "Expected packet to be sent!");
-        } catch (InstantiationException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+        return ForgeHooks.getEntitySpawnPacket(entity);
     }
     
     static FriendlyByteBuf sendSyncPacket(Map<ResourceLocation, NetworkReceiver> map) {

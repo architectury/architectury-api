@@ -24,8 +24,10 @@ import com.google.common.collect.*;
 import com.mojang.logging.LogUtils;
 import dev.architectury.networking.NetworkManager;
 import dev.architectury.networking.NetworkManager.NetworkReceiver;
+import dev.architectury.networking.SpawnEntityPacket;
 import dev.architectury.networking.transformers.PacketSink;
 import dev.architectury.networking.transformers.PacketTransformer;
+import dev.architectury.platform.hooks.forge.EventBusesHooksImpl;
 import dev.architectury.utils.ArchitecturyConstants;
 import dev.architectury.utils.Env;
 import io.netty.buffer.Unpooled;
@@ -47,9 +49,9 @@ import net.neoforged.fml.LogicalSide;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.handling.IPlayPayloadHandler;
 import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.util.*;
@@ -71,8 +73,7 @@ public class NetworkManagerImpl {
         FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
         packetBuffer.writeResourceLocation(id);
         packetBuffer.writeBytes(buffer);
-        Packet packet = side == NetworkManager.Side.C2S ? new ServerboundCustomPayloadPacket(new BufCustomPacketPayload(packetBuffer)) : new ClientboundCustomPayloadPacket(new BufCustomPacketPayload(packetBuffer));
-        return packet;
+        return side == NetworkManager.Side.C2S ? new ServerboundCustomPayloadPacket(new BufCustomPacketPayload(packetBuffer)) : new ClientboundCustomPayloadPacket(new BufCustomPacketPayload(packetBuffer));
     }
     
     public static void collectPackets(PacketSink sink, NetworkManager.Side side, ResourceLocation id, FriendlyByteBuf buf) {
@@ -96,9 +97,15 @@ public class NetworkManagerImpl {
     static final Set<ResourceLocation> serverReceivables = Sets.newHashSet();
     private static final Multimap<Player, ResourceLocation> clientReceivables = Multimaps.newMultimap(Maps.newHashMap(), Sets::newHashSet);
     
+    static {
+        EventBusesHooksImpl.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
+            bus.addListener(NetworkManagerImpl::registerPackets);
+        });
+    }
+    
     static IPlayPayloadHandler<BufCustomPacketPayload> createPacketHandler(NetworkManager.Side direction, Map<ResourceLocation, PacketTransformer> map) {
         return (arg, context) -> {
-    
+            
             NetworkManager.Side side = side(context.flow());
             if (side != direction) return;
             ResourceLocation type = arg.buf().readResourceLocation();
@@ -114,7 +121,7 @@ public class NetworkManagerImpl {
                     
                     @Override
                     public void queue(Runnable runnable) {
-                        context.workHandler().submitAsync(runnable); // FIXME: is this correct?
+                        context.workHandler().submitAsync(runnable);
                     }
                     
                     @Override
@@ -165,10 +172,9 @@ public class NetworkManagerImpl {
     }
     
     public static Packet<ClientGamePacketListener> createAddEntityPacket(Entity entity) {
-        return entity.getAddEntityPacket();
+        return SpawnEntityPacket.create(entity);
     }
     
-    @SuppressWarnings("SameParameterValue")
     static FriendlyByteBuf sendSyncPacket(Map<ResourceLocation, NetworkReceiver> map) {
         List<ResourceLocation> availableIds = Lists.newArrayList(map.keySet());
         FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
@@ -192,34 +198,26 @@ public class NetworkManagerImpl {
     /**
      * Needs to be on the mod bus for some reason...
      */
-    @Mod.EventBusSubscriber(modid = ArchitecturyConstants.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
-    static class P {
-        @SubscribeEvent
-        public static void registerPackets(RegisterPayloadHandlerEvent event) {
-            //noinspection removal
-            DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> ClientNetworkingManager::initClient);
+    public static void registerPackets(RegisterPayloadHandlerEvent event) {
+        //noinspection removal
+        @Nullable
+        IPlayPayloadHandler<BufCustomPacketPayload> s2c = DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> ClientNetworkingManager::initClient);
         
-            IPayloadRegistrar registrar = event.registrar("architectury")/*.versioned(Platform.getMod("architectury-api").getVersion())*/.optional();
-            registrar.play(CHANNEL_ID, BufCustomPacketPayload::new, bufCustomPacketPayloadIPayloadHandlerIDirectionAwarePayloadHandlerBuilder -> {
-                bufCustomPacketPayloadIPayloadHandlerIDirectionAwarePayloadHandlerBuilder.server(createPacketHandler(NetworkManager.Side.C2S, C2S_TRANSFORMERS)).client(s2c);
-            });
-            //registrar.play()
+        IPayloadRegistrar registrar = event.registrar("architectury")/*.versioned(Platform.getMod("architectury-api").getVersion())*/.optional();
+        registrar.play(CHANNEL_ID, BufCustomPacketPayload::new, builder -> {
+            builder.server(createPacketHandler(NetworkManager.Side.C2S, C2S_TRANSFORMERS)).client(s2c);
+        });
         
         
-            registerC2SReceiver(SYNC_IDS, Collections.emptyList(), (buffer, context) -> {
-                Set<ResourceLocation> receivables = (Set<ResourceLocation>) clientReceivables.get(context.getPlayer());
-                int size = buffer.readInt();
-                receivables.clear();
-                for (int i = 0; i < size; i++) {
-                    receivables.add(buffer.readResourceLocation());
-                }
-            });
-        }
+        registerC2SReceiver(SYNC_IDS, Collections.emptyList(), (buffer, context) -> {
+            Set<ResourceLocation> receivables = (Set<ResourceLocation>) clientReceivables.get(context.getPlayer());
+            int size = buffer.readInt();
+            receivables.clear();
+            for (int i = 0; i < size; i++) {
+                receivables.add(buffer.readResourceLocation());
+            }
+        });
     }
-
-    static IPlayPayloadHandler<BufCustomPacketPayload> s2c;
-    
-
     
     static NetworkManager.Side side(PacketFlow flow) {
         return flow.isClientbound() ? NetworkManager.Side.S2C : flow.isServerbound() ? NetworkManager.Side.C2S : null;

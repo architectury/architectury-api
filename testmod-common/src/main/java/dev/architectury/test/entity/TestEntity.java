@@ -46,8 +46,6 @@ public class TestEntity extends Cow {
     
     @Override
     public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        // Custom packets broken in BundlePacket
-        if (ArchitecturyTarget.getCurrentTarget().equals("neoforge")) return super.getAddEntityPacket();
         return NetworkManager.createAddEntityPacket(this);
     }
     

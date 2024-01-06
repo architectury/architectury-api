@@ -27,7 +27,6 @@ import net.minecraft.resources.ResourceLocation;
  * Wraps a {@link FriendlyByteBuf} because NeoForge doesn't easily let us use the buf directly.
  */
 public record BufCustomPacketPayload(FriendlyByteBuf buf) implements CustomPacketPayload {
-    
     @Override
     public void write(FriendlyByteBuf arg) {
         arg.writeBytes(buf);

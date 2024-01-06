@@ -6,7 +6,8 @@
   "client": [
   ],
   "mixins": [
-    "minecraftforge.MixinChunkSerializer"
+    "minecraftforge.MixinChunkSerializer",
+    "minecraftforge.MixinEntitySpawnExtension"
   ],
   "injectors": {
     "defaultRequire": 1
