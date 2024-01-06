@@ -105,12 +105,10 @@ public class NetworkManagerImpl {
     
     static IPlayPayloadHandler<BufCustomPacketPayload> createPacketHandler(NetworkManager.Side direction, Map<ResourceLocation, PacketTransformer> map) {
         return (arg, context) -> {
-            
             NetworkManager.Side side = side(context.flow());
             if (side != direction) return;
             ResourceLocation type = arg.buf().readResourceLocation();
             PacketTransformer transformer = map.get(type);
-            
             
             if (transformer != null) {
                 NetworkManager.PacketContext packetContext = new NetworkManager.PacketContext() {

@@ -18,7 +18,7 @@
  */
 
 package dev.architectury.hooks.level;
-import dev.architectury.injectables.annotations.ExpectPlatform;
+
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.phys.Vec3;
 
