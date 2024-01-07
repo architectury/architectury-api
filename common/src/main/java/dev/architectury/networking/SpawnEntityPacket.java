@@ -17,13 +17,12 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.networking.fabric;
+package dev.architectury.networking;
 
 import dev.architectury.extensions.network.EntitySpawnExtension;
-import dev.architectury.networking.NetworkManager;
+import io.netty.buffer.Unpooled;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
@@ -42,7 +41,7 @@ public class SpawnEntityPacket {
         if (entity.level().isClientSide()) {
             throw new IllegalStateException("SpawnPacketUtil.create called on the logical client!");
         }
-        var buffer = PacketByteBufs.create();
+        var buffer = new FriendlyByteBuf(Unpooled.buffer());
         buffer.writeVarInt(BuiltInRegistries.ENTITY_TYPE.getId(entity.getType()));
         buffer.writeUUID(entity.getUUID());
         buffer.writeVarInt(entity.getId());

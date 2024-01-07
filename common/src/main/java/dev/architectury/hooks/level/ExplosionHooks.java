@@ -19,16 +19,23 @@
 
 package dev.architectury.hooks.level;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.phys.Vec3;
 
+/**
+ * @deprecated no longer needed.
+ */
+@Deprecated(forRemoval = true)
 public final class ExplosionHooks {
     private ExplosionHooks() {
     }
     
-    @ExpectPlatform
+    /**
+     * @deprecated no longer needed.
+     * @see Explosion#center()
+     */
+    @Deprecated(forRemoval = true)
     public static Vec3 getPosition(Explosion explosion) {
-        throw new AssertionError();
+        return explosion.center();
     }
 }

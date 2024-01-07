@@ -17,17 +17,22 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.hooks.level.fabric;
+package dev.architectury.mixin.forge.minecraftforge;
 
-import net.minecraft.world.level.Explosion;
-import net.minecraft.world.phys.Vec3;
+import dev.architectury.extensions.network.EntitySpawnExtension;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
+import org.spongepowered.asm.mixin.Mixin;
 
-public class ExplosionHooksImpl {
-    public static Vec3 getPosition(Explosion explosion) {
-        return ((ExplosionExtensions) explosion).architectury_getPosition();
+@Mixin(EntitySpawnExtension.class)
+public interface MixinEntitySpawnExtension extends IEntityAdditionalSpawnData {
+    @Override
+    default void writeSpawnData(FriendlyByteBuf buf) {
+        ((EntitySpawnExtension) this).saveAdditionalSpawnData(buf);
     }
     
-    public interface ExplosionExtensions {
-        Vec3 architectury_getPosition();
+    @Override
+    default void readSpawnData(FriendlyByteBuf buf) {
+        ((EntitySpawnExtension) this).loadAdditionalSpawnData(buf);
     }
 }

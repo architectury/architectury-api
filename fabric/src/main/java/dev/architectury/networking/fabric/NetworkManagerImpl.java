@@ -22,6 +22,7 @@ package dev.architectury.networking.fabric;
 import com.mojang.logging.LogUtils;
 import dev.architectury.networking.NetworkManager;
 import dev.architectury.networking.NetworkManager.NetworkReceiver;
+import dev.architectury.networking.SpawnEntityPacket;
 import dev.architectury.networking.transformers.PacketSink;
 import dev.architectury.networking.transformers.PacketTransformer;
 import dev.architectury.utils.Env;

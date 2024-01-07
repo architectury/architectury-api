@@ -24,13 +24,18 @@ import com.google.common.collect.*;
 import com.mojang.logging.LogUtils;
 import dev.architectury.networking.NetworkManager;
 import dev.architectury.networking.NetworkManager.NetworkReceiver;
+import dev.architectury.networking.SpawnEntityPacket;
 import dev.architectury.networking.transformers.PacketSink;
 import dev.architectury.networking.transformers.PacketTransformer;
+import dev.architectury.platform.hooks.forge.EventBusesHooksImpl;
 import dev.architectury.utils.ArchitecturyConstants;
 import dev.architectury.utils.Env;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
+import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -43,12 +48,13 @@ import net.neoforged.fml.DistExecutor;
 import net.neoforged.fml.LogicalSide;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
-import net.neoforged.neoforge.network.*;
-import net.neoforged.neoforge.network.event.EventNetworkChannel;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
+import net.neoforged.neoforge.network.handling.IPlayPayloadHandler;
+import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.util.*;
-import java.util.function.Consumer;
 
 @Mod.EventBusSubscriber(modid = ArchitecturyConstants.MOD_ID)
 public class NetworkManagerImpl {
@@ -67,7 +73,7 @@ public class NetworkManagerImpl {
         FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
         packetBuffer.writeResourceLocation(id);
         packetBuffer.writeBytes(buffer);
-        return (side == NetworkManager.Side.C2S ? PlayNetworkDirection.PLAY_TO_SERVER : PlayNetworkDirection.PLAY_TO_CLIENT).buildPacket(new INetworkDirection.PacketData(packetBuffer, 0), CHANNEL_ID);
+        return side == NetworkManager.Side.C2S ? new ServerboundCustomPayloadPacket(new BufCustomPacketPayload(packetBuffer)) : new ClientboundCustomPayloadPacket(new BufCustomPacketPayload(packetBuffer));
     }
     
     public static void collectPackets(PacketSink sink, NetworkManager.Side side, ResourceLocation id, FriendlyByteBuf buf) {
@@ -82,9 +88,8 @@ public class NetworkManagerImpl {
     }
     
     private static final Logger LOGGER = LogUtils.getLogger();
-    private static final ResourceLocation CHANNEL_ID = new ResourceLocation("architectury:network");
+    static final ResourceLocation CHANNEL_ID = new ResourceLocation("architectury:network");
     static final ResourceLocation SYNC_IDS = new ResourceLocation("architectury:sync_ids");
-    static final EventNetworkChannel CHANNEL = NetworkRegistry.ChannelBuilder.named(CHANNEL_ID).networkProtocolVersion(() -> "").clientAcceptedVersions(version -> true).serverAcceptedVersions(version -> true).eventNetworkChannel();
     static final Map<ResourceLocation, NetworkReceiver> S2C = Maps.newHashMap();
     static final Map<ResourceLocation, NetworkReceiver> C2S = Maps.newHashMap();
     static final Map<ResourceLocation, PacketTransformer> S2C_TRANSFORMERS = Maps.newHashMap();
@@ -93,53 +98,42 @@ public class NetworkManagerImpl {
     private static final Multimap<Player, ResourceLocation> clientReceivables = Multimaps.newMultimap(Maps.newHashMap(), Sets::newHashSet);
     
     static {
-        CHANNEL.addListener(createPacketHandler(PlayNetworkDirection.PLAY_TO_SERVER, C2S_TRANSFORMERS));
-        
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> ClientNetworkingManager::initClient);
-        
-        registerC2SReceiver(SYNC_IDS, Collections.emptyList(), (buffer, context) -> {
-            Set<ResourceLocation> receivables = (Set<ResourceLocation>) clientReceivables.get(context.getPlayer());
-            int size = buffer.readInt();
-            receivables.clear();
-            for (int i = 0; i < size; i++) {
-                receivables.add(buffer.readResourceLocation());
-            }
+        EventBusesHooksImpl.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
+            bus.addListener(NetworkManagerImpl::registerPackets);
         });
     }
     
-    static <T extends NetworkEvent> Consumer<T> createPacketHandler(INetworkDirection<?> direction, Map<ResourceLocation, PacketTransformer> map) {
-        return event -> {
-            NetworkEvent.Context context = event.getSource();
-            if (context.getDirection() != direction) return;
-            if (context.getPacketHandled()) return;
-            FriendlyByteBuf buffer = event.getPayload();
-            if (buffer == null) return;
-            ResourceLocation type = buffer.readResourceLocation();
+    static IPlayPayloadHandler<BufCustomPacketPayload> createPacketHandler(NetworkManager.Side direction, Map<ResourceLocation, PacketTransformer> map) {
+        return (arg, context) -> {
+            NetworkManager.Side side = side(context.flow());
+            if (side != direction) return;
+            ResourceLocation type = arg.buf().readResourceLocation();
             PacketTransformer transformer = map.get(type);
             
             if (transformer != null) {
-                NetworkManager.Side side = context.getDirection().getReceptionSide() == LogicalSide.CLIENT ? NetworkManager.Side.S2C : NetworkManager.Side.C2S;
                 NetworkManager.PacketContext packetContext = new NetworkManager.PacketContext() {
                     @Override
                     public Player getPlayer() {
-                        return getEnvironment() == Env.CLIENT ? getClientPlayer() : context.getSender();
+                        return getEnvironment() == Env.CLIENT ? getClientPlayer() : context.player().orElse(null);
                     }
                     
                     @Override
                     public void queue(Runnable runnable) {
-                        context.enqueueWork(runnable);
+                        context.workHandler().submitAsync(runnable);
                     }
                     
                     @Override
                     public Env getEnvironment() {
-                        return context.getDirection().getReceptionSide() == LogicalSide.CLIENT ? Env.CLIENT : Env.SERVER;
+                        return context.flow().getReceptionSide() == LogicalSide.CLIENT ? Env.CLIENT : Env.SERVER;
                     }
                     
+                    @SuppressWarnings("removal")
                     private Player getClientPlayer() {
                         return DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> ClientNetworkingManager::getClientPlayer);
                     }
                 };
-                transformer.inbound(side, type, buffer, packetContext, (side1, id1, buf1) -> {
+                
+                transformer.inbound(side, type, arg.buf(), packetContext, (side1, id1, buf1) -> {
                     NetworkReceiver networkReceiver = side == NetworkManager.Side.C2S ? C2S.get(id1) : S2C.get(id1);
                     if (networkReceiver == null) {
                         throw new IllegalArgumentException("Network Receiver not found! " + id1);
@@ -149,8 +143,6 @@ public class NetworkManagerImpl {
             } else {
                 LOGGER.error("Unknown message ID: " + type);
             }
-            
-            context.setPacketHandled(true);
         };
     }
     
@@ -178,7 +170,7 @@ public class NetworkManagerImpl {
     }
     
     public static Packet<ClientGamePacketListener> createAddEntityPacket(Entity entity) {
-        return NetworkHooks.getEntitySpawningPacket(entity);
+        return SpawnEntityPacket.create(entity);
     }
     
     static FriendlyByteBuf sendSyncPacket(Map<ResourceLocation, NetworkReceiver> map) {
@@ -199,5 +191,33 @@ public class NetworkManagerImpl {
     @SubscribeEvent
     public static void loggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
         clientReceivables.removeAll(event.getEntity());
+    }
+    
+    /**
+     * Needs to be on the mod bus for some reason...
+     */
+    public static void registerPackets(RegisterPayloadHandlerEvent event) {
+        //noinspection removal
+        @Nullable
+        IPlayPayloadHandler<BufCustomPacketPayload> s2c = DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> ClientNetworkingManager::initClient);
+        
+        IPayloadRegistrar registrar = event.registrar("architectury")/*.versioned(Platform.getMod("architectury-api").getVersion())*/.optional();
+        registrar.play(CHANNEL_ID, BufCustomPacketPayload::new, builder -> {
+            builder.server(createPacketHandler(NetworkManager.Side.C2S, C2S_TRANSFORMERS)).client(s2c);
+        });
+        
+        
+        registerC2SReceiver(SYNC_IDS, Collections.emptyList(), (buffer, context) -> {
+            Set<ResourceLocation> receivables = (Set<ResourceLocation>) clientReceivables.get(context.getPlayer());
+            int size = buffer.readInt();
+            receivables.clear();
+            for (int i = 0; i < size; i++) {
+                receivables.add(buffer.readResourceLocation());
+            }
+        });
+    }
+    
+    static NetworkManager.Side side(PacketFlow flow) {
+        return flow.isClientbound() ? NetworkManager.Side.S2C : flow.isServerbound() ? NetworkManager.Side.C2S : null;
     }
 }

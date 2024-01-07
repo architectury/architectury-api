@@ -9,7 +9,6 @@
     "MixinMinecraft"
   ],
   "mixins": [
-    "MixinEntitySpawnExtension",
     "MixinFallingBlockEntity",
     "MixinItemExtension",
     "MixinLevelEvent",

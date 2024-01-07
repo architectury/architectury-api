@@ -33,13 +33,13 @@ import net.minecraft.world.inventory.MenuType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
-import net.neoforged.neoforge.network.NetworkHooks;
 
 public class MenuRegistryImpl {
     public static void openExtendedMenu(ServerPlayer player, ExtendedMenuProvider provider) {
-        NetworkHooks.openScreen(player, provider, provider::saveExtraData);
+        player.openMenu(provider, provider::saveExtraData);
     }
     
+    @SuppressWarnings("removal")
     public static <T extends AbstractContainerMenu> MenuType<T> of(SimpleMenuTypeFactory<T> factory) {
         return new MenuType<>(factory::create, FeatureFlags.VANILLA_SET);
     }
