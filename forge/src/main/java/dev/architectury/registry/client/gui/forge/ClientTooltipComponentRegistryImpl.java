@@ -17,46 +17,42 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.registry.client.gui.fabric;
+package dev.architectury.registry.client.gui.forge;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
-@Environment(EnvType.CLIENT)
+@OnlyIn(Dist.CLIENT)
 @ApiStatus.Internal
-public class ClientTooltipComponentManagerImpl {
-    private static final List<Factory<?>> FACTORIES = new ArrayList<>();
+public class ClientTooltipComponentRegistryImpl {
+    @Nullable
+    private static List<Factory<?>> FACTORIES = new ArrayList<>();
+    
+    public static void consume(Consumer<? super Factory<?>> consumer) {
+        if (FACTORIES != null) {
+            FACTORIES.forEach(consumer);
+            FACTORIES = null;
+        }
+    }
     
     public static <T extends TooltipComponent> void register(Class<T> clazz, Function<? super T, ? extends ClientTooltipComponent> factory) {
+        if (FACTORIES == null) {
+            throw new IllegalStateException("Cannot register ClientTooltipComponent factory when factories are already aggregated!");
+        }
         FACTORIES.add(new Factory<>(clazz, factory));
     }
     
     public record Factory<T extends TooltipComponent>(
             Class<T> clazz, Function<? super T, ? extends ClientTooltipComponent> factory
     ) {
-        public Optional<? extends ClientTooltipComponent> tryCreate(TooltipComponent component) {
-            if (clazz.isInstance(component)) {
-                return Optional.of(factory.apply(clazz.cast(component)));
-            }
-            return Optional.empty();
-        }
-    }
-    
-    public static Optional<? extends ClientTooltipComponent> create(TooltipComponent component) {
-        for (Factory<?> factory : FACTORIES) {
-            Optional<? extends ClientTooltipComponent> result = factory.tryCreate(component);
-            if (result.isPresent()) {
-                return result;
-            }
-        }
-        return Optional.empty();
     }
 }

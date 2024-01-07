@@ -17,42 +17,27 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.registry.client.gui.forge;
+package dev.architectury.registry.client.gui.fabric;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 @ApiStatus.Internal
-public class ClientTooltipComponentManagerImpl {
-    @Nullable
-    private static List<Factory<?>> FACTORIES = new ArrayList<>();
-    
-    public static void consume(Consumer<? super Factory<?>> consumer) {
-        if (FACTORIES != null) {
-            FACTORIES.forEach(consumer);
-            FACTORIES = null;
-        }
-    }
+public class ClientTooltipComponentRegistryImpl {
     
     public static <T extends TooltipComponent> void register(Class<T> clazz, Function<? super T, ? extends ClientTooltipComponent> factory) {
-        if (FACTORIES == null) {
-            throw new IllegalStateException("Cannot register ClientTooltipComponent factory when factories are already aggregated!");
-        }
-        FACTORIES.add(new Factory<>(clazz, factory));
-    }
-    
-    public record Factory<T extends TooltipComponent>(
-            Class<T> clazz, Function<? super T, ? extends ClientTooltipComponent> factory
-    ) {
+        TooltipComponentCallback.EVENT.register((tooltipComponent) -> {
+            if (clazz.isInstance(tooltipComponent)) {
+                return factory.apply(clazz.cast(tooltipComponent));
+            }
+            return null;
+        });
     }
 }

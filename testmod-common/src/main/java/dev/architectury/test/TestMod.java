@@ -20,7 +20,7 @@
 package dev.architectury.test;
 
 import dev.architectury.event.events.client.ClientLifecycleEvent;
-import dev.architectury.registry.client.gui.ClientTooltipComponentManager;
+import dev.architectury.registry.client.gui.ClientTooltipComponentRegistry;
 import dev.architectury.registry.client.level.entity.EntityRendererRegistry;
 import dev.architectury.test.debug.ConsoleMessageSink;
 import dev.architectury.test.debug.MessageSink;
@@ -74,7 +74,7 @@ public class TestMod {
             TestModNet.initializeClient();
             EntityRendererRegistry.register(TestRegistries.TEST_ENTITY, CowRenderer::new);
             EntityRendererRegistry.register(TestRegistries.TEST_ENTITY_2, CowRenderer::new);
-            ClientTooltipComponentManager.register(ItemWithTooltip.MyTooltipComponent.class, ItemWithTooltip.MyClientTooltipComponent::new);
+            ClientTooltipComponentRegistry.register(ItemWithTooltip.MyTooltipComponent.class, ItemWithTooltip.MyClientTooltipComponent::new);
         }
     }
 }

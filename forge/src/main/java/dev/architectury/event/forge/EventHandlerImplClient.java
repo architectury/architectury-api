@@ -28,7 +28,7 @@ import dev.architectury.hooks.forgelike.ForgeLikeClientHooks;
 import dev.architectury.impl.ScreenAccessImpl;
 import dev.architectury.impl.TooltipEventColorContextImpl;
 import dev.architectury.impl.TooltipEventPositionContextImpl;
-import dev.architectury.registry.client.gui.forge.ClientTooltipComponentManagerImpl;
+import dev.architectury.registry.client.gui.forge.ClientTooltipComponentRegistryImpl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -341,10 +341,10 @@ public class EventHandlerImplClient {
         
         @SubscribeEvent(priority = EventPriority.HIGH)
         public static void event(RegisterClientTooltipComponentFactoriesEvent event) {
-            ClientTooltipComponentManagerImpl.consume(factory -> registerTooltipComponent(factory, event));
+            ClientTooltipComponentRegistryImpl.consume(factory -> registerTooltipComponent(factory, event));
         }
         
-        private static <T extends TooltipComponent> void registerTooltipComponent(ClientTooltipComponentManagerImpl.Factory<T> factory, RegisterClientTooltipComponentFactoriesEvent event) {
+        private static <T extends TooltipComponent> void registerTooltipComponent(ClientTooltipComponentRegistryImpl.Factory<T> factory, RegisterClientTooltipComponentFactoriesEvent event) {
             event.register(factory.clazz(), factory.factory());
         }
     }

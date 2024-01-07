@@ -28,11 +28,11 @@ import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import java.util.function.Function;
 
 /**
- * Manager for {@link ClientTooltipComponent} factories
+ * Registry for {@link ClientTooltipComponent} factories
  */
 @Environment(EnvType.CLIENT)
-public final class ClientTooltipComponentManager {
-    private ClientTooltipComponentManager() {
+public final class ClientTooltipComponentRegistry {
+    private ClientTooltipComponentRegistry() {
     }
     
     /**
