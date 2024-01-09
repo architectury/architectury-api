@@ -21,9 +21,12 @@ package dev.architectury.neoforge;
 
 import dev.architectury.event.EventHandler;
 import dev.architectury.event.events.common.ChunkWatchEvent;
+import dev.architectury.networking.SpawnEntityPacket;
 import dev.architectury.registry.level.biome.forge.BiomeModificationsImpl;
 import dev.architectury.utils.ArchitecturyConstants;
 import net.neoforged.bus.api.SubscribeEvent;
+import dev.architectury.utils.Env;
+import dev.architectury.utils.EnvExecutor;
 import net.neoforged.fml.common.Mod;
 
 @Mod(ArchitecturyConstants.MOD_ID)
@@ -31,6 +34,8 @@ public class ArchitecturyNeoForge {
     public ArchitecturyNeoForge() {
         EventHandler.init();
         BiomeModificationsImpl.init();
+        
+        EnvExecutor.runInEnv(Env.CLIENT, () -> SpawnEntityPacket.Client::register);
     }
     
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)

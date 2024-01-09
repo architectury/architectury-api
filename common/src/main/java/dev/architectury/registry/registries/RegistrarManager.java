@@ -19,12 +19,14 @@
 
 package dev.architectury.registry.registries;
 
+import com.mojang.serialization.Codec;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -77,6 +79,59 @@ public final class RegistrarManager {
     }
     
     /**
+     * Registers a non-synced dynamic registry.
+     *
+     * <p>The entries of the registry will be loaded from data packs at the file path
+     * {@code data/<entry namespace>/<registry namespace>/<registry path>/<entry path>.json}.
+     *
+     * @param key   the key of the registry
+     * @param codec the codec used to load registry entries from data packs
+     * @param <T>   the type of registry entry
+     */
+    public <T> void dynamicRegistry(ResourceKey<Registry<T>> key, @NotNull Codec<T> codec) {
+        this.provider.registerDynamicRegistry(key, codec);
+    }
+    
+    /**
+     * Registers a synced dynamic registry.
+     *
+     * <p>The entries of the registry will be loaded from data packs at the file path
+     * {@code data/<entry namespace>/<registry namespace>/<registry path>/<entry path>.json}.
+     *
+     * <p>The registry will be synced from the server to players' clients using the same codec
+     * that is used to load the registry.
+     *
+     * <p>If the object contained in the registry is complex and contains a lot of data
+     * that is not relevant on the client, another codec for networking can be specified with
+     * {@link #dynamicRegistrySynced(ResourceKey, Codec, Codec)}.
+     *
+     * @param key   the key of the registry
+     * @param codec the codec used to load registry entries from data packs and the network
+     * @param <T>   the type of registry entry
+     */
+    public <T> void dynamicRegistrySynced(ResourceKey<Registry<T>> key, @NotNull Codec<T> codec) {
+        this.provider.registerDynamicRegistrySynced(key, codec, codec);
+    }
+    
+    
+    /**
+     * Registers a synced dynamic registry.
+     *
+     * <p>The entries of the registry will be loaded from data packs at the file path
+     * {@code data/<entry namespace>/<registry namespace>/<registry path>/<entry path>.json}
+     *
+     * <p>The registry will be synced from the server to players' clients using the given network codec.
+     *
+     * @param key          the key of the registry
+     * @param dataCodec    the codec used to load registry entries from data packs
+     * @param networkCodec the codec used to load registry entries from the network
+     * @param <T>          the type of registry entry
+     */
+    public <T> void dynamicRegistrySynced(ResourceKey<Registry<T>> key, @NotNull Codec<T> dataCodec, @NotNull Codec<T> networkCodec) {
+        this.provider.registerDynamicRegistrySynced(key, dataCodec, networkCodec);
+    }
+    
+    /**
      * Forge: If the object is {@code IForgeRegistryEntry}, use `getRegistryName`, else null
      * Fabric: Use registry
      */
@@ -118,5 +173,9 @@ public final class RegistrarManager {
         <T> void forRegistry(ResourceKey<Registry<T>> key, Consumer<Registrar<T>> consumer);
         
         <T> RegistrarBuilder<T> builder(Class<T> type, ResourceLocation registryId);
+        
+        <T> void registerDynamicRegistry(ResourceKey<Registry<T>> key, Codec<T> dataCodec);
+        
+        <T> void registerDynamicRegistrySynced(ResourceKey<Registry<T>> key, Codec<T> dataCodec, Codec<T> networkCodec);
     }
 }

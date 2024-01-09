@@ -23,6 +23,7 @@ import com.google.common.base.Objects;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.mojang.serialization.Codec;
 import dev.architectury.impl.RegistrySupplierImpl;
 import dev.architectury.platform.hooks.forge.EventBusesHooksImpl;
 import dev.architectury.registry.registries.Registrar;
@@ -37,8 +38,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.EventPriority;
-import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
@@ -101,32 +102,22 @@ public class RegistrarManagerImpl {
     public static class RegistryProviderImpl implements RegistrarManager.RegistryProvider {
         private static final Map<ResourceKey<Registry<?>>, Registrar<?>> CUSTOM_REGS = new HashMap<>();
         private final String modId;
-        private final Supplier<IEventBus> eventBus;
         private final Map<ResourceKey<? extends Registry<?>>, Data<?>> registry = new HashMap<>();
         private final Multimap<ResourceKey<Registry<?>>, Consumer<Registrar<?>>> listeners = HashMultimap.create();
         
         @Nullable
         private List<Registry<?>> newRegistries = new ArrayList<>();
         
+        @Nullable
+        private List<DynamicRegistryData<?>> newDynamicRegistries = new ArrayList<>();
+
         public RegistryProviderImpl(String modId) {
             this.modId = modId;
-            this.eventBus = Suppliers.memoize(() -> {
-                IEventBus eventBus = EventBusesHooksImpl.getModEventBus(modId).orElseThrow(() -> new IllegalStateException("Can't get event bus for mod '" + modId + "' because it was not registered!"));
-                eventBus.register(new EventListener());
-                return eventBus;
-            });
-        }
-        
-        private void updateEventBus() {
-            synchronized (eventBus) {
-                // Make sure that the eventbus is setup
-                this.eventBus.get();
-            }
+            EventBusesHooksImpl.getModEventBus(modId).get().register(new EventListener());
         }
         
         @Override
         public <T> Registrar<T> get(ResourceKey<Registry<T>> registryKey) {
-            updateEventBus();
             Registry<T> registry = (Registry<T>) BuiltInRegistries.REGISTRY.get(registryKey.location());
             if (registry != null) {
                 return get(registry);
@@ -138,7 +129,6 @@ public class RegistrarManagerImpl {
         
         @Override
         public <T> Registrar<T> get(Registry<T> registry) {
-            updateEventBus();
             return new RegistrarImpl<>(modId, this.registry, registry);
         }
         
@@ -151,6 +141,35 @@ public class RegistrarManagerImpl {
         @Override
         public <T> RegistrarBuilder<T> builder(Class<T> type, ResourceLocation registryId) {
             return new RegistryBuilderWrapper<>(this, new RegistryBuilder<>(ResourceKey.createRegistryKey(registryId)));
+        }
+        
+        @Override
+        public <T> void registerDynamicRegistry(ResourceKey<Registry<T>> key, Codec<T> dataCodec) {
+            if (newDynamicRegistries == null) {
+                throw new IllegalStateException("Cannot create registries when registries are already aggregated!");
+            }
+            newDynamicRegistries.add(new DynamicRegistryData<>(key, dataCodec, null));
+        }
+        
+        @Override
+        public <T> void registerDynamicRegistrySynced(ResourceKey<Registry<T>> key, Codec<T> dataCodec, Codec<T> networkCodec) {
+            if (newDynamicRegistries == null) {
+                throw new IllegalStateException("Cannot create registries when registries are already aggregated!");
+            }
+            newDynamicRegistries.add(new DynamicRegistryData<>(key, dataCodec, networkCodec));
+        }
+        
+        private record DynamicRegistryData<T>(
+                ResourceKey<Registry<T>> key,
+                Codec<T> dataCodec,
+                @Nullable Codec<T> networkCodec) {
+            public void register(DataPackRegistryEvent.NewRegistry event) {
+                if (networkCodec != null) {
+                    event.dataPackRegistry(key, dataCodec, networkCodec);
+                } else {
+                    event.dataPackRegistry(key, dataCodec);
+                }
+            }
         }
         
         public class EventListener {
@@ -223,6 +242,16 @@ public class RegistrarManagerImpl {
                         event.register(registry);
                     }
                     newRegistries = null;
+                }
+            }
+            
+            @SubscribeEvent
+            public void handleEvent(DataPackRegistryEvent.NewRegistry event) {
+                if (newDynamicRegistries != null) {
+                    for (DynamicRegistryData<?> data : newDynamicRegistries) {
+                        data.register(event);
+                    }
+                    newDynamicRegistries = null;
                 }
             }
         }

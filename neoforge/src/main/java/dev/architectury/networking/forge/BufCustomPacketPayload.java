@@ -26,10 +26,15 @@ import net.minecraft.resources.ResourceLocation;
 /**
  * Wraps a {@link FriendlyByteBuf} because NeoForge doesn't easily let us use the buf directly.
  */
-public record BufCustomPacketPayload(FriendlyByteBuf buf) implements CustomPacketPayload {
+public record BufCustomPacketPayload(ResourceLocation type, byte[] payload) implements CustomPacketPayload {
+    public BufCustomPacketPayload(FriendlyByteBuf buf) {
+        this(buf.readResourceLocation(), buf.readByteArray());
+    }
+    
     @Override
-    public void write(FriendlyByteBuf arg) {
-        arg.writeBytes(buf);
+    public void write(FriendlyByteBuf buf) {
+        buf.writeResourceLocation(type);
+        buf.writeByteArray(payload);
     }
     
     @SuppressWarnings("NullableProblems")
