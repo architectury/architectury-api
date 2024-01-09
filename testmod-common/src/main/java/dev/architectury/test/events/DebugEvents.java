@@ -235,6 +235,15 @@ public class DebugEvents {
         ChunkEvent.SAVE_DATA.register((chunk, level, nbt) -> {
 //            TestMod.SINK.accept("Chunk saved at x=" + chunk.getPos().x + ", z=" + chunk.getPos().z + " in dimension '" + level.dimension().location() + "'");
         });
+        ChunkWatchEvent.WATCH.register((chunk, level, player) -> {
+//            TestMod.SINK.accept("Chunk at x=%d, z=%d in dimension '%s' being watched by %s", chunk.getPos().x, chunk.getPos().z, level.dimension().location(), player.getScoreboardName());
+        });
+        ChunkWatchEvent.SENT.register((chunk, level, player) -> {
+//            TestMod.SINK.accept("Chunk at x=%d, z=%d in dimension '%s' sent to %s", chunk.getPos().x, chunk.getPos().z, level.dimension().location(), player.getScoreboardName());
+        });
+        ChunkWatchEvent.UNWATCH.register((chunkPos, level, player) -> {
+//            TestMod.SINK.accept("Chunk at x=%d, z=%d in dimension '%s' abandoned by %s", chunkPos.x, chunkPos.z, level.dimension().location(), player.getScoreboardName());
+        });
     }
     
     public static String toShortString(Vec3i pos) {
