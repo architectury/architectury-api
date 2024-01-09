@@ -144,6 +144,11 @@ public class RegistrarManagerImpl {
         }
         
         @Override
+        public <T> RegistrarBuilder<T> builderDefaulted(Class<T> type, ResourceLocation registryId, ResourceLocation defaultId) {
+            return new RegistryBuilderWrapper<>(this, new RegistryBuilder<T>(ResourceKey.createRegistryKey(registryId)).defaultKey(defaultId));
+        }
+        
+        @Override
         public <T> void registerDynamicRegistry(ResourceKey<Registry<T>> key, Codec<T> dataCodec) {
             if (newDynamicRegistries == null) {
                 throw new IllegalStateException("Cannot create registries when registries are already aggregated!");

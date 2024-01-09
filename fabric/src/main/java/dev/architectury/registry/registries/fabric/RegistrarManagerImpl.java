@@ -98,6 +98,11 @@ public class RegistrarManagerImpl {
         }
         
         @Override
+        public <T> RegistrarBuilder<T> builderDefaulted(Class<T> type, ResourceLocation registryId, ResourceLocation defaultId) {
+            return new RegistrarBuilderWrapper<>(modId, FabricRegistryBuilder.createDefaulted(type, registryId, defaultId));
+        }
+        
+        @Override
         public <T> void registerDynamicRegistry(ResourceKey<Registry<T>> key, Codec<T> dataCodec) {
             DynamicRegistries.register(key, dataCodec);
         }
@@ -133,9 +138,9 @@ public class RegistrarManagerImpl {
     
     public static class RegistrarBuilderWrapper<T> implements RegistrarBuilder<T> {
         private final String modId;
-        private FabricRegistryBuilder<T, MappedRegistry<T>> builder;
+        private FabricRegistryBuilder<T, ? extends MappedRegistry<T>> builder;
         
-        public RegistrarBuilderWrapper(String modId, FabricRegistryBuilder<T, MappedRegistry<T>> builder) {
+        public RegistrarBuilderWrapper(String modId, FabricRegistryBuilder<T, ? extends MappedRegistry<T>> builder) {
             this.modId = modId;
             this.builder = builder;
         }
