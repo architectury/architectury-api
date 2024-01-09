@@ -30,6 +30,7 @@ import dev.architectury.networking.transformers.PacketTransformer;
 import dev.architectury.platform.hooks.forge.EventBusesHooksImpl;
 import dev.architectury.utils.ArchitecturyConstants;
 import dev.architectury.utils.Env;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
@@ -70,10 +71,11 @@ public class NetworkManagerImpl {
     }
     
     public static Packet<?> toPacket(NetworkManager.Side side, ResourceLocation id, FriendlyByteBuf buffer) {
-        FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
-        packetBuffer.writeResourceLocation(id);
-        packetBuffer.writeBytes(buffer);
-        return side == NetworkManager.Side.C2S ? new ServerboundCustomPayloadPacket(new BufCustomPacketPayload(packetBuffer)) : new ClientboundCustomPayloadPacket(new BufCustomPacketPayload(packetBuffer));
+        try {
+            return side == NetworkManager.Side.C2S ? new ServerboundCustomPayloadPacket(new BufCustomPacketPayload(id, ByteBufUtil.getBytes(buffer))) : new ClientboundCustomPayloadPacket(new BufCustomPacketPayload(id, ByteBufUtil.getBytes(buffer)));
+        } finally {
+            buffer.release();
+        }
     }
     
     public static void collectPackets(PacketSink sink, NetworkManager.Side side, ResourceLocation id, FriendlyByteBuf buf) {
@@ -107,41 +109,46 @@ public class NetworkManagerImpl {
         return (arg, context) -> {
             NetworkManager.Side side = side(context.flow());
             if (side != direction) return;
-            ResourceLocation type = arg.buf().readResourceLocation();
+            ResourceLocation type = arg.type();
+            FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(arg.payload()));
             PacketTransformer transformer = map.get(type);
             
-            if (transformer != null) {
-                NetworkManager.PacketContext packetContext = new NetworkManager.PacketContext() {
-                    @Override
-                    public Player getPlayer() {
-                        return getEnvironment() == Env.CLIENT ? getClientPlayer() : context.player().orElse(null);
-                    }
+            try {
+                if (transformer != null) {
+                    NetworkManager.PacketContext packetContext = new NetworkManager.PacketContext() {
+                        @Override
+                        public Player getPlayer() {
+                            return getEnvironment() == Env.CLIENT ? getClientPlayer() : context.player().orElse(null);
+                        }
+                        
+                        @Override
+                        public void queue(Runnable runnable) {
+                            context.workHandler().submitAsync(runnable);
+                        }
+                        
+                        @Override
+                        public Env getEnvironment() {
+                            return context.flow().getReceptionSide() == LogicalSide.CLIENT ? Env.CLIENT : Env.SERVER;
+                        }
+                        
+                        @SuppressWarnings("removal")
+                        private Player getClientPlayer() {
+                            return DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> ClientNetworkingManager::getClientPlayer);
+                        }
+                    };
                     
-                    @Override
-                    public void queue(Runnable runnable) {
-                        context.workHandler().submitAsync(runnable);
-                    }
-                    
-                    @Override
-                    public Env getEnvironment() {
-                        return context.flow().getReceptionSide() == LogicalSide.CLIENT ? Env.CLIENT : Env.SERVER;
-                    }
-                    
-                    @SuppressWarnings("removal")
-                    private Player getClientPlayer() {
-                        return DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> ClientNetworkingManager::getClientPlayer);
-                    }
-                };
-                
-                transformer.inbound(side, type, arg.buf(), packetContext, (side1, id1, buf1) -> {
-                    NetworkReceiver networkReceiver = side == NetworkManager.Side.C2S ? C2S.get(id1) : S2C.get(id1);
-                    if (networkReceiver == null) {
-                        throw new IllegalArgumentException("Network Receiver not found! " + id1);
-                    }
-                    networkReceiver.receive(buf1, packetContext);
-                });
-            } else {
-                LOGGER.error("Unknown message ID: " + type);
+                    transformer.inbound(side, type, buf, packetContext, (side1, id1, buf1) -> {
+                        NetworkReceiver networkReceiver = side == NetworkManager.Side.C2S ? C2S.get(id1) : S2C.get(id1);
+                        if (networkReceiver == null) {
+                            throw new IllegalArgumentException("Network Receiver not found! " + id1);
+                        }
+                        networkReceiver.receive(buf1, packetContext);
+                    });
+                } else {
+                    LOGGER.error("Unknown message ID: " + type);
+                }
+            } finally {
+                buf.release();
             }
         };
     }
@@ -201,11 +208,10 @@ public class NetworkManagerImpl {
         @Nullable
         IPlayPayloadHandler<BufCustomPacketPayload> s2c = DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> ClientNetworkingManager::initClient);
         
-        IPayloadRegistrar registrar = event.registrar("architectury")/*.versioned(Platform.getMod("architectury-api").getVersion())*/.optional();
+        IPayloadRegistrar registrar = event.registrar(ArchitecturyConstants.MOD_ID).optional();
         registrar.play(CHANNEL_ID, BufCustomPacketPayload::new, builder -> {
-            builder.server(createPacketHandler(NetworkManager.Side.C2S, C2S_TRANSFORMERS)).client(s2c);
+            builder.server(createPacketHandler(NetworkManager.Side.C2S, C2S_TRANSFORMERS)).client(Objects.requireNonNullElseGet(s2c, IPlayPayloadHandler::noop));
         });
-        
         
         registerC2SReceiver(SYNC_IDS, Collections.emptyList(), (buffer, context) -> {
             Set<ResourceLocation> receivables = (Set<ResourceLocation>) clientReceivables.get(context.getPlayer());
