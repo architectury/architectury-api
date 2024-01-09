@@ -37,7 +37,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.EventPriority;
-import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
@@ -101,7 +100,6 @@ public class RegistrarManagerImpl {
     public static class RegistryProviderImpl implements RegistrarManager.RegistryProvider {
         private static final Map<ResourceKey<Registry<?>>, Registrar<?>> CUSTOM_REGS = new HashMap<>();
         private final String modId;
-        private final Supplier<IEventBus> eventBus;
         private final Map<ResourceKey<? extends Registry<?>>, Data<?>> registry = new HashMap<>();
         private final Multimap<ResourceKey<Registry<?>>, Consumer<Registrar<?>>> listeners = HashMultimap.create();
         
@@ -110,23 +108,11 @@ public class RegistrarManagerImpl {
         
         public RegistryProviderImpl(String modId) {
             this.modId = modId;
-            this.eventBus = Suppliers.memoize(() -> {
-                IEventBus eventBus = EventBusesHooksImpl.getModEventBus(modId).orElseThrow(() -> new IllegalStateException("Can't get event bus for mod '" + modId + "' because it was not registered!"));
-                eventBus.register(new EventListener());
-                return eventBus;
-            });
-        }
-        
-        private void updateEventBus() {
-            synchronized (eventBus) {
-                // Make sure that the eventbus is setup
-                this.eventBus.get();
-            }
+            EventBusesHooksImpl.getModEventBus(modId).get().register(new EventListener());
         }
         
         @Override
         public <T> Registrar<T> get(ResourceKey<Registry<T>> registryKey) {
-            updateEventBus();
             Registry<T> registry = (Registry<T>) BuiltInRegistries.REGISTRY.get(registryKey.location());
             if (registry != null) {
                 return get(registry);
@@ -138,7 +124,6 @@ public class RegistrarManagerImpl {
         
         @Override
         public <T> Registrar<T> get(Registry<T> registry) {
-            updateEventBus();
             return new RegistrarImpl<>(modId, this.registry, registry);
         }
         
