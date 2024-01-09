@@ -74,9 +74,18 @@ public class TestRegistries {
         public TestInt(int value) {
             this.value = value;
         }
+        
+        @Override
+        public String toString() {
+            return Integer.toString(value);
+        }
     }
     
-    public static final Registrar<TestInt> INTS = RegistrarManager.get(TestMod.MOD_ID).<TestInt>builder(new ResourceLocation(TestMod.MOD_ID, "ints"))
+    public static final Registrar<TestInt> INTS = RegistrarManager.get(TestMod.MOD_ID)
+            .<TestInt>builderDefaulted(
+                    new ResourceLocation(TestMod.MOD_ID, "ints"),
+                    new ResourceLocation(TestMod.MOD_ID, "test_no_int")
+            )
             .syncToClients()
             .build();
     public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(TestMod.MOD_ID, Registries.CREATIVE_MODE_TAB);
@@ -100,6 +109,7 @@ public class TestRegistries {
             .bucketItemSupplier(() -> TestRegistries.TEST_FLUID_BUCKET)
             .color(0xFF0000);
     
+    public static final RegistrySupplier<TestInt> TEST_NO_INT = INTS.register(new ResourceLocation(TestMod.MOD_ID, "test_no_int"), () -> new TestInt(0));
     public static final RegistrySupplier<TestInt> TEST_INT = INTS.register(new ResourceLocation(TestMod.MOD_ID, "test_int"), () -> new TestInt(1));
     public static final RegistrySupplier<TestInt> TEST_INT_2 = INTS.register(new ResourceLocation(TestMod.MOD_ID, "test_int_2"), () -> new TestInt(2));
     
@@ -218,6 +228,9 @@ public class TestRegistries {
         });
         TEST_RECIPE_TYPE.listen(type -> {
             System.out.println("Registered recipe type!");
+        });
+        INTS.listen(TEST_INT_2, i -> {
+            System.out.println("Non-existent int: " + INTS.get(new ResourceLocation("non_existent")));
         });
     }
 }

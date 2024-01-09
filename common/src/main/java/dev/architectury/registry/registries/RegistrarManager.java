@@ -76,6 +76,12 @@ public final class RegistrarManager {
         return this.provider.builder((Class<T>) typeGetter.getClass().getComponentType(), registryId);
     }
     
+    @SafeVarargs
+    public final <T> RegistrarBuilder<T> builderDefaulted(ResourceLocation registryId, ResourceLocation defaultId, T... typeGetter) {
+        if (typeGetter.length != 0) throw new IllegalStateException("array must be empty!");
+        return this.provider.builderDefaulted((Class<T>) typeGetter.getClass().getComponentType(), registryId, defaultId);
+    }
+    
     /**
      * Forge: If the object is {@code IForgeRegistryEntry}, use `getRegistryName`, else null
      * Fabric: Use registry
@@ -118,5 +124,7 @@ public final class RegistrarManager {
         <T> void forRegistry(ResourceKey<Registry<T>> key, Consumer<Registrar<T>> consumer);
         
         <T> RegistrarBuilder<T> builder(Class<T> type, ResourceLocation registryId);
+        
+        <T> RegistrarBuilder<T> builderDefaulted(Class<T> type, ResourceLocation registryId, ResourceLocation defaultId);
     }
 }

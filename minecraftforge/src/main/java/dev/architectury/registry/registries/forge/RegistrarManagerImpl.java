@@ -177,6 +177,12 @@ public class RegistrarManagerImpl {
                     .setName(registryId), registryId);
         }
         
+        @Override
+        public <T> RegistrarBuilder<T> builderDefaulted(Class<T> type, ResourceLocation registryId, ResourceLocation defaultId) {
+            return new RegistryBuilderWrapper<>(this, new net.minecraftforge.registries.RegistryBuilder<>()
+                    .setName(registryId).setDefaultKey(defaultId), registryId);
+        }
+        
         public class EventListener {
             @SubscribeEvent
             public void handleEvent(RegisterEvent event) {

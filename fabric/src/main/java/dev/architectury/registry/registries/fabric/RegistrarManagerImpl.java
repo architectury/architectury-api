@@ -94,6 +94,11 @@ public class RegistrarManagerImpl {
         public <T> RegistrarBuilder<T> builder(Class<T> type, ResourceLocation registryId) {
             return new RegistrarBuilderWrapper<>(modId, FabricRegistryBuilder.createSimple(type, registryId));
         }
+        
+        @Override
+        public <T> RegistrarBuilder<T> builderDefaulted(Class<T> type, ResourceLocation registryId, ResourceLocation defaultId) {
+            return new RegistrarBuilderWrapper<>(modId, FabricRegistryBuilder.createDefaulted(type, registryId, defaultId));
+        }
     }
     
     public static class RegistryEntryId<T> {
@@ -121,9 +126,9 @@ public class RegistrarManagerImpl {
     
     public static class RegistrarBuilderWrapper<T> implements RegistrarBuilder<T> {
         private final String modId;
-        private FabricRegistryBuilder<T, MappedRegistry<T>> builder;
+        private FabricRegistryBuilder<T, ? extends MappedRegistry<T>> builder;
         
-        public RegistrarBuilderWrapper(String modId, FabricRegistryBuilder<T, MappedRegistry<T>> builder) {
+        public RegistrarBuilderWrapper(String modId, FabricRegistryBuilder<T, ? extends MappedRegistry<T>> builder) {
             this.modId = modId;
             this.builder = builder;
         }

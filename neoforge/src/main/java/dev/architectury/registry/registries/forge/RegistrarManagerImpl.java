@@ -138,6 +138,11 @@ public class RegistrarManagerImpl {
             return new RegistryBuilderWrapper<>(this, new RegistryBuilder<>(ResourceKey.createRegistryKey(registryId)));
         }
         
+        @Override
+        public <T> RegistrarBuilder<T> builderDefaulted(Class<T> type, ResourceLocation registryId, ResourceLocation defaultId) {
+            return new RegistryBuilderWrapper<>(this, new RegistryBuilder<T>(ResourceKey.createRegistryKey(registryId)).defaultKey(defaultId));
+        }
+        
         public class EventListener {
             @SubscribeEvent
             public void handleEvent(RegisterEvent event) {
