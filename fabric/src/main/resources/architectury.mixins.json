@@ -52,6 +52,7 @@
     "MixinPhantomSpawner",
     "MixinPlayer",
     "MixinPlayerAdvancements",
+    "MixinPlayerChunkSender",
     "MixinPlayerList",
     "MixinResultSlot",
     "MixinServerLevel",

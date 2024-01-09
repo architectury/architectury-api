@@ -20,9 +20,11 @@
 package dev.architectury.neoforge;
 
 import dev.architectury.event.EventHandler;
+import dev.architectury.event.events.common.ChunkWatchEvent;
 import dev.architectury.networking.SpawnEntityPacket;
 import dev.architectury.registry.level.biome.forge.BiomeModificationsImpl;
 import dev.architectury.utils.ArchitecturyConstants;
+import net.neoforged.bus.api.SubscribeEvent;
 import dev.architectury.utils.Env;
 import dev.architectury.utils.EnvExecutor;
 import net.neoforged.fml.common.Mod;
@@ -34,5 +36,23 @@ public class ArchitecturyNeoForge {
         BiomeModificationsImpl.init();
         
         EnvExecutor.runInEnv(Env.CLIENT, () -> SpawnEntityPacket.Client::register);
+    }
+    
+    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
+    private static class ForgeBusSubscriber {
+        @SubscribeEvent
+        private static void event(net.neoforged.neoforge.event.level.ChunkWatchEvent.Watch event) {
+            ChunkWatchEvent.WATCH.invoker().listen(event.getChunk(), event.getLevel(), event.getPlayer());
+        }
+        
+        @SubscribeEvent
+        private static void event(net.neoforged.neoforge.event.level.ChunkWatchEvent.Sent event) {
+            ChunkWatchEvent.SENT.invoker().listen(event.getChunk(), event.getLevel(), event.getPlayer());
+        }
+        
+        @SubscribeEvent
+        private static void event(net.neoforged.neoforge.event.level.ChunkWatchEvent.UnWatch event) {
+            ChunkWatchEvent.UNWATCH.invoker().listen(event.getPos(), event.getLevel(), event.getPlayer());
+        }
     }
 }

@@ -23,6 +23,7 @@ import com.google.common.base.Objects;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.mojang.serialization.Codec;
 import dev.architectury.impl.RegistrySupplierImpl;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarBuilder;
@@ -30,6 +31,7 @@ import dev.architectury.registry.registries.RegistrarManager;
 import dev.architectury.registry.registries.RegistrySupplier;
 import dev.architectury.registry.registries.options.RegistrarOption;
 import dev.architectury.registry.registries.options.StandardRegistrarOption;
+import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
@@ -98,6 +100,16 @@ public class RegistrarManagerImpl {
         @Override
         public <T> RegistrarBuilder<T> builderDefaulted(Class<T> type, ResourceLocation registryId, ResourceLocation defaultId) {
             return new RegistrarBuilderWrapper<>(modId, FabricRegistryBuilder.createDefaulted(type, registryId, defaultId));
+        }
+        
+        @Override
+        public <T> void registerDynamicRegistry(ResourceKey<Registry<T>> key, Codec<T> dataCodec) {
+            DynamicRegistries.register(key, dataCodec);
+        }
+        
+        @Override
+        public <T> void registerDynamicRegistrySynced(ResourceKey<Registry<T>> key, Codec<T> dataCodec, Codec<T> networkCodec) {
+            DynamicRegistries.registerSynced(key, dataCodec, networkCodec);
         }
     }
     

@@ -28,11 +28,13 @@ import dev.architectury.hooks.forgelike.ForgeLikeClientHooks;
 import dev.architectury.impl.ScreenAccessImpl;
 import dev.architectury.impl.TooltipEventColorContextImpl;
 import dev.architectury.impl.TooltipEventPositionContextImpl;
+import dev.architectury.registry.client.gui.forge.ClientTooltipComponentRegistryImpl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
@@ -335,6 +337,15 @@ public class EventHandlerImplClient {
         @SubscribeEvent(priority = EventPriority.HIGH)
         public static void event(RegisterShadersEvent event) {
             ClientReloadShadersEvent.EVENT.invoker().reload(event.getResourceProvider(), event::registerShader);
+        }
+        
+        @SubscribeEvent(priority = EventPriority.HIGH)
+        public static void event(RegisterClientTooltipComponentFactoriesEvent event) {
+            ClientTooltipComponentRegistryImpl.consume(factory -> registerTooltipComponent(factory, event));
+        }
+        
+        private static <T extends TooltipComponent> void registerTooltipComponent(ClientTooltipComponentRegistryImpl.Factory<T> factory, RegisterClientTooltipComponentFactoriesEvent event) {
+            event.register(factory.clazz(), factory.factory());
         }
     }
 }

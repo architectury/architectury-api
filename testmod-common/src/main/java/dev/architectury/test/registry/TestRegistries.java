@@ -35,6 +35,7 @@ import dev.architectury.test.TestMod;
 import dev.architectury.test.entity.TestEntity;
 import dev.architectury.test.recipes.TestRecipeSerializer;
 import dev.architectury.test.registry.objects.EquippableTickingItem;
+import dev.architectury.test.registry.objects.ItemWithTooltip;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -144,6 +145,9 @@ public class TestRegistries {
             throw new RuntimeException(e);
         }
     });
+    
+    public static final RegistrySupplier<ItemWithTooltip> TEST_TOOLTIP = ITEMS.register("test_tooltip",
+            () -> new ItemWithTooltip(new Item.Properties().arch$tab(TestRegistries.TEST_TAB)));
     
     public static final RegistrySupplier<Block> TEST_BLOCK = BLOCKS.register("test_block", () ->
             new Block(BlockBehaviour.Properties.ofLegacyCopy(Blocks.STONE)));

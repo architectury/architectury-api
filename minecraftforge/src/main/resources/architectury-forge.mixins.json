@@ -6,6 +6,8 @@
   "client": [
   ],
   "mixins": [
+    "minecraftforge.MixinChunkMap",
+    "minecraftforge.MixinPlayerChunkSender",
     "minecraftforge.MixinChunkSerializer",
     "minecraftforge.MixinEntitySpawnExtension"
   ],
