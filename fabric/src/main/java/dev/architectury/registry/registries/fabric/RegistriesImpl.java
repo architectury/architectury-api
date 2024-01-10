@@ -33,7 +33,6 @@ import dev.architectury.registry.registries.options.StandardRegistrarOption;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
-import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceKey;
@@ -91,7 +90,7 @@ public class RegistriesImpl {
         
         @Override
         public <T> RegistrarBuilder<T> builder(Class<T> type, ResourceLocation registryId) {
-            return new RegistrarBuilderWrapper<>(modId, FabricRegistryBuilder.createSimple(type, registryId));
+            return new RegistrarBuilderWrapper<>(modId, type, registryId);
         }
     }
     
@@ -120,24 +119,38 @@ public class RegistriesImpl {
     
     public static class RegistrarBuilderWrapper<T> implements RegistrarBuilder<T> {
         private final String modId;
-        private FabricRegistryBuilder<T, MappedRegistry<T>> builder;
+        private final Class<T> type;
+        private final ResourceLocation registryId;
+        private final Set<RegistryAttribute> fabricAttributes = EnumSet.noneOf(RegistryAttribute.class);
+        private ResourceLocation defaultId;
         
-        public RegistrarBuilderWrapper(String modId, FabricRegistryBuilder<T, MappedRegistry<T>> builder) {
+        public RegistrarBuilderWrapper(String modId, Class<T> type, ResourceLocation registryId) {
             this.modId = modId;
-            this.builder = builder;
+            this.type = type;
+            this.registryId = registryId;
         }
         
         @Override
         public Registrar<T> build() {
+            final var builder = defaultId == null
+                    ? FabricRegistryBuilder.createSimple(type, registryId)
+                    : FabricRegistryBuilder.createDefaulted(type, registryId, defaultId);
+            fabricAttributes.forEach(builder::attribute);
             return Registries.get(modId).get(builder.buildAndRegister());
+        }
+        
+        @Override
+        public RegistrarBuilder<T> defaultId(ResourceLocation defaultId) {
+            this.defaultId = defaultId;
+            return this;
         }
         
         @Override
         public RegistrarBuilder<T> option(RegistrarOption option) {
             if (option == StandardRegistrarOption.SAVE_TO_DISC) {
-                this.builder.attribute(RegistryAttribute.PERSISTED);
+                fabricAttributes.add(RegistryAttribute.PERSISTED);
             } else if (option == StandardRegistrarOption.SYNC_TO_CLIENTS) {
-                this.builder.attribute(RegistryAttribute.SYNCED);
+                fabricAttributes.add(RegistryAttribute.SYNCED);
             }
             return this;
         }

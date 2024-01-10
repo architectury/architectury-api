@@ -301,6 +301,12 @@ public class RegistriesImpl {
         }
         
         @Override
+        public RegistrarBuilder<T> defaultId(ResourceLocation defaultId) {
+            builder.setDefaultKey(defaultId);
+            return this;
+        }
+        
+        @Override
         public RegistrarBuilder<T> option(RegistrarOption option) {
             if (option == StandardRegistrarOption.SAVE_TO_DISC) {
                 this.saveToDisk = true;

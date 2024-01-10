@@ -21,9 +21,12 @@ package dev.architectury.registry.registries;
 
 import dev.architectury.registry.registries.options.RegistrarOption;
 import dev.architectury.registry.registries.options.StandardRegistrarOption;
+import net.minecraft.resources.ResourceLocation;
 
 public interface RegistrarBuilder<T> {
     Registrar<T> build();
+    
+    RegistrarBuilder<T> defaultId(ResourceLocation defaultId);
     
     RegistrarBuilder<T> option(RegistrarOption option);
     
