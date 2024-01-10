@@ -20,6 +20,7 @@
 package dev.architectury.core.fluid.forge.imitator;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import dev.architectury.core.fluid.ArchitecturyFluidAttributes;
 import net.minecraft.core.BlockPos;
@@ -43,15 +44,13 @@ import net.minecraftforge.fluids.ForgeFlowingFluid;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Optional;
 
 public abstract class ArchitecturyFlowingFluid extends ForgeFlowingFluid {
+    private static final Map<ArchitecturyFluidAttributes, FluidType> FLUID_TYPE_MAP = new IdentityHashMap<>();
     private final ArchitecturyFluidAttributes attributes;
-    private static final Map<ArchitecturyFluidAttributes, Properties> cachedProperties;
-    static {
-        cachedProperties = new HashMap<>();
-    }
     
     ArchitecturyFlowingFluid(ArchitecturyFluidAttributes attributes) {
         super(toForgeProperties(attributes));
@@ -59,11 +58,11 @@ public abstract class ArchitecturyFlowingFluid extends ForgeFlowingFluid {
     }
     
     private static Properties toForgeProperties(ArchitecturyFluidAttributes attributes) {
-        Properties forge = cachedProperties.computeIfAbsent(attributes, (_a) -> {
-            FluidType ft = new ArchitecturyFluidAttributesForge(FluidType.Properties.create(), attributes.getSourceFluid(),
-                        attributes);
-            return new Properties(Suppliers.memoize(() -> ft), attributes::getSourceFluid, attributes::getFlowingFluid);
-        });
+        Properties forge = new Properties(Suppliers.memoize(() -> {
+            return FLUID_TYPE_MAP.computeIfAbsent(attributes, attr -> {
+                return new ArchitecturyFluidAttributesForge(FluidType.Properties.create(), attr.getSourceFluid(), attr);
+            });
+        }), attributes::getSourceFluid, attributes::getFlowingFluid);
         forge.slopeFindDistance(attributes.getSlopeFindDistance());
         forge.levelDecreasePerBlock(attributes.getDropOff());
         forge.bucket(() -> MoreObjects.firstNonNull(attributes.getBucketItem(), Items.AIR));
