@@ -20,7 +20,6 @@
 package dev.architectury.core.fluid.forge.imitator;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import dev.architectury.core.fluid.ArchitecturyFluidAttributes;
 import net.minecraft.core.BlockPos;
@@ -43,7 +42,6 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Optional;
