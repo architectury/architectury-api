@@ -28,11 +28,13 @@ import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarBuilder;
 import dev.architectury.registry.registries.Registries;
 import dev.architectury.registry.registries.RegistrySupplier;
+import dev.architectury.registry.registries.options.DefaultIdRegistrarOption;
 import dev.architectury.registry.registries.options.RegistrarOption;
 import dev.architectury.registry.registries.options.StandardRegistrarOption;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
+import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceKey;
@@ -121,7 +123,8 @@ public class RegistriesImpl {
         private final String modId;
         private final Class<T> type;
         private final ResourceLocation registryId;
-        private final Set<RegistryAttribute> fabricAttributes = EnumSet.noneOf(RegistryAttribute.class);
+        private final List<Consumer<FabricRegistryBuilder<T, ? extends MappedRegistry<T>>>> apply = new ArrayList<>();
+        @Nullable
         private ResourceLocation defaultId;
         
         public RegistrarBuilderWrapper(String modId, Class<T> type, ResourceLocation registryId) {
@@ -135,22 +138,18 @@ public class RegistriesImpl {
             final var builder = defaultId == null
                     ? FabricRegistryBuilder.createSimple(type, registryId)
                     : FabricRegistryBuilder.createDefaulted(type, registryId, defaultId);
-            fabricAttributes.forEach(builder::attribute);
+            apply.forEach(consumer -> consumer.accept(builder));
             return Registries.get(modId).get(builder.buildAndRegister());
-        }
-        
-        @Override
-        public RegistrarBuilder<T> defaultId(ResourceLocation defaultId) {
-            this.defaultId = defaultId;
-            return this;
         }
         
         @Override
         public RegistrarBuilder<T> option(RegistrarOption option) {
             if (option == StandardRegistrarOption.SAVE_TO_DISC) {
-                fabricAttributes.add(RegistryAttribute.PERSISTED);
+                this.apply.add(builder -> builder.attribute(RegistryAttribute.PERSISTED));
             } else if (option == StandardRegistrarOption.SYNC_TO_CLIENTS) {
-                fabricAttributes.add(RegistryAttribute.SYNCED);
+                this.apply.add(builder -> builder.attribute(RegistryAttribute.SYNCED));
+            } else if (option instanceof DefaultIdRegistrarOption opt) {
+                this.defaultId = opt.defaultId();
             }
             return this;
         }

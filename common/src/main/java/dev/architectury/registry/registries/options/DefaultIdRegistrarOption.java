@@ -17,21 +17,9 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.registry.registries;
+package dev.architectury.registry.registries.options;
 
-import dev.architectury.registry.registries.options.RegistrarOption;
-import dev.architectury.registry.registries.options.StandardRegistrarOption;
+import net.minecraft.resources.ResourceLocation;
 
-public interface RegistrarBuilder<T> {
-    Registrar<T> build();
-    
-    RegistrarBuilder<T> option(RegistrarOption option);
-    
-    default RegistrarBuilder<T> saveToDisc() {
-        return option(StandardRegistrarOption.SAVE_TO_DISC);
-    }
-    
-    default RegistrarBuilder<T> syncToClients() {
-        return option(StandardRegistrarOption.SYNC_TO_CLIENTS);
-    }
+public record DefaultIdRegistrarOption(ResourceLocation defaultId) implements RegistrarOption {
 }
