@@ -19,11 +19,12 @@
 
 package dev.architectury.test.registry.objects;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -58,8 +59,11 @@ public class ItemWithTooltip extends Item {
         }
         
         @Override
-        public void renderImage(Font font, int x, int y, GuiGraphics guiGraphics) {
-            guiGraphics.drawString(font, "Count: " + component.count, x + getWidth(font) / 2, y + (getHeight() - font.lineHeight) / 2, 0xFF00FF00);
+        public void renderImage(Font font, int x, int y, PoseStack poseStack, ItemRenderer itemRenderer, int blitOffset) {
+            poseStack.pushPose();
+            poseStack.translate(0, 0, blitOffset);
+            font.draw(poseStack, "Count: " + component.count, x + getWidth(font) / 2, y + (getHeight() - font.lineHeight) / 2, 0xFF00FF00);
+            poseStack.popPose();
         }
     }
 }

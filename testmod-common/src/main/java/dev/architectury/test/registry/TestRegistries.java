@@ -129,7 +129,7 @@ public class TestRegistries {
     });
     
     public static final RegistrySupplier<ItemWithTooltip> TEST_TOOLTIP = ITEMS.register("test_tooltip",
-            () -> new ItemWithTooltip(new Item.Properties().arch$tab(TestRegistries.TEST_TAB)));
+            () -> new ItemWithTooltip(new Item.Properties().tab(TestCreativeTabs.TEST_TAB)));
     
     public static final RegistrySupplier<Block> TEST_BLOCK = BLOCKS.register("test_block", () ->
             new Block(BlockBehaviour.Properties.copy(Blocks.STONE)));
