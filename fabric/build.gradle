@@ -114,7 +114,7 @@ unifiedPublishing {
         releaseType = "$rootProject.artifact_type"
         changelog = releaseChangelog()
         gameVersions = []
-        gameLoaders = ["fabric", "quilt"]
+        gameLoaders = ["fabric"]
         mainPublication renameJarForPublication
         relations {
             depends {
