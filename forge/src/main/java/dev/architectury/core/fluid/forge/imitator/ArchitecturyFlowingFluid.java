@@ -42,24 +42,24 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.IdentityHashMap;
+import java.util.Map;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 public abstract class ArchitecturyFlowingFluid extends ForgeFlowingFluid {
+    private static final Map<ArchitecturyFluidAttributes, FluidType> FLUID_TYPE_MAP = new IdentityHashMap<>();
     private final ArchitecturyFluidAttributes attributes;
-    private final Supplier<FluidType> forgeType;
     
     ArchitecturyFlowingFluid(ArchitecturyFluidAttributes attributes) {
         super(toForgeProperties(attributes));
         this.attributes = attributes;
-        this.forgeType = Suppliers.memoize(() -> {
-            return new ArchitecturyFluidAttributesForge(FluidType.Properties.create(), this, attributes);
-        });
     }
     
     private static Properties toForgeProperties(ArchitecturyFluidAttributes attributes) {
         Properties forge = new Properties(Suppliers.memoize(() -> {
-            return new ArchitecturyFluidAttributesForge(FluidType.Properties.create(), attributes.getSourceFluid(), attributes);
+            return FLUID_TYPE_MAP.computeIfAbsent(attributes, attr -> {
+                return new ArchitecturyFluidAttributesForge(FluidType.Properties.create(), attr.getSourceFluid(), attr);
+            });
         }), attributes::getSourceFluid, attributes::getFlowingFluid);
         forge.slopeFindDistance(attributes.getSlopeFindDistance());
         forge.levelDecreasePerBlock(attributes.getDropOff());
@@ -68,11 +68,6 @@ public abstract class ArchitecturyFlowingFluid extends ForgeFlowingFluid {
         forge.explosionResistance(attributes.getExplosionResistance());
         forge.block(() -> MoreObjects.firstNonNull(attributes.getBlock(), (LiquidBlock) Blocks.WATER));
         return forge;
-    }
-    
-    @Override
-    public FluidType getFluidType() {
-        return forgeType.get();
     }
     
     @Override
