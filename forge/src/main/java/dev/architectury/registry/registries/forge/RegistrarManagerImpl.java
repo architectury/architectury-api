@@ -28,6 +28,7 @@ import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarBuilder;
 import dev.architectury.registry.registries.RegistrarManager;
 import dev.architectury.registry.registries.RegistrySupplier;
+import dev.architectury.registry.registries.options.DefaultIdRegistrarOption;
 import dev.architectury.registry.registries.options.RegistrarOption;
 import dev.architectury.registry.registries.options.StandardRegistrarOption;
 import net.minecraft.core.Registry;
@@ -305,6 +306,8 @@ public class RegistrarManagerImpl {
                 this.saveToDisk = true;
             } else if (option == StandardRegistrarOption.SYNC_TO_CLIENTS) {
                 this.syncToClients = true;
+            } else if (option instanceof DefaultIdRegistrarOption opt) {
+                this.builder.setDefaultKey(opt.defaultId());
             }
             return this;
         }
