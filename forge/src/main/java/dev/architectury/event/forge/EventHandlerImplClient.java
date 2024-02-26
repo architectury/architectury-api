@@ -19,6 +19,7 @@
 
 package dev.architectury.event.forge;
 
+import com.mojang.brigadier.CommandDispatcher;
 import dev.architectury.event.CompoundEventResult;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientChatEvent;
@@ -321,6 +322,12 @@ public class EventHandlerImplClient {
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventInputEvent(InputEvent.Key event) {
         ClientRawInputEvent.KEY_PRESSED.invoker().keyPressed(Minecraft.getInstance(), event.getKey(), event.getScanCode(), event.getAction(), event.getModifiers());
+    }
+    
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(RegisterClientCommandsEvent event) {
+        ClientCommandRegistrationEvent.EVENT.invoker().register((CommandDispatcher<ClientCommandRegistrationEvent.ClientCommandSourceStack>)
+                (CommandDispatcher<?>) event.getDispatcher(), event.getBuildContext());
     }
     
     @OnlyIn(Dist.CLIENT)

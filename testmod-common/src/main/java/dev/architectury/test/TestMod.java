@@ -19,13 +19,14 @@
 
 package dev.architectury.test;
 
+import com.mojang.brigadier.arguments.StringArgumentType;
+import dev.architectury.event.events.client.ClientCommandRegistrationEvent;
 import dev.architectury.event.events.client.ClientLifecycleEvent;
 import dev.architectury.registry.client.gui.ClientTooltipComponentRegistry;
 import dev.architectury.registry.client.level.entity.EntityRendererRegistry;
 import dev.architectury.test.debug.ConsoleMessageSink;
 import dev.architectury.test.debug.MessageSink;
 import dev.architectury.test.debug.client.ClientOverlayMessageSink;
-import dev.architectury.test.entity.TestEntity;
 import dev.architectury.test.events.DebugEvents;
 import dev.architectury.test.gamerule.TestGameRules;
 import dev.architectury.test.item.TestBlockInteractions;
@@ -43,8 +44,6 @@ import dev.architectury.utils.EnvExecutor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.entity.CowRenderer;
-import net.minecraft.client.renderer.entity.PigRenderer;
-import net.minecraft.world.entity.animal.Cow;
 
 public class TestMod {
     public static final MessageSink SINK = EnvExecutor.getEnvSpecific(() -> ClientOverlayMessageSink::new, () -> ConsoleMessageSink::new);
@@ -75,6 +74,15 @@ public class TestMod {
             EntityRendererRegistry.register(TestRegistries.TEST_ENTITY, CowRenderer::new);
             EntityRendererRegistry.register(TestRegistries.TEST_ENTITY_2, CowRenderer::new);
             ClientTooltipComponentRegistry.register(ItemWithTooltip.MyTooltipComponent.class, ItemWithTooltip.MyClientTooltipComponent::new);
+            ClientCommandRegistrationEvent.EVENT.register((dispatcher, access) -> {
+                dispatcher.register(ClientCommandRegistrationEvent.literal("cool_client")
+                        .then(ClientCommandRegistrationEvent.argument("string", StringArgumentType.string())
+                                .executes(context -> {
+                                    String string = StringArgumentType.getString(context, "string");
+                                    SINK.accept("Cool client command for " + string);
+                                    return 0;
+                                })));
+            });
         }
     }
 }
