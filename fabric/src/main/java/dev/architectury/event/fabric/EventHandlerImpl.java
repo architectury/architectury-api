@@ -19,14 +19,13 @@
 
 package dev.architectury.event.fabric;
 
-import dev.architectury.event.events.client.ClientGuiEvent;
-import dev.architectury.event.events.client.ClientLifecycleEvent;
-import dev.architectury.event.events.client.ClientTickEvent;
-import dev.architectury.event.events.client.ClientTooltipEvent;
+import com.mojang.brigadier.CommandDispatcher;
+import dev.architectury.event.events.client.*;
 import dev.architectury.event.events.common.*;
 import dev.architectury.impl.fabric.ChatComponentImpl;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
@@ -58,6 +57,11 @@ public class EventHandlerImpl {
         
         ItemTooltipCallback.EVENT.register((itemStack, tooltipFlag, list) -> ClientTooltipEvent.ITEM.invoker().append(itemStack, list, tooltipFlag));
         HudRenderCallback.EVENT.register((graphics, tickDelta) -> ClientGuiEvent.RENDER_HUD.invoker().renderHud(graphics, tickDelta));
+        
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, access) -> {
+            ClientCommandRegistrationEvent.EVENT.invoker().register((CommandDispatcher<ClientCommandRegistrationEvent.ClientCommandSourceStack>)
+                    (CommandDispatcher<?>) dispatcher, access);
+        });
     }
     
     public static void registerCommon() {

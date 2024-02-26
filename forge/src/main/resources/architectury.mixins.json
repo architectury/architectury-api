@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_16",
   "minVersion": "0.8",
   "client": [
+    "client.MixinCommandSourceStack",
     "MixinClientLevel",
     "MixinMinecraft"
   ],
