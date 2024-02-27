@@ -13,6 +13,7 @@
     "MixinChunkSerializer",
     "MixinEntitySpawnExtension",
     "MixinFallingBlockEntity",
+    "MixinIForgeBlock",
     "MixinItemExtension",
     "MixinRegistryEntry",
     "MixinWorldEvent"

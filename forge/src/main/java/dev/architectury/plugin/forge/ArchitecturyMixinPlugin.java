@@ -19,12 +19,15 @@
 
 package dev.architectury.plugin.forge;
 
-import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
+import org.objectweb.asm.tree.*;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 public class ArchitecturyMixinPlugin implements IMixinConfigPlugin {
     @Override
@@ -59,6 +62,46 @@ public class ArchitecturyMixinPlugin implements IMixinConfigPlugin {
     
     @Override
     public void postApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
-        
+        if ("dev.architectury.mixin.forge.MixinIForgeBlock".equals(mixinClassName)) {
+            for (MethodNode method : targetClass.methods) {
+                if ("getFlammability".equals(method.name) && method.desc.endsWith(")I")) {
+                    AbstractInsnNode last = method.instructions.getLast();
+                    // iterate backwards to find the last IRETURN
+                    while (last != null && !(last instanceof InsnNode && last.getOpcode() == Opcodes.IRETURN)) {
+                        last = last.getPrevious();
+                    }
+                    
+                    if (last != null) {
+                        // insert a call to BlockFlammabilityRegistryImpl.handleFlammabilityHook
+                        method.instructions.insertBefore(last, new VarInsnNode(Opcodes.ALOAD, 1)); // BlockState
+                        method.instructions.insertBefore(last, new VarInsnNode(Opcodes.ALOAD, 2)); // BlockGetter
+                        method.instructions.insertBefore(last, new VarInsnNode(Opcodes.ALOAD, 3)); // BlockPos
+                        method.instructions.insertBefore(last, new VarInsnNode(Opcodes.ALOAD, 4)); // Direction
+                        Type type = Type.getMethodType(method.desc);
+                        Type[] types = type.getArgumentTypes();
+                        String newDesc = Type.getMethodDescriptor(type.getReturnType(), Stream.concat(Stream.of(Type.INT_TYPE), Stream.of(types)).toArray(Type[]::new));
+                        method.instructions.insertBefore(last, new MethodInsnNode(Opcodes.INVOKESTATIC, "dev/architectury/mixin/forge/BlockFlammabilityRegistryImpl", "handleBurnOddsHook", newDesc, false));
+                    }
+                } else if ("getFireSpreadSpeed".equals(method.name) && method.desc.endsWith(")I")) {
+                    AbstractInsnNode last = method.instructions.getLast();
+                    // iterate backwards to find the last IRETURN
+                    while (last != null && !(last instanceof InsnNode && last.getOpcode() == Opcodes.IRETURN)) {
+                        last = last.getPrevious();
+                    }
+    
+                    if (last != null) {
+                        // insert a call to BlockFlammabilityRegistryImpl.handleFlammabilityHook
+                        method.instructions.insertBefore(last, new VarInsnNode(Opcodes.ALOAD, 1)); // BlockState
+                        method.instructions.insertBefore(last, new VarInsnNode(Opcodes.ALOAD, 2)); // BlockGetter
+                        method.instructions.insertBefore(last, new VarInsnNode(Opcodes.ALOAD, 3)); // BlockPos
+                        method.instructions.insertBefore(last, new VarInsnNode(Opcodes.ALOAD, 4)); // Direction
+                        Type type = Type.getMethodType(method.desc);
+                        Type[] types = type.getArgumentTypes();
+                        String newDesc = Type.getMethodDescriptor(type.getReturnType(), Stream.concat(Stream.of(Type.INT_TYPE), Stream.of(types)).toArray(Type[]::new));
+                        method.instructions.insertBefore(last, new MethodInsnNode(Opcodes.INVOKESTATIC, "dev/architectury/mixin/forge/BlockFlammabilityRegistryImpl", "handleSpreadOddsHook", newDesc, false));
+                    }
+                }
+            }
+        }
     }
 }
