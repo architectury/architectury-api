@@ -20,7 +20,6 @@
 package dev.architectury.fluid.fabric;
 
 import dev.architectury.fluid.FluidStack;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
@@ -49,10 +48,11 @@ public enum FluidStackImpl implements FluidStack.FluidStackAdapter<FluidStackImp
     }
     
     public static class Pair {
-        public FluidVariant variant;
+        //public FluidVariant variant;
+        public Fluid variant;
         public long amount;
         
-        public Pair(FluidVariant variant, long amount) {
+        public Pair(Fluid/*Variant*/ variant, long amount) {
             this.variant = variant;
             this.amount = amount;
         }
@@ -64,17 +64,17 @@ public enum FluidStackImpl implements FluidStack.FluidStackAdapter<FluidStackImp
         if (fluidType instanceof FlowingFluid flowingFluid) {
             fluidType = flowingFluid.getSource();
         }
-        return new Pair(FluidVariant.of(fluidType, tag == null ? null : tag.copy()), amount);
+        return new Pair(fluidType/*, tag == null ? null : tag.copy())*/, amount);
     }
     
     @Override
     public Supplier<Fluid> getRawFluidSupplier(FluidStackImpl.Pair object) {
-        return object.variant::getFluid;
+        return () -> object.variant;
     }
     
     @Override
     public Fluid getFluid(FluidStackImpl.Pair object) {
-        return object.variant.getFluid();
+        return object.variant;
     }
     
     @Override
@@ -89,28 +89,28 @@ public enum FluidStackImpl implements FluidStack.FluidStackAdapter<FluidStackImp
     
     @Override
     public CompoundTag getTag(FluidStackImpl.Pair value) {
-        return value.variant.getNbt();
+        return null; // value.variant.getNbt();
     }
     
     @Override
     public void setTag(FluidStackImpl.Pair value, CompoundTag tag) {
-        value.variant = FluidVariant.of(value.variant.getFluid(), tag);
+        // value.variant = FluidVariant.of(value.variant.getFluid(), tag);
     }
     
     @Override
     public FluidStackImpl.Pair copy(FluidStackImpl.Pair value) {
-        return new Pair(FluidVariant.of(value.variant.getFluid(), value.variant.copyNbt()), value.amount);
+        return new Pair(value.variant/*FluidVariant.of(value.variant.getFluid(), value.variant.copyNbt())*/, value.amount);
     }
     
     @Override
     public int hashCode(FluidStackImpl.Pair value) {
         var pair = (Pair) value;
         var code = 1;
-        code = 31 * code + pair.variant.getFluid().hashCode();
+        code = 31 * code + pair.variant.hashCode();
         code = 31 * code + Long.hashCode(pair.amount);
-        var tag = pair.variant.getNbt();
-        if (tag != null)
-            code = 31 * code + tag.hashCode();
+//        var tag = pair.variant.getNbt();
+//        if (tag != null)
+//            code = 31 * code + tag.hashCode();
         return code;
     }
 }

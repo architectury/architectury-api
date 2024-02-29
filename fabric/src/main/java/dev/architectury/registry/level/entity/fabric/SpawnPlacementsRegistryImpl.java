@@ -21,13 +21,14 @@ package dev.architectury.registry.level.entity.fabric;
 
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.SpawnPlacementType;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.level.levelgen.Heightmap;
 
 import java.util.function.Supplier;
 
 public class SpawnPlacementsRegistryImpl {
-    public static <T extends Mob> void register(Supplier<? extends EntityType<T>> type, SpawnPlacements.Type spawnPlacement, Heightmap.Types heightmapType, SpawnPlacements.SpawnPredicate<T> spawnPredicate) {
+    public static <T extends Mob> void register(Supplier<? extends EntityType<T>> type, SpawnPlacementType spawnPlacement, Heightmap.Types heightmapType, SpawnPlacements.SpawnPredicate<T> spawnPredicate) {
         SpawnPlacements.register(type.get(), spawnPlacement, heightmapType, spawnPredicate);
     }
 }

@@ -29,13 +29,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.village.poi.PoiManager;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.ChunkSource;
-import net.minecraft.world.level.chunk.ChunkStatus;
-import net.minecraft.world.level.chunk.LevelChunkSection;
-import net.minecraft.world.level.chunk.PalettedContainer;
-import net.minecraft.world.level.chunk.ProtoChunk;
-import net.minecraft.world.level.chunk.UpgradeData;
+import net.minecraft.world.level.chunk.*;
+import net.minecraft.world.level.chunk.status.ChunkType;
 import net.minecraft.world.level.chunk.storage.ChunkSerializer;
 import net.minecraft.world.level.levelgen.blending.BlendingData;
 import net.minecraft.world.level.lighting.LevelLightEngine;
@@ -53,7 +48,7 @@ public class MixinChunkSerializer {
                              boolean bl, ListTag listTag, int i, LevelChunkSection[] levelChunkSections, boolean bl2,
                              ChunkSource chunkSource, LevelLightEngine levelLightEngine, Registry<Biome> registry,
                              Codec<PalettedContainer<Holder<Biome>>> codec, boolean bl3, long m,
-                             ChunkStatus.ChunkType chunkType, BlendingData blendingData, ChunkAccess chunkAccess) {
+                             ChunkType chunkType, BlendingData blendingData, ChunkAccess chunkAccess) {
         ChunkEvent.LOAD_DATA.invoker().load(chunkAccess, serverLevel, compoundTag);
     }
 }

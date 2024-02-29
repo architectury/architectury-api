@@ -152,7 +152,7 @@ public class MixinMouseHandler {
     }
     
     @SuppressWarnings("UnresolvedMixinReference")
-    @Inject(method = {"method_1602", "lambda$onMove$11"}, at = @At("HEAD"), cancellable = true, remap = false)
+    @Inject(method = {"method_55795", "lambda$handleAccumulatedMovement$11"}, at = @At("HEAD"), cancellable = true, remap = false)
     private void onGuiMouseDraggedPre(Screen screen, double mouseX, double mouseY, double deltaX, double deltaY, CallbackInfo ci) {
         if (ClientScreenInputEvent.MOUSE_DRAGGED_PRE.invoker().mouseDragged(Minecraft.getInstance(), screen, mouseX, mouseY, this.activeButton, deltaX, deltaY).isPresent()) {
             ci.cancel();
@@ -160,7 +160,7 @@ public class MixinMouseHandler {
     }
     
     @SuppressWarnings({"UnresolvedMixinReference", "DefaultAnnotationParam"})
-    @Redirect(method = {"method_1602", "lambda$onMove$11"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;mouseDragged(DDIDD)Z", remap = true), remap = false)
+    @Redirect(method = {"method_55795", "lambda$handleAccumulatedMovement$11"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;mouseDragged(DDIDD)Z", remap = true), remap = false)
     private boolean onGuiMouseDraggedPost(Screen screen, double mouseX, double mouseY, int button, double deltaX, double deltaY) {
         if (screen.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)) {
             return true;

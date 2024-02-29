@@ -11,7 +11,6 @@
     "inject.MixinEntityType",
     "inject.MixinFluid",
     "inject.MixinFoodPropertiesBuilder",
-    "inject.MixinGameEvent",
     "inject.MixinItem",
     "inject.MixinItemProperties",
     "inject.MixinLiquidBlock",

@@ -23,9 +23,7 @@ import dev.architectury.fluid.FluidStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
+import net.minecraft.Util;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -36,6 +34,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
@@ -45,7 +45,14 @@ import java.util.Objects;
 
 public class FluidStackHooksImpl {
     public static Component getName(FluidStack stack) {
-        return FluidVariantAttributes.getName(FluidStackHooksFabric.toFabric(stack));
+        var block = stack.getFluid().defaultFluidState().createLegacyBlock().getBlock();
+        
+        if (!stack.isEmpty() && block == Blocks.AIR) {
+            return Component.translatable(Util.makeDescriptionId("block", BuiltInRegistries.FLUID.getKey(stack.getFluid())));
+        } else {
+            return block.getName();
+        }
+        // TODO: return FluidVariantAttributes.getName(FluidStackHooksFabric.toFabric(stack));
     }
     
     public static String getTranslationKey(FluidStack stack) {
@@ -112,15 +119,17 @@ public class FluidStackHooksImpl {
     @Environment(EnvType.CLIENT)
     @Nullable
     public static TextureAtlasSprite getStillTexture(FluidStack stack) {
-        var sprites = FluidVariantRendering.getSprites(FluidStackHooksFabric.toFabric(stack));
-        return sprites == null ? null : sprites[0];
+        return getStillTexture(null, null, stack.getFluid().defaultFluidState());
+        // var sprites = FluidVariantRendering.getSprites(FluidStackHooksFabric.toFabric(stack));
+        // return sprites == null ? null : sprites[0];
     }
     
     @Environment(EnvType.CLIENT)
     @Nullable
     public static TextureAtlasSprite getStillTexture(Fluid fluid) {
-        var sprites = FluidVariantRendering.getSprites(FluidVariant.of(fluid));
-        return sprites == null ? null : sprites[0];
+        return getStillTexture(null, null, fluid.defaultFluidState());
+        // var sprites = FluidVariantRendering.getSprites(FluidVariant.of(fluid));
+        // return sprites == null ? null : sprites[0];
     }
     
     @Environment(EnvType.CLIENT)
@@ -137,15 +146,17 @@ public class FluidStackHooksImpl {
     @Environment(EnvType.CLIENT)
     @Nullable
     public static TextureAtlasSprite getFlowingTexture(FluidStack stack) {
-        var sprites = FluidVariantRendering.getSprites(FluidStackHooksFabric.toFabric(stack));
-        return sprites == null ? null : sprites[1];
+        return getFlowingTexture(null, null, stack.getFluid().defaultFluidState());
+        // var sprites = FluidVariantRendering.getSprites(FluidStackHooksFabric.toFabric(stack));
+        // return sprites == null ? null : sprites[1];
     }
     
     @Environment(EnvType.CLIENT)
     @Nullable
     public static TextureAtlasSprite getFlowingTexture(Fluid fluid) {
-        var sprites = FluidVariantRendering.getSprites(FluidVariant.of(fluid));
-        return sprites == null ? null : sprites[1];
+        return getFlowingTexture(null, null, fluid.defaultFluidState());
+        // var sprites = FluidVariantRendering.getSprites(FluidVariant.of(fluid));
+        // return sprites == null ? null : sprites[1];
     }
     
     @Environment(EnvType.CLIENT)
@@ -158,7 +169,8 @@ public class FluidStackHooksImpl {
     
     @Environment(EnvType.CLIENT)
     public static int getColor(FluidStack stack) {
-        return FluidVariantRendering.getColor(FluidStackHooksFabric.toFabric(stack));
+        return getColor(stack.getFluid());
+        // return FluidVariantRendering.getColor(FluidStackHooksFabric.toFabric(stack));
     }
     
     @Environment(EnvType.CLIENT)
@@ -170,26 +182,32 @@ public class FluidStackHooksImpl {
     }
     
     public static int getLuminosity(FluidStack fluid, @Nullable Level level, @Nullable BlockPos pos) {
-        return FluidVariantAttributes.getLuminance(FluidStackHooksFabric.toFabric(fluid));
+        return fluid.getFluid().defaultFluidState().createLegacyBlock().getLightEmission();
+        // return FluidVariantAttributes.getLuminance(FluidStackHooksFabric.toFabric(fluid));
     }
     
     public static int getLuminosity(Fluid fluid, @Nullable Level level, @Nullable BlockPos pos) {
-        return FluidVariantAttributes.getLuminance(FluidVariant.of(fluid));
+        return fluid.defaultFluidState().createLegacyBlock().getLightEmission();
+        // return FluidVariantAttributes.getLuminance(FluidVariant.of(fluid));
     }
     
     public static int getTemperature(FluidStack fluid, @Nullable Level level, @Nullable BlockPos pos) {
-        return FluidVariantAttributes.getTemperature(FluidStackHooksFabric.toFabric(fluid));
+        return 300;
+        // return FluidVariantAttributes.getTemperature(FluidStackHooksFabric.toFabric(fluid));
     }
     
     public static int getTemperature(Fluid fluid, @Nullable Level level, @Nullable BlockPos pos) {
-        return FluidVariantAttributes.getTemperature(FluidVariant.of(fluid));
+        return 300;
+        // return FluidVariantAttributes.getTemperature(FluidVariant.of(fluid));
     }
     
     public static int getViscosity(FluidStack fluid, @Nullable Level level, @Nullable BlockPos pos) {
-        return FluidVariantAttributes.getViscosity(FluidStackHooksFabric.toFabric(fluid), level);
+        return fluid.getFluid() instanceof FlowingFluid flowingFluid && level != null ? flowingFluid.getTickDelay(level) * 200 : 1000;
+        // return FluidVariantAttributes.getViscosity(FluidStackHooksFabric.toFabric(fluid), level);
     }
     
     public static int getViscosity(Fluid fluid, @Nullable Level level, @Nullable BlockPos pos) {
-        return FluidVariantAttributes.getViscosity(FluidVariant.of(fluid), level);
+        return fluid instanceof FlowingFluid flowingFluid && level != null ? flowingFluid.getTickDelay(level) * 200 : 1000;
+        // return FluidVariantAttributes.getViscosity(FluidVariant.of(fluid), level);
     }
 }

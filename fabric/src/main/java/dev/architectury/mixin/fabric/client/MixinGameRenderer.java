@@ -21,7 +21,6 @@ package dev.architectury.mixin.fabric.client;
 
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.shaders.Program;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.event.events.client.ClientReloadShadersEvent;
@@ -31,6 +30,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.server.packs.resources.ResourceProvider;
 import org.joml.Matrix4f;
+import org.joml.Matrix4fStack;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -51,7 +51,7 @@ public abstract class MixinGameRenderer {
     @Inject(method = "render(FJZ)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;renderWithTooltip(Lnet/minecraft/client/gui/GuiGraphics;IIF)V",
                     ordinal = 0), locals = LocalCapture.CAPTURE_FAILEXCEPTION, cancellable = true)
-    public void renderScreenPre(float tickDelta, long startTime, boolean tick, CallbackInfo ci, float speedAppliedTickDelta, boolean isGameLoadFinished, int mouseX, int mouseY, Window window, Matrix4f matrix, PoseStack matrices, GuiGraphics graphics) {
+    public void renderScreenPre(float tickDelta, long startTime, boolean tick, CallbackInfo ci, float speedAppliedTickDelta, boolean isGameLoadFinished, int mouseX, int mouseY, Window window, Matrix4f matrix, Matrix4fStack matrices, GuiGraphics graphics) {
         if (ClientGuiEvent.RENDER_PRE.invoker().render(minecraft.screen, graphics, mouseX, mouseY, minecraft.getDeltaFrameTime()).isFalse()) {
             ci.cancel();
         }
@@ -60,7 +60,7 @@ public abstract class MixinGameRenderer {
     @Inject(method = "render(FJZ)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;renderWithTooltip(Lnet/minecraft/client/gui/GuiGraphics;IIF)V",
                     shift = At.Shift.AFTER, ordinal = 0), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-    public void renderScreenPost(float tickDelta, long startTime, boolean tick, CallbackInfo ci, float speedAppliedTickDelta, boolean isGameLoadFinished, int mouseX, int mouseY, Window window, Matrix4f matrix, PoseStack matrices, GuiGraphics graphics) {
+    public void renderScreenPost(float tickDelta, long startTime, boolean tick, CallbackInfo ci, float speedAppliedTickDelta, boolean isGameLoadFinished, int mouseX, int mouseY, Window window, Matrix4f matrix, Matrix4fStack matrices, GuiGraphics graphics) {
         ClientGuiEvent.RENDER_POST.invoker().render(minecraft.screen, graphics, mouseX, mouseY, minecraft.getDeltaFrameTime());
     }
     

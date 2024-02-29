@@ -19,9 +19,6 @@
     "net/minecraft/class_1755": [
       "dev/architectury/extensions/injected/InjectedBucketItemExtension"
     ],
-    "net/minecraft/class_5712": [
-      "dev/architectury/extensions/injected/InjectedGameEventExtension"
-    ],
     "net/minecraft/class_4174$class_4175": [
       "dev/architectury/extensions/injected/InjectedFoodPropertiesBuilderExtension"
     ],

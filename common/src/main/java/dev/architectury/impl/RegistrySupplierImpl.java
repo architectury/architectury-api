@@ -70,6 +70,11 @@ public interface RegistrySupplierImpl<T> extends RegistrySupplier<T> {
     }
     
     @Override
+    default boolean is(Holder<T> holder) {
+        return holder.is(getKey());
+    }
+    
+    @Override
     default Stream<TagKey<T>> tags() {
         Holder<T> holder = getHolder();
         return holder != null ? holder.tags() : Stream.empty();

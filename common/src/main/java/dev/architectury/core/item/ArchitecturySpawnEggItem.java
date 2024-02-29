@@ -24,7 +24,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
@@ -48,7 +47,7 @@ public class ArchitecturySpawnEggItem extends SpawnEggItem {
             @Override
             public ItemStack execute(BlockSource source, ItemStack stack) {
                 Direction direction = source.state().getValue(DispenserBlock.FACING);
-                EntityType<?> entityType = ((SpawnEggItem) stack.getItem()).getType(stack.getTag());
+                EntityType<?> entityType = ((SpawnEggItem) stack.getItem()).getType(stack);
                 
                 try {
                     entityType.spawn(source.level(), stack, null, source.pos().relative(direction), MobSpawnType.DISPENSER, direction != Direction.UP, false);
@@ -86,8 +85,8 @@ public class ArchitecturySpawnEggItem extends SpawnEggItem {
     }
     
     @Override
-    public EntityType<?> getType(@Nullable CompoundTag compoundTag) {
-        EntityType<?> type = super.getType(compoundTag);
+    public EntityType<?> getType(ItemStack itemStack) {
+        EntityType<?> type = super.getType(itemStack);
         return type == null ? entityType.get() : type;
     }
 }

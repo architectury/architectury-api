@@ -23,8 +23,10 @@ import dev.architectury.registry.level.entity.trade.SimpleTrade;
 import dev.architectury.registry.level.entity.trade.TradeRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.npc.VillagerTrades;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.trading.ItemCost;
+
+import java.util.Optional;
 
 public class TestTrades {
     public static void init() {
@@ -35,7 +37,7 @@ public class TestTrades {
     }
     
     private static VillagerTrades.ItemListing[] createTrades() {
-        var trade = new SimpleTrade(Items.APPLE.getDefaultInstance(), ItemStack.EMPTY, Items.ACACIA_BOAT.getDefaultInstance(), 1, 0, 1.0F);
+        var trade = new SimpleTrade(new ItemCost(Items.APPLE), Optional.empty(), Items.ACACIA_BOAT.getDefaultInstance(), 1, 0, 1.0F);
         return new VillagerTrades.ItemListing[]{trade};
     }
 }

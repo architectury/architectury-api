@@ -26,15 +26,16 @@ import dev.architectury.networking.SpawnEntityPacket;
 import dev.architectury.networking.transformers.PacketSink;
 import dev.architectury.networking.transformers.PacketTransformer;
 import dev.architectury.utils.Env;
+import io.netty.buffer.ByteBufUtil;
+import io.netty.buffer.Unpooled;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -49,6 +50,8 @@ import java.util.Map;
 import java.util.Objects;
 
 public class NetworkManagerImpl {
+    private static final Map<ResourceLocation, CustomPacketPayload.Type<BufCustomPacketPayload>> C2S_TYPE = new HashMap<>();
+    private static final Map<ResourceLocation, CustomPacketPayload.Type<BufCustomPacketPayload>> S2C_TYPE = new HashMap<>();
     private static final Map<ResourceLocation, NetworkReceiver> C2S_RECEIVER = new HashMap<>();
     private static final Map<ResourceLocation, NetworkReceiver> S2C_RECEIVER = new HashMap<>();
     private static final Map<ResourceLocation, PacketTransformer> C2S_TRANSFORMERS = new HashMap<>();
@@ -70,9 +73,13 @@ public class NetworkManagerImpl {
     private static void registerC2SReceiver(ResourceLocation id, List<PacketTransformer> packetTransformers, NetworkReceiver receiver) {
         LOGGER.info("Registering C2S receiver with id {}", id);
         C2S_RECEIVER.put(id, receiver);
+        CustomPacketPayload.Type<BufCustomPacketPayload> type = new CustomPacketPayload.Type<>(id);
+        C2S_TYPE.put(id, type);
+        PayloadTypeRegistry.playC2S().register(type, BufCustomPacketPayload.streamCodec(type));
         PacketTransformer transformer = PacketTransformer.concat(packetTransformers);
-        ServerPlayNetworking.registerGlobalReceiver(id, (server, player, handler, buf, sender) -> {
-            var context = context(player, server, false);
+        ServerPlayNetworking.registerGlobalReceiver(type, (payload, fabricContext) -> {
+            var context = context(fabricContext.player(), fabricContext.player().server, false);
+            FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(payload.payload()));
             transformer.inbound(NetworkManager.Side.C2S, id, buf, context, (side, id1, buf1) -> {
                 NetworkReceiver networkReceiver = side == NetworkManager.Side.C2S ? C2S_RECEIVER.get(id1) : S2C_RECEIVER.get(id1);
                 if (networkReceiver == null) {
@@ -80,6 +87,7 @@ public class NetworkManagerImpl {
                 }
                 networkReceiver.receive(buf1, context);
             });
+            buf.release();
         });
         C2S_TRANSFORMERS.put(id, transformer);
     }
@@ -89,11 +97,15 @@ public class NetworkManagerImpl {
     private static void registerS2CReceiver(ResourceLocation id, List<PacketTransformer> packetTransformers, NetworkReceiver receiver) {
         LOGGER.info("Registering S2C receiver with id {}", id);
         S2C_RECEIVER.put(id, receiver);
+        CustomPacketPayload.Type<BufCustomPacketPayload> type = new CustomPacketPayload.Type<>(id);
+        S2C_TYPE.put(id, type);
+        PayloadTypeRegistry.playS2C().register(type, BufCustomPacketPayload.streamCodec(type));
         PacketTransformer transformer = PacketTransformer.concat(packetTransformers);
-        ClientPlayNetworking.registerGlobalReceiver(id, new ClientPlayNetworking.PlayChannelHandler() {
+        ClientPlayNetworking.registerGlobalReceiver(type, new ClientPlayNetworking.PlayPayloadHandler<>() {
             @Override
-            public void receive(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buf, PacketSender sender) {
-                var context = context(client.player, client, true);
+            public void receive(BufCustomPacketPayload payload, ClientPlayNetworking.Context fabricContext) {
+                var context = context(fabricContext.player(), fabricContext.client(), true);
+                FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(payload.payload()));
                 transformer.inbound(NetworkManager.Side.S2C, id, buf, context, (side, id1, buf1) -> {
                     NetworkReceiver networkReceiver = side == NetworkManager.Side.C2S ? C2S_RECEIVER.get(id1) : S2C_RECEIVER.get(id1);
                     if (networkReceiver == null) {
@@ -101,6 +113,7 @@ public class NetworkManagerImpl {
                     }
                     networkReceiver.receive(buf1, context);
                 });
+                buf.release();
             }
         });
         S2C_TRANSFORMERS.put(id, transformer);
@@ -161,10 +174,18 @@ public class NetworkManagerImpl {
     
     @Environment(EnvType.CLIENT)
     private static Packet<?> toC2SPacket(ResourceLocation id, FriendlyByteBuf buf) {
-        return ClientPlayNetworking.createC2SPacket(id, buf);
+        CustomPacketPayload.Type<BufCustomPacketPayload> type = C2S_TYPE.get(id);
+        if (type == null) {
+            throw new IllegalArgumentException("Unknown packet id: " + id);
+        }
+        return ClientPlayNetworking.createC2SPacket(new BufCustomPacketPayload(type, ByteBufUtil.getBytes(buf)));
     }
     
     private static Packet<?> toS2CPacket(ResourceLocation id, FriendlyByteBuf buf) {
-        return ServerPlayNetworking.createS2CPacket(id, buf);
+        CustomPacketPayload.Type<BufCustomPacketPayload> type = S2C_TYPE.get(id);
+        if (type == null) {
+            throw new IllegalArgumentException("Unknown packet id: " + id);
+        }
+        return ServerPlayNetworking.createS2CPacket(new BufCustomPacketPayload(type, ByteBufUtil.getBytes(buf)));
     }
 }

@@ -25,8 +25,6 @@ import dev.architectury.hooks.fluid.fabric.FluidStackHooksFabric;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRenderHandler;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -40,7 +38,7 @@ import java.util.function.Function;
 
 @SuppressWarnings("UnstableApiUsage")
 @Environment(EnvType.CLIENT)
-class ArchitecturyFluidRenderingFabric implements FluidVariantRenderHandler, FluidRenderHandler {
+class ArchitecturyFluidRenderingFabric implements /*FluidVariantRenderHandler,*/ FluidRenderHandler {
     private final ArchitecturyFluidAttributes attributes;
     private final TextureAtlasSprite[] sprites = new TextureAtlasSprite[3];
     private final TextureAtlasSprite[] spritesOther = new TextureAtlasSprite[3];
@@ -49,22 +47,22 @@ class ArchitecturyFluidRenderingFabric implements FluidVariantRenderHandler, Flu
         this.attributes = attributes;
     }
     
-    @Override
-    @Nullable
-    public TextureAtlasSprite[] getSprites(FluidVariant variant) {
-        FluidStack stack = FluidStackHooksFabric.fromFabric(variant, FluidStack.bucketAmount());
-        Function<ResourceLocation, TextureAtlasSprite> atlas = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS);
-        sprites[0] = atlas.apply(attributes.getSourceTexture(stack));
-        sprites[1] = atlas.apply(attributes.getFlowingTexture(stack));
-        ResourceLocation overlayTexture = attributes.getOverlayTexture(stack);
-        sprites[2] = overlayTexture == null ? null : atlas.apply(overlayTexture);
-        return sprites;
-    }
+//    @Override
+//    @Nullable
+//    public TextureAtlasSprite[] getSprites(FluidVariant variant) {
+//        FluidStack stack = FluidStackHooksFabric.fromFabric(variant, FluidStack.bucketAmount());
+//        Function<ResourceLocation, TextureAtlasSprite> atlas = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS);
+//        sprites[0] = atlas.apply(attributes.getSourceTexture(stack));
+//        sprites[1] = atlas.apply(attributes.getFlowingTexture(stack));
+//        ResourceLocation overlayTexture = attributes.getOverlayTexture(stack);
+//        sprites[2] = overlayTexture == null ? null : atlas.apply(overlayTexture);
+//        return sprites;
+//    }
     
-    @Override
-    public int getColor(FluidVariant variant, @Nullable BlockAndTintGetter view, @Nullable BlockPos pos) {
-        return attributes.getColor(FluidStackHooksFabric.fromFabric(variant, FluidStack.bucketAmount()), view, pos);
-    }
+//    @Override
+//    public int getColor(FluidVariant variant, @Nullable BlockAndTintGetter view, @Nullable BlockPos pos) {
+//        return attributes.getColor(FluidStackHooksFabric.fromFabric(variant, FluidStack.bucketAmount()), view, pos);
+//    }
     
     @Override
     public TextureAtlasSprite[] getFluidSprites(@Nullable BlockAndTintGetter view, @Nullable BlockPos pos, FluidState state) {

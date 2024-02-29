@@ -22,6 +22,8 @@ package dev.architectury.test.recipes;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.crafting.*;
 
 public class TestRecipeSerializer implements RecipeSerializer<CustomRecipe> {
@@ -31,6 +33,7 @@ public class TestRecipeSerializer implements RecipeSerializer<CustomRecipe> {
                     .forGetter(CraftingRecipe::category)
             ).apply(instance, FireworkRocketRecipe::new)
     );
+    private static final StreamCodec<RegistryFriendlyByteBuf, CustomRecipe> STREAM_CODEC = StreamCodec.of(TestRecipeSerializer::toNetwork, TestRecipeSerializer::fromNetwork);
     
     @Override
     public Codec<CustomRecipe> codec() {
@@ -38,13 +41,16 @@ public class TestRecipeSerializer implements RecipeSerializer<CustomRecipe> {
     }
     
     @Override
-    public CustomRecipe fromNetwork(FriendlyByteBuf buf) {
+    public StreamCodec<RegistryFriendlyByteBuf, CustomRecipe> streamCodec() {
+        return STREAM_CODEC;
+    }
+    
+    public static CustomRecipe fromNetwork(FriendlyByteBuf buf) {
         CraftingBookCategory category = buf.readEnum(CraftingBookCategory.class);
         return new FireworkRocketRecipe(category);
     }
     
-    @Override
-    public void toNetwork(FriendlyByteBuf buf, CustomRecipe recipe) {
+    public static void toNetwork(FriendlyByteBuf buf, CustomRecipe recipe) {
         buf.writeEnum(recipe.category());
     }
 }
