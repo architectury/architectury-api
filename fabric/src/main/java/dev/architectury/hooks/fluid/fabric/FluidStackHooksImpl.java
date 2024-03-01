@@ -19,40 +19,39 @@
 
 package dev.architectury.hooks.fluid.fabric;
 
+import com.mojang.logging.LogUtils;
 import dev.architectury.fluid.FluidStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.Util;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
 
-import java.util.Objects;
+import java.util.Optional;
 
 public class FluidStackHooksImpl {
+    private static final Logger LOGGER = LogUtils.getLogger();
+    
     public static Component getName(FluidStack stack) {
-        var block = stack.getFluid().defaultFluidState().createLegacyBlock().getBlock();
-        
-        if (!stack.isEmpty() && block == Blocks.AIR) {
-            return Component.translatable(Util.makeDescriptionId("block", BuiltInRegistries.FLUID.getKey(stack.getFluid())));
-        } else {
-            return block.getName();
-        }
-        // TODO: return FluidVariantAttributes.getName(FluidStackHooksFabric.toFabric(stack));
+        return FluidVariantAttributes.getName(FluidStackHooksFabric.toFabric(stack));
     }
     
     public static String getTranslationKey(FluidStack stack) {
@@ -60,45 +59,25 @@ public class FluidStackHooksImpl {
         return "block." + id.getNamespace() + "." + id.getPath();
     }
     
-    public static FluidStack read(FriendlyByteBuf buf) {
-        var fluid = Objects.requireNonNull(BuiltInRegistries.FLUID.get(buf.readResourceLocation()));
-        var amount = buf.readVarLong();
-        var tag = buf.readNbt();
-        if (fluid == Fluids.EMPTY) return FluidStack.empty();
-        return FluidStack.create(fluid, amount, tag);
+    public static FluidStack read(RegistryFriendlyByteBuf buf) {
+        return FluidStack.STREAM_CODEC.decode(buf);
     }
     
-    public static void write(FluidStack stack, FriendlyByteBuf buf) {
-        buf.writeResourceLocation(BuiltInRegistries.FLUID.getKey(stack.getFluid()));
-        buf.writeVarLong(stack.getAmount());
-        buf.writeNbt(stack.getTag());
+    public static void write(FluidStack stack, RegistryFriendlyByteBuf buf) {
+        FluidStack.STREAM_CODEC.encode(buf, stack);
     }
     
-    public static FluidStack read(CompoundTag tag) {
-        if (tag == null || !tag.contains("id", Tag.TAG_STRING)) {
-            return FluidStack.empty();
-        }
-        
-        var fluid = BuiltInRegistries.FLUID.get(new ResourceLocation(tag.getString("id")));
-        if (fluid == null || fluid == Fluids.EMPTY) {
-            return FluidStack.empty();
-        }
-        var amount = tag.getLong("amount");
-        var stack = FluidStack.create(fluid, amount);
-        
-        if (tag.contains("tag", Tag.TAG_COMPOUND)) {
-            stack.setTag(tag.getCompound("tag"));
-        }
-        return stack;
+    public static Optional<FluidStack> read(HolderLookup.Provider provider, Tag tag) {
+        return FluidStack.CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), tag)
+                .resultOrPartial(string -> LOGGER.error("Tried to load invalid fluid stack: '{}'", string));
     }
     
-    public static CompoundTag write(FluidStack stack, CompoundTag tag) {
-        tag.putString("id", BuiltInRegistries.FLUID.getKey(stack.getFluid()).toString());
-        tag.putLong("amount", stack.getAmount());
-        if (stack.hasTag()) {
-            tag.put("tag", stack.getTag());
-        }
-        return tag;
+    public static FluidStack readOptional(HolderLookup.Provider provider, CompoundTag tag) {
+        return tag.isEmpty() ? FluidStack.empty() : read(provider, tag).orElse(FluidStack.empty());
+    }
+    
+    public static Tag write(HolderLookup.Provider provider, FluidStack stack, Tag tag) {
+        return Util.getOrThrow(FluidStack.CODEC.encode(stack, provider.createSerializationContext(NbtOps.INSTANCE), tag), IllegalStateException::new);
     }
     
     public static long bucketAmount() {
@@ -119,17 +98,15 @@ public class FluidStackHooksImpl {
     @Environment(EnvType.CLIENT)
     @Nullable
     public static TextureAtlasSprite getStillTexture(FluidStack stack) {
-        return getStillTexture(null, null, stack.getFluid().defaultFluidState());
-        // var sprites = FluidVariantRendering.getSprites(FluidStackHooksFabric.toFabric(stack));
-        // return sprites == null ? null : sprites[0];
+        var sprites = FluidVariantRendering.getSprites(FluidStackHooksFabric.toFabric(stack));
+        return sprites == null ? null : sprites[0];
     }
     
     @Environment(EnvType.CLIENT)
     @Nullable
     public static TextureAtlasSprite getStillTexture(Fluid fluid) {
-        return getStillTexture(null, null, fluid.defaultFluidState());
-        // var sprites = FluidVariantRendering.getSprites(FluidVariant.of(fluid));
-        // return sprites == null ? null : sprites[0];
+        var sprites = FluidVariantRendering.getSprites(FluidVariant.of(fluid));
+        return sprites == null ? null : sprites[0];
     }
     
     @Environment(EnvType.CLIENT)
@@ -146,17 +123,15 @@ public class FluidStackHooksImpl {
     @Environment(EnvType.CLIENT)
     @Nullable
     public static TextureAtlasSprite getFlowingTexture(FluidStack stack) {
-        return getFlowingTexture(null, null, stack.getFluid().defaultFluidState());
-        // var sprites = FluidVariantRendering.getSprites(FluidStackHooksFabric.toFabric(stack));
-        // return sprites == null ? null : sprites[1];
+        var sprites = FluidVariantRendering.getSprites(FluidStackHooksFabric.toFabric(stack));
+        return sprites == null ? null : sprites[1];
     }
     
     @Environment(EnvType.CLIENT)
     @Nullable
     public static TextureAtlasSprite getFlowingTexture(Fluid fluid) {
-        return getFlowingTexture(null, null, fluid.defaultFluidState());
-        // var sprites = FluidVariantRendering.getSprites(FluidVariant.of(fluid));
-        // return sprites == null ? null : sprites[1];
+        var sprites = FluidVariantRendering.getSprites(FluidVariant.of(fluid));
+        return sprites == null ? null : sprites[1];
     }
     
     @Environment(EnvType.CLIENT)
@@ -169,8 +144,7 @@ public class FluidStackHooksImpl {
     
     @Environment(EnvType.CLIENT)
     public static int getColor(FluidStack stack) {
-        return getColor(stack.getFluid());
-        // return FluidVariantRendering.getColor(FluidStackHooksFabric.toFabric(stack));
+         return FluidVariantRendering.getColor(FluidStackHooksFabric.toFabric(stack));
     }
     
     @Environment(EnvType.CLIENT)
@@ -182,32 +156,26 @@ public class FluidStackHooksImpl {
     }
     
     public static int getLuminosity(FluidStack fluid, @Nullable Level level, @Nullable BlockPos pos) {
-        return fluid.getFluid().defaultFluidState().createLegacyBlock().getLightEmission();
-        // return FluidVariantAttributes.getLuminance(FluidStackHooksFabric.toFabric(fluid));
+        return FluidVariantAttributes.getLuminance(FluidStackHooksFabric.toFabric(fluid));
     }
     
     public static int getLuminosity(Fluid fluid, @Nullable Level level, @Nullable BlockPos pos) {
-        return fluid.defaultFluidState().createLegacyBlock().getLightEmission();
-        // return FluidVariantAttributes.getLuminance(FluidVariant.of(fluid));
+        return FluidVariantAttributes.getLuminance(FluidVariant.of(fluid));
     }
     
     public static int getTemperature(FluidStack fluid, @Nullable Level level, @Nullable BlockPos pos) {
-        return 300;
-        // return FluidVariantAttributes.getTemperature(FluidStackHooksFabric.toFabric(fluid));
+        return FluidVariantAttributes.getTemperature(FluidStackHooksFabric.toFabric(fluid));
     }
     
     public static int getTemperature(Fluid fluid, @Nullable Level level, @Nullable BlockPos pos) {
-        return 300;
-        // return FluidVariantAttributes.getTemperature(FluidVariant.of(fluid));
+        return FluidVariantAttributes.getTemperature(FluidVariant.of(fluid));
     }
     
     public static int getViscosity(FluidStack fluid, @Nullable Level level, @Nullable BlockPos pos) {
-        return fluid.getFluid() instanceof FlowingFluid flowingFluid && level != null ? flowingFluid.getTickDelay(level) * 200 : 1000;
-        // return FluidVariantAttributes.getViscosity(FluidStackHooksFabric.toFabric(fluid), level);
+        return FluidVariantAttributes.getViscosity(FluidStackHooksFabric.toFabric(fluid), level);
     }
     
     public static int getViscosity(Fluid fluid, @Nullable Level level, @Nullable BlockPos pos) {
-        return fluid instanceof FlowingFluid flowingFluid && level != null ? flowingFluid.getTickDelay(level) * 200 : 1000;
-        // return FluidVariantAttributes.getViscosity(FluidVariant.of(fluid), level);
+        return FluidVariantAttributes.getViscosity(FluidVariant.of(fluid), level);
     }
 }

@@ -22,6 +22,8 @@ package dev.architectury.core.fluid.fabric;
 import dev.architectury.core.fluid.ArchitecturyFluidAttributes;
 import dev.architectury.fluid.FluidStack;
 import dev.architectury.hooks.fluid.fabric.FluidStackHooksFabric;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributeHandler;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.Level;
@@ -30,7 +32,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 @SuppressWarnings("UnstableApiUsage")
-class ArchitecturyFluidAttributesFabric {} /*implements FluidVariantAttributeHandler {
+class ArchitecturyFluidAttributesFabric implements FluidVariantAttributeHandler {
     private final ArchitecturyFluidAttributes attributes;
     
     public ArchitecturyFluidAttributesFabric(ArchitecturyFluidAttributes attributes) {
@@ -71,4 +73,4 @@ class ArchitecturyFluidAttributesFabric {} /*implements FluidVariantAttributeHan
     public boolean isLighterThanAir(FluidVariant variant) {
         return attributes.isLighterThanAir(FluidStackHooksFabric.fromFabric(variant, FluidStack.bucketAmount()));
     }
-}*/
+}

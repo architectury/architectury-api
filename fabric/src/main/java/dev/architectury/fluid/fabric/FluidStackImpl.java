@@ -19,11 +19,23 @@
 
 package dev.architectury.fluid.fabric;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.architectury.fluid.FluidStack;
-import net.minecraft.nbt.CompoundTag;
+import io.netty.buffer.ByteBuf;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -48,33 +60,32 @@ public enum FluidStackImpl implements FluidStack.FluidStackAdapter<FluidStackImp
     }
     
     public static class Pair {
-        //public FluidVariant variant;
-        public Fluid variant;
+        public FluidVariant variant;
         public long amount;
         
-        public Pair(Fluid/*Variant*/ variant, long amount) {
+        public Pair(FluidVariant variant, long amount) {
             this.variant = variant;
             this.amount = amount;
         }
     }
     
     @Override
-    public FluidStackImpl.Pair create(Supplier<Fluid> fluid, long amount, CompoundTag tag) {
+    public FluidStackImpl.Pair create(Supplier<Fluid> fluid, long amount, @Nullable DataComponentPatch patch) {
         Fluid fluidType = Objects.requireNonNull(fluid).get();
         if (fluidType instanceof FlowingFluid flowingFluid) {
             fluidType = flowingFluid.getSource();
         }
-        return new Pair(fluidType/*, tag == null ? null : tag.copy())*/, amount);
+        return new Pair(FluidVariant.of(fluidType, patch == null ? DataComponentPatch.EMPTY : patch), amount);
     }
     
     @Override
     public Supplier<Fluid> getRawFluidSupplier(FluidStackImpl.Pair object) {
-        return () -> object.variant;
+        return () -> object.variant.getFluid();
     }
     
     @Override
     public Fluid getFluid(FluidStackImpl.Pair object) {
-        return object.variant;
+        return object.variant.getFluid();
     }
     
     @Override
@@ -87,19 +98,18 @@ public enum FluidStackImpl implements FluidStack.FluidStackAdapter<FluidStackImp
         object.amount = amount;
     }
     
-    @Override
-    public CompoundTag getTag(FluidStackImpl.Pair value) {
-        return null; // value.variant.getNbt();
+    public DataComponentPatch getPatch(FluidStackImpl.Pair value) {
+        return value.variant.getComponents();
     }
     
     @Override
-    public void setTag(FluidStackImpl.Pair value, CompoundTag tag) {
-        // value.variant = FluidVariant.of(value.variant.getFluid(), tag);
+    public void setPatch(FluidStackImpl.Pair value, DataComponentPatch patch) {
+        value.variant = FluidVariant.of(value.variant.getFluid(), patch);
     }
     
     @Override
     public FluidStackImpl.Pair copy(FluidStackImpl.Pair value) {
-        return new Pair(value.variant/*FluidVariant.of(value.variant.getFluid(), value.variant.copyNbt())*/, value.amount);
+        return new Pair(value.variant, value.amount);
     }
     
     @Override
@@ -108,9 +118,30 @@ public enum FluidStackImpl implements FluidStack.FluidStackAdapter<FluidStackImp
         var code = 1;
         code = 31 * code + pair.variant.hashCode();
         code = 31 * code + Long.hashCode(pair.amount);
-//        var tag = pair.variant.getNbt();
-//        if (tag != null)
-//            code = 31 * code + tag.hashCode();
+        var patch = pair.variant.getComponents();
+        if (patch != null)
+            code = 31 * code + patch.hashCode();
         return code;
+    }
+    
+    @Override
+    public Codec<FluidStack> codec() {
+        return RecordCodecBuilder.create(instance -> instance.group(
+                BuiltInRegistries.FLUID.holderByNameCodec().fieldOf("fluid").forGetter(stack -> stack.getFluid().builtInRegistryHolder()),
+                ExtraCodecs.validate(Codec.LONG, value -> {
+                    return value.compareTo(0L) >= 0 && value.compareTo(Long.MAX_VALUE) <= 0
+                            ? DataResult.success(value)
+                            : DataResult.error(() -> "Value must be non-negative: " + value);
+                }).fieldOf("amount").forGetter(FluidStack::getAmount),
+                DataComponentPatch.CODEC.fieldOf("components").forGetter(FluidStack::getPatch)
+        ).apply(instance, FluidStack::create));
+    }
+    
+    @Override
+    public StreamCodec<RegistryFriendlyByteBuf, FluidStack> streamCodec() {
+        return StreamCodec.composite(ByteBufCodecs.holderRegistry(Registries.FLUID), stack -> stack.getFluid().builtInRegistryHolder(),
+                StreamCodec.of(ByteBuf::writeLong, ByteBuf::readLong), FluidStack::getAmount,
+                DataComponentPatch.STREAM_CODEC, FluidStack::getPatch,
+                FluidStack::create);
     }
 }

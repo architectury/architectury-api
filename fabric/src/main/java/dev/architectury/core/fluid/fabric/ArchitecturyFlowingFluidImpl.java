@@ -23,17 +23,19 @@ import dev.architectury.core.fluid.ArchitecturyFluidAttributes;
 import dev.architectury.utils.Env;
 import dev.architectury.utils.EnvExecutor;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.world.level.material.FlowingFluid;
 
 public class ArchitecturyFlowingFluidImpl {
     public static void addFabricFluidAttributes(FlowingFluid fluid, ArchitecturyFluidAttributes attributes) {
-        // TODO: FluidVariantAttributes.register(fluid, new ArchitecturyFluidAttributesFabric(attributes));
+        FluidVariantAttributes.register(fluid, new ArchitecturyFluidAttributesFabric(attributes));
         EnvExecutor.runInEnv(Env.CLIENT, () -> () -> Client.run(fluid, attributes));
     }
     
     private static class Client {
         private static void run(FlowingFluid fluid, ArchitecturyFluidAttributes attributes) {
-            // TODO: FluidVariantRendering.register(fluid, new ArchitecturyFluidRenderingFabric(attributes));
+            FluidVariantRendering.register(fluid, new ArchitecturyFluidRenderingFabric(attributes));
             FluidRenderHandlerRegistry.INSTANCE.register(fluid, new ArchitecturyFluidRenderingFabric(attributes));
         }
     }
