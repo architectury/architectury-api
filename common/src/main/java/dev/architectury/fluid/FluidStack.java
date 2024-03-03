@@ -24,9 +24,9 @@ import com.mojang.serialization.Codec;
 import dev.architectury.hooks.fluid.FluidStackHooks;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.*;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
@@ -303,20 +303,20 @@ public final class FluidStack implements DataComponentHolder {
         return Objects.equals(patch, otherPatch);
     }
     
-    public static FluidStack read(FriendlyByteBuf buf) {
+    public static FluidStack read(RegistryFriendlyByteBuf buf) {
         return FluidStackHooks.read(buf);
     }
     
-    public static FluidStack read(CompoundTag tag) {
-        return FluidStackHooks.read(tag);
+    public static Optional<FluidStack> read(HolderLookup.Provider provider, Tag tag) {
+        return FluidStackHooks.read(provider, tag);
     }
     
-    public void write(FriendlyByteBuf buf) {
+    public void write(RegistryFriendlyByteBuf buf) {
         FluidStackHooks.write(this, buf);
     }
     
-    public CompoundTag write(CompoundTag tag) {
-        return FluidStackHooks.write(this, tag);
+    public Tag write(HolderLookup.Provider provider, Tag tag) {
+        return FluidStackHooks.write(provider, this, tag);
     }
     
     public FluidStack copyWithAmount(long amount) {

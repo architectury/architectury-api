@@ -25,14 +25,18 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 public class FluidStackHooks {
     private FluidStackHooks() {
@@ -52,7 +56,7 @@ public class FluidStackHooks {
      * Platform-specific FluidStack read.
      */
     @ExpectPlatform
-    public static FluidStack read(FriendlyByteBuf buf) {
+    public static FluidStack read(RegistryFriendlyByteBuf buf) {
         throw new AssertionError();
     }
     
@@ -60,7 +64,7 @@ public class FluidStackHooks {
      * Platform-specific FluidStack write.
      */
     @ExpectPlatform
-    public static void write(FluidStack stack, FriendlyByteBuf buf) {
+    public static void write(FluidStack stack, RegistryFriendlyByteBuf buf) {
         throw new AssertionError();
     }
     
@@ -68,7 +72,15 @@ public class FluidStackHooks {
      * Platform-specific FluidStack read.
      */
     @ExpectPlatform
-    public static FluidStack read(CompoundTag tag) {
+    public static Optional<FluidStack> read(HolderLookup.Provider provider, Tag tag) {
+        throw new AssertionError();
+    }
+    
+    /**
+     * Platform-specific FluidStack read.
+     */
+    @ExpectPlatform
+    public static FluidStack readOptional(HolderLookup.Provider provider, CompoundTag tag) {
         throw new AssertionError();
     }
     
@@ -76,7 +88,7 @@ public class FluidStackHooks {
      * Platform-specific FluidStack write.
      */
     @ExpectPlatform
-    public static CompoundTag write(FluidStack stack, CompoundTag tag) {
+    public static Tag write(HolderLookup.Provider provider, FluidStack stack, Tag tag) {
         throw new AssertionError();
     }
     
