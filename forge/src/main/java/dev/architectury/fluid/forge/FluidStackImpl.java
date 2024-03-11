@@ -54,7 +54,7 @@ public enum FluidStackImpl implements dev.architectury.fluid.FluidStack.FluidSta
     
     @Override
     public Supplier<Fluid> getRawFluidSupplier(FluidStack object) {
-        return BuiltInRegistries.FLUID.getHolderOrThrow(BuiltInRegistries.FLUID.getResourceKey(object.getRawFluid()).orElseThrow());
+        return () -> BuiltInRegistries.FLUID.getHolderOrThrow(BuiltInRegistries.FLUID.getResourceKey(object.getRawFluid()).orElseThrow()).value();
     }
     
     @Override
