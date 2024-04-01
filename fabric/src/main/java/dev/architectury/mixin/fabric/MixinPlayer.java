@@ -46,13 +46,6 @@ public class MixinPlayer {
         TickEvent.PLAYER_POST.invoker().tick((Player) (Object) this);
     }
     
-    @Inject(method = "drop(Lnet/minecraft/world/item/ItemStack;ZZ)Lnet/minecraft/world/entity/item/ItemEntity;", at = @At("RETURN"), cancellable = true)
-    private void drop(ItemStack itemStack, boolean bl, boolean bl2, CallbackInfoReturnable<ItemEntity> cir) {
-        if (cir.getReturnValue() != null && PlayerEvent.DROP_ITEM.invoker().drop((Player) (Object) this, cir.getReturnValue()).isFalse()) {
-            cir.setReturnValue(null);
-        }
-    }
-    
     @Inject(method = "interactOn", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/entity/player/Player;getItemInHand(Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/item/ItemStack;",
             ordinal = 0),

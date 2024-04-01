@@ -8,6 +8,7 @@ on:
       - '**/src/**'
     branches:
       - "1.20.5"
+      - "1.20.5-24w14potato"
   workflow_dispatch:
     inputs:
       norelease:

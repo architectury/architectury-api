@@ -20,10 +20,12 @@
 package dev.architectury.mixin.fabric;
 
 import dev.architectury.event.events.common.EntityEvent;
+import dev.architectury.event.events.common.PlayerEvent;
 import dev.architectury.extensions.ItemExtension;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -33,6 +35,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
 public class MixinLivingEntity {
+    @Inject(method = "drop(Lnet/minecraft/world/item/ItemStack;ZZ)Lnet/minecraft/world/entity/item/ItemEntity;", at = @At("RETURN"), cancellable = true)
+    private void drop(ItemStack itemStack, boolean bl, boolean bl2, CallbackInfoReturnable<ItemEntity> cir) {
+        if ((Object) this instanceof Player player && cir.getReturnValue() != null && PlayerEvent.DROP_ITEM.invoker().drop(player, cir.getReturnValue()).isFalse()) {
+            cir.setReturnValue(null);
+        }
+    }
+    
     @Inject(method = "hurt", at = @At("HEAD"), cancellable = true)
     private void hurt(DamageSource damageSource, float f, CallbackInfoReturnable<Boolean> cir) {
         if ((Object) this instanceof Player) return;

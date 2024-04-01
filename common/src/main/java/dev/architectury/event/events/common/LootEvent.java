@@ -58,7 +58,7 @@ public interface LootEvent {
      *
      * @see ModifyLootTable#modifyLootTable(ResourceKey, LootTableModificationContext, boolean)
      */
-    // Event<ModifyLootTable> MODIFY_LOOT_TABLE = EventFactory.createLoop();
+    Event<ModifyLootTable> MODIFY_LOOT_TABLE = EventFactory.createLoop();
     
     @FunctionalInterface
     interface ModifyLootTable {
