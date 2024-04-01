@@ -21,11 +21,10 @@ package dev.architectury.event.events.common;
 
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.storage.loot.LootDataManager;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.LootTable;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Events related to loot tables and loot generation.
@@ -57,23 +56,21 @@ public interface LootEvent {
      * });
      * }</pre>
      *
-     * @see ModifyLootTable#modifyLootTable(LootDataManager, ResourceLocation, LootTableModificationContext, boolean)
+     * @see ModifyLootTable#modifyLootTable(ResourceKey, LootTableModificationContext, boolean)
      */
-    Event<ModifyLootTable> MODIFY_LOOT_TABLE = EventFactory.createLoop();
+    // Event<ModifyLootTable> MODIFY_LOOT_TABLE = EventFactory.createLoop();
     
     @FunctionalInterface
     interface ModifyLootTable {
         /**
          * Modifies a loot table.
          *
-         * @param lootDataManager the {@link LootDataManager} instance containing all loot tables,
-         *                        may be {@code null}
-         * @param id              the loot table ID
-         * @param context         the context used to modify the loot table
-         * @param builtin         if {@code true}, the loot table is built-in;
-         *                        if {@code false}, it is from a user data pack
+         * @param key     the loot table key
+         * @param context the context used to modify the loot table
+         * @param builtin if {@code true}, the loot table is built-in;
+         *                if {@code false}, it is from a user data pack
          */
-        void modifyLootTable(@Nullable LootDataManager lootDataManager, ResourceLocation id, LootTableModificationContext context, boolean builtin);
+        void modifyLootTable(ResourceKey<LootTable> key, LootTableModificationContext context, boolean builtin);
     }
     
     /**
@@ -86,15 +83,6 @@ public interface LootEvent {
          *
          * @param pool the pool to add
          */
-        void addPool(LootPool pool);
-        
-        /**
-         * Adds a pool to the loot table.
-         *
-         * @param pool the pool to add
-         */
-        default void addPool(LootPool.Builder pool) {
-            addPool(pool.build());
-        }
+        void addPool(LootPool.Builder pool);
     }
 }

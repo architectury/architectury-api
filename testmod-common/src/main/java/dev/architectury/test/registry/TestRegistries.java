@@ -113,7 +113,7 @@ public class TestRegistries {
     public static final RegistrySupplier<Item> TEST_EQUIPPABLE = ITEMS.register("test_eqippable", () ->
             new EquippableTickingItem(new Item.Properties().arch$tab(TestRegistries.TEST_TAB)));
     public static final RegistrySupplier<Item> TEST_EDIBLE = ITEMS.register("test_edible", () -> {
-        FoodProperties.Builder fpBuilder = new FoodProperties.Builder().nutrition(8).saturationMod(0.8F).meat();
+        FoodProperties.Builder fpBuilder = new FoodProperties.Builder().nutrition(8).saturationModifier(0.8F);
         FoodPropertiesHooks.effect(fpBuilder, () -> new MobEffectInstance(TEST_EFFECT, 100), 1);
         return new Item(new Item.Properties().food(fpBuilder.build()).arch$tab(TestRegistries.TEST_TAB));
     });

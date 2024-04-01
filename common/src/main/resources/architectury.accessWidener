@@ -26,8 +26,6 @@ accessible field net/minecraft/world/level/block/state/BlockBehaviour$Properties
 mutable field net/minecraft/world/level/block/state/BlockBehaviour$Properties speedFactor F
 accessible field net/minecraft/world/level/block/state/BlockBehaviour$Properties jumpFactor F
 mutable field net/minecraft/world/level/block/state/BlockBehaviour$Properties jumpFactor F
-accessible field net/minecraft/world/level/block/state/BlockBehaviour$Properties drops Lnet/minecraft/resources/ResourceLocation;
-mutable field net/minecraft/world/level/block/state/BlockBehaviour$Properties drops Lnet/minecraft/resources/ResourceLocation;
 accessible field net/minecraft/world/level/block/state/BlockBehaviour$Properties canOcclude Z
 mutable field net/minecraft/world/level/block/state/BlockBehaviour$Properties canOcclude Z
 accessible field net/minecraft/world/level/block/state/BlockBehaviour$Properties isAir Z
