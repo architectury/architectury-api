@@ -77,7 +77,7 @@ public class FluidStackHooksImpl {
     }
     
     public static Tag write(HolderLookup.Provider provider, FluidStack stack, Tag tag) {
-        return Util.getOrThrow(FluidStack.CODEC.encode(stack, provider.createSerializationContext(NbtOps.INSTANCE), tag), IllegalStateException::new);
+        return FluidStack.CODEC.encode(stack, provider.createSerializationContext(NbtOps.INSTANCE), tag).getOrThrow(IllegalStateException::new);
     }
     
     public static long bucketAmount() {

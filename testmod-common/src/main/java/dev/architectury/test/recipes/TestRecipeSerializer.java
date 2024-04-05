@@ -19,7 +19,7 @@
 
 package dev.architectury.test.recipes;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -27,7 +27,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.crafting.*;
 
 public class TestRecipeSerializer implements RecipeSerializer<CustomRecipe> {
-    private static final Codec<CustomRecipe> CODEC = RecordCodecBuilder.create(instance ->
+    private static final MapCodec<CustomRecipe> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(CraftingBookCategory.CODEC.fieldOf("category")
                     .orElse(CraftingBookCategory.MISC)
                     .forGetter(CraftingRecipe::category)
@@ -36,7 +36,7 @@ public class TestRecipeSerializer implements RecipeSerializer<CustomRecipe> {
     private static final StreamCodec<RegistryFriendlyByteBuf, CustomRecipe> STREAM_CODEC = StreamCodec.of(TestRecipeSerializer::toNetwork, TestRecipeSerializer::fromNetwork);
     
     @Override
-    public Codec<CustomRecipe> codec() {
+    public MapCodec<CustomRecipe> codec() {
         return CODEC;
     }
     

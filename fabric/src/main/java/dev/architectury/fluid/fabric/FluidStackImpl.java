@@ -128,7 +128,7 @@ public enum FluidStackImpl implements FluidStack.FluidStackAdapter<FluidStackImp
     public Codec<FluidStack> codec() {
         return RecordCodecBuilder.create(instance -> instance.group(
                 BuiltInRegistries.FLUID.holderByNameCodec().fieldOf("fluid").forGetter(stack -> stack.getFluid().builtInRegistryHolder()),
-                ExtraCodecs.validate(Codec.LONG, value -> {
+                Codec.LONG.validate(value -> {
                     return value.compareTo(0L) >= 0 && value.compareTo(Long.MAX_VALUE) <= 0
                             ? DataResult.success(value)
                             : DataResult.error(() -> "Value must be non-negative: " + value);
