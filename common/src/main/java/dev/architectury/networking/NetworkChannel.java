@@ -27,12 +27,16 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -60,7 +64,7 @@ public final class NetworkChannel {
         var s = UUID.nameUUIDFromBytes(type.getName().getBytes(StandardCharsets.UTF_8)).toString().replace("-", "");
         var info = new MessageInfo<T>(new ResourceLocation(id + "/" + s), encoder, decoder, messageConsumer);
         encoders.put(type, info);
-        NetworkManager.NetworkReceiver receiver = (buf, context) -> {
+        NetworkManager.NetworkReceiver<RegistryFriendlyByteBuf> receiver = (buf, context) -> {
             info.messageConsumer.accept(info.decoder.apply(buf), () -> context);
         };
         NetworkManager.registerReceiver(NetworkManager.c2s(), info.packetId, receiver);
@@ -78,19 +82,21 @@ public final class NetworkChannel {
         return h;
     }
     
-    public <T> Packet<?> toPacket(NetworkManager.Side side, T message) {
+    public <T> Packet<?> toPacket(NetworkManager.Side side, T message, RegistryAccess access) {
         var messageInfo = (MessageInfo<T>) Objects.requireNonNull(encoders.get(message.getClass()), "Unknown message type! " + message);
-        var buf = new FriendlyByteBuf(Unpooled.buffer());
+        var buf = new RegistryFriendlyByteBuf(Unpooled.buffer(), access);
         messageInfo.encoder.accept(message, buf);
         return NetworkManager.toPacket(side, messageInfo.packetId, buf);
     }
     
     public <T> void sendToPlayer(ServerPlayer player, T message) {
-        Objects.requireNonNull(player, "Unable to send packet to a 'null' player!").connection.send(toPacket(NetworkManager.s2c(), message));
+        Objects.requireNonNull(player, "Unable to send packet to a 'null' player!").connection.send(toPacket(NetworkManager.s2c(), message, player.registryAccess()));
     }
     
     public <T> void sendToPlayers(Iterable<ServerPlayer> players, T message) {
-        var packet = toPacket(NetworkManager.s2c(), message);
+        Iterator<ServerPlayer> iterator = players.iterator();
+        if (!iterator.hasNext()) return;
+        var packet = toPacket(NetworkManager.s2c(), message, iterator.next().registryAccess());
         for (var player : players) {
             Objects.requireNonNull(player, "Unable to send packet to a 'null' player!").connection.send(packet);
         }
@@ -98,8 +104,9 @@ public final class NetworkChannel {
     
     @Environment(EnvType.CLIENT)
     public <T> void sendToServer(T message) {
-        if (Minecraft.getInstance().getConnection() != null) {
-            Minecraft.getInstance().getConnection().send(toPacket(NetworkManager.c2s(), message));
+        ClientPacketListener connection = Minecraft.getInstance().getConnection();
+        if (connection != null) {
+            connection.send(toPacket(NetworkManager.c2s(), message, connection.registryAccess()));
         } else {
             throw new IllegalStateException("Unable to send packet to the server while not in game!");
         }

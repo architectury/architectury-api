@@ -22,150 +22,131 @@ package dev.architectury.networking.forge;
 
 import com.google.common.collect.*;
 import com.mojang.logging.LogUtils;
+import dev.architectury.impl.NetworkAggregator;
 import dev.architectury.networking.NetworkManager;
 import dev.architectury.networking.NetworkManager.NetworkReceiver;
 import dev.architectury.networking.SpawnEntityPacket;
-import dev.architectury.networking.transformers.PacketSink;
-import dev.architectury.networking.transformers.PacketTransformer;
-import dev.architectury.platform.hooks.forge.EventBusesHooksImpl;
+import dev.architectury.platform.hooks.EventBusesHooks;
 import dev.architectury.utils.ArchitecturyConstants;
 import dev.architectury.utils.Env;
-import io.netty.buffer.ByteBufUtil;
+import dev.architectury.utils.EnvExecutor;
 import io.netty.buffer.Unpooled;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
 import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.DistExecutor;
-import net.neoforged.fml.LogicalSide;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
-import net.neoforged.neoforge.network.handling.IPlayPayloadHandler;
-import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
-import org.jetbrains.annotations.Nullable;
+import net.neoforged.neoforge.network.handling.ISynchronizedWorkHandler;
 import org.slf4j.Logger;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+
+import static dev.architectury.networking.forge.ClientNetworkingManager.getClientPlayer;
+import static dev.architectury.networking.forge.ClientNetworkingManager.getClientRegistryAccess;
 
 @Mod.EventBusSubscriber(modid = ArchitecturyConstants.MOD_ID)
 public class NetworkManagerImpl {
-    public static void registerReceiver(NetworkManager.Side side, ResourceLocation id, List<PacketTransformer> packetTransformers, NetworkReceiver receiver) {
-        Objects.requireNonNull(id, "Cannot register receiver with a null ID!");
-        packetTransformers = Objects.requireNonNullElse(packetTransformers, List.of());
-        Objects.requireNonNull(receiver, "Cannot register a null receiver!");
-        if (side == NetworkManager.Side.C2S) {
-            registerC2SReceiver(id, packetTransformers, receiver);
-        } else if (side == NetworkManager.Side.S2C) {
-            registerS2CReceiver(id, packetTransformers, receiver);
-        }
-    }
-    
-    public static Packet<?> toPacket(NetworkManager.Side side, ResourceLocation id, FriendlyByteBuf buffer) {
-        try {
-            return side == NetworkManager.Side.C2S ? new ServerboundCustomPayloadPacket(new BufCustomPacketPayload(id, ByteBufUtil.getBytes(buffer))) : new ClientboundCustomPayloadPacket(new BufCustomPacketPayload(id, ByteBufUtil.getBytes(buffer)));
-        } finally {
-            buffer.release();
-        }
-    }
-    
-    public static void collectPackets(PacketSink sink, NetworkManager.Side side, ResourceLocation id, FriendlyByteBuf buf) {
-        PacketTransformer transformer = side == NetworkManager.Side.C2S ? C2S_TRANSFORMERS.get(id) : S2C_TRANSFORMERS.get(id);
-        if (transformer != null) {
-            transformer.outbound(side, id, buf, (side1, id1, buf1) -> {
-                sink.accept(toPacket(side1, id1, buf1));
-            });
-        } else {
-            sink.accept(toPacket(side, id, buf));
-        }
-    }
-    
     private static final Logger LOGGER = LogUtils.getLogger();
-    static final ResourceLocation CHANNEL_ID = new ResourceLocation("architectury:network");
-    static final ResourceLocation SYNC_IDS = new ResourceLocation("architectury:sync_ids");
-    static final Map<ResourceLocation, NetworkReceiver> S2C = Maps.newHashMap();
-    static final Map<ResourceLocation, NetworkReceiver> C2S = Maps.newHashMap();
-    static final Map<ResourceLocation, PacketTransformer> S2C_TRANSFORMERS = Maps.newHashMap();
-    static final Map<ResourceLocation, PacketTransformer> C2S_TRANSFORMERS = Maps.newHashMap();
+    static final ResourceLocation SYNC_IDS_S2C = new ResourceLocation("architectury:sync_ids_s2c");
+    static final ResourceLocation SYNC_IDS_C2S = new ResourceLocation("architectury:sync_ids_c2s");
     static final Set<ResourceLocation> serverReceivables = Sets.newHashSet();
     private static final Multimap<Player, ResourceLocation> clientReceivables = Multimaps.newMultimap(Maps.newHashMap(), Sets::newHashSet);
     
     static {
-        EventBusesHooksImpl.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
-            bus.addListener(NetworkManagerImpl::registerPackets);
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> ClientNetworkingManager::initClient);
+        NetworkManager.registerReceiver(NetworkManager.Side.C2S, SYNC_IDS_C2S, Collections.emptyList(), (buffer, context) -> {
+            Set<ResourceLocation> receivables = (Set<ResourceLocation>) clientReceivables.get(context.getPlayer());
+            int size = buffer.readInt();
+            receivables.clear();
+            for (int i = 0; i < size; i++) {
+                receivables.add(buffer.readResourceLocation());
+            }
         });
+        EnvExecutor.runInEnv(Env.SERVER, () -> () -> NetworkManager.registerS2CPayloadType(SYNC_IDS_S2C));
     }
     
-    static IPlayPayloadHandler<BufCustomPacketPayload> createPacketHandler(NetworkManager.Side direction, Map<ResourceLocation, PacketTransformer> map) {
-        return (arg, context) -> {
-            NetworkManager.Side side = side(context.flow());
-            if (side != direction) return;
-            ResourceLocation type = arg.type();
-            FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(arg.payload()));
-            PacketTransformer transformer = map.get(type);
-            
-            try {
-                if (transformer != null) {
-                    NetworkManager.PacketContext packetContext = new NetworkManager.PacketContext() {
-                        @Override
-                        public Player getPlayer() {
-                            return getEnvironment() == Env.CLIENT ? getClientPlayer() : context.player().orElse(null);
-                        }
-                        
-                        @Override
-                        public void queue(Runnable runnable) {
-                            context.workHandler().submitAsync(runnable);
-                        }
-                        
-                        @Override
-                        public Env getEnvironment() {
-                            return context.flow().getReceptionSide() == LogicalSide.CLIENT ? Env.CLIENT : Env.SERVER;
-                        }
-                        
-                        @SuppressWarnings("removal")
-                        private Player getClientPlayer() {
-                            return DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> ClientNetworkingManager::getClientPlayer);
-                        }
-                    };
-                    
-                    transformer.inbound(side, type, buf, packetContext, (side1, id1, buf1) -> {
-                        NetworkReceiver networkReceiver = side == NetworkManager.Side.C2S ? C2S.get(id1) : S2C.get(id1);
-                        if (networkReceiver == null) {
-                            throw new IllegalArgumentException("Network Receiver not found! " + id1);
-                        }
-                        networkReceiver.receive(buf1, packetContext);
+    public static NetworkAggregator.Adaptor getAdaptor() {
+        return new NetworkAggregator.Adaptor() {
+            @Override
+            public <T extends CustomPacketPayload> void registerC2S(CustomPacketPayload.Type<T> type, StreamCodec<? super RegistryFriendlyByteBuf, T> codec, NetworkReceiver<T> receiver) {
+                EventBusesHooks.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
+                    bus.<RegisterPayloadHandlerEvent>addListener(event -> {
+                        event.registrar(type.id().getNamespace()).optional().play(type, codec, (arg, context) -> {
+                            receiver.receive(arg, context(context.player().orElse(null), context.workHandler(), false));
+                        });
                     });
-                } else {
-                    LOGGER.error("Unknown message ID: " + type);
-                }
-            } finally {
-                buf.release();
+                });
+            }
+            
+            @Override
+            public <T extends CustomPacketPayload> void registerS2C(CustomPacketPayload.Type<T> type, StreamCodec<? super RegistryFriendlyByteBuf, T> codec, NetworkReceiver<T> receiver) {
+                EventBusesHooks.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
+                    bus.<RegisterPayloadHandlerEvent>addListener(event -> {
+                        event.registrar(type.id().getNamespace()).optional().play(type, codec, (arg, context) -> {
+                            receiver.receive(arg, context(context.player().orElse(null), context.workHandler(), true));
+                        });
+                    });
+                });
+            }
+            
+            @Override
+            public <T extends CustomPacketPayload> Packet<?> toC2SPacket(T payload) {
+                return new ServerboundCustomPayloadPacket(payload);
+            }
+            
+            @Override
+            public <T extends CustomPacketPayload> Packet<?> toS2CPacket(T payload) {
+                return new ClientboundCustomPayloadPacket(payload);
+            }
+            
+            @Override
+            public <T extends CustomPacketPayload> void registerS2CType(CustomPacketPayload.Type<T> type, StreamCodec<? super RegistryFriendlyByteBuf, T> codec) {
+                registerS2C(type, codec, (payload, context) -> {
+                });
+            }
+            
+            public NetworkManager.PacketContext context(Player player, ISynchronizedWorkHandler taskQueue, boolean client) {
+                return new NetworkManager.PacketContext() {
+                    @Override
+                    public Player getPlayer() {
+                        return getEnvironment() == Env.CLIENT ? getClientPlayer() : player;
+                    }
+                    
+                    @Override
+                    public void queue(Runnable runnable) {
+                        taskQueue.submitAsync(runnable);
+                    }
+                    
+                    @Override
+                    public Env getEnvironment() {
+                        return client ? Env.CLIENT : Env.SERVER;
+                    }
+                    
+                    @Override
+                    public RegistryAccess registryAccess() {
+                        return getEnvironment() == Env.CLIENT ? getClientRegistryAccess() : player.registryAccess();
+                    }
+                };
             }
         };
-    }
-    
-    @OnlyIn(Dist.CLIENT)
-    public static void registerS2CReceiver(ResourceLocation id, List<PacketTransformer> packetTransformers, NetworkReceiver receiver) {
-        LOGGER.info("Registering S2C receiver with id {}", id);
-        S2C.put(id, receiver);
-        PacketTransformer transformer = PacketTransformer.concat(packetTransformers);
-        S2C_TRANSFORMERS.put(id, transformer);
-    }
-    
-    public static void registerC2SReceiver(ResourceLocation id, List<PacketTransformer> packetTransformers, NetworkReceiver receiver) {
-        LOGGER.info("Registering C2S receiver with id {}", id);
-        C2S.put(id, receiver);
-        PacketTransformer transformer = PacketTransformer.concat(packetTransformers);
-        C2S_TRANSFORMERS.put(id, transformer);
     }
     
     public static boolean canServerReceive(ResourceLocation id) {
@@ -180,9 +161,9 @@ public class NetworkManagerImpl {
         return SpawnEntityPacket.create(entity);
     }
     
-    static FriendlyByteBuf sendSyncPacket(Map<ResourceLocation, NetworkReceiver> map) {
+    static RegistryFriendlyByteBuf sendSyncPacket(Map<ResourceLocation, ?> map, RegistryAccess access) {
         List<ResourceLocation> availableIds = Lists.newArrayList(map.keySet());
-        FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
+        RegistryFriendlyByteBuf packetBuffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), access);
         packetBuffer.writeInt(availableIds.size());
         for (ResourceLocation availableId : availableIds) {
             packetBuffer.writeResourceLocation(availableId);
@@ -192,35 +173,12 @@ public class NetworkManagerImpl {
     
     @SubscribeEvent
     public static void loggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-        NetworkManager.sendToPlayer((ServerPlayer) event.getEntity(), SYNC_IDS, sendSyncPacket(C2S));
+        NetworkManager.sendToPlayer((ServerPlayer) event.getEntity(), SYNC_IDS_S2C, sendSyncPacket(NetworkAggregator.C2S_RECEIVER, event.getEntity().registryAccess()));
     }
     
     @SubscribeEvent
     public static void loggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
         clientReceivables.removeAll(event.getEntity());
-    }
-    
-    /**
-     * Needs to be on the mod bus for some reason...
-     */
-    public static void registerPackets(RegisterPayloadHandlerEvent event) {
-        //noinspection removal
-        @Nullable
-        IPlayPayloadHandler<BufCustomPacketPayload> s2c = DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> ClientNetworkingManager::initClient);
-        
-        IPayloadRegistrar registrar = event.registrar(ArchitecturyConstants.MOD_ID).optional();
-        registrar.play(CHANNEL_ID, BufCustomPacketPayload::new, builder -> {
-            builder.server(createPacketHandler(NetworkManager.Side.C2S, C2S_TRANSFORMERS)).client(Objects.requireNonNullElseGet(s2c, IPlayPayloadHandler::noop));
-        });
-        
-        registerC2SReceiver(SYNC_IDS, Collections.emptyList(), (buffer, context) -> {
-            Set<ResourceLocation> receivables = (Set<ResourceLocation>) clientReceivables.get(context.getPlayer());
-            int size = buffer.readInt();
-            receivables.clear();
-            for (int i = 0; i < size; i++) {
-                receivables.add(buffer.readResourceLocation());
-            }
-        });
     }
     
     static NetworkManager.Side side(PacketFlow flow) {

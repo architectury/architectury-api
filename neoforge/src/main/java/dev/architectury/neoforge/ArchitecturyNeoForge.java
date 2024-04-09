@@ -34,5 +34,6 @@ public class ArchitecturyNeoForge {
         BiomeModificationsImpl.init();
         
         EnvExecutor.runInEnv(Env.CLIENT, () -> SpawnEntityPacket.Client::register);
+        EnvExecutor.runInEnv(Env.SERVER, () -> SpawnEntityPacket::register);
     }
 }

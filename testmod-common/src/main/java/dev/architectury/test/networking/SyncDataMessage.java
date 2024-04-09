@@ -23,7 +23,7 @@ import dev.architectury.networking.NetworkManager;
 import dev.architectury.networking.simple.BaseS2CMessage;
 import dev.architectury.networking.simple.MessageType;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
 public class SyncDataMessage extends BaseS2CMessage {
@@ -38,7 +38,7 @@ public class SyncDataMessage extends BaseS2CMessage {
         serverData = tag;
     }
     
-    public SyncDataMessage(FriendlyByteBuf buf) {
+    public SyncDataMessage(RegistryFriendlyByteBuf buf) {
         serverData = buf.readNbt();
     }
     
@@ -48,7 +48,7 @@ public class SyncDataMessage extends BaseS2CMessage {
     }
     
     @Override
-    public void write(FriendlyByteBuf buf) {
+    public void write(RegistryFriendlyByteBuf buf) {
         buf.writeNbt(serverData);
     }
     

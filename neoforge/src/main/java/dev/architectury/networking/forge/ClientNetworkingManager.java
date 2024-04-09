@@ -19,8 +19,10 @@
 
 package dev.architectury.networking.forge;
 
+import dev.architectury.impl.NetworkAggregator;
 import dev.architectury.networking.NetworkManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
@@ -28,18 +30,16 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.network.handling.IPlayPayloadHandler;
 
 import java.util.Collections;
 import java.util.Set;
 
 @OnlyIn(Dist.CLIENT)
 public class ClientNetworkingManager {
-    public static IPlayPayloadHandler<BufCustomPacketPayload> initClient() {
-        var handler = NetworkManagerImpl.createPacketHandler(NetworkManager.Side.S2C, NetworkManagerImpl.S2C_TRANSFORMERS);
+    public static void initClient() {
         NeoForge.EVENT_BUS.register(ClientNetworkingManager.class);
         
-        NetworkManagerImpl.registerS2CReceiver(NetworkManagerImpl.SYNC_IDS, Collections.emptyList(), (buffer, context) -> {
+        NetworkManager.registerReceiver(NetworkManager.Side.S2C, NetworkManagerImpl.SYNC_IDS_S2C, Collections.emptyList(), (buffer, context) -> {
             Set<ResourceLocation> receivables = NetworkManagerImpl.serverReceivables;
             int size = buffer.readInt();
             receivables.clear();
@@ -47,15 +47,21 @@ public class ClientNetworkingManager {
                 receivables.add(buffer.readResourceLocation());
             }
             context.queue(() -> {
-                NetworkManager.sendToServer(NetworkManagerImpl.SYNC_IDS, NetworkManagerImpl.sendSyncPacket(NetworkManagerImpl.C2S));
+                NetworkManager.sendToServer(NetworkManagerImpl.SYNC_IDS_C2S, NetworkManagerImpl.sendSyncPacket(NetworkAggregator.C2S_RECEIVER, context.registryAccess()));
             });
         });
-
-        return handler;
     }
     
     public static Player getClientPlayer() {
         return Minecraft.getInstance().player;
+    }
+    
+    public static RegistryAccess getClientRegistryAccess() {
+        if (Minecraft.getInstance().level != null) {
+            return Minecraft.getInstance().level.registryAccess();
+        }
+
+        return Minecraft.getInstance().getConnection().registryAccess();
     }
     
     @SubscribeEvent

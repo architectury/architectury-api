@@ -20,7 +20,7 @@
 package dev.architectury.networking.transformers;
 
 import dev.architectury.networking.NetworkManager;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -31,24 +31,24 @@ import java.util.List;
 
 @ApiStatus.Experimental
 public interface PacketTransformer {
-    void inbound(NetworkManager.Side side, ResourceLocation id, FriendlyByteBuf buf, NetworkManager.PacketContext context, TransformationSink sink);
+    void inbound(NetworkManager.Side side, ResourceLocation id, RegistryFriendlyByteBuf buf, NetworkManager.PacketContext context, TransformationSink sink);
     
-    void outbound(NetworkManager.Side side, ResourceLocation id, FriendlyByteBuf buf, TransformationSink sink);
+    void outbound(NetworkManager.Side side, ResourceLocation id, RegistryFriendlyByteBuf buf, TransformationSink sink);
     
     @FunctionalInterface
     interface TransformationSink {
-        void accept(NetworkManager.Side side, ResourceLocation id, FriendlyByteBuf buf);
+        void accept(NetworkManager.Side side, ResourceLocation id, RegistryFriendlyByteBuf buf);
     }
     
     static PacketTransformer none() {
         return new PacketTransformer() {
             @Override
-            public void inbound(NetworkManager.Side side, ResourceLocation id, FriendlyByteBuf buf, NetworkManager.PacketContext context, TransformationSink sink) {
+            public void inbound(NetworkManager.Side side, ResourceLocation id, RegistryFriendlyByteBuf buf, NetworkManager.PacketContext context, TransformationSink sink) {
                 sink.accept(side, id, buf);
             }
             
             @Override
-            public void outbound(NetworkManager.Side side, ResourceLocation id, FriendlyByteBuf buf, TransformationSink sink) {
+            public void outbound(NetworkManager.Side side, ResourceLocation id, RegistryFriendlyByteBuf buf, TransformationSink sink) {
                 sink.accept(side, id, buf);
             }
         };
@@ -62,16 +62,16 @@ public interface PacketTransformer {
         }
         return new PacketTransformer() {
             @Override
-            public void inbound(NetworkManager.Side side, ResourceLocation id, FriendlyByteBuf buf, NetworkManager.PacketContext context, TransformationSink sink) {
+            public void inbound(NetworkManager.Side side, ResourceLocation id, RegistryFriendlyByteBuf buf, NetworkManager.PacketContext context, TransformationSink sink) {
                 traverse(side, id, buf, context, sink, true, 0);
             }
             
             @Override
-            public void outbound(NetworkManager.Side side, ResourceLocation id, FriendlyByteBuf buf, TransformationSink sink) {
+            public void outbound(NetworkManager.Side side, ResourceLocation id, RegistryFriendlyByteBuf buf, TransformationSink sink) {
                 traverse(side, id, buf, null, sink, false, 0);
             }
             
-            private void traverse(NetworkManager.Side side, ResourceLocation id, FriendlyByteBuf buf, @Nullable NetworkManager.PacketContext context, TransformationSink outerSink, boolean inbound, int index) {
+            private void traverse(NetworkManager.Side side, ResourceLocation id, RegistryFriendlyByteBuf buf, @Nullable NetworkManager.PacketContext context, TransformationSink outerSink, boolean inbound, int index) {
                 if (transformers instanceof List) {
                     if (((List<? extends PacketTransformer>) transformers).size() > index) {
                         PacketTransformer transformer = ((List<? extends PacketTransformer>) transformers).get(index);

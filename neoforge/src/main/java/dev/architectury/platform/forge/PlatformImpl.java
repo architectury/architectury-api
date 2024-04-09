@@ -28,7 +28,7 @@ import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.fml.loading.moddiscovery.ModFileInfo;
-import net.neoforged.neoforge.client.ConfigScreenHandler;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforgespi.language.IModFileInfo;
 import net.neoforged.neoforgespi.language.IModInfo;
 import org.jetbrains.annotations.NotNull;
@@ -178,8 +178,7 @@ public class PlatformImpl {
         
         @Override
         public void registerConfigurationScreen(ConfigurationScreenProvider configurationScreenProvider) {
-            container.registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class, () ->
-                    new ConfigScreenHandler.ConfigScreenFactory((minecraft, screen) -> configurationScreenProvider.provide(screen)));
+            container.registerExtensionPoint(IConfigScreenFactory.class, (minecraft, screen) -> configurationScreenProvider.provide(screen));
         }
     }
 }

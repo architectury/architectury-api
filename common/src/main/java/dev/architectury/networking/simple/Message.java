@@ -21,7 +21,8 @@ package dev.architectury.networking.simple;
 
 import dev.architectury.networking.NetworkManager;
 import io.netty.buffer.Unpooled;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 
 /**
@@ -48,7 +49,7 @@ public abstract class Message {
      *
      * @param buf the byte buffer
      */
-    public abstract void write(FriendlyByteBuf buf);
+    public abstract void write(RegistryFriendlyByteBuf buf);
     
     /**
      * Handles this message when it is received.
@@ -62,8 +63,8 @@ public abstract class Message {
      *
      * @return the converted {@link Packet}
      */
-    public final Packet<?> toPacket() {
-        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+    public final Packet<?> toPacket(RegistryAccess access) {
+        RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(Unpooled.buffer(), access);
         write(buf);
         return NetworkManager.toPacket(getType().getSide(), getType().getId(), buf);
     }

@@ -19,7 +19,6 @@
 
 package dev.architectury.fluid;
 
-import com.google.common.collect.Iterators;
 import com.mojang.serialization.Codec;
 import dev.architectury.hooks.fluid.FluidStackHooks;
 import dev.architectury.injectables.annotations.ExpectPlatform;
@@ -35,7 +34,8 @@ import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -66,100 +66,6 @@ public final class FluidStack implements DataComponentHolder {
         throw new AssertionError();
     }
     
-    @Override
-    public DataComponentMap getComponents() {
-        return new DataComponentMap() {
-            @Nullable
-            @Override
-            public <T> T get(DataComponentType<? extends T> type) {
-                return getPatch().get(type).orElse(null);
-            }
-            
-            @Override
-            public Set<DataComponentType<?>> keySet() {
-                return new AbstractSet<>() {
-                    @Override
-                    public Iterator<DataComponentType<?>> iterator() {
-                        return Iterators.transform(getPatch().entrySet().iterator(), Map.Entry::getKey);
-                    }
-                    
-                    @Override
-                    public int size() {
-                        return getPatch().entrySet().size();
-                    }
-                    
-                    @Override
-                    public boolean contains(Object o) {
-                        if (!(o instanceof DataComponentType<?> type)) return false;
-                        return getPatch().get(type).isPresent();
-                    }
-                };
-            }
-        };
-    }
-    
-    public <T> T set(DataComponentType<? super T> dataComponentType, @Nullable T object) {
-        T previous = (T) get(dataComponentType);
-        DataComponentPatch.Builder builder = DataComponentPatch.builder();
-        for (TypedDataComponent<?> component : getComponents()) {
-            if (component.type() != dataComponentType) {
-                builder.set(component);
-            }
-        }
-        if (object != null) {
-            builder.set(dataComponentType, object);
-        }
-        setPatch(builder.build());
-        return previous;
-    }
-    
-    @Nullable
-    public <T, U> T update(DataComponentType<T> dataComponentType, T object, U object2, BiFunction<T, U, T> biFunction) {
-        return this.set(dataComponentType, biFunction.apply(this.getOrDefault(dataComponentType, object), object2));
-    }
-    
-    @Nullable
-    public <T> T update(DataComponentType<T> dataComponentType, T object, UnaryOperator<T> unaryOperator) {
-        return this.set(dataComponentType, unaryOperator.apply(this.getOrDefault(dataComponentType, object)));
-    }
-    
-    @Nullable
-    public <T> T remove(DataComponentType<? extends T> dataComponentType) {
-        return this.set(dataComponentType, null);
-    }
-    
-    public void applyComponents(DataComponentPatch dataComponentPatch) {
-        DataComponentPatch.Builder builder = DataComponentPatch.builder();
-        for (TypedDataComponent<?> component : getComponents()) {
-            builder.set(component);
-        }
-        for (Map.Entry<DataComponentType<?>, Optional<?>> entry : dataComponentPatch.entrySet()) {
-            if (entry.getValue().isPresent()) {
-                //noinspection rawtypes
-                builder.set((DataComponentType) entry.getKey(), entry.getValue().get());
-            } else {
-                builder.remove(entry.getKey());
-            }
-        }
-        setPatch(builder.build());
-    }
-    
-    public void applyComponents(DataComponentMap dataComponentMap) {
-        DataComponentPatch.Builder builder = DataComponentPatch.builder();
-        for (TypedDataComponent<?> component : getComponents()) {
-            builder.set(component);
-        }
-        for (TypedDataComponent<?> entry : dataComponentMap) {
-            if (entry.value() != null) {
-                //noinspection rawtypes
-                builder.set((DataComponentType) entry.type(), entry.value());
-            } else {
-                builder.remove(entry.type());
-            }
-        }
-        setPatch(builder.build());
-    }
-    
     @ApiStatus.Internal
     public interface FluidStackAdapter<T> {
         T create(Supplier<Fluid> fluid, long amount, @Nullable DataComponentPatch patch);
@@ -174,7 +80,19 @@ public final class FluidStack implements DataComponentHolder {
         
         DataComponentPatch getPatch(T value);
         
-        void setPatch(T value, DataComponentPatch patch);
+        PatchedDataComponentMap getComponents(T value);
+        
+        void applyComponents(T value, DataComponentPatch patch);
+        
+        void applyComponents(T value, DataComponentMap patch);
+        
+        @Nullable <D> D set(T value, DataComponentType<? super D> type, @Nullable D component);
+        
+        @Nullable <D> D remove(T value, DataComponentType<? extends D> type);
+        
+        @Nullable <D> D update(T value, DataComponentType<D> type, D component, UnaryOperator<D> updater);
+        
+        @Nullable <D, U> D update(T value, DataComponentType<D> type, D component, U updateContext, BiFunction<D, U, D> updater);
         
         T copy(T value);
         
@@ -260,8 +178,37 @@ public final class FluidStack implements DataComponentHolder {
         return ADAPTER.getPatch(value);
     }
     
-    public void setPatch(DataComponentPatch patch) {
-        ADAPTER.setPatch(value, patch);
+    @Override
+    public PatchedDataComponentMap getComponents() {
+        return ADAPTER.getComponents(value);
+    }
+    
+    public void applyComponents(DataComponentPatch patch) {
+        ADAPTER.applyComponents(value, patch);
+    }
+    
+    public void applyComponents(DataComponentMap patch) {
+        ADAPTER.applyComponents(value, patch);
+    }
+    
+    @Nullable
+    public <T> T set(DataComponentType<? super T> type, @Nullable T component) {
+        return ADAPTER.set(value, type, component);
+    }
+    
+    @Nullable
+    public <T> T remove(DataComponentType<? extends T> type) {
+        return ADAPTER.remove(value, type);
+    }
+    
+    @Nullable
+    public <T> T update(DataComponentType<T> type, T component, UnaryOperator<T> updater) {
+        return ADAPTER.update(value, type, component, updater);
+    }
+    
+    @Nullable
+    public <T, U> T update(DataComponentType<T> type, T component, U updateContext, BiFunction<T, U, T> updater) {
+        return ADAPTER.update(value, type, component, updateContext, updater);
     }
     
     public Component getName() {

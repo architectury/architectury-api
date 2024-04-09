@@ -46,9 +46,9 @@ public interface LootEvent {
      *
      * <h2>Example: adding diamonds as a drop for dirt</h2>
      * <pre>{@code
-     * LootEvent.MODIFY_LOOT_TABLE.register((lootTables, id, context, builtin) -> {
+     * LootEvent.MODIFY_LOOT_TABLE.register((key, context, builtin) -> {
      *     // Check that the loot table is dirt and built-in
-     *     if (builtin && Blocks.DIRT.getLootTable().equals(id)) {
+     *     if (builtin && Blocks.DIRT.getLootTable().equals(key)) {
      *         // Create a loot pool with a single item entry of Items.DIAMOND
      *         LootPool.Builder pool = LootPool.lootPool().add(LootItem.lootTableItem(Items.DIAMOND));
      *         context.addPool(pool);
@@ -58,7 +58,7 @@ public interface LootEvent {
      *
      * @see ModifyLootTable#modifyLootTable(ResourceKey, LootTableModificationContext, boolean)
      */
-    // Event<ModifyLootTable> MODIFY_LOOT_TABLE = EventFactory.createLoop();
+    Event<ModifyLootTable> MODIFY_LOOT_TABLE = EventFactory.createLoop();
     
     @FunctionalInterface
     interface ModifyLootTable {

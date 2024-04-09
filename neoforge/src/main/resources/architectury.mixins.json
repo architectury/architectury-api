@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "package": "dev.architectury.mixin.forge",
+  "plugin": "dev.architectury.plugin.forge.ArchitecturyMixinPlugin",
+  "compatibilityLevel": "JAVA_16",
+  "minVersion": "0.8",
+  "client": [
+    "client.MixinCommandSourceStack",
+    "MixinClientLevel",
+    "MixinMinecraft"
+  ],
+  "mixins": [
+    "neoforge.MixinChunkSerializer",
+    "MixinFallingBlockEntity",
+    "MixinItemExtension",
+    "MixinLevelEvent"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

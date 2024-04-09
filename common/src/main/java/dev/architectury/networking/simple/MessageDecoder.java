@@ -20,10 +20,10 @@
 package dev.architectury.networking.simple;
 
 import dev.architectury.networking.NetworkManager;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 
 /**
- * Decodes a {@link Message} from a {@link FriendlyByteBuf}.
+ * Decodes a {@link Message} from a {@link RegistryFriendlyByteBuf}.
  *
  * @param <T> the message type handled by this decoder
  * @author LatvianModder
@@ -36,17 +36,17 @@ public interface MessageDecoder<T extends Message> {
      * @param buf the byte buffer
      * @return the decoded instance
      */
-    T decode(FriendlyByteBuf buf);
+    T decode(RegistryFriendlyByteBuf buf);
     
     /**
      * Creates a network receiver from this decoder.
      *
-     * <p>The returned receiver will first {@linkplain #decode(FriendlyByteBuf) decode a message}
+     * <p>The returned receiver will first {@linkplain #decode(RegistryFriendlyByteBuf) decode a message}
      * and then call {@link Message#handle(NetworkManager.PacketContext)} on the decoded message.
      *
      * @return the created receiver
      */
-    default NetworkManager.NetworkReceiver createReceiver() {
+    default NetworkManager.NetworkReceiver<RegistryFriendlyByteBuf> createReceiver() {
         return (buf, context) -> {
             Message packet = decode(buf);
             context.queue(() -> packet.handle(context));

@@ -22,7 +22,7 @@ package dev.architectury.test.networking;
 import dev.architectury.networking.NetworkManager;
 import dev.architectury.networking.simple.BaseC2SMessage;
 import dev.architectury.networking.simple.MessageType;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
 public class ButtonClickedMessage extends BaseC2SMessage {
@@ -35,7 +35,7 @@ public class ButtonClickedMessage extends BaseC2SMessage {
         buttonId = id;
     }
     
-    public ButtonClickedMessage(FriendlyByteBuf buf) {
+    public ButtonClickedMessage(RegistryFriendlyByteBuf buf) {
         buttonId = buf.readVarInt();
     }
     
@@ -45,7 +45,7 @@ public class ButtonClickedMessage extends BaseC2SMessage {
     }
     
     @Override
-    public void write(FriendlyByteBuf buf) {
+    public void write(RegistryFriendlyByteBuf buf) {
         buf.writeVarInt(buttonId);
     }
     

@@ -17,23 +17,15 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.platform.hooks.forge;
+package dev.architectury.registry.client.rendering.forge;
 
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.ModList;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 
-import java.util.Optional;
-import java.util.function.Consumer;
-
-public class EventBusesHooksImpl {
-    public static void whenAvailable(String modId, Consumer<IEventBus> busConsumer) {
-        IEventBus bus = getModEventBus(modId).orElseThrow(() -> new IllegalStateException("Mod '" + modId + "' is not available!"));
-        busConsumer.accept(bus);
-    }
-    
-    public static Optional<IEventBus> getModEventBus(String modId) {
-        return ModList.get().getModContainerById(modId)
-                .map(ModContainer::getEventBus);
+public class BlockEntityRendererRegistryImpl {
+    public static <T extends BlockEntity> void register(BlockEntityType<T> type, BlockEntityRendererProvider<? super T> provider) {
+        BlockEntityRenderers.register(type, provider);
     }
 }

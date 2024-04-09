@@ -32,6 +32,14 @@ subprojects {
 
     repositories {
         maven { url "https://maven.neoforged.net/releases/" }
+        if (rootProject.neoforge_pr != "") {
+            maven {
+                url "https://prmaven.neoforged.net/NeoForge/pr$rootProject.neoforge_pr"
+                content {
+                    includeModule("net.neoforged", "neoforge")
+                }
+            }
+        }
     }
 }
 

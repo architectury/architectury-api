@@ -25,24 +25,28 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.architectury.fluid.FluidStack;
 import io.netty.buffer.ByteBuf;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.PatchedDataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
 @ApiStatus.Internal
-@SuppressWarnings("UnstableApiUsage")
 public enum FluidStackImpl implements FluidStack.FluidStackAdapter<FluidStackImpl.Pair> {
     INSTANCE;
     
@@ -60,12 +64,29 @@ public enum FluidStackImpl implements FluidStack.FluidStackAdapter<FluidStackImp
     }
     
     public static class Pair {
-        public FluidVariant variant;
+        public Fluid fluid;
+        public PatchedDataComponentMap components;
         public long amount;
         
-        public Pair(FluidVariant variant, long amount) {
-            this.variant = variant;
+        public Pair(Fluid fluid, @Nullable DataComponentPatch patch, long amount) {
+            this(fluid,
+                    patch == null ? new PatchedDataComponentMap(DataComponentMap.EMPTY)
+                            : PatchedDataComponentMap.fromPatch(DataComponentMap.EMPTY, patch),
+                    amount);
+        }
+        
+        public Pair(Fluid fluid, PatchedDataComponentMap components, long amount) {
+            this.fluid = fluid;
+            this.components = components;
             this.amount = amount;
+        }
+        
+        public FluidVariant toVariant() {
+            return FluidVariant.of(fluid, getPatch());
+        }
+        
+        public DataComponentPatch getPatch() {
+            return amount <= 0L || this.fluid == Fluids.EMPTY ? components.asPatch() : DataComponentPatch.EMPTY;
         }
     }
     
@@ -75,17 +96,17 @@ public enum FluidStackImpl implements FluidStack.FluidStackAdapter<FluidStackImp
         if (fluidType instanceof FlowingFluid flowingFluid) {
             fluidType = flowingFluid.getSource();
         }
-        return new Pair(FluidVariant.of(fluidType, patch == null ? DataComponentPatch.EMPTY : patch), amount);
+        return new Pair(fluidType, patch, amount);
     }
     
     @Override
     public Supplier<Fluid> getRawFluidSupplier(FluidStackImpl.Pair object) {
-        return () -> object.variant.getFluid();
+        return () -> object.fluid;
     }
     
     @Override
     public Fluid getFluid(FluidStackImpl.Pair object) {
-        return object.variant.getFluid();
+        return object.fluid;
     }
     
     @Override
@@ -99,28 +120,60 @@ public enum FluidStackImpl implements FluidStack.FluidStackAdapter<FluidStackImp
     }
     
     public DataComponentPatch getPatch(FluidStackImpl.Pair value) {
-        return value.variant.getComponents();
+        return value.getPatch();
     }
     
     @Override
-    public void setPatch(FluidStackImpl.Pair value, DataComponentPatch patch) {
-        value.variant = FluidVariant.of(value.variant.getFluid(), patch);
+    public PatchedDataComponentMap getComponents(Pair value) {
+        return value.components;
+    }
+    
+    @Override
+    public void applyComponents(Pair value, DataComponentPatch patch) {
+        value.components.applyPatch(patch);
+    }
+    
+    @Override
+    public void applyComponents(Pair value, DataComponentMap patch) {
+        value.components.setAll(patch);
+    }
+    
+    @Override
+    @Nullable
+    public <D> D set(Pair value, DataComponentType<? super D> type, @Nullable D component) {
+        return value.components.set(type, component);
+    }
+    
+    @Override
+    @Nullable
+    public <D> D remove(Pair value, DataComponentType<? extends D> type) {
+        return value.components.remove(type);
+    }
+    
+    @Override
+    @Nullable
+    public <D> D update(Pair value, DataComponentType<D> type, D component, UnaryOperator<D> updater) {
+        return value.components.set(type, updater.apply(getComponents(value).getOrDefault(type, component)));
+    }
+    
+    @Override
+    @Nullable
+    public <D, U> D update(Pair value, DataComponentType<D> type, D component, U updateContext, BiFunction<D, U, D> updater) {
+        return value.components.set(type, updater.apply(getComponents(value).getOrDefault(type, component), updateContext));
     }
     
     @Override
     public FluidStackImpl.Pair copy(FluidStackImpl.Pair value) {
-        return new Pair(value.variant, value.amount);
+        return new Pair(value.fluid, value.components.copy(), value.amount);
     }
     
     @Override
     public int hashCode(FluidStackImpl.Pair value) {
         var pair = (Pair) value;
         var code = 1;
-        code = 31 * code + pair.variant.hashCode();
+        code = 31 * code + pair.fluid.hashCode();
         code = 31 * code + Long.hashCode(pair.amount);
-        var patch = pair.variant.getComponents();
-        if (patch != null)
-            code = 31 * code + patch.hashCode();
+        code = 31 * code + pair.components.hashCode();
         return code;
     }
     
@@ -133,7 +186,7 @@ public enum FluidStackImpl implements FluidStack.FluidStackAdapter<FluidStackImp
                             ? DataResult.success(value)
                             : DataResult.error(() -> "Value must be non-negative: " + value);
                 }).fieldOf("amount").forGetter(FluidStack::getAmount),
-                DataComponentPatch.CODEC.fieldOf("components").forGetter(FluidStack::getPatch)
+                DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY).forGetter(FluidStack::getPatch)
         ).apply(instance, FluidStack::create));
     }
     

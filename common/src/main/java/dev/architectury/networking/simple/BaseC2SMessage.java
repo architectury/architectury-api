@@ -33,7 +33,7 @@ public abstract class BaseC2SMessage extends Message {
     @Environment(EnvType.CLIENT)
     public final void sendToServer() {
         if (Minecraft.getInstance().getConnection() != null) {
-            Minecraft.getInstance().getConnection().send(toPacket());
+            Minecraft.getInstance().getConnection().send(toPacket(Minecraft.getInstance().level.registryAccess()));
         } else {
             throw new IllegalStateException("Unable to send packet to the server while not in game!");
         }

@@ -19,27 +19,26 @@
 
 package dev.architectury.networking.forge;
 
+import io.netty.buffer.ByteBuf;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 
 /**
  * Wraps a {@link FriendlyByteBuf} because NeoForge doesn't easily let us use the buf directly.
  */
-public record BufCustomPacketPayload(ResourceLocation type, byte[] payload) implements CustomPacketPayload {
-    public BufCustomPacketPayload(FriendlyByteBuf buf) {
-        this(buf.readResourceLocation(), buf.readByteArray());
+public record BufCustomPacketPayload(Type<BufCustomPacketPayload> type, byte[] payload) implements CustomPacketPayload {
+    public BufCustomPacketPayload(Type<BufCustomPacketPayload> type, RegistryFriendlyByteBuf buf) {
+        this(type, buf.readByteArray());
     }
     
-    @Override
-    public void write(FriendlyByteBuf buf) {
-        buf.writeResourceLocation(type);
+    public void write(RegistryFriendlyByteBuf buf) {
         buf.writeByteArray(payload);
     }
     
-    @SuppressWarnings("NullableProblems")
-    @Override
-    public ResourceLocation id() {
-        return NetworkManagerImpl.CHANNEL_ID;
+    public static StreamCodec<ByteBuf, BufCustomPacketPayload> streamCodec(Type<BufCustomPacketPayload> type) {
+        return ByteBufCodecs.BYTE_ARRAY.map(bytes -> new BufCustomPacketPayload(type, bytes), BufCustomPacketPayload::payload);
     }
 }

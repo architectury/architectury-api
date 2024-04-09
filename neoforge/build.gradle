@@ -11,38 +11,29 @@ architectury {
     platformSetupLoomIde()
     neoForge {
         platformPackage = "forge"
-        remapForgeLike "net/minecraftforge/common/extensions/IForgeItem", "net/neoforged/neoforge/common/extensions/IItemExtension"
-        remapForgeLike "net/minecraftforge/client/event/TextureStitchEvent\$Post", "net/neoforged/neoforge/client/event/TextureAtlasStitchedEvent"
-        remapForgeLike "net/minecraftforge/fluids/ForgeFlowingFluid", "net/neoforged/neoforge/fluids/BaseFlowingFluid"
-        remapForgeLike "net/minecraftforge/fluids/ForgeFlowingFluid\$Properties", "net/neoforged/neoforge/fluids/BaseFlowingFluid\$Properties"
-        remapForgeLike "net/minecraftforge/common/ForgeHooks", "net/neoforged/neoforge/common/CommonHooks"
     }
 }
 
 configurations {
     common
-    forgeLike
     shadowCommon // Don't use shadow from the shadow plugin because we don't want IDEA to index this.
-    compileClasspath.extendsFrom common, forgeLike
-    runtimeClasspath.extendsFrom common, forgeLike
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
     developmentNeoForge.extendsFrom common
-    developmentForgeLike.extendsFrom forgeLike
 }
 
 dependencies {
     neoForge "net.neoforged:neoforge:${rootProject.neoforge_version}"
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
-    forgeLike(project(path: ":forge", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionNeoForge")) { transitive false }
-    shadowCommon(project(path: ":forge", configuration: "transformProductionNeoForge")) { transitive false }
 }
 
 processResources {
-    filesMatching("META-INF/mods.toml") {
+    filesMatching("META-INF/neoforge.mods.toml") {
         expand "version": project.version
     }
-    inputs.property "META-INF/mods.toml", project.version
+    inputs.property "META-INF/neoforge.mods.toml", project.version
 }
 
 shadowJar {
@@ -113,7 +104,7 @@ publishing {
     }
 
     repositories {
-        if (System.getenv("MAVEN_PASS") != null) {
+        if (System.getenv("MAVEN_PASS") != null && rootProject.neoforge_pr == "") {
             maven {
                 url = "https://deploy.shedaniel.me/"
                 credentials {
@@ -126,6 +117,7 @@ publishing {
 }
 
 unifiedPublishing {
+    if (rootProject.neoforge_pr != "") return // Don't publish PRs
     project {
         displayName = "[NeoForge $rootProject.supported_version] v$project.version"
         releaseType = "$rootProject.artifact_type"

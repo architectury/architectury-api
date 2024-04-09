@@ -25,6 +25,7 @@ import dev.architectury.networking.NetworkManager;
 import io.netty.buffer.Unpooled;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.resources.ResourceLocation;
@@ -56,7 +57,7 @@ public class TestEntity extends Cow {
             if (this.getLastAttacker() instanceof ServerPlayer player) {
                 CompoundTag compoundTag = new CompoundTag();
                 compoundTag.putString("DeathCauser", player.getStringUUID());
-                FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+                RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(Unpooled.buffer(), this.registryAccess());
                 buf.writeNbt(compoundTag);
                 NetworkManager.sendToPlayer(player, new ResourceLocation("architectury_test", "sync_data"), buf);
             }

@@ -17,21 +17,15 @@ architectury {
     platformSetupLoomIde()
     neoForge {
         platformPackage = "forge"
-        remapForgeLike "net/minecraftforge/common/extensions/IForgeItem", "net/neoforged/neoforge/common/extensions/IItemExtension"
-        remapForgeLike "net/minecraftforge/client/event/TextureStitchEvent\$Post", "net/neoforged/neoforge/client/event/TextureAtlasStitchedEvent"
-        remapForgeLike "net/minecraftforge/fluids/ForgeFlowingFluid", "net/neoforged/neoforge/fluids/BaseFlowingFluid"
-        remapForgeLike "net/minecraftforge/fluids/ForgeFlowingFluid\$Properties", "net/neoforged/neoforge/fluids/BaseFlowingFluid\$Properties"
-        remapForgeLike "net/minecraftforge/common/ForgeHooks", "net/neoforged/neoforge/common/CommonHooks"
     }
 }
 
 configurations {
     common
     forgeLike
-    compileClasspath.extendsFrom common, forgeLike
-    runtimeClasspath.extendsFrom common, forgeLike
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
     developmentNeoForge.extendsFrom common
-    developmentForgeLike.extendsFrom forgeLike
 }
 
 dependencies {
@@ -40,5 +34,4 @@ dependencies {
     implementation(project(path: ":neoforge", configuration: "namedElements")) { transitive false }
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     common(project(path: ":testmod-common", configuration: "namedElements")) { transitive false }
-    forgeLike(project(path: ":forge", configuration: "namedElements")) { transitive false }
 }

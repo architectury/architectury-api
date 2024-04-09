@@ -44,7 +44,7 @@ public abstract class BaseS2CMessage extends Message {
      * @param player the player
      */
     public final void sendTo(ServerPlayer player) {
-        sendTo(player, toPacket());
+        sendTo(player, toPacket(player.registryAccess()));
     }
 
     /**
@@ -53,7 +53,8 @@ public abstract class BaseS2CMessage extends Message {
      * @param players the players
      */
     public final void sendTo(Iterable<ServerPlayer> players) {
-        Packet<?> packet = toPacket();
+        if (!players.iterator().hasNext()) return;
+        Packet<?> packet = toPacket(players.iterator().next().registryAccess());
 
         for (ServerPlayer player : players) {
             sendTo(player, packet);
@@ -84,7 +85,7 @@ public abstract class BaseS2CMessage extends Message {
      * @param chunk the listened chunk
      */
     public final void sendToChunkListeners(LevelChunk chunk) {
-        Packet<?> packet = toPacket();
+        Packet<?> packet = toPacket(chunk.getLevel().registryAccess());
         ((ServerChunkCache) chunk.getLevel().getChunkSource()).chunkMap.getPlayers(chunk.getPos(), false).forEach(e -> sendTo(e, packet));
     }
 }

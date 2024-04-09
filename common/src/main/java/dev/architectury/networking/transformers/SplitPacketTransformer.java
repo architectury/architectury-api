@@ -28,7 +28,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -81,7 +81,7 @@ public class SplitPacketTransformer implements PacketTransformer {
     private static class PartData {
         private final ResourceLocation id;
         private final int partsExpected;
-        private final List<FriendlyByteBuf> parts;
+        private final List<RegistryFriendlyByteBuf> parts;
         
         public PartData(ResourceLocation id, int partsExpected) {
             this.id = id;
@@ -109,7 +109,7 @@ public class SplitPacketTransformer implements PacketTransformer {
     }
     
     @Override
-    public void inbound(NetworkManager.Side side, ResourceLocation id, FriendlyByteBuf buf, NetworkManager.PacketContext context, TransformationSink sink) {
+    public void inbound(NetworkManager.Side side, ResourceLocation id, RegistryFriendlyByteBuf buf, NetworkManager.PacketContext context, TransformationSink sink) {
         PartKey key = side == NetworkManager.Side.S2C ? new PartKey(side, null) : new PartKey(side, context.getPlayer().getUUID());
         PartData data;
         switch (buf.readByte()) {
@@ -128,7 +128,7 @@ public class SplitPacketTransformer implements PacketTransformer {
                 } else if (!data.id.equals(id)) {
                     LOGGER.warn("Received invalid PART packet for SplitPacketTransformer with packet id " + id + " for side " + side + ", id in cache is " + data.id);
                     buf.release();
-                    for (FriendlyByteBuf part : data.parts) {
+                    for (RegistryFriendlyByteBuf part : data.parts) {
                         if (part != buf) {
                             part.release();
                         }
@@ -146,7 +146,7 @@ public class SplitPacketTransformer implements PacketTransformer {
                 } else if (!data.id.equals(id)) {
                     LOGGER.warn("Received invalid END packet for SplitPacketTransformer with packet id " + id + " for side " + side + ", id in cache is " + data.id);
                     buf.release();
-                    for (FriendlyByteBuf part : data.parts) {
+                    for (RegistryFriendlyByteBuf part : data.parts) {
                         if (part != buf) {
                             part.release();
                         }
@@ -158,13 +158,13 @@ public class SplitPacketTransformer implements PacketTransformer {
                 }
                 if (data.parts.size() != data.partsExpected) {
                     LOGGER.warn("Received invalid END packet for SplitPacketTransformer with packet id " + id + " for side " + side + " with size " + data.parts + ", parts expected is " + data.partsExpected);
-                    for (FriendlyByteBuf part : data.parts) {
+                    for (RegistryFriendlyByteBuf part : data.parts) {
                         if (part != buf) {
                             part.release();
                         }
                     }
                 } else {
-                    FriendlyByteBuf byteBuf = new FriendlyByteBuf(Unpooled.wrappedBuffer(data.parts.toArray(new ByteBuf[0])));
+                    RegistryFriendlyByteBuf byteBuf = new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(data.parts.toArray(new ByteBuf[0])), buf.registryAccess());
                     sink.accept(side, data.id, byteBuf);
                     byteBuf.release();
                 }
@@ -179,18 +179,18 @@ public class SplitPacketTransformer implements PacketTransformer {
     }
     
     @Override
-    public void outbound(NetworkManager.Side side, ResourceLocation id, FriendlyByteBuf buf, TransformationSink sink) {
+    public void outbound(NetworkManager.Side side, ResourceLocation id, RegistryFriendlyByteBuf buf, TransformationSink sink) {
         int maxSize = (side == NetworkManager.Side.C2S ? 32767 : 1048576) - 1 - 20 - id.toString().getBytes(StandardCharsets.UTF_8).length;
         if (buf.readableBytes() <= maxSize) {
             ByteBuf stateBuf = Unpooled.buffer(1);
             stateBuf.writeByte(ONLY);
-            FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.wrappedBuffer(stateBuf, buf));
+            RegistryFriendlyByteBuf packetBuffer = new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(stateBuf, buf), buf.registryAccess());
             sink.accept(side, id, packetBuffer);
         } else {
             int partSize = maxSize - 4;
             int parts = (int) Math.ceil(buf.readableBytes() / (float) partSize);
             for (int i = 0; i < parts; i++) {
-                FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
+                RegistryFriendlyByteBuf packetBuffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), buf.registryAccess());
                 if (i == 0) {
                     packetBuffer.writeByte(START);
                     packetBuffer.writeInt(parts);

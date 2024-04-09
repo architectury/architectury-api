@@ -23,6 +23,7 @@ import dev.architectury.networking.NetworkManager;
 import dev.architectury.networking.transformers.PacketTransformer;
 import dev.architectury.platform.Platform;
 import dev.architectury.utils.Env;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -77,7 +78,7 @@ public class SimpleNetworkManager {
         MessageType messageType = new MessageType(this, new ResourceLocation(namespace, id), NetworkManager.s2c());
         
         if (Platform.getEnvironment() == Env.CLIENT) {
-            NetworkManager.NetworkReceiver receiver = decoder.createReceiver();
+            NetworkManager.NetworkReceiver<RegistryFriendlyByteBuf> receiver = decoder.createReceiver();
             NetworkManager.registerReceiver(NetworkManager.s2c(), messageType.getId(), transformers, receiver);
         }
         
@@ -107,7 +108,7 @@ public class SimpleNetworkManager {
     @ApiStatus.Experimental
     public MessageType registerC2S(String id, MessageDecoder<BaseC2SMessage> decoder, List<PacketTransformer> transformers) {
         MessageType messageType = new MessageType(this, new ResourceLocation(namespace, id), NetworkManager.c2s());
-        NetworkManager.NetworkReceiver receiver = decoder.createReceiver();
+        NetworkManager.NetworkReceiver<RegistryFriendlyByteBuf> receiver = decoder.createReceiver();
         NetworkManager.registerReceiver(NetworkManager.c2s(), messageType.getId(), transformers, receiver);
         return messageType;
     }

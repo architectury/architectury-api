@@ -26,6 +26,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.resources.ResourceLocation;
@@ -41,7 +42,7 @@ public class SpawnEntityPacket {
         if (entity.level().isClientSide()) {
             throw new IllegalStateException("SpawnPacketUtil.create called on the logical client!");
         }
-        var buffer = new FriendlyByteBuf(Unpooled.buffer());
+        var buffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), entity.registryAccess());
         buffer.writeVarInt(BuiltInRegistries.ENTITY_TYPE.getId(entity.getType()));
         buffer.writeUUID(entity.getUUID());
         buffer.writeVarInt(entity.getId());
@@ -60,6 +61,10 @@ public class SpawnEntityPacket {
             ext.saveAdditionalSpawnData(buffer);
         }
         return (Packet<ClientGamePacketListener>) NetworkManager.toPacket(NetworkManager.s2c(), PACKET_ID, buffer);
+    }
+    
+    public static void register() {
+        NetworkManager.registerS2CPayloadType(PACKET_ID);
     }
     
     

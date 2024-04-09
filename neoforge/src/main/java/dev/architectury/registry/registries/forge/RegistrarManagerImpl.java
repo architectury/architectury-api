@@ -24,7 +24,7 @@ import com.google.common.base.Suppliers;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import dev.architectury.impl.RegistrySupplierImpl;
-import dev.architectury.platform.hooks.forge.EventBusesHooksImpl;
+import dev.architectury.platform.hooks.EventBusesHooks;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarBuilder;
 import dev.architectury.registry.registries.RegistrarManager;
@@ -109,7 +109,7 @@ public class RegistrarManagerImpl {
         
         public RegistryProviderImpl(String modId) {
             this.modId = modId;
-            EventBusesHooksImpl.getModEventBus(modId).get().register(new EventListener());
+            EventBusesHooks.getModEventBus(modId).get().register(new EventListener());
         }
         
         @Override
