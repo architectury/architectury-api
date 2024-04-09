@@ -20,7 +20,6 @@
 package dev.architectury.networking.forge;
 
 
-import com.google.common.collect.*;
 import com.mojang.logging.LogUtils;
 import dev.architectury.impl.NetworkAggregator;
 import dev.architectury.networking.NetworkManager;
@@ -29,13 +28,12 @@ import dev.architectury.networking.SpawnEntityPacket;
 import dev.architectury.platform.hooks.EventBusesHooks;
 import dev.architectury.utils.ArchitecturyConstants;
 import dev.architectury.utils.Env;
-import dev.architectury.utils.EnvExecutor;
-import io.netty.buffer.Unpooled;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
 import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -45,43 +43,15 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.DistExecutor;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
 import net.neoforged.neoforge.network.handling.ISynchronizedWorkHandler;
 import org.slf4j.Logger;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
-
-import static dev.architectury.networking.forge.ClientNetworkingManager.getClientPlayer;
-import static dev.architectury.networking.forge.ClientNetworkingManager.getClientRegistryAccess;
-
 @Mod.EventBusSubscriber(modid = ArchitecturyConstants.MOD_ID)
 public class NetworkManagerImpl {
     private static final Logger LOGGER = LogUtils.getLogger();
-    static final ResourceLocation SYNC_IDS_S2C = new ResourceLocation("architectury:sync_ids_s2c");
-    static final ResourceLocation SYNC_IDS_C2S = new ResourceLocation("architectury:sync_ids_c2s");
-    static final Set<ResourceLocation> serverReceivables = Sets.newHashSet();
-    private static final Multimap<Player, ResourceLocation> clientReceivables = Multimaps.newMultimap(Maps.newHashMap(), Sets::newHashSet);
-    
-    static {
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> ClientNetworkingManager::initClient);
-        NetworkManager.registerReceiver(NetworkManager.Side.C2S, SYNC_IDS_C2S, Collections.emptyList(), (buffer, context) -> {
-            Set<ResourceLocation> receivables = (Set<ResourceLocation>) clientReceivables.get(context.getPlayer());
-            int size = buffer.readInt();
-            receivables.clear();
-            for (int i = 0; i < size; i++) {
-                receivables.add(buffer.readResourceLocation());
-            }
-        });
-        EnvExecutor.runInEnv(Env.SERVER, () -> () -> NetworkManager.registerS2CPayloadType(SYNC_IDS_S2C));
-    }
     
     public static NetworkAggregator.Adaptor getAdaptor() {
         return new NetworkAggregator.Adaptor() {
@@ -149,39 +119,40 @@ public class NetworkManagerImpl {
         };
     }
     
+    @OnlyIn(Dist.CLIENT)
     public static boolean canServerReceive(ResourceLocation id) {
-        return serverReceivables.contains(id);
+        if (Minecraft.getInstance().getConnection() != null) {
+            return Minecraft.getInstance().getConnection().isConnected(id);
+        } else {
+            return false;
+        }
     }
     
     public static boolean canPlayerReceive(ServerPlayer player, ResourceLocation id) {
-        return clientReceivables.get(player).contains(id);
+        return player.connection.isConnected(id);
     }
     
     public static Packet<ClientGamePacketListener> createAddEntityPacket(Entity entity) {
         return SpawnEntityPacket.create(entity);
     }
     
-    static RegistryFriendlyByteBuf sendSyncPacket(Map<ResourceLocation, ?> map, RegistryAccess access) {
-        List<ResourceLocation> availableIds = Lists.newArrayList(map.keySet());
-        RegistryFriendlyByteBuf packetBuffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), access);
-        packetBuffer.writeInt(availableIds.size());
-        for (ResourceLocation availableId : availableIds) {
-            packetBuffer.writeResourceLocation(availableId);
+    @OnlyIn(Dist.CLIENT)
+    public static Player getClientPlayer() {
+        return Minecraft.getInstance().player;
+    }
+    
+    @OnlyIn(Dist.CLIENT)
+    public static RegistryAccess getClientRegistryAccess() {
+        if (Minecraft.getInstance().level != null) {
+            return Minecraft.getInstance().level.registryAccess();
+        } else if (Minecraft.getInstance().getConnection() != null) {
+            return Minecraft.getInstance().getConnection().registryAccess();
+        } else if (Minecraft.getInstance().gameMode != null) {
+            // Sometimes the packet is sent way too fast and is between the connection and the level, better safe than sorry
+            return Minecraft.getInstance().gameMode.connection.registryAccess();
         }
-        return packetBuffer;
-    }
-    
-    @SubscribeEvent
-    public static void loggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-        NetworkManager.sendToPlayer((ServerPlayer) event.getEntity(), SYNC_IDS_S2C, sendSyncPacket(NetworkAggregator.C2S_RECEIVER, event.getEntity().registryAccess()));
-    }
-    
-    @SubscribeEvent
-    public static void loggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
-        clientReceivables.removeAll(event.getEntity());
-    }
-    
-    static NetworkManager.Side side(PacketFlow flow) {
-        return flow.isClientbound() ? NetworkManager.Side.S2C : flow.isServerbound() ? NetworkManager.Side.C2S : null;
+        
+        // Fail-safe
+        return RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
     }
 }
