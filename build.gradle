@@ -55,7 +55,7 @@ allprojects {
     def runNumber = (System.getenv("GITHUB_RUN_NUMBER") == null ? "9999" : System.getenv("GITHUB_RUN_NUMBER"))
 
     if (!ext.isSnapshot) {
-        version = rootProject.base_version + "." + runNumber
+        version = rootProject.base_version + "." + runNumber + rootProject.version_suffix
         archivesBaseName = rootProject.archives_base_name
     } else {
         version = rootProject.base_version + "-PR." + System.getenv("PR_NUM") + "." + runNumber

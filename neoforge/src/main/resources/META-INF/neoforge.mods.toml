@@ -17,14 +17,14 @@ license = "LGPL-3"
 [[dependencies.architectury]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.20.4,)"
+versionRange = "[1.20.5,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.architectury]]
 modId = "neoforge"
 type = "required"
-versionRange = "[20.4.77-beta,)"
+versionRange = "[20.5.0-alpha.24w14a,)"
 ordering = "NONE"
 side = "BOTH"
 
