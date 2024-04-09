@@ -44,12 +44,10 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
 import net.neoforged.neoforge.network.handling.ISynchronizedWorkHandler;
 import org.slf4j.Logger;
 
-@Mod.EventBusSubscriber(modid = ArchitecturyConstants.MOD_ID)
 public class NetworkManagerImpl {
     private static final Logger LOGGER = LogUtils.getLogger();
     
