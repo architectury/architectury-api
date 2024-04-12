@@ -53,7 +53,7 @@ public class EventHandlerImpl {
         ClientTickEvents.START_WORLD_TICK.register(instance -> ClientTickEvent.CLIENT_LEVEL_PRE.invoker().tick(instance));
         ClientTickEvents.END_WORLD_TICK.register(instance -> ClientTickEvent.CLIENT_LEVEL_POST.invoker().tick(instance));
         
-        ItemTooltipCallback.EVENT.register((itemStack, tooltipFlag, list) -> ClientTooltipEvent.ITEM.invoker().append(itemStack, list, tooltipFlag));
+        ItemTooltipCallback.EVENT.register((itemStack, tooltipContext, tooltipFlag, list) -> ClientTooltipEvent.ITEM.invoker().append(itemStack, list, tooltipContext, tooltipFlag));
         HudRenderCallback.EVENT.register((graphics, tickDelta) -> ClientGuiEvent.RENDER_HUD.invoker().renderHud(graphics, tickDelta));
         
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, access) -> {

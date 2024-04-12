@@ -38,7 +38,7 @@ import java.util.List;
 @Environment(EnvType.CLIENT)
 public interface ClientTooltipEvent {
     /**
-     * @see Item#append(ItemStack, List, TooltipFlag)
+     * @see Item#append(ItemStack, List, net.minecraft.world.item.Item.TooltipContext, TooltipFlag)
      */
     Event<Item> ITEM = EventFactory.createLoop();
     /**
@@ -73,11 +73,12 @@ public interface ClientTooltipEvent {
          * Equivalent to Forge's {@code ItemTooltipEvent} event and
          * Fabric's {@code ItemTooltipCallback}.
          *
-         * @param stack The rendered stack.
-         * @param lines The mutable list of tooltip components.
-         * @param flag  A flag indicating if advanced mode is active.
+         * @param stack          The rendered stack.
+         * @param lines          The mutable list of tooltip components.
+         * @param tooltipContext The tooltip context.
+         * @param flag           A flag indicating if advanced mode is active.
          */
-        void append(ItemStack stack, List<Component> lines, TooltipFlag flag);
+        void append(ItemStack stack, List<Component> lines, net.minecraft.world.item.Item.TooltipContext tooltipContext, TooltipFlag flag);
     }
     
     @Environment(EnvType.CLIENT)

@@ -51,6 +51,7 @@ public final class NetworkManager {
      * For S2C types, {@link #registerReceiver} should be called on the client side,
      * while {@link #registerS2CPayloadType} should be called on the server side.
      */
+    @Deprecated(forRemoval = true)
     public static void registerS2CPayloadType(ResourceLocation id) {
         NetworkAggregator.registerS2CType(id, List.of());
     }
@@ -67,6 +68,7 @@ public final class NetworkManager {
      * For S2C types, {@link #registerReceiver} should be called on the client side,
      * while {@link #registerS2CPayloadType} should be called on the server side.
      */
+    @Deprecated(forRemoval = true)
     public static void registerS2CPayloadType(ResourceLocation id, List<PacketTransformer> packetTransformers) {
         NetworkAggregator.registerS2CType(id, packetTransformers);
     }
@@ -79,11 +81,13 @@ public final class NetworkManager {
         NetworkAggregator.registerS2CType(type, codec, packetTransformers);
     }
     
+    @Deprecated(forRemoval = true)
     public static void registerReceiver(Side side, ResourceLocation id, NetworkReceiver<RegistryFriendlyByteBuf> receiver) {
         registerReceiver(side, id, Collections.emptyList(), receiver);
     }
     
     @ApiStatus.Experimental
+    @Deprecated(forRemoval = true)
     public static void registerReceiver(Side side, ResourceLocation id, List<PacketTransformer> packetTransformers, NetworkReceiver<RegistryFriendlyByteBuf> receiver) {
         NetworkAggregator.registerReceiver(side, id, packetTransformers, receiver);
     }
@@ -97,20 +101,33 @@ public final class NetworkManager {
         NetworkAggregator.registerReceiver(side, id, codec, packetTransformers, receiver);
     }
     
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static Packet<?> toPacket(Side side, ResourceLocation id, RegistryFriendlyByteBuf buf) {
         SinglePacketCollector sink = new SinglePacketCollector(null);
         collectPackets(sink, side, id, buf);
         return sink.getPacket();
     }
     
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static List<Packet<?>> toPackets(Side side, ResourceLocation id, RegistryFriendlyByteBuf buf) {
         PacketCollector sink = new PacketCollector(null);
         collectPackets(sink, side, id, buf);
         return sink.collect();
     }
     
+    public static <T extends CustomPacketPayload> Packet<?> toPacket(Side side, T payload, RegistryAccess access) {
+        SinglePacketCollector sink = new SinglePacketCollector(null);
+        collectPackets(sink, side, payload, access);
+        return sink.getPacket();
+    }
+    
+    public static <T extends CustomPacketPayload> List<Packet<?>> toPackets(Side side, T payload, RegistryAccess access) {
+        PacketCollector sink = new PacketCollector(null);
+        collectPackets(sink, side, payload, access);
+        return sink.collect();
+    }
+    
+    @Deprecated(forRemoval = true)
     public static void collectPackets(PacketSink sink, Side side, ResourceLocation id, RegistryFriendlyByteBuf buf) {
         NetworkAggregator.collectPackets(sink, side, id, buf);
     }
@@ -119,15 +136,18 @@ public final class NetworkManager {
         NetworkAggregator.collectPackets(sink, side, payload, access);
     }
     
+    @Deprecated(forRemoval = true)
     public static void sendToPlayer(ServerPlayer player, ResourceLocation id, RegistryFriendlyByteBuf buf) {
         collectPackets(PacketSink.ofPlayer(player), serverToClient(), id, buf);
     }
     
+    @Deprecated(forRemoval = true)
     public static void sendToPlayers(Iterable<ServerPlayer> players, ResourceLocation id, RegistryFriendlyByteBuf buf) {
         collectPackets(PacketSink.ofPlayers(players), serverToClient(), id, buf);
     }
     
     @Environment(EnvType.CLIENT)
+    @Deprecated(forRemoval = true)
     public static void sendToServer(ResourceLocation id, RegistryFriendlyByteBuf buf) {
         collectPackets(PacketSink.client(), clientToServer(), id, buf);
     }
@@ -158,6 +178,15 @@ public final class NetworkManager {
     @ExpectPlatform
     public static boolean canPlayerReceive(ServerPlayer player, ResourceLocation id) {
         throw new AssertionError();
+    }
+    
+    @Environment(EnvType.CLIENT)
+    public static boolean canServerReceive(CustomPacketPayload.Type<?> type) {
+        return canServerReceive(type.id());
+    }
+    
+    public static boolean canPlayerReceive(ServerPlayer player, CustomPacketPayload.Type<?> type) {
+        return canPlayerReceive(player, type.id());
     }
     
     /**

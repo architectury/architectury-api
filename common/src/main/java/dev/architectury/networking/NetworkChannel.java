@@ -47,6 +47,7 @@ import java.util.function.Supplier;
 /**
  * Forge {@code SimpleChannel} like network wrapper of {@link NetworkManager}.
  */
+@Deprecated(forRemoval = true)
 public final class NetworkChannel {
     private final ResourceLocation id;
     private final Map<Class<?>, MessageInfo<?>> encoders = Maps.newHashMap();

@@ -20,51 +20,42 @@
 package dev.architectury.networking;
 
 import dev.architectury.extensions.network.EntitySpawnExtension;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+
+import java.util.UUID;
 
 /**
  * @see net.minecraft.network.protocol.game.ClientboundAddEntityPacket
  */
 public class SpawnEntityPacket {
     private static final ResourceLocation PACKET_ID = new ResourceLocation("architectury", "spawn_entity_packet");
+    private static final CustomPacketPayload.Type<PacketPayload> PACKET_TYPE = new CustomPacketPayload.Type<>(PACKET_ID);
+    private static final StreamCodec<RegistryFriendlyByteBuf, PacketPayload> PACKET_CODEC = CustomPacketPayload.codec(PacketPayload::write, PacketPayload::new);
     
     public static Packet<ClientGamePacketListener> create(Entity entity) {
         if (entity.level().isClientSide()) {
             throw new IllegalStateException("SpawnPacketUtil.create called on the logical client!");
         }
-        var buffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), entity.registryAccess());
-        buffer.writeVarInt(BuiltInRegistries.ENTITY_TYPE.getId(entity.getType()));
-        buffer.writeUUID(entity.getUUID());
-        buffer.writeVarInt(entity.getId());
-        var position = entity.position();
-        buffer.writeDouble(position.x);
-        buffer.writeDouble(position.y);
-        buffer.writeDouble(position.z);
-        buffer.writeFloat(entity.getXRot());
-        buffer.writeFloat(entity.getYRot());
-        buffer.writeFloat(entity.getYHeadRot());
-        var deltaMovement = entity.getDeltaMovement();
-        buffer.writeDouble(deltaMovement.x);
-        buffer.writeDouble(deltaMovement.y);
-        buffer.writeDouble(deltaMovement.z);
-        if (entity instanceof EntitySpawnExtension ext) {
-            ext.saveAdditionalSpawnData(buffer);
-        }
-        return (Packet<ClientGamePacketListener>) NetworkManager.toPacket(NetworkManager.s2c(), PACKET_ID, buffer);
+        return (Packet<ClientGamePacketListener>) NetworkManager.toPacket(NetworkManager.s2c(), new PacketPayload(entity), entity.registryAccess());
     }
     
     public static void register() {
-        NetworkManager.registerS2CPayloadType(PACKET_ID);
+        NetworkManager.registerS2CPayloadType(PACKET_TYPE, PACKET_CODEC);
     }
     
     
@@ -72,52 +63,86 @@ public class SpawnEntityPacket {
     public static class Client {
         @Environment(EnvType.CLIENT)
         public static void register() {
-            NetworkManager.registerReceiver(NetworkManager.s2c(), PACKET_ID, Client::receive);
+            NetworkManager.registerReceiver(NetworkManager.s2c(), PACKET_TYPE, PACKET_CODEC, Client::receive);
         }
         
         @Environment(EnvType.CLIENT)
-        public static void receive(FriendlyByteBuf buf, NetworkManager.PacketContext context) {
-            var entityTypeId = buf.readVarInt();
-            var uuid = buf.readUUID();
-            var id = buf.readVarInt();
-            var x = buf.readDouble();
-            var y = buf.readDouble();
-            var z = buf.readDouble();
-            var xRot = buf.readFloat();
-            var yRot = buf.readFloat();
-            var yHeadRot = buf.readFloat();
-            var deltaX = buf.readDouble();
-            var deltaY = buf.readDouble();
-            var deltaZ = buf.readDouble();
-            // Retain this buffer so we can use it in the queued task (EntitySpawnExtension)
-            buf.retain();
+        private static void receive(PacketPayload payload, NetworkManager.PacketContext context) {
             context.queue(() -> {
-                var entityType = BuiltInRegistries.ENTITY_TYPE.byId(entityTypeId);
-                if (entityType == null) {
-                    throw new IllegalStateException("Entity type (" + entityTypeId + ") is unknown, spawning at (" + x + ", " + y + ", " + z + ")");
-                }
                 if (Minecraft.getInstance().level == null) {
                     throw new IllegalStateException("Client world is null!");
                 }
-                var entity = entityType.create(Minecraft.getInstance().level);
+                var entity = payload.entityType().create(Minecraft.getInstance().level);
                 if (entity == null) {
                     throw new IllegalStateException("Created entity is null!");
                 }
-                entity.setUUID(uuid);
-                entity.setId(id);
-                entity.syncPacketPositionCodec(x, y, z);
-                entity.moveTo(x, y, z);
-                entity.setXRot(xRot);
-                entity.setYRot(yRot);
-                entity.setYHeadRot(yHeadRot);
-                entity.setYBodyRot(yHeadRot);
+                entity.setUUID(payload.uuid());
+                entity.setId(payload.id());
+                entity.syncPacketPositionCodec(payload.x(), payload.y(), payload.z());
+                entity.moveTo(payload.x(), payload.y(), payload.z());
+                entity.setXRot(payload.xRot());
+                entity.setYRot(payload.yRot());
+                entity.setYHeadRot(payload.yHeadRot());
+                entity.setYBodyRot(payload.yHeadRot());
                 if (entity instanceof EntitySpawnExtension ext) {
+                    RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(payload.data()), context.registryAccess());
                     ext.loadAdditionalSpawnData(buf);
+                    buf.release();
                 }
-                buf.release();
                 Minecraft.getInstance().level.addEntity(entity);
-                entity.lerpMotion(deltaX, deltaY, deltaZ);
+                entity.lerpMotion(payload.deltaX(), payload.deltaY(), payload.deltaZ());
             });
+        }
+    }
+    
+    private record PacketPayload(EntityType<?> entityType, UUID uuid, int id, double x, double y, double z, float xRot,
+                                 float yRot,
+                                 float yHeadRot,
+                                 double deltaX, double deltaY, double deltaZ,
+                                 byte[] data) implements CustomPacketPayload {
+        public PacketPayload(RegistryFriendlyByteBuf buf) {
+            this(ByteBufCodecs.registry(Registries.ENTITY_TYPE).decode(buf), buf.readUUID(), buf.readVarInt(), buf.readDouble(), buf.readDouble(), buf.readDouble(),
+                    buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readDouble(), buf.readDouble(), buf.readDouble(),
+                    buf.readByteArray());
+        }
+        
+        public PacketPayload(Entity entity) {
+            this(entity.getType(), entity.getUUID(), entity.getId(), entity.getX(),
+                    entity.getY(), entity.getZ(), entity.getXRot(), entity.getYRot(), entity.getYHeadRot(),
+                    entity.getDeltaMovement().x, entity.getDeltaMovement().y, entity.getDeltaMovement().z, saveExtra(entity));
+        }
+        
+        private static byte[] saveExtra(Entity entity) {
+            FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+            try {
+                if (entity instanceof EntitySpawnExtension ext) {
+                    ext.saveAdditionalSpawnData(buf);
+                }
+                return ByteBufUtil.getBytes(buf);
+            } finally {
+                buf.release();
+            }
+        }
+        
+        public void write(RegistryFriendlyByteBuf buf) {
+            ByteBufCodecs.registry(Registries.ENTITY_TYPE).encode(buf, entityType);
+            buf.writeUUID(uuid);
+            buf.writeVarInt(id);
+            buf.writeDouble(x);
+            buf.writeDouble(y);
+            buf.writeDouble(z);
+            buf.writeFloat(xRot);
+            buf.writeFloat(yRot);
+            buf.writeFloat(yHeadRot);
+            buf.writeDouble(deltaX);
+            buf.writeDouble(deltaY);
+            buf.writeDouble(deltaZ);
+            buf.writeByteArray(data);
+        }
+        
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return PACKET_TYPE;
         }
     }
 }
