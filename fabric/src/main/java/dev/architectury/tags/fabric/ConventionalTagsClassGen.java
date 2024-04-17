@@ -150,8 +150,8 @@ public class ConventionalTagsClassGen {
                     }
                 }
                 {
-                    String str = "    public static TagKey<%s> impl%s() {\n        return %s.%s;\n    }\n";
-                    String str2 = "    public static TagKey<%s> impl%s() {\n        return null;\n    }\n";
+                    String str = "    public static TagKey<%s> impl_%s() {\n        return %s.%s;\n    }\n";
+                    String str2 = "    public static TagKey<%s> impl_%s() {\n        return null;\n    }\n";
                     if (pair.getFirst() != null) {
                         fabricClass.append(str.formatted(categoryShortName2, fieldName, pair.getFirst().tagClassName.replaceAll("\\$", "."), pair.getFirst().tagFieldName));
                     } else {
