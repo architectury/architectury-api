@@ -137,12 +137,14 @@ public class BiomeTags {
     private static TagKey<Biome> impl_IS_HOT_NETHER() {
         throw new AssertionError();
     }
-    @PlatformOnly("fabric")
+    // Returns null on NeoForge
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Biome> impl_IS_TEMPERATE() {
         throw new AssertionError();
     }
-    @PlatformOnly("fabric")
+    // Returns null on NeoForge
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Biome> impl_IS_TEMPERATE_OVERWORLD() {
         throw new AssertionError();
@@ -417,77 +419,92 @@ public class BiomeTags {
     private static TagKey<Biome> impl_IS_OUTER_END_ISLAND() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Biome> impl_IS_HOT_END() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Biome> impl_IS_COLD_NETHER() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Biome> impl_IS_SPARSE_VEGETATION_NETHER() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Biome> impl_IS_SPARSE_VEGETATION_END() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Biome> impl_IS_DENSE_VEGETATION_NETHER() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Biome> impl_IS_DENSE_VEGETATION_END() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Biome> impl_IS_WET_NETHER() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Biome> impl_IS_WET_END() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Biome> impl_IS_LUSH() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Biome> impl_IS_MAGICAL() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Biome> impl_IS_RARE() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Biome> impl_IS_PLATEAU() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Biome> impl_IS_MODIFIED() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Biome> impl_IS_SPOOKY() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Biome> impl_IS_SANDY() {
         throw new AssertionError();

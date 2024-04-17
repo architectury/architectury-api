@@ -49,32 +49,38 @@ public class FluidTags {
     private static TagKey<Fluid> impl_HIDDEN_FROM_RECIPE_VIEWERS() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Fluid> impl_GASEOUS() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Fluid> impl_POTION() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Fluid> impl_SUSPICIOUS_STEW() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Fluid> impl_MUSHROOM_STEW() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Fluid> impl_RABBIT_STEW() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Fluid> impl_BEETROOT_SOUP() {
         throw new AssertionError();

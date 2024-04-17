@@ -33,6 +33,15 @@ public class ItemTagsImpl {
     public static TagKey<Item> implTOOLS_BRUSHES() {
         return net.neoforged.neoforge.common.Tags.Items.TOOLS_BRUSHES;
     }
+    public static TagKey<Item> implTOOLS_MELEE_WEAPONS() {
+        return null;
+    }
+    public static TagKey<Item> implTOOLS_RANGED_WEAPONS() {
+        return null;
+    }
+    public static TagKey<Item> implTOOLS_MINING_TOOLS() {
+        return null;
+    }
     public static TagKey<Item> implARMORS() {
         return net.neoforged.neoforge.common.Tags.Items.ARMORS;
     }
@@ -129,6 +138,12 @@ public class ItemTagsImpl {
     public static TagKey<Item> implDUSTS_GLOWSTONE() {
         return net.neoforged.neoforge.common.Tags.Items.DUSTS_GLOWSTONE;
     }
+    public static TagKey<Item> implCOAL() {
+        return null;
+    }
+    public static TagKey<Item> implPOTIONS() {
+        return null;
+    }
     public static TagKey<Item> implFOODS() {
         return net.neoforged.neoforge.common.Tags.Items.FOODS;
     }
@@ -171,6 +186,21 @@ public class ItemTagsImpl {
     public static TagKey<Item> implFOODS_FOOD_POISONING() {
         return net.neoforged.neoforge.common.Tags.Items.FOODS_FOOD_POISONING;
     }
+    public static TagKey<Item> implBUCKETS_WATER() {
+        return null;
+    }
+    public static TagKey<Item> implBUCKETS_ENTITY_WATER() {
+        return null;
+    }
+    public static TagKey<Item> implBUCKETS_LAVA() {
+        return null;
+    }
+    public static TagKey<Item> implBUCKETS_MILK() {
+        return null;
+    }
+    public static TagKey<Item> implBUCKETS_EMPTY() {
+        return null;
+    }
     public static TagKey<Item> implBARRELS() {
         return net.neoforged.neoforge.common.Tags.Items.BARRELS;
     }
@@ -191,6 +221,9 @@ public class ItemTagsImpl {
     }
     public static TagKey<Item> implGLASS_PANES() {
         return net.neoforged.neoforge.common.Tags.Items.GLASS_PANES;
+    }
+    public static TagKey<Item> implSHULKER_BOXES() {
+        return null;
     }
     public static TagKey<Item> implBUDDING_BLOCKS() {
         return net.neoforged.neoforge.common.Tags.Items.BUDDING_BLOCKS;

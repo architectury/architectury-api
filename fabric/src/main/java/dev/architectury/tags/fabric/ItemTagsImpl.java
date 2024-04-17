@@ -447,4 +447,187 @@ public class ItemTagsImpl {
     public static TagKey<Item> implHIDDEN_FROM_RECIPE_VIEWERS() {
         return net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.HIDDEN_FROM_RECIPE_VIEWERS;
     }
+    public static TagKey<Item> implBONES() {
+        return null;
+    }
+    public static TagKey<Item> implCHESTS_ENDER() {
+        return null;
+    }
+    public static TagKey<Item> implCHESTS_TRAPPED() {
+        return null;
+    }
+    public static TagKey<Item> implCOBBLESTONES_NORMAL() {
+        return null;
+    }
+    public static TagKey<Item> implCOBBLESTONES_INFESTED() {
+        return null;
+    }
+    public static TagKey<Item> implCOBBLESTONES_MOSSY() {
+        return null;
+    }
+    public static TagKey<Item> implCOBBLESTONES_DEEPSLATE() {
+        return null;
+    }
+    public static TagKey<Item> implCROPS() {
+        return null;
+    }
+    public static TagKey<Item> implCROPS_BEETROOT() {
+        return null;
+    }
+    public static TagKey<Item> implCROPS_CARROT() {
+        return null;
+    }
+    public static TagKey<Item> implCROPS_NETHER_WART() {
+        return null;
+    }
+    public static TagKey<Item> implCROPS_POTATO() {
+        return null;
+    }
+    public static TagKey<Item> implCROPS_WHEAT() {
+        return null;
+    }
+    public static TagKey<Item> implEGGS() {
+        return null;
+    }
+    public static TagKey<Item> implEND_STONES() {
+        return null;
+    }
+    public static TagKey<Item> implENDER_PEARLS() {
+        return null;
+    }
+    public static TagKey<Item> implFEATHERS() {
+        return null;
+    }
+    public static TagKey<Item> implFENCE_GATES() {
+        return null;
+    }
+    public static TagKey<Item> implFENCE_GATES_WOODEN() {
+        return null;
+    }
+    public static TagKey<Item> implFENCES() {
+        return null;
+    }
+    public static TagKey<Item> implFENCES_NETHER_BRICK() {
+        return null;
+    }
+    public static TagKey<Item> implFENCES_WOODEN() {
+        return null;
+    }
+    public static TagKey<Item> implGLASS_BLOCKS_COLORLESS() {
+        return null;
+    }
+    public static TagKey<Item> implGLASS_BLOCKS_CHEAP() {
+        return null;
+    }
+    public static TagKey<Item> implGLASS_BLOCKS_TINTED() {
+        return null;
+    }
+    public static TagKey<Item> implGLASS_PANES_COLORLESS() {
+        return null;
+    }
+    public static TagKey<Item> implGRAVEL() {
+        return null;
+    }
+    public static TagKey<Item> implGUNPOWDER() {
+        return null;
+    }
+    public static TagKey<Item> implLEATHER() {
+        return null;
+    }
+    public static TagKey<Item> implMUSHROOMS() {
+        return null;
+    }
+    public static TagKey<Item> implNETHER_STARS() {
+        return null;
+    }
+    public static TagKey<Item> implNETHERRACK() {
+        return null;
+    }
+    public static TagKey<Item> implNUGGETS_GOLD() {
+        return null;
+    }
+    public static TagKey<Item> implNUGGETS_IRON() {
+        return null;
+    }
+    public static TagKey<Item> implOBSIDIANS() {
+        return null;
+    }
+    public static TagKey<Item> implORE_BEARING_GROUND_DEEPSLATE() {
+        return null;
+    }
+    public static TagKey<Item> implORE_BEARING_GROUND_NETHERRACK() {
+        return null;
+    }
+    public static TagKey<Item> implORE_BEARING_GROUND_STONE() {
+        return null;
+    }
+    public static TagKey<Item> implORE_RATES_DENSE() {
+        return null;
+    }
+    public static TagKey<Item> implORE_RATES_SINGULAR() {
+        return null;
+    }
+    public static TagKey<Item> implORE_RATES_SPARSE() {
+        return null;
+    }
+    public static TagKey<Item> implORES_COAL() {
+        return null;
+    }
+    public static TagKey<Item> implORES_COPPER() {
+        return null;
+    }
+    public static TagKey<Item> implORES_DIAMOND() {
+        return null;
+    }
+    public static TagKey<Item> implORES_EMERALD() {
+        return null;
+    }
+    public static TagKey<Item> implORES_GOLD() {
+        return null;
+    }
+    public static TagKey<Item> implORES_IRON() {
+        return null;
+    }
+    public static TagKey<Item> implORES_LAPIS() {
+        return null;
+    }
+    public static TagKey<Item> implORES_REDSTONE() {
+        return null;
+    }
+    public static TagKey<Item> implORES_IN_GROUND_DEEPSLATE() {
+        return null;
+    }
+    public static TagKey<Item> implORES_IN_GROUND_NETHERRACK() {
+        return null;
+    }
+    public static TagKey<Item> implORES_IN_GROUND_STONE() {
+        return null;
+    }
+    public static TagKey<Item> implSANDS() {
+        return null;
+    }
+    public static TagKey<Item> implSANDS_COLORLESS() {
+        return null;
+    }
+    public static TagKey<Item> implSANDS_RED() {
+        return null;
+    }
+    public static TagKey<Item> implSEEDS() {
+        return null;
+    }
+    public static TagKey<Item> implSEEDS_BEETROOT() {
+        return null;
+    }
+    public static TagKey<Item> implSEEDS_MELON() {
+        return null;
+    }
+    public static TagKey<Item> implSEEDS_PUMPKIN() {
+        return null;
+    }
+    public static TagKey<Item> implSEEDS_WHEAT() {
+        return null;
+    }
+    public static TagKey<Item> implSLIMEBALLS() {
+        return null;
+    }
 }

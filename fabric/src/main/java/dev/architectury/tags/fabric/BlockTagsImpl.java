@@ -204,4 +204,121 @@ public class BlockTagsImpl {
     public static TagKey<Block> implHIDDEN_FROM_RECIPE_VIEWERS() {
         return net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.HIDDEN_FROM_RECIPE_VIEWERS;
     }
+    public static TagKey<Block> implCHESTS_ENDER() {
+        return null;
+    }
+    public static TagKey<Block> implCHESTS_TRAPPED() {
+        return null;
+    }
+    public static TagKey<Block> implCOBBLESTONES_NORMAL() {
+        return null;
+    }
+    public static TagKey<Block> implCOBBLESTONES_INFESTED() {
+        return null;
+    }
+    public static TagKey<Block> implCOBBLESTONES_MOSSY() {
+        return null;
+    }
+    public static TagKey<Block> implCOBBLESTONES_DEEPSLATE() {
+        return null;
+    }
+    public static TagKey<Block> implEND_STONES() {
+        return null;
+    }
+    public static TagKey<Block> implFENCE_GATES() {
+        return null;
+    }
+    public static TagKey<Block> implFENCE_GATES_WOODEN() {
+        return null;
+    }
+    public static TagKey<Block> implFENCES() {
+        return null;
+    }
+    public static TagKey<Block> implFENCES_NETHER_BRICK() {
+        return null;
+    }
+    public static TagKey<Block> implFENCES_WOODEN() {
+        return null;
+    }
+    public static TagKey<Block> implGLASS_BLOCKS_COLORLESS() {
+        return null;
+    }
+    public static TagKey<Block> implGLASS_BLOCKS_CHEAP() {
+        return null;
+    }
+    public static TagKey<Block> implGLASS_BLOCKS_TINTED() {
+        return null;
+    }
+    public static TagKey<Block> implGLASS_PANES_COLORLESS() {
+        return null;
+    }
+    public static TagKey<Block> implGRAVEL() {
+        return null;
+    }
+    public static TagKey<Block> implNETHERRACK() {
+        return null;
+    }
+    public static TagKey<Block> implOBSIDIANS() {
+        return null;
+    }
+    public static TagKey<Block> implORE_BEARING_GROUND_DEEPSLATE() {
+        return null;
+    }
+    public static TagKey<Block> implORE_BEARING_GROUND_NETHERRACK() {
+        return null;
+    }
+    public static TagKey<Block> implORE_BEARING_GROUND_STONE() {
+        return null;
+    }
+    public static TagKey<Block> implORE_RATES_DENSE() {
+        return null;
+    }
+    public static TagKey<Block> implORE_RATES_SINGULAR() {
+        return null;
+    }
+    public static TagKey<Block> implORE_RATES_SPARSE() {
+        return null;
+    }
+    public static TagKey<Block> implORES_COAL() {
+        return null;
+    }
+    public static TagKey<Block> implORES_COPPER() {
+        return null;
+    }
+    public static TagKey<Block> implORES_DIAMOND() {
+        return null;
+    }
+    public static TagKey<Block> implORES_EMERALD() {
+        return null;
+    }
+    public static TagKey<Block> implORES_GOLD() {
+        return null;
+    }
+    public static TagKey<Block> implORES_IRON() {
+        return null;
+    }
+    public static TagKey<Block> implORES_LAPIS() {
+        return null;
+    }
+    public static TagKey<Block> implORES_REDSTONE() {
+        return null;
+    }
+    public static TagKey<Block> implORES_IN_GROUND_DEEPSLATE() {
+        return null;
+    }
+    public static TagKey<Block> implORES_IN_GROUND_NETHERRACK() {
+        return null;
+    }
+    public static TagKey<Block> implORES_IN_GROUND_STONE() {
+        return null;
+    }
+    public static TagKey<Block> implSANDS() {
+        return null;
+    }
+    public static TagKey<Block> implSANDS_COLORLESS() {
+        return null;
+    }
+    public static TagKey<Block> implSANDS_RED() {
+        return null;
+    }
 }

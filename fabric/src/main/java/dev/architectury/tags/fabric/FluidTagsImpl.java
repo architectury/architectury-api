@@ -18,4 +18,22 @@ public class FluidTagsImpl {
     public static TagKey<Fluid> implHIDDEN_FROM_RECIPE_VIEWERS() {
         return net.fabricmc.fabric.api.tag.convention.v2.ConventionalFluidTags.HIDDEN_FROM_RECIPE_VIEWERS;
     }
+    public static TagKey<Fluid> implGASEOUS() {
+        return null;
+    }
+    public static TagKey<Fluid> implPOTION() {
+        return null;
+    }
+    public static TagKey<Fluid> implSUSPICIOUS_STEW() {
+        return null;
+    }
+    public static TagKey<Fluid> implMUSHROOM_STEW() {
+        return null;
+    }
+    public static TagKey<Fluid> implRABBIT_STEW() {
+        return null;
+    }
+    public static TagKey<Fluid> implBEETROOT_SOUP() {
+        return null;
+    }
 }

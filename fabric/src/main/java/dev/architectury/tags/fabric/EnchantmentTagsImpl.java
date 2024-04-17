@@ -21,4 +21,7 @@ public class EnchantmentTagsImpl {
     public static TagKey<Enchantment> implENTITY_DEFENSE_ENHANCEMENT() {
         return net.fabricmc.fabric.api.tag.convention.v2.ConventionalEnchantmentTags.ENTITY_DEFENSE_ENHANCEMENT;
     }
+    public static TagKey<Enchantment> implENTITY_DEFENSE_ENHANCEMENTS() {
+        return null;
+    }
 }

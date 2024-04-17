@@ -24,6 +24,12 @@ public class BiomeTagsImpl {
     public static TagKey<Biome> implIS_HOT_NETHER() {
         return net.neoforged.neoforge.common.Tags.Biomes.IS_HOT_NETHER;
     }
+    public static TagKey<Biome> implIS_TEMPERATE() {
+        return null;
+    }
+    public static TagKey<Biome> implIS_TEMPERATE_OVERWORLD() {
+        return null;
+    }
     public static TagKey<Biome> implIS_COLD() {
         return net.neoforged.neoforge.common.Tags.Biomes.IS_COLD;
     }

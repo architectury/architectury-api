@@ -41,12 +41,14 @@ public class EnchantmentTags {
     private static TagKey<Enchantment> impl_ENTITY_AUXILIARY_MOVEMENT_ENHANCEMENTS() {
         throw new AssertionError();
     }
-    @PlatformOnly("fabric")
+    // Returns null on NeoForge
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Enchantment> impl_ENTITY_DEFENSE_ENHANCEMENT() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Enchantment> impl_ENTITY_DEFENSE_ENHANCEMENTS() {
         throw new AssertionError();

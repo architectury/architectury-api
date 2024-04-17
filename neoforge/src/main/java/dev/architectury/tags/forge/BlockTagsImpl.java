@@ -39,6 +39,9 @@ public class BlockTagsImpl {
     public static TagKey<Block> implGLASS_PANES() {
         return net.neoforged.neoforge.common.Tags.Blocks.GLASS_PANES;
     }
+    public static TagKey<Block> implSHULKER_BOXES() {
+        return null;
+    }
     public static TagKey<Block> implBUDDING_BLOCKS() {
         return net.neoforged.neoforge.common.Tags.Blocks.BUDDING_BLOCKS;
     }

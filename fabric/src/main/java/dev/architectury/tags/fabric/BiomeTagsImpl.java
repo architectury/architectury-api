@@ -192,4 +192,49 @@ public class BiomeTagsImpl {
     public static TagKey<Biome> implIS_OUTER_END_ISLAND() {
         return net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags.IS_OUTER_END_ISLAND;
     }
+    public static TagKey<Biome> implIS_HOT_END() {
+        return null;
+    }
+    public static TagKey<Biome> implIS_COLD_NETHER() {
+        return null;
+    }
+    public static TagKey<Biome> implIS_SPARSE_VEGETATION_NETHER() {
+        return null;
+    }
+    public static TagKey<Biome> implIS_SPARSE_VEGETATION_END() {
+        return null;
+    }
+    public static TagKey<Biome> implIS_DENSE_VEGETATION_NETHER() {
+        return null;
+    }
+    public static TagKey<Biome> implIS_DENSE_VEGETATION_END() {
+        return null;
+    }
+    public static TagKey<Biome> implIS_WET_NETHER() {
+        return null;
+    }
+    public static TagKey<Biome> implIS_WET_END() {
+        return null;
+    }
+    public static TagKey<Biome> implIS_LUSH() {
+        return null;
+    }
+    public static TagKey<Biome> implIS_MAGICAL() {
+        return null;
+    }
+    public static TagKey<Biome> implIS_RARE() {
+        return null;
+    }
+    public static TagKey<Biome> implIS_PLATEAU() {
+        return null;
+    }
+    public static TagKey<Biome> implIS_MODIFIED() {
+        return null;
+    }
+    public static TagKey<Biome> implIS_SPOOKY() {
+        return null;
+    }
+    public static TagKey<Biome> implIS_SANDY() {
+        return null;
+    }
 }

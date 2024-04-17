@@ -136,9 +136,8 @@ public class ConventionalTagsClassGen {
                     String fabricStart = "    // Fabric only\n    public static TagKey<%s> %s = impl_%s();\n";
                     String neoForgeStart = "    // NeoForge only\n    public static TagKey<%s> %s = impl_%s();\n";
                     String bothEnd = "    @PlatformOnly({\"fabric\",\"neoforge\"})\n    @ExpectPlatform\n    private static TagKey<%s> impl_%s() {\n        throw new AssertionError();\n    }\n";
-                    String fabricEnd = "    @PlatformOnly(\"fabric\")\n    @ExpectPlatform\n    private static TagKey<%s> impl_%s() {\n        throw new AssertionError();\n    }\n";
-                    String neoForgeEnd = "    @PlatformOnly(\"neoforge\")\n    @ExpectPlatform\n    private static TagKey<%s> impl_%s() {\n        throw new AssertionError();\n    }\n";
-                    
+                    String fabricEnd = "    // Returns null on NeoForge\n    @PlatformOnly({\"fabric\",\"neoforge\"})\n    @ExpectPlatform\n    private static TagKey<%s> impl_%s() {\n        throw new AssertionError();\n    }\n";
+                    String neoForgeEnd = "    // Returns null on Fabric\n    @PlatformOnly({\"fabric\",\"neoforge\"})\n    @ExpectPlatform\n    private static TagKey<%s> impl_%s() {\n        throw new AssertionError();\n    }\n";
                     if (pair.getFirst() == null) {
                         commonClass.append(neoForgeStart.formatted(categoryShortName2, fieldName, fieldName));
                         commonClassEnd.append(neoForgeEnd.formatted(categoryShortName2, fieldName));
@@ -152,11 +151,16 @@ public class ConventionalTagsClassGen {
                 }
                 {
                     String str = "    public static TagKey<%s> impl%s() {\n        return %s.%s;\n    }\n";
+                    String str2 = "    public static TagKey<%s> impl%s() {\n        return null;\n    }\n";
                     if (pair.getFirst() != null) {
                         fabricClass.append(str.formatted(categoryShortName2, fieldName, pair.getFirst().tagClassName.replaceAll("\\$", "."), pair.getFirst().tagFieldName));
+                    } else {
+                        fabricClass.append(str2.formatted(categoryShortName2, fieldName));
                     }
                     if (pair.getSecond() != null) {
                         neoForgeClass.append(str.formatted(categoryShortName2, fieldName, pair.getSecond().tagClassName.replaceAll("\\$", "."), pair.getSecond().tagFieldName));
+                    } else {
+                        neoForgeClass.append(str2.formatted(categoryShortName2, fieldName));
                     }
                 }
             }

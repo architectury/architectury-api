@@ -213,7 +213,8 @@ public class BlockTags {
     private static TagKey<Block> impl_GLASS_PANES() {
         throw new AssertionError();
     }
-    @PlatformOnly("fabric")
+    // Returns null on NeoForge
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_SHULKER_BOXES() {
         throw new AssertionError();
@@ -488,197 +489,236 @@ public class BlockTags {
     private static TagKey<Block> impl_HIDDEN_FROM_RECIPE_VIEWERS() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_CHESTS_ENDER() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_CHESTS_TRAPPED() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_COBBLESTONES_NORMAL() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_COBBLESTONES_INFESTED() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_COBBLESTONES_MOSSY() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_COBBLESTONES_DEEPSLATE() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_END_STONES() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_FENCE_GATES() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_FENCE_GATES_WOODEN() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_FENCES() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_FENCES_NETHER_BRICK() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_FENCES_WOODEN() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_GLASS_BLOCKS_COLORLESS() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_GLASS_BLOCKS_CHEAP() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_GLASS_BLOCKS_TINTED() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_GLASS_PANES_COLORLESS() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_GRAVEL() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_NETHERRACK() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_OBSIDIANS() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_ORE_BEARING_GROUND_DEEPSLATE() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_ORE_BEARING_GROUND_NETHERRACK() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_ORE_BEARING_GROUND_STONE() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_ORE_RATES_DENSE() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_ORE_RATES_SINGULAR() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_ORE_RATES_SPARSE() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_ORES_COAL() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_ORES_COPPER() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_ORES_DIAMOND() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_ORES_EMERALD() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_ORES_GOLD() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_ORES_IRON() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_ORES_LAPIS() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_ORES_REDSTONE() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_ORES_IN_GROUND_DEEPSLATE() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_ORES_IN_GROUND_NETHERRACK() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_ORES_IN_GROUND_STONE() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_SANDS() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_SANDS_COLORLESS() {
         throw new AssertionError();
     }
-    @PlatformOnly("neoforge")
+    // Returns null on Fabric
+    @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
     private static TagKey<Block> impl_SANDS_RED() {
         throw new AssertionError();
