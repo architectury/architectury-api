@@ -19,9 +19,11 @@
 
 // AUTO GENERATED CLASS, DO NOT MANUALLY EDIT
 package dev.architectury.tags.forge;
+
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.levelgen.structure.Structure;
 
+@SuppressWarnings("unused")
 public class StructureTagsImpl {
     public static TagKey<Structure> impl_HIDDEN_FROM_DISPLAYERS() {
         return net.neoforged.neoforge.common.Tags.Structures.HIDDEN_FROM_DISPLAYERS;

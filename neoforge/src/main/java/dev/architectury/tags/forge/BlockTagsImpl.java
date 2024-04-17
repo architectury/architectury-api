@@ -19,9 +19,11 @@
 
 // AUTO GENERATED CLASS, DO NOT MANUALLY EDIT
 package dev.architectury.tags.forge;
+
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 
+@SuppressWarnings("unused")
 public class BlockTagsImpl {
     public static TagKey<Block> impl_STONES() {
         return net.neoforged.neoforge.common.Tags.Blocks.STONES;

@@ -19,9 +19,11 @@
 
 // AUTO GENERATED CLASS, DO NOT MANUALLY EDIT
 package dev.architectury.tags.forge;
+
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
+@SuppressWarnings("unused")
 public class ItemTagsImpl {
     public static TagKey<Item> impl_STONES() {
         return net.neoforged.neoforge.common.Tags.Items.STONES;

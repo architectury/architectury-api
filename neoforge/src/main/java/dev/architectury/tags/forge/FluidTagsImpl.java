@@ -19,9 +19,11 @@
 
 // AUTO GENERATED CLASS, DO NOT MANUALLY EDIT
 package dev.architectury.tags.forge;
+
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 
+@SuppressWarnings("unused")
 public class FluidTagsImpl {
     public static TagKey<Fluid> impl_LAVA() {
         return net.neoforged.neoforge.common.Tags.Fluids.LAVA;

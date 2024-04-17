@@ -122,32 +122,45 @@ public class ConventionalTagsClassGen {
             String importRegistryName = registryClass.getName().replaceAll("\\$", "/").replace("/", ".");
             String[] temp = entry.getKey().getPath().split("/");
             String categoryShortName = WordUtils.capitalize(temp[temp.length-1].replaceAll("_", " ")).replaceAll(" ", "");
+            Pair<ConventionalTag, ConventionalTag> masterPair = entry.getValue().get(0);
+            String leftName = masterPair.getFirst().tagClassName.replaceAll("\\$", ".");
+            String rightName = masterPair.getSecond().tagClassName.replaceAll("\\$", ".");
             commonClass.append(String.format("""
                     // AUTO GENERATED CLASS, DO NOT MANUALLY EDIT
                     package dev.architectury.tags;
+                    
                     import dev.architectury.injectables.annotations.ExpectPlatform;
                     import dev.architectury.injectables.annotations.PlatformOnly;
                     import net.minecraft.tags.TagKey;
                     import %s;
                     
-                    // Only available on Fabric and NeoForge
-                    @SuppressWarnings({"UnimplementedExpectPlatform", "unused"})
+                    /**
+                      * Convention Tags for %s.<br>
+                      * <b style="color:red;">WARNING! This class will not work on Forge!</b>
+                      * @see %s
+                      * @see %s
+                      */
+                    @SuppressWarnings("unused")
                     public class %sTags {
-                                        """, importRegistryName, categoryShortName));
+                                        """, importRegistryName, temp[temp.length-1].replaceAll("_", " ") + "s", leftName, rightName, categoryShortName));
             fabricClass.append(String.format("""
                     // AUTO GENERATED CLASS, DO NOT MANUALLY EDIT
                     package dev.architectury.tags.fabric;
+                    
                     import net.minecraft.tags.TagKey;
                     import %s;
                     
+                    @SuppressWarnings("unused")
                     public class %sTagsImpl {
                                         """, importRegistryName, categoryShortName));
             neoForgeClass.append(String.format("""
                     // AUTO GENERATED CLASS, DO NOT MANUALLY EDIT
                     package dev.architectury.tags.forge;
+                    
                     import net.minecraft.tags.TagKey;
                     import %s;
                     
+                    @SuppressWarnings("unused")
                     public class %sTagsImpl {
                                         """, importRegistryName, categoryShortName));
             StringBuilder commonClassEnd = new StringBuilder();

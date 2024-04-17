@@ -19,13 +19,19 @@
 
 // AUTO GENERATED CLASS, DO NOT MANUALLY EDIT
 package dev.architectury.tags;
+
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.injectables.annotations.PlatformOnly;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 
-// Only available on Fabric and NeoForge
-@SuppressWarnings({"UnimplementedExpectPlatform", "unused"})
+/**
+  * Convention Tags for fluids.<br>
+  * <b style="color:red;">WARNING! This class will not work on Forge!</b>
+  * @see net.fabricmc.fabric.api.tag.convention.v2.ConventionalFluidTags
+  * @see net.neoforged.neoforge.common.Tags.Fluids
+  */
+@SuppressWarnings("unused")
 public class FluidTags {
     public static TagKey<Fluid> LAVA = impl_LAVA();
     public static TagKey<Fluid> WATER = impl_WATER();

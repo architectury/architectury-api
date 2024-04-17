@@ -19,9 +19,11 @@
 
 // AUTO GENERATED CLASS, DO NOT MANUALLY EDIT
 package dev.architectury.tags.fabric;
+
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 
+@SuppressWarnings("unused")
 public class BlockTagsImpl {
     public static TagKey<Block> impl_STONES() {
         return net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.STONES;

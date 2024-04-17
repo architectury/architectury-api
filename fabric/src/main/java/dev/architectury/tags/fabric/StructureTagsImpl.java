@@ -19,9 +19,11 @@
 
 // AUTO GENERATED CLASS, DO NOT MANUALLY EDIT
 package dev.architectury.tags.fabric;
+
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.levelgen.structure.Structure;
 
+@SuppressWarnings("unused")
 public class StructureTagsImpl {
     public static TagKey<Structure> impl_HIDDEN_FROM_DISPLAYERS() {
         return net.fabricmc.fabric.api.tag.convention.v2.ConventionalStructureTags.HIDDEN_FROM_DISPLAYERS;

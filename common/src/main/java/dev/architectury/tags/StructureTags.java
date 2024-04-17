@@ -19,13 +19,19 @@
 
 // AUTO GENERATED CLASS, DO NOT MANUALLY EDIT
 package dev.architectury.tags;
+
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.injectables.annotations.PlatformOnly;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.levelgen.structure.Structure;
 
-// Only available on Fabric and NeoForge
-@SuppressWarnings({"UnimplementedExpectPlatform", "unused"})
+/**
+  * Convention Tags for structures.<br>
+  * <b style="color:red;">WARNING! This class will not work on Forge!</b>
+  * @see net.fabricmc.fabric.api.tag.convention.v2.ConventionalStructureTags
+  * @see net.neoforged.neoforge.common.Tags.Structures
+  */
+@SuppressWarnings("unused")
 public class StructureTags {
     public static TagKey<Structure> HIDDEN_FROM_DISPLAYERS = impl_HIDDEN_FROM_DISPLAYERS();
     public static TagKey<Structure> HIDDEN_FROM_LOCATOR_SELECTION = impl_HIDDEN_FROM_LOCATOR_SELECTION();

@@ -19,13 +19,19 @@
 
 // AUTO GENERATED CLASS, DO NOT MANUALLY EDIT
 package dev.architectury.tags;
+
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.injectables.annotations.PlatformOnly;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 
-// Only available on Fabric and NeoForge
-@SuppressWarnings({"UnimplementedExpectPlatform", "unused"})
+/**
+  * Convention Tags for entity types.<br>
+  * <b style="color:red;">WARNING! This class will not work on Forge!</b>
+  * @see net.fabricmc.fabric.api.tag.convention.v2.ConventionalEntityTypeTags
+  * @see net.neoforged.neoforge.common.Tags.EntityTypes
+  */
+@SuppressWarnings("unused")
 public class EntityTypeTags {
     public static TagKey<EntityType<?>> BOSSES = impl_BOSSES();
     public static TagKey<EntityType<?>> MINECARTS = impl_MINECARTS();

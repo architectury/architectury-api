@@ -19,9 +19,11 @@
 
 // AUTO GENERATED CLASS, DO NOT MANUALLY EDIT
 package dev.architectury.tags.forge;
+
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.enchantment.Enchantment;
 
+@SuppressWarnings("unused")
 public class EnchantmentTagsImpl {
     public static TagKey<Enchantment> impl_INCREASE_BLOCK_DROPS() {
         return net.neoforged.neoforge.common.Tags.Enchantments.INCREASE_BLOCK_DROPS;

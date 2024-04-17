@@ -19,13 +19,19 @@
 
 // AUTO GENERATED CLASS, DO NOT MANUALLY EDIT
 package dev.architectury.tags;
+
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.injectables.annotations.PlatformOnly;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 
-// Only available on Fabric and NeoForge
-@SuppressWarnings({"UnimplementedExpectPlatform", "unused"})
+/**
+  * Convention Tags for blocks.<br>
+  * <b style="color:red;">WARNING! This class will not work on Forge!</b>
+  * @see net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags
+  * @see net.neoforged.neoforge.common.Tags.Blocks
+  */
+@SuppressWarnings("unused")
 public class BlockTags {
     public static TagKey<Block> STONES = impl_STONES();
     public static TagKey<Block> COBBLESTONES = impl_COBBLESTONES();

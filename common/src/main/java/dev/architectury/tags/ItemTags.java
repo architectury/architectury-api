@@ -19,13 +19,19 @@
 
 // AUTO GENERATED CLASS, DO NOT MANUALLY EDIT
 package dev.architectury.tags;
+
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.injectables.annotations.PlatformOnly;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
-// Only available on Fabric and NeoForge
-@SuppressWarnings({"UnimplementedExpectPlatform", "unused"})
+/**
+  * Convention Tags for items.<br>
+  * <b style="color:red;">WARNING! This class will not work on Forge!</b>
+  * @see net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags
+  * @see net.neoforged.neoforge.common.Tags.Items
+  */
+@SuppressWarnings("unused")
 public class ItemTags {
     public static TagKey<Item> STONES = impl_STONES();
     public static TagKey<Item> COBBLESTONES = impl_COBBLESTONES();

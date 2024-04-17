@@ -19,9 +19,11 @@
 
 // AUTO GENERATED CLASS, DO NOT MANUALLY EDIT
 package dev.architectury.tags.fabric;
+
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 
+@SuppressWarnings("unused")
 public class EntityTypeTagsImpl {
     public static TagKey<EntityType<?>> impl_BOSSES() {
         return net.fabricmc.fabric.api.tag.convention.v2.ConventionalEntityTypeTags.BOSSES;
