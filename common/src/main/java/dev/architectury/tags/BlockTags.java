@@ -2,10 +2,10 @@ package dev.architectury.tags;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.injectables.annotations.PlatformOnly;
 import net.minecraft.tags.TagKey;
-import net.minecraft.core.DefaultedMappedRegistry;
 import net.minecraft.world.level.block.Block;
 
 // Only available on Fabric and NeoForge
+@SuppressWarnings({"UnimplementedExpectPlatform", "unused"})
 public class BlockTags {
     public static TagKey<Block> STONES = impl_STONES();
     public static TagKey<Block> COBBLESTONES = impl_COBBLESTONES();
@@ -19,6 +19,7 @@ public class BlockTags {
     public static TagKey<Block> CHESTS_WOODEN = impl_CHESTS_WOODEN();
     public static TagKey<Block> GLASS_BLOCKS = impl_GLASS_BLOCKS();
     public static TagKey<Block> GLASS_PANES = impl_GLASS_PANES();
+    // Fabric only
     public static TagKey<Block> SHULKER_BOXES = impl_SHULKER_BOXES();
     public static TagKey<Block> BUDDING_BLOCKS = impl_BUDDING_BLOCKS();
     public static TagKey<Block> BUDS = impl_BUDS();
@@ -74,44 +75,83 @@ public class BlockTags {
     public static TagKey<Block> ROPES = impl_ROPES();
     public static TagKey<Block> CHAINS = impl_CHAINS();
     public static TagKey<Block> HIDDEN_FROM_RECIPE_VIEWERS = impl_HIDDEN_FROM_RECIPE_VIEWERS();
+    // NeoForge only
     public static TagKey<Block> CHESTS_ENDER = impl_CHESTS_ENDER();
+    // NeoForge only
     public static TagKey<Block> CHESTS_TRAPPED = impl_CHESTS_TRAPPED();
+    // NeoForge only
     public static TagKey<Block> COBBLESTONES_NORMAL = impl_COBBLESTONES_NORMAL();
+    // NeoForge only
     public static TagKey<Block> COBBLESTONES_INFESTED = impl_COBBLESTONES_INFESTED();
+    // NeoForge only
     public static TagKey<Block> COBBLESTONES_MOSSY = impl_COBBLESTONES_MOSSY();
+    // NeoForge only
     public static TagKey<Block> COBBLESTONES_DEEPSLATE = impl_COBBLESTONES_DEEPSLATE();
+    // NeoForge only
     public static TagKey<Block> END_STONES = impl_END_STONES();
+    // NeoForge only
     public static TagKey<Block> FENCE_GATES = impl_FENCE_GATES();
+    // NeoForge only
     public static TagKey<Block> FENCE_GATES_WOODEN = impl_FENCE_GATES_WOODEN();
+    // NeoForge only
     public static TagKey<Block> FENCES = impl_FENCES();
+    // NeoForge only
     public static TagKey<Block> FENCES_NETHER_BRICK = impl_FENCES_NETHER_BRICK();
+    // NeoForge only
     public static TagKey<Block> FENCES_WOODEN = impl_FENCES_WOODEN();
+    // NeoForge only
     public static TagKey<Block> GLASS_BLOCKS_COLORLESS = impl_GLASS_BLOCKS_COLORLESS();
+    // NeoForge only
     public static TagKey<Block> GLASS_BLOCKS_CHEAP = impl_GLASS_BLOCKS_CHEAP();
+    // NeoForge only
     public static TagKey<Block> GLASS_BLOCKS_TINTED = impl_GLASS_BLOCKS_TINTED();
+    // NeoForge only
     public static TagKey<Block> GLASS_PANES_COLORLESS = impl_GLASS_PANES_COLORLESS();
+    // NeoForge only
     public static TagKey<Block> GRAVEL = impl_GRAVEL();
+    // NeoForge only
     public static TagKey<Block> NETHERRACK = impl_NETHERRACK();
+    // NeoForge only
     public static TagKey<Block> OBSIDIANS = impl_OBSIDIANS();
+    // NeoForge only
     public static TagKey<Block> ORE_BEARING_GROUND_DEEPSLATE = impl_ORE_BEARING_GROUND_DEEPSLATE();
+    // NeoForge only
     public static TagKey<Block> ORE_BEARING_GROUND_NETHERRACK = impl_ORE_BEARING_GROUND_NETHERRACK();
+    // NeoForge only
     public static TagKey<Block> ORE_BEARING_GROUND_STONE = impl_ORE_BEARING_GROUND_STONE();
+    // NeoForge only
     public static TagKey<Block> ORE_RATES_DENSE = impl_ORE_RATES_DENSE();
+    // NeoForge only
     public static TagKey<Block> ORE_RATES_SINGULAR = impl_ORE_RATES_SINGULAR();
+    // NeoForge only
     public static TagKey<Block> ORE_RATES_SPARSE = impl_ORE_RATES_SPARSE();
+    // NeoForge only
     public static TagKey<Block> ORES_COAL = impl_ORES_COAL();
+    // NeoForge only
     public static TagKey<Block> ORES_COPPER = impl_ORES_COPPER();
+    // NeoForge only
     public static TagKey<Block> ORES_DIAMOND = impl_ORES_DIAMOND();
+    // NeoForge only
     public static TagKey<Block> ORES_EMERALD = impl_ORES_EMERALD();
+    // NeoForge only
     public static TagKey<Block> ORES_GOLD = impl_ORES_GOLD();
+    // NeoForge only
     public static TagKey<Block> ORES_IRON = impl_ORES_IRON();
+    // NeoForge only
     public static TagKey<Block> ORES_LAPIS = impl_ORES_LAPIS();
+    // NeoForge only
     public static TagKey<Block> ORES_REDSTONE = impl_ORES_REDSTONE();
+    // NeoForge only
     public static TagKey<Block> ORES_IN_GROUND_DEEPSLATE = impl_ORES_IN_GROUND_DEEPSLATE();
+    // NeoForge only
     public static TagKey<Block> ORES_IN_GROUND_NETHERRACK = impl_ORES_IN_GROUND_NETHERRACK();
+    // NeoForge only
     public static TagKey<Block> ORES_IN_GROUND_STONE = impl_ORES_IN_GROUND_STONE();
+    // NeoForge only
     public static TagKey<Block> SANDS = impl_SANDS();
+    // NeoForge only
     public static TagKey<Block> SANDS_COLORLESS = impl_SANDS_COLORLESS();
+    // NeoForge only
     public static TagKey<Block> SANDS_RED = impl_SANDS_RED();
     @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
@@ -173,7 +213,7 @@ public class BlockTags {
     private static TagKey<Block> impl_GLASS_PANES() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("fabric")
     @ExpectPlatform
     private static TagKey<Block> impl_SHULKER_BOXES() {
         throw new AssertionError();
@@ -448,197 +488,197 @@ public class BlockTags {
     private static TagKey<Block> impl_HIDDEN_FROM_RECIPE_VIEWERS() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_CHESTS_ENDER() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_CHESTS_TRAPPED() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_COBBLESTONES_NORMAL() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_COBBLESTONES_INFESTED() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_COBBLESTONES_MOSSY() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_COBBLESTONES_DEEPSLATE() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_END_STONES() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_FENCE_GATES() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_FENCE_GATES_WOODEN() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_FENCES() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_FENCES_NETHER_BRICK() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_FENCES_WOODEN() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_GLASS_BLOCKS_COLORLESS() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_GLASS_BLOCKS_CHEAP() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_GLASS_BLOCKS_TINTED() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_GLASS_PANES_COLORLESS() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_GRAVEL() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_NETHERRACK() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_OBSIDIANS() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_ORE_BEARING_GROUND_DEEPSLATE() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_ORE_BEARING_GROUND_NETHERRACK() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_ORE_BEARING_GROUND_STONE() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_ORE_RATES_DENSE() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_ORE_RATES_SINGULAR() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_ORE_RATES_SPARSE() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_ORES_COAL() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_ORES_COPPER() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_ORES_DIAMOND() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_ORES_EMERALD() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_ORES_GOLD() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_ORES_IRON() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_ORES_LAPIS() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_ORES_REDSTONE() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_ORES_IN_GROUND_DEEPSLATE() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_ORES_IN_GROUND_NETHERRACK() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_ORES_IN_GROUND_STONE() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_SANDS() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_SANDS_COLORLESS() {
         throw new AssertionError();
     }
-    @PlatformOnly({"fabric","neoforge"})
+    @PlatformOnly("neoforge")
     @ExpectPlatform
     private static TagKey<Block> impl_SANDS_RED() {
         throw new AssertionError();

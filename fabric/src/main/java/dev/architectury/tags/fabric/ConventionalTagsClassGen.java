@@ -106,6 +106,7 @@ public class ConventionalTagsClassGen {
                     import %s;
                     
                     // Only available on Fabric and NeoForge
+                    @SuppressWarnings({"UnimplementedExpectPlatform", "unused"})
                     public class %sTags {
                                         """, importRegistryName, categoryShortName));
             fabricClass.append(String.format("""
@@ -125,6 +126,8 @@ public class ConventionalTagsClassGen {
             StringBuilder commonClassEnd = new StringBuilder();
             StringBuilder fabricClassEnd = new StringBuilder();
             StringBuilder neoForgeClassEnd = new StringBuilder();
+            String categoryShortName2 = categoryShortName;
+            if (categoryShortName2.equals("EntityType")) categoryShortName2 += "<?>";
             for (Pair<ConventionalTag, ConventionalTag> pair : entry.getValue()) {
                 ConventionalTag master = pair.getFirst() == null ? pair.getSecond() : pair.getFirst();
                 String fieldName = master.tagId.getPath().replaceAll("/", "_").toUpperCase(Locale.ROOT);
@@ -137,23 +140,23 @@ public class ConventionalTagsClassGen {
                     String neoForgeEnd = "    @PlatformOnly(\"neoforge\")\n    @ExpectPlatform\n    private static TagKey<%s> impl_%s() {\n        throw new AssertionError();\n    }\n";
                     
                     if (pair.getFirst() == null) {
-                        commonClass.append(neoForgeStart.formatted(categoryShortName, fieldName, fieldName));
-                        commonClassEnd.append(neoForgeEnd.formatted(categoryShortName, fieldName));
+                        commonClass.append(neoForgeStart.formatted(categoryShortName2, fieldName, fieldName));
+                        commonClassEnd.append(neoForgeEnd.formatted(categoryShortName2, fieldName));
                     } else if (pair.getSecond() == null) {
-                        commonClass.append(fabricStart.formatted(categoryShortName, fieldName, fieldName));
-                        commonClassEnd.append(fabricEnd.formatted(categoryShortName, fieldName));
+                        commonClass.append(fabricStart.formatted(categoryShortName2, fieldName, fieldName));
+                        commonClassEnd.append(fabricEnd.formatted(categoryShortName2, fieldName));
                     } else {
-                        commonClass.append(bothStart.formatted(categoryShortName, fieldName, fieldName));
-                        commonClassEnd.append(bothEnd.formatted(categoryShortName, fieldName));
+                        commonClass.append(bothStart.formatted(categoryShortName2, fieldName, fieldName));
+                        commonClassEnd.append(bothEnd.formatted(categoryShortName2, fieldName));
                     }
                 }
                 {
-                    String str = "    public static final TagKey<%s> impl%s() {\n        return %s.%s;\n    }\n";
+                    String str = "    public static TagKey<%s> impl%s() {\n        return %s.%s;\n    }\n";
                     if (pair.getFirst() != null) {
-                        fabricClass.append(str.formatted(categoryShortName, fieldName, pair.getFirst().tagClassName.replaceAll("\\$", "."), pair.getFirst().tagFieldName));
+                        fabricClass.append(str.formatted(categoryShortName2, fieldName, pair.getFirst().tagClassName.replaceAll("\\$", "."), pair.getFirst().tagFieldName));
                     }
                     if (pair.getSecond() != null) {
-                        neoForgeClass.append(str.formatted(categoryShortName, fieldName, pair.getSecond().tagClassName.replaceAll("\\$", "."), pair.getSecond().tagFieldName));
+                        neoForgeClass.append(str.formatted(categoryShortName2, fieldName, pair.getSecond().tagClassName.replaceAll("\\$", "."), pair.getSecond().tagFieldName));
                     }
                 }
             }
@@ -163,9 +166,9 @@ public class ConventionalTagsClassGen {
             commonClass.append(commonClassEnd);
             fabricClass.append(fabricClassEnd);
             neoForgeClass.append(neoForgeClassEnd);
-            Files.writeString(Path.of("../../common/src/main/java/dev/architectury/tags/" + categoryShortName + "Impl.java"), commonClass);
-            Files.writeString(Path.of("../../fabric/src/main/java/dev/architectury/tags/fabric/" + categoryShortName + "Impl.java"), fabricClass);
-            Files.writeString(Path.of("../../common/src/main/java/dev/architectury/tags/neoforge/" + categoryShortName + "Impl.java"), neoForgeClass);
+            Files.writeString(Path.of("../../common/src/main/java/dev/architectury/tags/" + categoryShortName + "Tags.java"), commonClass);
+            Files.writeString(Path.of("../../fabric/src/main/java/dev/architectury/tags/fabric/" + categoryShortName + "TagsImpl.java"), fabricClass);
+            Files.writeString(Path.of("../../neoforge/src/main/java/dev/architectury/tags/forge/" + categoryShortName + "TagsImpl.java"), neoForgeClass);
         }
     }
     

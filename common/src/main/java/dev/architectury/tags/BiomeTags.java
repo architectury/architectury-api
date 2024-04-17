@@ -5,6 +5,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 
 // Only available on Fabric and NeoForge
+@SuppressWarnings({"UnimplementedExpectPlatform", "unused"})
 public class BiomeTags {
     public static TagKey<Biome> NO_DEFAULT_MONSTERS = impl_NO_DEFAULT_MONSTERS();
     public static TagKey<Biome> HIDDEN_FROM_LOCATOR_SELECTION = impl_HIDDEN_FROM_LOCATOR_SELECTION();
