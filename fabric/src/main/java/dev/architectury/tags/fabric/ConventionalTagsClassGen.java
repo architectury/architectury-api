@@ -123,6 +123,7 @@ public class ConventionalTagsClassGen {
             String[] temp = entry.getKey().getPath().split("/");
             String categoryShortName = WordUtils.capitalize(temp[temp.length-1].replaceAll("_", " ")).replaceAll(" ", "");
             commonClass.append(String.format("""
+                    // AUTO GENERATED CLASS, DO NOT MANUALLY EDIT
                     package dev.architectury.tags;
                     import dev.architectury.injectables.annotations.ExpectPlatform;
                     import dev.architectury.injectables.annotations.PlatformOnly;
@@ -134,6 +135,7 @@ public class ConventionalTagsClassGen {
                     public class %sTags {
                                         """, importRegistryName, categoryShortName));
             fabricClass.append(String.format("""
+                    // AUTO GENERATED CLASS, DO NOT MANUALLY EDIT
                     package dev.architectury.tags.fabric;
                     import net.minecraft.tags.TagKey;
                     import %s;
@@ -141,6 +143,7 @@ public class ConventionalTagsClassGen {
                     public class %sTagsImpl {
                                         """, importRegistryName, categoryShortName));
             neoForgeClass.append(String.format("""
+                    // AUTO GENERATED CLASS, DO NOT MANUALLY EDIT
                     package dev.architectury.tags.forge;
                     import net.minecraft.tags.TagKey;
                     import %s;
