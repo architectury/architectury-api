@@ -63,8 +63,9 @@ public class ConventionalTagsClassGen {
     
     public static void generate() {
         try {
+            //generateTagList();
             generateStubClass();
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
         System.out.println("Generated Classes");
