@@ -48,7 +48,7 @@ import net.neoforged.neoforge.event.level.LevelEvent;
 public class EventHandlerImplClient {
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(ItemTooltipEvent event) {
-        ClientTooltipEvent.ITEM.invoker().append(event.getItemStack(), event.getToolTip(), event.getFlags());
+        ClientTooltipEvent.ITEM.invoker().append(event.getItemStack(), event.getToolTip(), event.getContext(), event.getFlags());
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
