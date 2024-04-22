@@ -40,10 +40,7 @@ public class EnchantmentTagsImpl {
     public static TagKey<Enchantment> impl_ENTITY_AUXILIARY_MOVEMENT_ENHANCEMENTS() {
         return net.fabricmc.fabric.api.tag.convention.v2.ConventionalEnchantmentTags.ENTITY_AUXILIARY_MOVEMENT_ENHANCEMENTS;
     }
-    public static TagKey<Enchantment> impl_ENTITY_DEFENSE_ENHANCEMENT() {
-        return net.fabricmc.fabric.api.tag.convention.v2.ConventionalEnchantmentTags.ENTITY_DEFENSE_ENHANCEMENT;
-    }
     public static TagKey<Enchantment> impl_ENTITY_DEFENSE_ENHANCEMENTS() {
-        return null;
+        return net.fabricmc.fabric.api.tag.convention.v2.ConventionalEnchantmentTags.ENTITY_DEFENSE_ENHANCEMENTS;
     }
 }

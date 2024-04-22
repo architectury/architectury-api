@@ -40,9 +40,6 @@ public class EnchantmentTagsImpl {
     public static TagKey<Enchantment> impl_ENTITY_AUXILIARY_MOVEMENT_ENHANCEMENTS() {
         return net.neoforged.neoforge.common.Tags.Enchantments.ENTITY_AUXILIARY_MOVEMENT_ENHANCEMENTS;
     }
-    public static TagKey<Enchantment> impl_ENTITY_DEFENSE_ENHANCEMENT() {
-        return null;
-    }
     public static TagKey<Enchantment> impl_ENTITY_DEFENSE_ENHANCEMENTS() {
         return net.neoforged.neoforge.common.Tags.Enchantments.ENTITY_DEFENSE_ENHANCEMENTS;
     }

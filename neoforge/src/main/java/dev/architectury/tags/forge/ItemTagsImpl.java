@@ -208,10 +208,13 @@ public class ItemTagsImpl {
     public static TagKey<Item> impl_FOODS_FOOD_POISONING() {
         return net.neoforged.neoforge.common.Tags.Items.FOODS_FOOD_POISONING;
     }
-    public static TagKey<Item> impl_BUCKETS_WATER() {
+    public static TagKey<Item> impl_BUCKETS() {
         return null;
     }
-    public static TagKey<Item> impl_BUCKETS_ENTITY_WATER() {
+    public static TagKey<Item> impl_BUCKETS_EMPTY() {
+        return null;
+    }
+    public static TagKey<Item> impl_BUCKETS_WATER() {
         return null;
     }
     public static TagKey<Item> impl_BUCKETS_LAVA() {
@@ -220,7 +223,10 @@ public class ItemTagsImpl {
     public static TagKey<Item> impl_BUCKETS_MILK() {
         return null;
     }
-    public static TagKey<Item> impl_BUCKETS_EMPTY() {
+    public static TagKey<Item> impl_BUCKETS_POWDER_SNOW() {
+        return null;
+    }
+    public static TagKey<Item> impl_BUCKETS_ENTITY_WATER() {
         return null;
     }
     public static TagKey<Item> impl_BARRELS() {

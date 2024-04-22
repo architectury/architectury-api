@@ -208,11 +208,14 @@ public class ItemTagsImpl {
     public static TagKey<Item> impl_FOODS_FOOD_POISONING() {
         return net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.FOOD_POISONING_FOODS;
     }
+    public static TagKey<Item> impl_BUCKETS() {
+        return net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.BUCKETS;
+    }
+    public static TagKey<Item> impl_BUCKETS_EMPTY() {
+        return net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.EMPTY_BUCKETS;
+    }
     public static TagKey<Item> impl_BUCKETS_WATER() {
         return net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.WATER_BUCKETS;
-    }
-    public static TagKey<Item> impl_BUCKETS_ENTITY_WATER() {
-        return net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.ENTITY_WATER_BUCKETS;
     }
     public static TagKey<Item> impl_BUCKETS_LAVA() {
         return net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.LAVA_BUCKETS;
@@ -220,8 +223,11 @@ public class ItemTagsImpl {
     public static TagKey<Item> impl_BUCKETS_MILK() {
         return net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.MILK_BUCKETS;
     }
-    public static TagKey<Item> impl_BUCKETS_EMPTY() {
-        return net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.EMPTY_BUCKETS;
+    public static TagKey<Item> impl_BUCKETS_POWDER_SNOW() {
+        return net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.POWDER_SNOW_BUCKETS;
+    }
+    public static TagKey<Item> impl_BUCKETS_ENTITY_WATER() {
+        return net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.ENTITY_WATER_BUCKETS;
     }
     public static TagKey<Item> impl_BARRELS() {
         return net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.BARRELS;

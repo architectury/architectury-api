@@ -100,15 +100,19 @@ public class ItemTags {
     public static TagKey<Item> FOODS_EDIBLE_WHEN_PLACED = impl_FOODS_EDIBLE_WHEN_PLACED();
     public static TagKey<Item> FOODS_FOOD_POISONING = impl_FOODS_FOOD_POISONING();
     // Fabric only
-    public static TagKey<Item> BUCKETS_WATER = impl_BUCKETS_WATER();
+    public static TagKey<Item> BUCKETS = impl_BUCKETS();
     // Fabric only
-    public static TagKey<Item> BUCKETS_ENTITY_WATER = impl_BUCKETS_ENTITY_WATER();
+    public static TagKey<Item> BUCKETS_EMPTY = impl_BUCKETS_EMPTY();
+    // Fabric only
+    public static TagKey<Item> BUCKETS_WATER = impl_BUCKETS_WATER();
     // Fabric only
     public static TagKey<Item> BUCKETS_LAVA = impl_BUCKETS_LAVA();
     // Fabric only
     public static TagKey<Item> BUCKETS_MILK = impl_BUCKETS_MILK();
     // Fabric only
-    public static TagKey<Item> BUCKETS_EMPTY = impl_BUCKETS_EMPTY();
+    public static TagKey<Item> BUCKETS_POWDER_SNOW = impl_BUCKETS_POWDER_SNOW();
+    // Fabric only
+    public static TagKey<Item> BUCKETS_ENTITY_WATER = impl_BUCKETS_ENTITY_WATER();
     public static TagKey<Item> BARRELS = impl_BARRELS();
     public static TagKey<Item> BARRELS_WOODEN = impl_BARRELS_WOODEN();
     public static TagKey<Item> BOOKSHELVES = impl_BOOKSHELVES();
@@ -627,13 +631,19 @@ public class ItemTags {
     // Returns null on NeoForge
     @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
-    private static TagKey<Item> impl_BUCKETS_WATER() {
+    private static TagKey<Item> impl_BUCKETS() {
         throw new AssertionError();
     }
     // Returns null on NeoForge
     @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
-    private static TagKey<Item> impl_BUCKETS_ENTITY_WATER() {
+    private static TagKey<Item> impl_BUCKETS_EMPTY() {
+        throw new AssertionError();
+    }
+    // Returns null on NeoForge
+    @PlatformOnly({"fabric","neoforge"})
+    @ExpectPlatform
+    private static TagKey<Item> impl_BUCKETS_WATER() {
         throw new AssertionError();
     }
     // Returns null on NeoForge
@@ -651,7 +661,13 @@ public class ItemTags {
     // Returns null on NeoForge
     @PlatformOnly({"fabric","neoforge"})
     @ExpectPlatform
-    private static TagKey<Item> impl_BUCKETS_EMPTY() {
+    private static TagKey<Item> impl_BUCKETS_POWDER_SNOW() {
+        throw new AssertionError();
+    }
+    // Returns null on NeoForge
+    @PlatformOnly({"fabric","neoforge"})
+    @ExpectPlatform
+    private static TagKey<Item> impl_BUCKETS_ENTITY_WATER() {
         throw new AssertionError();
     }
     @PlatformOnly({"fabric","neoforge"})
