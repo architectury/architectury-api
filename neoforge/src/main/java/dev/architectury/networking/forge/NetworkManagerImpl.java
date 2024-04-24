@@ -44,8 +44,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
-import net.neoforged.neoforge.network.handling.ISynchronizedWorkHandler;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.slf4j.Logger;
 
 public class NetworkManagerImpl {
@@ -56,9 +56,9 @@ public class NetworkManagerImpl {
             @Override
             public <T extends CustomPacketPayload> void registerC2S(CustomPacketPayload.Type<T> type, StreamCodec<? super RegistryFriendlyByteBuf, T> codec, NetworkReceiver<T> receiver) {
                 EventBusesHooks.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
-                    bus.<RegisterPayloadHandlerEvent>addListener(event -> {
-                        event.registrar(type.id().getNamespace()).optional().play(type, codec, (arg, context) -> {
-                            receiver.receive(arg, context(context.player().orElse(null), context.workHandler(), false));
+                    bus.<RegisterPayloadHandlersEvent>addListener(event -> {
+                        event.registrar(type.id().getNamespace()).optional().playToServer(type, codec, (arg, context) -> {
+                            receiver.receive(arg, context(context.player(), context, false));
                         });
                     });
                 });
@@ -67,9 +67,9 @@ public class NetworkManagerImpl {
             @Override
             public <T extends CustomPacketPayload> void registerS2C(CustomPacketPayload.Type<T> type, StreamCodec<? super RegistryFriendlyByteBuf, T> codec, NetworkReceiver<T> receiver) {
                 EventBusesHooks.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
-                    bus.<RegisterPayloadHandlerEvent>addListener(event -> {
-                        event.registrar(type.id().getNamespace()).optional().play(type, codec, (arg, context) -> {
-                            receiver.receive(arg, context(context.player().orElse(null), context.workHandler(), true));
+                    bus.<RegisterPayloadHandlersEvent>addListener(event -> {
+                        event.registrar(type.id().getNamespace()).optional().playToClient(type, codec, (arg, context) -> {
+                            receiver.receive(arg, context(context.player(), context, true));
                         });
                     });
                 });
@@ -91,7 +91,7 @@ public class NetworkManagerImpl {
                 });
             }
             
-            public NetworkManager.PacketContext context(Player player, ISynchronizedWorkHandler taskQueue, boolean client) {
+            public NetworkManager.PacketContext context(Player player, IPayloadContext taskQueue, boolean client) {
                 return new NetworkManager.PacketContext() {
                     @Override
                     public Player getPlayer() {
@@ -100,7 +100,7 @@ public class NetworkManagerImpl {
                     
                     @Override
                     public void queue(Runnable runnable) {
-                        taskQueue.submitAsync(runnable);
+                        taskQueue.enqueueWork(runnable);
                     }
                     
                     @Override
@@ -120,14 +120,14 @@ public class NetworkManagerImpl {
     @OnlyIn(Dist.CLIENT)
     public static boolean canServerReceive(ResourceLocation id) {
         if (Minecraft.getInstance().getConnection() != null) {
-            return Minecraft.getInstance().getConnection().isConnected(id);
+            return Minecraft.getInstance().getConnection().hasChannel(id);
         } else {
             return false;
         }
     }
     
     public static boolean canPlayerReceive(ServerPlayer player, ResourceLocation id) {
-        return player.connection.isConnected(id);
+        return player.connection.hasChannel(id);
     }
     
     public static Packet<ClientGamePacketListener> createAddEntityPacket(Entity entity) {

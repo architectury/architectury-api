@@ -411,7 +411,7 @@ public class EventHandlerImplCommon {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventChunkDataEvent(ChunkDataEvent.Load event) {
-        LevelAccessor level = event.getChunk().getWorldForge();
+        LevelAccessor level = event.getChunk().getLevel();
         if (!(level instanceof ServerLevel) && event instanceof LevelEventAttachment) {
             level = ((LevelEventAttachment) event).architectury$getAttachedLevel();
         }
