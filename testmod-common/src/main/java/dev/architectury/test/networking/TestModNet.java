@@ -20,19 +20,17 @@
 package dev.architectury.test.networking;
 
 import dev.architectury.event.events.client.ClientPlayerEvent;
+import dev.architectury.event.events.common.PlayerEvent;
 import dev.architectury.networking.NetworkManager;
 import dev.architectury.networking.simple.MessageType;
 import dev.architectury.networking.simple.SimpleNetworkManager;
 import dev.architectury.networking.transformers.SplitPacketTransformer;
 import dev.architectury.test.TestMod;
 import io.netty.buffer.Unpooled;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ExtraCodecs;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;
@@ -47,6 +45,8 @@ public interface TestModNet {
     // An example Server to Client message
     MessageType SYNC_DATA = NET.registerS2C("sync_data", SyncDataMessage::new);
     ResourceLocation BIG_DATA = new ResourceLocation(TestMod.MOD_ID, "big_data");
+    ResourceLocation SERVER_TO_CLIENT_TEST = new ResourceLocation(TestMod.MOD_ID, "s2c_test");
+    CustomPacketPayload.Type<ServerToClientTestPayload> SERVER_TO_CLIENT_TEST_PAYLOAD = new CustomPacketPayload.Type<>(new ResourceLocation(TestMod.MOD_ID, "s2c_test_payload"));
     CustomPacketPayload.Type<BigDataPayload> BIG_DATA_PAYLOAD = new CustomPacketPayload.Type<>(new ResourceLocation(TestMod.MOD_ID, "big_data_payload"));
     String BIG_STRING = StringUtils.repeat('a', 100000);
     
@@ -82,6 +82,37 @@ public interface TestModNet {
                 throw new AssertionError(value.data());
             }
         });
+    
+        NetworkManager.registerReceiver(NetworkManager.Side.S2C, SERVER_TO_CLIENT_TEST, (buf, context) -> {
+            long num = buf.readLong();
+            if (num == 0xA4C5E75EC7941L) {
+                TestMod.SINK.accept("S2C worked!, 0xA4C5E75EC7941L");
+            } else {
+                throw new AssertionError(num);
+            }
+        });
+    
+        NetworkManager.registerReceiver(NetworkManager.Side.S2C, SERVER_TO_CLIENT_TEST_PAYLOAD, new StreamCodec<>() {
+            @Override
+            public ServerToClientTestPayload decode(RegistryFriendlyByteBuf object) {
+                return new ServerToClientTestPayload(object.readLong());
+            }
+        
+            @Override
+            public void encode(RegistryFriendlyByteBuf object, ServerToClientTestPayload payload) {
+                object.writeLong(payload.num);
+            }
+        }, (value, context) -> {
+            if (value.num() == 0xA4C5E75EC7941L) {
+                TestMod.SINK.accept("S2C worked!, 0xA4C5E75EC7941L");
+            } else {
+                throw new AssertionError(value.num());
+            }
+        });
+    
+        PlayerEvent.PLAYER_JOIN.register(player -> {
+            NetworkManager.sendToPlayer(player, new ServerToClientTestPayload(0xA4C5E75EC7941L));
+        });
     }
     
     static void initializeClient() {
@@ -99,6 +130,13 @@ public interface TestModNet {
         @Override
         public Type<? extends CustomPacketPayload> type() {
             return TestModNet.BIG_DATA_PAYLOAD;
+        }
+    }
+    
+    record ServerToClientTestPayload(long num) implements CustomPacketPayload {
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return TestModNet.SERVER_TO_CLIENT_TEST_PAYLOAD;
         }
     }
 }
