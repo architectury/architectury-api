@@ -39,7 +39,7 @@ import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.*;
-import net.neoforged.neoforge.event.TickEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
@@ -52,11 +52,13 @@ public class EventHandlerImplClient {
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void event(TickEvent.ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.START)
-            ClientTickEvent.CLIENT_PRE.invoker().tick(Minecraft.getInstance());
-        else if (event.phase == TickEvent.Phase.END)
-            ClientTickEvent.CLIENT_POST.invoker().tick(Minecraft.getInstance());
+    public static void event(ClientTickEvent.Pre event) {
+        dev.architectury.event.events.client.ClientTickEvent.CLIENT_PRE.invoker().tick(Minecraft.getInstance());
+    }
+    
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(ClientTickEvent.Post event) {
+        dev.architectury.event.events.client.ClientTickEvent.CLIENT_POST.invoker().tick(Minecraft.getInstance());
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)

@@ -35,16 +35,14 @@ import net.minecraft.world.level.LevelAccessor;
 import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.LogicalSide;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.event.CommandEvent;
 import net.neoforged.neoforge.event.LootTableLoadEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.ServerChatEvent;
-import net.neoforged.neoforge.event.TickEvent.LevelTickEvent;
-import net.neoforged.neoforge.event.TickEvent.Phase;
-import net.neoforged.neoforge.event.TickEvent.PlayerTickEvent;
-import net.neoforged.neoforge.event.TickEvent.ServerTickEvent;
+import net.neoforged.neoforge.event.tick.LevelTickEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
 import net.neoforged.neoforge.event.entity.living.AnimalTameEvent;
@@ -65,20 +63,26 @@ import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 public class EventHandlerImplCommon {
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void event(ServerTickEvent event) {
-        if (event.phase == Phase.START)
-            TickEvent.SERVER_PRE.invoker().tick(ServerLifecycleHooks.getCurrentServer());
-        else if (event.phase == Phase.END)
-            TickEvent.SERVER_POST.invoker().tick(ServerLifecycleHooks.getCurrentServer());
+    public static void event(ServerTickEvent.Pre event) {
+        TickEvent.SERVER_PRE.invoker().tick(ServerLifecycleHooks.getCurrentServer());
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void event(LevelTickEvent event) {
-        if (event.side == LogicalSide.SERVER) {
-            if (event.phase == Phase.START)
-                TickEvent.SERVER_LEVEL_PRE.invoker().tick((ServerLevel) event.level);
-            else if (event.phase == Phase.END)
-                TickEvent.SERVER_LEVEL_POST.invoker().tick((ServerLevel) event.level);
+    public static void event(ServerTickEvent.Post event) {
+        TickEvent.SERVER_POST.invoker().tick(ServerLifecycleHooks.getCurrentServer());
+    }
+    
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(LevelTickEvent.Pre event) {
+        if (!event.getLevel().isClientSide()) {
+            TickEvent.SERVER_LEVEL_PRE.invoker().tick((ServerLevel) event.getLevel());
+        }
+    }
+    
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(LevelTickEvent.Post event) {
+        if (!event.getLevel().isClientSide()) {
+            TickEvent.SERVER_LEVEL_POST.invoker().tick((ServerLevel) event.getLevel());
         }
     }
     
@@ -133,12 +137,13 @@ public class EventHandlerImplCommon {
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void event(PlayerTickEvent event) {
-        if (event.phase == Phase.START) {
-            TickEvent.PLAYER_PRE.invoker().tick(event.player);
-        } else if (event.phase == Phase.END) {
-            TickEvent.PLAYER_POST.invoker().tick(event.player);
-        }
+    public static void event(PlayerTickEvent.Pre event) {
+        TickEvent.PLAYER_PRE.invoker().tick(event.getEntity());
+    }
+    
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(PlayerTickEvent.Post event) {
+        TickEvent.PLAYER_POST.invoker().tick(event.getEntity());
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)

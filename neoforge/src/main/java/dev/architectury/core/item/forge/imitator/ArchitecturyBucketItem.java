@@ -36,7 +36,7 @@ public class ArchitecturyBucketItem extends BucketItem {
     private static final Logger LOGGER = LogManager.getLogger(ArchitecturyBucketItem.class);
     
     public ArchitecturyBucketItem(Supplier<? extends Fluid> fluid, Properties properties) {
-        super(fluid, properties);
+        super(fluid.get(), properties);
         EventBusesHooks.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
             bus.<RegisterCapabilitiesEvent>addListener(event -> {
                 if (BuiltInRegistries.ITEM.containsValue(this)) {
