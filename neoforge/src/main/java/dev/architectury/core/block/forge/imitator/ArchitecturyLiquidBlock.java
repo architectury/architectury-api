@@ -26,6 +26,6 @@ import java.util.function.Supplier;
 
 public class ArchitecturyLiquidBlock extends LiquidBlock {
     public ArchitecturyLiquidBlock(Supplier<? extends FlowingFluid> fluid, Properties properties) {
-        super(fluid, properties);
+        super(fluid.get(), properties);
     }
 }

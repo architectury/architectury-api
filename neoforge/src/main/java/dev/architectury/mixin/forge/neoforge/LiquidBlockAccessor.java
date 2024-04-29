@@ -17,17 +17,15 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.core.item.forge.imitator;
+package dev.architectury.mixin.forge.neoforge;
 
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.MobBucketItem;
-import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.material.FlowingFluid;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-import java.util.function.Supplier;
-
-public class ArchitecturyMobBucketItem extends MobBucketItem {
-    public ArchitecturyMobBucketItem(Supplier<? extends EntityType<?>> entity, Supplier<? extends Fluid> fluid, Supplier<? extends SoundEvent> sound, Properties properties) {
-        super(entity.get(), fluid.get(), sound.get(), properties);
-    }
+@Mixin(LiquidBlock.class)
+public interface LiquidBlockAccessor {
+    @Accessor("fluid")
+    FlowingFluid getFluid();
 }
