@@ -5,16 +5,16 @@
   "compatibilityLevel": "JAVA_16",
   "minVersion": "0.8",
   "client": [
+    "client.MixinCommandSourceStack",
     "MixinClientLevel",
-    "MixinMinecraft",
-    "client.MixinCommandSourceStack"
+    "MixinMinecraft"
   ],
   "mixins": [
+    "neoforge.LiquidBlockAccessor",
+    "neoforge.MixinChunkSerializer",
     "MixinFallingBlockEntity",
     "MixinItemExtension",
-    "MixinLevelEvent",
-    "neoforge.LiquidBlockAccessor",
-    "neoforge.MixinChunkSerializer"
+    "MixinLevelEvent"
   ],
   "injectors": {
     "defaultRequire": 1
