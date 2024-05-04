@@ -117,7 +117,7 @@ public final class FluidStack implements DataComponentHolder {
     }
     
     public static FluidStack create(Supplier<Fluid> fluid, long amount, DataComponentPatch patch) {
-        if (amount <= 0) return empty();
+        if (FluidStack.EMPTY != null && amount <= 0) return empty();
         return new FluidStack(fluid, amount, patch);
     }
     
