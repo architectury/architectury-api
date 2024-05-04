@@ -43,7 +43,7 @@ import java.util.function.UnaryOperator;
 
 public final class FluidStack implements DataComponentHolder {
     private static final FluidStackAdapter<Object> ADAPTER = adapt(FluidStack::getValue, FluidStack::new);
-    private static final FluidStack EMPTY = create(Fluids.EMPTY, 0);
+    private static final FluidStack EMPTY = new FluidStack(() -> Fluids.EMPTY, 0, DataComponentPatch.EMPTY);
     public static final Codec<FluidStack> CODEC = ADAPTER.codec();
     public static final StreamCodec<RegistryFriendlyByteBuf, FluidStack> STREAM_CODEC = ADAPTER.streamCodec();
     
@@ -117,7 +117,7 @@ public final class FluidStack implements DataComponentHolder {
     }
     
     public static FluidStack create(Supplier<Fluid> fluid, long amount, DataComponentPatch patch) {
-        if (FluidStack.EMPTY != null && amount <= 0) return empty();
+        if (amount <= 0) return empty();
         return new FluidStack(fluid, amount, patch);
     }
     
