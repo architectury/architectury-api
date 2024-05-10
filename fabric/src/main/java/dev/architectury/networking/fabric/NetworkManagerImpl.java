@@ -63,10 +63,23 @@ public class NetworkManagerImpl {
             public <T extends CustomPacketPayload> void registerS2C(CustomPacketPayload.Type<T> type, StreamCodec<? super RegistryFriendlyByteBuf, T> codec, NetworkReceiver<T> receiver) {
                 LOGGER.info("Registering S2C receiver with id {}", type.id());
                 PayloadTypeRegistry.playS2C().register(type, codec);
-                ClientPlayNetworking.registerGlobalReceiver(type, (payload, fabricContext) -> {
+                ClientPlayNetworking.registerGlobalReceiver(type, new ClientPlayPayloadHandler<>(receiver));
+            }
+            
+            // Lambda methods aren't included in @EnvType, so this inelegant solution is used instead.
+            @Environment(EnvType.CLIENT)
+            class ClientPlayPayloadHandler<T extends CustomPacketPayload> implements ClientPlayNetworking.PlayPayloadHandler<T> {
+                private final NetworkReceiver<T> receiver;
+    
+                ClientPlayPayloadHandler(NetworkReceiver<T> receiver) {
+                    this.receiver = receiver;
+                }
+    
+                @Override
+                public void receive(T payload, ClientPlayNetworking.Context fabricContext) {
                     var context = context(fabricContext.player(), fabricContext.client(), true);
                     receiver.receive(payload, context);
-                });
+                }
             }
             
             @Override

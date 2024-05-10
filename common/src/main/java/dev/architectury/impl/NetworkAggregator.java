@@ -26,8 +26,6 @@ import dev.architectury.networking.transformers.PacketTransformer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -190,12 +188,10 @@ public class NetworkAggregator {
     public interface Adaptor {
         <T extends CustomPacketPayload> void registerC2S(CustomPacketPayload.Type<T> type, StreamCodec<? super RegistryFriendlyByteBuf, T> codec, NetworkManager.NetworkReceiver<T> receiver);
         
-        @Environment(EnvType.CLIENT)
         <T extends CustomPacketPayload> void registerS2C(CustomPacketPayload.Type<T> type, StreamCodec<? super RegistryFriendlyByteBuf, T> codec, NetworkManager.NetworkReceiver<T> receiver);
         
         <T extends CustomPacketPayload> Packet<?> toC2SPacket(T payload);
         
-        @Environment(EnvType.CLIENT)
         <T extends CustomPacketPayload> Packet<?> toS2CPacket(T payload);
         
         <T extends CustomPacketPayload> void registerS2CType(CustomPacketPayload.Type<T> type, StreamCodec<? super RegistryFriendlyByteBuf, T> codec);

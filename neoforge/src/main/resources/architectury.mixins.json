@@ -10,6 +10,7 @@
     "MixinMinecraft"
   ],
   "mixins": [
+    "neoforge.LiquidBlockAccessor",
     "neoforge.MixinChunkSerializer",
     "MixinFallingBlockEntity",
     "MixinItemExtension",
