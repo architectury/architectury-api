@@ -74,13 +74,12 @@ public class TestMod {
         TestWorldGeneration.initialize();
         EnvExecutor.runInEnv(Env.CLIENT, () -> TestMod.Client::initializeClient);
         CreativeTabRegistry.modifyBuiltin(BuiltInRegistries.CREATIVE_MODE_TAB.get(CreativeModeTabs.BUILDING_BLOCKS), (flags, output, canUseGameMasterBlocks) -> {
-            output.acceptAllBefore(new ItemStack(Items.OAK_WOOD), List.of());
-    
             ItemStack sword = Items.DIAMOND_SWORD.getDefaultInstance();
             ItemEnchantments.Mutable mutable = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
             mutable.set(Enchantments.SHARPNESS, 10);
             sword.set(DataComponents.ENCHANTMENTS, mutable.toImmutable());
-            output.acceptAfter(Blocks.BRICKS, sword);
+            output.acceptBefore(new ItemStack(Items.OAK_WOOD), sword);
+            output.acceptAfter(Blocks.STRIPPED_OAK_LOG, Items.BEDROCK);
         });
     }
     
