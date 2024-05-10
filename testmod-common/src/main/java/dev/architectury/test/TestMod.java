@@ -22,6 +22,7 @@ package dev.architectury.test;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import dev.architectury.event.events.client.ClientCommandRegistrationEvent;
 import dev.architectury.event.events.client.ClientLifecycleEvent;
+import dev.architectury.registry.CreativeTabRegistry;
 import dev.architectury.registry.client.gui.ClientTooltipComponentRegistry;
 import dev.architectury.registry.client.level.entity.EntityRendererRegistry;
 import dev.architectury.test.debug.ConsoleMessageSink;
@@ -44,6 +45,17 @@ import dev.architectury.utils.EnvExecutor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.entity.CowRenderer;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraft.world.level.block.Blocks;
+
+import java.util.Collections;
+import java.util.List;
 
 public class TestMod {
     public static final MessageSink SINK = EnvExecutor.getEnvSpecific(() -> ClientOverlayMessageSink::new, () -> ConsoleMessageSink::new);
@@ -61,6 +73,15 @@ public class TestMod {
         TestLoot.init();
         TestWorldGeneration.initialize();
         EnvExecutor.runInEnv(Env.CLIENT, () -> TestMod.Client::initializeClient);
+        CreativeTabRegistry.modifyBuiltin(BuiltInRegistries.CREATIVE_MODE_TAB.get(CreativeModeTabs.BUILDING_BLOCKS), (flags, output, canUseGameMasterBlocks) -> {
+            output.acceptAllBefore(new ItemStack(Items.OAK_WOOD), List.of());
+    
+            ItemStack sword = Items.DIAMOND_SWORD.getDefaultInstance();
+            ItemEnchantments.Mutable mutable = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+            mutable.set(Enchantments.SHARPNESS, 10);
+            sword.set(DataComponents.ENCHANTMENTS, mutable.toImmutable());
+            output.acceptAfter(Blocks.BRICKS, sword);
+        });
     }
     
     @Environment(EnvType.CLIENT)
