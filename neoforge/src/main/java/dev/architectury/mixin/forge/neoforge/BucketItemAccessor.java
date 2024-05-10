@@ -17,14 +17,15 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.hooks.fluid.forge;
+package dev.architectury.mixin.forge.neoforge;
 
-import dev.architectury.mixin.forge.neoforge.BucketItemAccessor;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.level.material.Fluid;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-public class FluidBucketHooksImpl {
-    public static Fluid getFluid(BucketItem item) {
-        return ((BucketItemAccessor) item).getContent();
-    }
+@Mixin(BucketItem.class)
+public interface BucketItemAccessor {
+    @Accessor("content")
+    Fluid getContent();
 }

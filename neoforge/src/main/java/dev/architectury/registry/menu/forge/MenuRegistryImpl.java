@@ -32,6 +32,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 
 public class MenuRegistryImpl {
@@ -50,6 +52,6 @@ public class MenuRegistryImpl {
     
     @OnlyIn(Dist.CLIENT)
     public static <H extends AbstractContainerMenu, S extends Screen & MenuAccess<H>> void registerScreenFactory(MenuType<? extends H> type, ScreenFactory<H, S> factory) {
-        MenuScreens.register(type, factory::create);
+        NeoForge.EVENT_BUS.addListener(RegisterMenuScreensEvent.class, event -> event.register(type, factory::create));
     }
 }

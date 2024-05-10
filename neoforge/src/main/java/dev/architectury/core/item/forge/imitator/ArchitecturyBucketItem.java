@@ -19,6 +19,7 @@
 
 package dev.architectury.core.item.forge.imitator;
 
+import dev.architectury.hooks.fluid.FluidBucketHooks;
 import dev.architectury.platform.hooks.EventBusesHooks;
 import dev.architectury.utils.ArchitecturyConstants;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -49,6 +50,6 @@ public class ArchitecturyBucketItem extends BucketItem {
     }
     
     public final Fluid getContainedFluid() {
-        return getFluid();
+        return FluidBucketHooks.getFluid(this);
     }
 }
