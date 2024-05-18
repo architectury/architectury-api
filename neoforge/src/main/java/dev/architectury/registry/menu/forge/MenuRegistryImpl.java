@@ -19,10 +19,12 @@
 
 package dev.architectury.registry.menu.forge;
 
+import dev.architectury.platform.hooks.EventBusesHooks;
 import dev.architectury.registry.menu.ExtendedMenuProvider;
 import dev.architectury.registry.menu.MenuRegistry.ExtendedMenuTypeFactory;
 import dev.architectury.registry.menu.MenuRegistry.ScreenFactory;
 import dev.architectury.registry.menu.MenuRegistry.SimpleMenuTypeFactory;
+import dev.architectury.utils.ArchitecturyConstants;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
@@ -32,6 +34,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 
 public class MenuRegistryImpl {
@@ -48,8 +52,11 @@ public class MenuRegistryImpl {
         return IMenuTypeExtension.create(factory::create);
     }
     
+    @SuppressWarnings("CodeBlock2Expr") // It's neater this way
     @OnlyIn(Dist.CLIENT)
     public static <H extends AbstractContainerMenu, S extends Screen & MenuAccess<H>> void registerScreenFactory(MenuType<? extends H> type, ScreenFactory<H, S> factory) {
-        MenuScreens.register(type, factory::create);
+        EventBusesHooks.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
+            bus.addListener(RegisterMenuScreensEvent.class, event -> event.register(type, factory::create));
+        });
     }
 }

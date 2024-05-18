@@ -46,9 +46,9 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
 import net.neoforged.neoforge.event.entity.living.AnimalTameEvent;
+import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
 import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
-import net.neoforged.neoforge.event.entity.living.MobSpawnEvent;
 import net.neoforged.neoforge.event.entity.player.*;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.*;
 import net.neoforged.neoforge.event.level.BlockEvent.BreakEvent;
@@ -268,8 +268,8 @@ public class EventHandlerImplCommon {
     //    }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void eventLivingSpawnEvent(MobSpawnEvent.FinalizeSpawn event) {
-        EventResult result = EntityEvent.LIVING_CHECK_SPAWN.invoker().canSpawn(event.getEntity(), event.getLevel(), event.getX(), event.getY(), event.getZ(), event.getSpawnType(), event.getSpawner());
+    public static void eventLivingSpawnEvent(FinalizeSpawnEvent event) {
+        EventResult result = EntityEvent.LIVING_CHECK_SPAWN.invoker().canSpawn(event.getEntity(), event.getLevel(), event.getX(), event.getY(), event.getZ(), event.getSpawnType(), null);//TODO FIX: , event.getSpawner());
         if (result.interruptsFurtherEvaluation()) {
             if (!result.isEmpty()) {
                 event.setSpawnCancelled(result.value());

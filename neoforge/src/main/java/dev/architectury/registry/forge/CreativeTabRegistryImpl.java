@@ -176,6 +176,12 @@ public class CreativeTabRegistryImpl {
                 if (after.isEmpty()) {
                     entries.put(stack, visibility);
                 } else {
+                    for (Map.Entry<ItemStack, CreativeModeTab.TabVisibility> entry : entries) {
+                        if (ItemStack.isSameItemSameComponents(entry.getKey(), after)) {
+                            after = entry.getKey();
+                            break;
+                        }
+                    }
                     entries.putAfter(after, stack, visibility);
                 }
             }
@@ -185,6 +191,12 @@ public class CreativeTabRegistryImpl {
                 if (before.isEmpty()) {
                     entries.put(stack, visibility);
                 } else {
+                    for (Map.Entry<ItemStack, CreativeModeTab.TabVisibility> entry : entries) {
+                        if (ItemStack.isSameItemSameComponents(entry.getKey(), before)) {
+                            before = entry.getKey();
+                            break;
+                        }
+                    }
                     entries.putBefore(before, stack, visibility);
                 }
             }
