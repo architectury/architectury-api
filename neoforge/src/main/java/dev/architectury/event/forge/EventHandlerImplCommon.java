@@ -36,6 +36,7 @@ import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.common.util.TriState;
 import net.neoforged.neoforge.event.CommandEvent;
 import net.neoforged.neoforge.event.LootTableLoadEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
@@ -247,20 +248,6 @@ public class EventHandlerImplCommon {
         }
     }
     
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void event(FillBucketEvent event) {
-        ItemStack oldItem = event.getEmptyBucket();
-        CompoundEventResult<ItemStack> result = PlayerEvent.FILL_BUCKET.invoker().fill(event.getEntity(), event.getLevel(), oldItem, event.getTarget());
-        if (result.interruptsFurtherEvaluation()) {
-            event.setCanceled(true);
-            event.setFilledBucket(result.object());
-            
-            if (result.value() != null) {
-                event.setResult(result.value() ? Event.Result.ALLOW : Event.Result.DENY);
-            }
-        }
-    }
-    
     // TODO: Hook ourselves when mixin is available
     //    @SubscribeEvent(priority = EventPriority.HIGH)
     //    public static void event(EnteringChunk event) {
@@ -294,20 +281,20 @@ public class EventHandlerImplCommon {
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void event(EntityItemPickupEvent event) {
+    public static void event(ItemEntityPickupEvent.Pre event) {
         // note: this event is weird, cancel is equivalent to denying the pickup,
         // and setting the result to ALLOW will pick it up without adding it to the player's inventory
-        var result = PlayerEvent.PICKUP_ITEM_PRE.invoker().canPickup(event.getEntity(), event.getItem(), event.getItem().getItem());
+        var result = PlayerEvent.PICKUP_ITEM_PRE.invoker().canPickup(event.getPlayer(), event.getItemEntity(), event.getItemEntity().getItem());
         if (result.isFalse()) {
-            event.setCanceled(true);
+            event.setCanPickup(TriState.FALSE);
         } else if (result.isTrue()) {
-            event.setResult(Event.Result.ALLOW);
+            event.setCanPickup(TriState.TRUE);
         }
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void event(ItemPickupEvent event) {
-        PlayerEvent.PICKUP_ITEM_POST.invoker().pickup(event.getEntity(), event.getOriginalEntity(), event.getStack());
+    public static void event(ItemEntityPickupEvent.Post event) {
+        PlayerEvent.PICKUP_ITEM_POST.invoker().pickup(event.getPlayer(), event.getItemEntity(), event.getCurrentStack());
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
@@ -340,8 +327,8 @@ public class EventHandlerImplCommon {
         if (result.isPresent()) {
             event.setCanceled(true);
             event.setCancellationResult(result.asMinecraft());
-            event.setUseBlock(Event.Result.DENY);
-            event.setUseItem(Event.Result.DENY);
+            event.setUseBlock(TriState.FALSE);
+            event.setUseItem(TriState.FALSE);
         }
     }
     
@@ -360,8 +347,8 @@ public class EventHandlerImplCommon {
         EventResult result = InteractionEvent.LEFT_CLICK_BLOCK.invoker().click(event.getEntity(), event.getHand(), event.getPos(), event.getFace());
         if (result.isPresent()) {
             event.setCanceled(true);
-            event.setUseBlock(result.value() ? Event.Result.ALLOW : Event.Result.DENY);
-            event.setUseItem(result.value() ? Event.Result.ALLOW : Event.Result.DENY);
+            event.setUseBlock(result.value() ? TriState.TRUE : TriState.FALSE);
+            event.setUseItem(result.value() ? TriState.TRUE : TriState.FALSE);
         }
     }
     
