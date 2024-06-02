@@ -63,7 +63,7 @@ public final class NetworkChannel {
     public <T> void register(Class<T> type, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<PacketContext>> messageConsumer) {
         // TODO: this is pretty wasteful; add a way to specify custom or numeric ids
         var s = UUID.nameUUIDFromBytes(type.getName().getBytes(StandardCharsets.UTF_8)).toString().replace("-", "");
-        var info = new MessageInfo<T>(new ResourceLocation(id + "/" + s), encoder, decoder, messageConsumer);
+        var info = new MessageInfo<T>(ResourceLocation.parse(id + "/" + s), encoder, decoder, messageConsumer);
         encoders.put(type, info);
         NetworkManager.NetworkReceiver<RegistryFriendlyByteBuf> receiver = (buf, context) -> {
             info.messageConsumer.accept(info.decoder.apply(buf), () -> context);

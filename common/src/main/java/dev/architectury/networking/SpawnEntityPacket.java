@@ -43,7 +43,7 @@ import java.util.UUID;
  * @see net.minecraft.network.protocol.game.ClientboundAddEntityPacket
  */
 public class SpawnEntityPacket {
-    private static final ResourceLocation PACKET_ID = new ResourceLocation("architectury", "spawn_entity_packet");
+    private static final ResourceLocation PACKET_ID = ResourceLocation.fromNamespaceAndPath("architectury", "spawn_entity_packet");
     private static final CustomPacketPayload.Type<PacketPayload> PACKET_TYPE = new CustomPacketPayload.Type<>(PACKET_ID);
     private static final StreamCodec<RegistryFriendlyByteBuf, PacketPayload> PACKET_CODEC = CustomPacketPayload.codec(PacketPayload::write, PacketPayload::new);
     

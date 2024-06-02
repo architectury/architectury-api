@@ -26,6 +26,7 @@ import dev.architectury.event.EventResult;
 import dev.architectury.hooks.client.screen.ScreenAccess;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -81,7 +82,7 @@ public interface ClientGuiEvent {
          * @param graphics  The graphics context.
          * @param tickDelta The tick delta.
          */
-        void renderHud(GuiGraphics graphics, float tickDelta);
+        void renderHud(GuiGraphics graphics, DeltaTracker deltaTracker);
     }
     
     @Environment(EnvType.CLIENT)

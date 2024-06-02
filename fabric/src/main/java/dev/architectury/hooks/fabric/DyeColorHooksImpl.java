@@ -23,7 +23,6 @@ import net.minecraft.world.item.DyeColor;
 
 public class DyeColorHooksImpl {
     public static int getColorValue(DyeColor color) {
-        var colors = color.getTextureDiffuseColors();
-        return ((int) (colors[0] * 255.0F + 0.5D) & 255) << 16 | ((int) (colors[1] * 255.0F + 0.5D) & 255) << 8 | (int) (colors[2] * 255.0F + 0.5D);
+        return color.getTextureDiffuseColor();
     }
 }

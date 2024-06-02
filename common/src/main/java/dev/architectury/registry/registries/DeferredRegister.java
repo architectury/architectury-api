@@ -55,7 +55,7 @@ public class DeferredRegister<T> implements Iterable<RegistrySupplier<T>> {
             throw new NullPointerException("You must create the deferred register with a mod id to register entries without the namespace!");
         }
         
-        return register(new ResourceLocation(modId, id), supplier);
+        return register(ResourceLocation.fromNamespaceAndPath(modId, id), supplier);
     }
     
     public <R extends T> RegistrySupplier<R> register(ResourceLocation id, Supplier<? extends R> supplier) {

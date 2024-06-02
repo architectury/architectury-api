@@ -54,7 +54,7 @@ import java.util.function.Predicate;
 import static net.fabricmc.fabric.api.biome.v1.BiomeModificationContext.*;
 
 public class BiomeModificationsImpl {
-    private static final ResourceLocation FABRIC_MODIFICATION = new ResourceLocation("architectury", "fabric_modification");
+    private static final ResourceLocation FABRIC_MODIFICATION = ResourceLocation.fromNamespaceAndPath("architectury", "fabric_modification");
     private static final List<Pair<Predicate<BiomeContext>, BiConsumer<BiomeContext, BiomeProperties.Mutable>>> ADDITIONS = Lists.newArrayList();
     private static final List<Pair<Predicate<BiomeContext>, BiConsumer<BiomeContext, BiomeProperties.Mutable>>> POST_PROCESSING = Lists.newArrayList();
     private static final List<Pair<Predicate<BiomeContext>, BiConsumer<BiomeContext, BiomeProperties.Mutable>>> REMOVALS = Lists.newArrayList();
