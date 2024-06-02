@@ -15,10 +15,10 @@ include("common")
 include("fabric")
 //include("forge")
 //include("minecraftforge")
-include("neoforge")
+//include("neoforge")
 include("testmod-common")
 include("testmod-fabric")
 //include("testmod-forge")
-include("testmod-neoforge")
+//include("testmod-neoforge")
 
 rootProject.name = "architectury"
