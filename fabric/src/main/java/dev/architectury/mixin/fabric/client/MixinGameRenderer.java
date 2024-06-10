@@ -58,7 +58,7 @@ public abstract class MixinGameRenderer {
         }
     }
     
-    @Inject(method = "render(Lnet/minecraft/client/DeltaTracker;JZ)V",
+    @Inject(method = "render(Lnet/minecraft/client/DeltaTracker;Z)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;renderWithTooltip(Lnet/minecraft/client/gui/GuiGraphics;IIF)V",
                     shift = At.Shift.AFTER, ordinal = 0), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
     public void renderScreenPost(DeltaTracker tickDelta, boolean tick, CallbackInfo ci, boolean isGameLoadFinished, int mouseX, int mouseY, Window window, Matrix4f matrix, Matrix4fStack matrices, GuiGraphics graphics) {
