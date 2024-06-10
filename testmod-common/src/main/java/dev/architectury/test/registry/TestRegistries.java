@@ -95,8 +95,8 @@ public class TestRegistries {
     
     public static final ArchitecturyFluidAttributes TEST_FLUID_ATTRIBUTES = SimpleArchitecturyFluidAttributes.ofSupplier(() -> TestRegistries.TEST_FLUID_FLOWING, () -> TestRegistries.TEST_FLUID)
             .convertToSource(true)
-            .flowingTexture(ResourceLocation.fromNamespaceAndPath("block/water_flow"))
-            .sourceTexture(ResourceLocation.fromNamespaceAndPath("block/water_still"))
+            .flowingTexture(ResourceLocation.withDefaultNamespace("block/water_flow"))
+            .sourceTexture(ResourceLocation.withDefaultNamespace("block/water_still"))
             .blockSupplier(() -> TestRegistries.TEST_FLUID_BLOCK)
             .bucketItemSupplier(() -> TestRegistries.TEST_FLUID_BUCKET)
             .color(0xFF0000);
