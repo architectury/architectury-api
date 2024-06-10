@@ -67,7 +67,7 @@ public class BiomeModificationsImpl {
         EventBusesHooks.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
             bus.<RegisterEvent>addListener(event -> {
                 event.register(NeoForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, registry -> {
-                    registry.register(new ResourceLocation(ArchitecturyConstants.MOD_ID, "none_biome_mod_codec"),
+                    registry.register(ResourceLocation.fromNamespaceAndPath(ArchitecturyConstants.MOD_ID, "none_biome_mod_codec"),
                             noneBiomeModCodec = MapCodec.unit(BiomeModifierImpl.INSTANCE));
                 });
             });

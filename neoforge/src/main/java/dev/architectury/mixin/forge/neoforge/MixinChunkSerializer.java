@@ -26,6 +26,7 @@ import net.minecraft.world.entity.ai.village.poi.PoiManager;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.ProtoChunk;
 import net.minecraft.world.level.chunk.storage.ChunkSerializer;
+import net.minecraft.world.level.chunk.storage.RegionStorageInfo;
 import net.neoforged.bus.api.Event;
 import net.neoforged.neoforge.event.level.ChunkDataEvent;
 import org.spongepowered.asm.mixin.Mixin;
@@ -43,7 +44,7 @@ public class MixinChunkSerializer {
     private static ThreadLocal<WeakReference<ServerLevel>> level = new ThreadLocal<>();
     
     @Inject(method = "read", at = @At("HEAD"))
-    private static void read(ServerLevel worldIn, PoiManager arg2, ChunkPos arg3, CompoundTag arg4, CallbackInfoReturnable<ProtoChunk> cir) {
+    private static void read(ServerLevel worldIn, PoiManager arg2, RegionStorageInfo arg3, ChunkPos arg4, CompoundTag arg5, CallbackInfoReturnable<ProtoChunk> cir) {
         level.set(new WeakReference<>(worldIn));
     }
     

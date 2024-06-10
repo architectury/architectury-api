@@ -124,7 +124,7 @@ public class EventHandlerImplCommon {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(PlayerRespawnEvent event) {
-        PlayerEvent.PLAYER_RESPAWN.invoker().respawn((ServerPlayer) event.getEntity(), event.isEndConquered());
+        PlayerEvent.PLAYER_RESPAWN.invoker().respawn((ServerPlayer) event.getEntity(), event.isEndConquered(), event.getEntity().getRemovalReason());
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
@@ -355,17 +355,7 @@ public class EventHandlerImplCommon {
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(BreakEvent event) {
         if (event.getPlayer() instanceof ServerPlayer && event.getLevel() instanceof Level) {
-            EventResult result = BlockEvent.BREAK.invoker().breakBlock((Level) event.getLevel(), event.getPos(), event.getState(), (ServerPlayer) event.getPlayer(), new IntValue() {
-                @Override
-                public int getAsInt() {
-                    return event.getExpToDrop();
-                }
-                
-                @Override
-                public void accept(int value) {
-                    event.setExpToDrop(value);
-                }
-            });
+            EventResult result = BlockEvent.BREAK.invoker().breakBlock((Level) event.getLevel(), event.getPos(), event.getState(), (ServerPlayer) event.getPlayer(), null);
             if (result.isFalse()) {
                 event.setCanceled(true);
             }
