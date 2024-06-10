@@ -47,6 +47,8 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.entity.CowRenderer;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -76,7 +78,7 @@ public class TestMod {
         CreativeTabRegistry.modifyBuiltin(BuiltInRegistries.CREATIVE_MODE_TAB.get(CreativeModeTabs.BUILDING_BLOCKS), (flags, output, canUseGameMasterBlocks) -> {
             ItemStack sword = Items.DIAMOND_SWORD.getDefaultInstance();
             ItemEnchantments.Mutable mutable = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
-            mutable.set(Enchantments.SHARPNESS, 10);
+            mutable.set(VanillaRegistries.createLookup().lookup(Registries.ENCHANTMENT).orElseThrow().getOrThrow(Enchantments.SHARPNESS), 10);
             sword.set(DataComponents.ENCHANTMENTS, mutable.toImmutable());
             output.acceptBefore(new ItemStack(Items.OAK_WOOD), sword);
             output.acceptAfter(Blocks.STRIPPED_OAK_LOG, Items.BEDROCK);

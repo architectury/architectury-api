@@ -37,6 +37,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.thread.BlockableEventLoop;
 import net.minecraft.world.entity.Entity;
@@ -132,7 +133,7 @@ public class NetworkManagerImpl {
         return ServerPlayNetworking.canSend(player, id);
     }
     
-    public static Packet<ClientGamePacketListener> createAddEntityPacket(Entity entity) {
-        return SpawnEntityPacket.create(entity);
+    public static Packet<ClientGamePacketListener> createAddEntityPacket(Entity entity, ServerEntity serverEntity) {
+        return SpawnEntityPacket.create(entity, serverEntity);
     }
 }

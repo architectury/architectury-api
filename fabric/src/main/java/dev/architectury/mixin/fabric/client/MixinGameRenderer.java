@@ -49,11 +49,14 @@ public abstract class MixinGameRenderer {
     @Final
     private Minecraft minecraft;
     
+    @Shadow
+    public abstract void tick();
+    
     @Inject(method = "render(Lnet/minecraft/client/DeltaTracker;Z)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;renderWithTooltip(Lnet/minecraft/client/gui/GuiGraphics;IIF)V",
                     ordinal = 0), locals = LocalCapture.CAPTURE_FAILEXCEPTION, cancellable = true)
     public void renderScreenPre(DeltaTracker tickDelta, boolean tick, CallbackInfo ci, boolean isGameLoadFinished, int mouseX, int mouseY, Window window, Matrix4f matrix, Matrix4fStack matrices, GuiGraphics graphics) {
-        if (ClientGuiEvent.RENDER_PRE.invoker().render(minecraft.screen, graphics, mouseX, mouseY, tickDelta.getGameTimeDeltaTicks()).isFalse()) {
+        if (ClientGuiEvent.RENDER_PRE.invoker().render(minecraft.screen, graphics, mouseX, mouseY, tickDelta).isFalse()) {
             ci.cancel();
         }
     }
@@ -62,7 +65,7 @@ public abstract class MixinGameRenderer {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;renderWithTooltip(Lnet/minecraft/client/gui/GuiGraphics;IIF)V",
                     shift = At.Shift.AFTER, ordinal = 0), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
     public void renderScreenPost(DeltaTracker tickDelta, boolean tick, CallbackInfo ci, boolean isGameLoadFinished, int mouseX, int mouseY, Window window, Matrix4f matrix, Matrix4fStack matrices, GuiGraphics graphics) {
-        ClientGuiEvent.RENDER_POST.invoker().render(minecraft.screen, graphics, mouseX, mouseY, tickDelta.getGameTimeDeltaTicks());
+        ClientGuiEvent.RENDER_POST.invoker().render(minecraft.screen, graphics, mouseX, mouseY, tickDelta);
     }
     
     @Inject(method = "reloadShaders",

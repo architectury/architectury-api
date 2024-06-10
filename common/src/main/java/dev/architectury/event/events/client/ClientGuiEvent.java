@@ -137,7 +137,7 @@ public interface ClientGuiEvent {
          * @return A {@link EventResult} determining the outcome of the event,
          * the vanilla render may be cancelled by the result.
          */
-        EventResult render(Screen screen, GuiGraphics graphics, int mouseX, int mouseY, float delta);
+        EventResult render(Screen screen, GuiGraphics graphics, int mouseX, int mouseY, DeltaTracker delta);
     }
     
     @Environment(EnvType.CLIENT)
@@ -152,7 +152,7 @@ public interface ClientGuiEvent {
          * @param mouseY   The scaled y-coordinate of the mouse cursor.
          * @param delta    The current tick delta.
          */
-        void render(Screen screen, GuiGraphics graphics, int mouseX, int mouseY, float delta);
+        void render(Screen screen, GuiGraphics graphics, int mouseX, int mouseY, DeltaTracker delta);
     }
     
     @Environment(EnvType.CLIENT)

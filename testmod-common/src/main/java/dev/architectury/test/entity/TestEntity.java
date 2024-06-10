@@ -29,6 +29,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -46,8 +47,8 @@ public class TestEntity extends Cow {
     }
     
     @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkManager.createAddEntityPacket(this);
+    public Packet<ClientGamePacketListener> getAddEntityPacket(ServerEntity entity) {
+        return NetworkManager.createAddEntityPacket(this, entity);
     }
     
     @Override
@@ -59,7 +60,7 @@ public class TestEntity extends Cow {
                 compoundTag.putString("DeathCauser", player.getStringUUID());
                 RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(Unpooled.buffer(), this.registryAccess());
                 buf.writeNbt(compoundTag);
-                NetworkManager.sendToPlayer(player, new ResourceLocation("architectury_test", "sync_data"), buf);
+                NetworkManager.sendToPlayer(player, ResourceLocation.fromNamespaceAndPath("architectury_test", "sync_data"), buf);
             }
         }
     }

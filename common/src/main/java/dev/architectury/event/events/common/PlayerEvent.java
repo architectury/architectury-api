@@ -48,7 +48,7 @@ public interface PlayerEvent {
      */
     Event<PlayerQuit> PLAYER_QUIT = EventFactory.createLoop();
     /**
-     * @see PlayerRespawn#respawn(ServerPlayer, boolean)
+     * @see PlayerRespawn#respawn(ServerPlayer, boolean, net.minecraft.world.entity.Entity.RemovalReason)
      */
     Event<PlayerRespawn> PLAYER_RESPAWN = EventFactory.createLoop();
     /**

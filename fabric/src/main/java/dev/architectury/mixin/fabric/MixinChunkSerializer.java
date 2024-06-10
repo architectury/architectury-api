@@ -32,6 +32,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.chunk.*;
 import net.minecraft.world.level.chunk.status.ChunkType;
 import net.minecraft.world.level.chunk.storage.ChunkSerializer;
+import net.minecraft.world.level.chunk.storage.RegionStorageInfo;
 import net.minecraft.world.level.levelgen.blending.BlendingData;
 import net.minecraft.world.level.lighting.LevelLightEngine;
 import org.spongepowered.asm.mixin.Mixin;
@@ -43,7 +44,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Mixin(ChunkSerializer.class)
 public class MixinChunkSerializer {
     @Inject(method = "read", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
-    private static void load(ServerLevel serverLevel, PoiManager poiManager, ChunkPos chunkPos, CompoundTag compoundTag,
+    private static void load(ServerLevel serverLevel, PoiManager poiManager, RegionStorageInfo regionStorageInfo, ChunkPos chunkPos, CompoundTag compoundTag,
                              CallbackInfoReturnable<ProtoChunk> cir, ChunkPos chunkPos2, UpgradeData upgradeData,
                              boolean bl, ListTag listTag, int i, LevelChunkSection[] levelChunkSections, boolean bl2,
                              ChunkSource chunkSource, LevelLightEngine levelLightEngine, Registry<Biome> registry,
