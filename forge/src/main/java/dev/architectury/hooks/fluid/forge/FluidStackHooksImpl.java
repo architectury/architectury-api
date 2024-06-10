@@ -48,11 +48,11 @@ public class FluidStackHooksImpl {
     }
     
     public static FluidStack read(FriendlyByteBuf buf) {
-        return FluidStackHooksForge.fromForge(net.minecraftforge.fluids.FluidStack.readFromPacket(buf));
+        return FluidStack.empty(); //TODO FluidStackHooksForge.fromForge(net.minecraftforge.fluids.FluidStack.readFromPacket(buf));
     }
     
     public static void write(FluidStack stack, FriendlyByteBuf buf) {
-        FluidStackHooksForge.toForge(stack).writeToPacket(buf);
+        //TODO FluidStackHooksForge.toForge(stack).writeToPacket(buf);
     }
     
     public static FluidStack read(CompoundTag tag) {

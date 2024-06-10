@@ -17,23 +17,20 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.platform.hooks;
+package dev.architectury.platform.hooks.forge;
 
-import dev.architectury.platform.hooks.forge.EventBusesHooksImpl;
+import dev.architectury.platform.forge.EventBuses;
 import net.minecraftforge.eventbus.api.IEventBus;
 
 import java.util.Optional;
 import java.util.function.Consumer;
 
-public final class EventBusesHooks {
-    private EventBusesHooks() {
-    }
-    
+public class EventBusesHooksImpl {
     public static void whenAvailable(String modId, Consumer<IEventBus> busConsumer) {
-        EventBusesHooksImpl.whenAvailable(modId, busConsumer);
+        EventBuses.onRegistered(modId, busConsumer);
     }
     
     public static Optional<IEventBus> getModEventBus(String modId) {
-        return EventBusesHooksImpl.getModEventBus(modId);
+        return EventBuses.getModEventBus(modId);
     }
 }

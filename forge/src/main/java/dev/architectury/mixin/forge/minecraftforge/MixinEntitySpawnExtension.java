@@ -17,23 +17,22 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.platform.hooks;
+package dev.architectury.mixin.forge.minecraftforge;
 
-import dev.architectury.platform.hooks.forge.EventBusesHooksImpl;
-import net.minecraftforge.eventbus.api.IEventBus;
+import dev.architectury.extensions.network.EntitySpawnExtension;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
+import org.spongepowered.asm.mixin.Mixin;
 
-import java.util.Optional;
-import java.util.function.Consumer;
-
-public final class EventBusesHooks {
-    private EventBusesHooks() {
+@Mixin(EntitySpawnExtension.class)
+public interface MixinEntitySpawnExtension extends IEntityAdditionalSpawnData {
+    @Override
+    default void writeSpawnData(FriendlyByteBuf buf) {
+        ((EntitySpawnExtension) this).saveAdditionalSpawnData(buf);
     }
     
-    public static void whenAvailable(String modId, Consumer<IEventBus> busConsumer) {
-        EventBusesHooksImpl.whenAvailable(modId, busConsumer);
-    }
-    
-    public static Optional<IEventBus> getModEventBus(String modId) {
-        return EventBusesHooksImpl.getModEventBus(modId);
+    @Override
+    default void readSpawnData(FriendlyByteBuf buf) {
+        ((EntitySpawnExtension) this).loadAdditionalSpawnData(buf);
     }
 }

@@ -17,23 +17,20 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.platform.hooks;
+package dev.architectury.forge;
 
-import dev.architectury.platform.hooks.forge.EventBusesHooksImpl;
-import net.minecraftforge.eventbus.api.IEventBus;
+import dev.architectury.event.EventHandler;
+import dev.architectury.platform.forge.EventBuses;
+import dev.architectury.registry.level.biome.forge.BiomeModificationsImpl;
+import dev.architectury.utils.ArchitecturyConstants;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-import java.util.Optional;
-import java.util.function.Consumer;
-
-public final class EventBusesHooks {
-    private EventBusesHooks() {
-    }
-    
-    public static void whenAvailable(String modId, Consumer<IEventBus> busConsumer) {
-        EventBusesHooksImpl.whenAvailable(modId, busConsumer);
-    }
-    
-    public static Optional<IEventBus> getModEventBus(String modId) {
-        return EventBusesHooksImpl.getModEventBus(modId);
+@Mod(ArchitecturyConstants.MOD_ID)
+public class ArchitecturyForge {
+    public ArchitecturyForge() {
+        EventBuses.registerModEventBus(ArchitecturyConstants.MOD_ID, FMLJavaModLoadingContext.get().getModEventBus());
+        EventHandler.init();
+        BiomeModificationsImpl.init();
     }
 }

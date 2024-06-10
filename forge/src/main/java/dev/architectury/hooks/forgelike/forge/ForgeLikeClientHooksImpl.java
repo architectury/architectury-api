@@ -17,35 +17,39 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.hooks.forgelike;
+package dev.architectury.hooks.forgelike.forge;
 
-import dev.architectury.hooks.forgelike.forge.ForgeLikeClientHooksImpl;
+import dev.architectury.event.events.client.ClientRawInputEvent;
+import dev.architectury.event.events.client.ClientScreenInputEvent;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.CustomizeGuiOverlayEvent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.ScreenEvent;
-import org.jetbrains.annotations.ApiStatus;
 
 import java.util.List;
 
-@ApiStatus.Internal
-public class ForgeLikeClientHooks {
+public class ForgeLikeClientHooksImpl {
     public static void preMouseScroll(ScreenEvent.MouseScrolled.Pre event) {
-        ForgeLikeClientHooksImpl.preMouseScroll(event);
+        if (ClientScreenInputEvent.MOUSE_SCROLLED_PRE.invoker().mouseScrolled(Minecraft.getInstance(), event.getScreen(), event.getMouseX(), event.getMouseY(), event.getDeltaX(), event.getDeltaY()).isFalse()) {
+            event.setCanceled(true);
+        }
     }
     
     public static void postMouseScroll(ScreenEvent.MouseScrolled.Post event) {
-        ForgeLikeClientHooksImpl.postMouseScroll(event);
+        ClientScreenInputEvent.MOUSE_SCROLLED_POST.invoker().mouseScrolled(Minecraft.getInstance(), event.getScreen(), event.getMouseX(), event.getMouseY(), event.getDeltaX(), event.getDeltaY());
     }
     
     public static void inputMouseScroll(InputEvent.MouseScrollingEvent event) {
-        ForgeLikeClientHooksImpl.inputMouseScroll(event);
+        if (ClientRawInputEvent.MOUSE_SCROLLED.invoker().mouseScrolled(Minecraft.getInstance(), event.getDeltaX(), event.getDeltaY()).isFalse()) {
+            event.setCanceled(true);
+        }
     }
     
     public static List<String> getLeft(CustomizeGuiOverlayEvent.DebugText event) {
-        return ForgeLikeClientHooksImpl.getLeft(event);
+        return event.getLeft();
     }
     
     public static List<String> getRight(CustomizeGuiOverlayEvent.DebugText event) {
-        return ForgeLikeClientHooksImpl.getRight(event);
+        return event.getRight();
     }
 }

@@ -21,6 +21,7 @@ package dev.architectury.registry.level.biome.forge;
 
 import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import dev.architectury.hooks.forgelike.ForgeLikeHooks;
 import dev.architectury.hooks.level.biome.*;
 import dev.architectury.registry.level.biome.BiomeModifications.BiomeContext;
@@ -59,11 +60,11 @@ public class BiomeModificationsImpl {
     private static final List<Pair<Predicate<BiomeContext>, BiConsumer<BiomeContext, BiomeProperties.Mutable>>> REMOVALS = Lists.newArrayList();
     private static final List<Pair<Predicate<BiomeContext>, BiConsumer<BiomeContext, BiomeProperties.Mutable>>> REPLACEMENTS = Lists.newArrayList();
     @Nullable
-    private static Codec<BiomeModifierImpl> noneBiomeModCodec = null;
+    private static MapCodec<BiomeModifierImpl> noneBiomeModCodec = null;
     
     public static void init() {
         ForgeLikeHooks.registerBiomeModifier(new ResourceLocation(ArchitecturyConstants.MOD_ID, "none_biome_mod_codec"),
-                () -> noneBiomeModCodec = Codec.unit(BiomeModifierImpl.INSTANCE));
+                () -> noneBiomeModCodec = MapCodec.unit(BiomeModifierImpl.INSTANCE));
     }
     
     public static void addProperties(Predicate<BiomeContext> predicate, BiConsumer<BiomeContext, BiomeProperties.Mutable> modifier) {
@@ -107,11 +108,11 @@ public class BiomeModificationsImpl {
         }
         
         @Override
-        public Codec<? extends BiomeModifier> codec() {
+        public MapCodec<? extends BiomeModifier> codec() {
             if (noneBiomeModCodec != null) {
                 return noneBiomeModCodec;
             } else {
-                return Codec.unit(INSTANCE);
+                return MapCodec.unit(INSTANCE);
             }
         }
     }

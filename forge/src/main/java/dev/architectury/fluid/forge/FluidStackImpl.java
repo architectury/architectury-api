@@ -19,14 +19,26 @@
 
 package dev.architectury.fluid.forge;
 
-import net.minecraft.core.registries.BuiltInRegistries;
+import com.mojang.serialization.Codec;
+import dev.architectury.hooks.fluid.forge.FluidStackHooksForge;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.PatchedDataComponentMap;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
 import static dev.architectury.utils.Amount.toInt;
 
@@ -48,13 +60,19 @@ public enum FluidStackImpl implements dev.architectury.fluid.FluidStack.FluidSta
     }
     
     @Override
-    public FluidStack create(Supplier<Fluid> fluid, long amount, CompoundTag tag) {
-        return new FluidStack(fluid.get(), toInt(amount), tag);
+    public FluidStack create(Supplier<Fluid> fluid, long amount, @Nullable DataComponentPatch patch) {
+        @SuppressWarnings("deprecation")
+        Holder<Fluid> holder = Objects.requireNonNull(fluid).get().builtInRegistryHolder();
+        if (patch == null) {
+            return new FluidStack(holder.get(), toInt(amount));
+        } else {
+            return new FluidStack(holder.get(), toInt(amount), new CompoundTag());
+        }
     }
     
     @Override
     public Supplier<Fluid> getRawFluidSupplier(FluidStack object) {
-        return () -> BuiltInRegistries.FLUID.getHolderOrThrow(BuiltInRegistries.FLUID.getResourceKey(object.getRawFluid()).orElseThrow()).value();
+        return object::getRawFluid;
     }
     
     @Override
@@ -73,14 +91,51 @@ public enum FluidStackImpl implements dev.architectury.fluid.FluidStack.FluidSta
     }
     
     @Override
-    public CompoundTag getTag(FluidStack value) {
-        return value.getTag();
+    public DataComponentPatch getPatch(FluidStack value) {
+        return DataComponentPatch.EMPTY; // TODO
     }
     
     @Override
-    public void setTag(FluidStack value, CompoundTag tag) {
-        value.setTag(tag);
+    public PatchedDataComponentMap getComponents(FluidStack value) {
+        return (PatchedDataComponentMap) PatchedDataComponentMap.EMPTY; // TOOD
     }
+    
+    @Override
+    public void applyComponents(FluidStack value, DataComponentPatch patch) {
+        //value.applyComponents(patch);
+    }
+    
+    @Override
+    public void applyComponents(FluidStack value, DataComponentMap patch) {
+        //value.applyComponents(patch);
+    }
+    
+    @Override
+    @Nullable
+    public <D> D set(FluidStack value, DataComponentType<? super D> type, @Nullable D component) {
+        return component;// value.set(type, component);
+    }
+    
+    @Override
+    @Nullable
+    public <D> D remove(FluidStack value, DataComponentType<? extends D> type) {
+        return null;// value.remove(type);
+    }
+    
+    @Override
+    @Nullable
+    public <D> D update(FluidStack value, DataComponentType<D> type, D component, UnaryOperator<D> updater) {
+        //return value.update(type, component, updater);
+        return null; // TODO
+    }
+    
+    @Override
+    @Nullable
+    public <D, U> D update(FluidStack value, DataComponentType<D> type, D component, U updateContext, BiFunction<D, U, D> updater) {
+        //return value.update(type, component, updateContext, updater);
+        return null;
+    }
+    
     
     @Override
     public FluidStack copy(FluidStack value) {
@@ -92,9 +147,17 @@ public enum FluidStackImpl implements dev.architectury.fluid.FluidStack.FluidSta
         var code = 1;
         code = 31 * code + value.getFluid().hashCode();
         code = 31 * code + value.getAmount();
-        var tag = value.getTag();
-        if (tag != null)
-            code = 31 * code + tag.hashCode();
+        //code = 31 * code + value.getComponents().hashCode(); // TODO
         return code;
+    }
+    
+    @Override
+    public Codec<dev.architectury.fluid.FluidStack> codec() {
+        return FluidStack.CODEC.xmap(FluidStackHooksForge::fromForge, FluidStackHooksForge::toForge);
+    }
+    
+    @Override
+    public StreamCodec<RegistryFriendlyByteBuf, dev.architectury.fluid.FluidStack> streamCodec() { // TODO
+        return (StreamCodec<RegistryFriendlyByteBuf, dev.architectury.fluid.FluidStack>) FluidStack.CODEC.xmap(FluidStackHooksForge::fromForge, FluidStackHooksForge::toForge);
     }
 }

@@ -47,8 +47,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 @OnlyIn(Dist.CLIENT)
 public class EventHandlerImplClient {
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void event(ItemTooltipEvent event) {
-        ClientTooltipEvent.ITEM.invoker().append(event.getItemStack(), event.getToolTip(), event.getFlags());
+    public static void event(ItemTooltipEvent event) { // TODO
+        ClientTooltipEvent.ITEM.invoker().append(event.getItemStack(), event.getToolTip(), null, event.getFlags());
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
@@ -59,10 +59,10 @@ public class EventHandlerImplClient {
             ClientTickEvent.CLIENT_POST.invoker().tick(Minecraft.getInstance());
     }
     
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void eventRenderGameOverlayEvent(RenderGuiEvent.Post event) {
-        ClientGuiEvent.RENDER_HUD.invoker().renderHud(event.getGuiGraphics(), event.getPartialTick());
-    }
+//    @SubscribeEvent(priority = EventPriority.HIGH) // TODO
+//    public static void eventRenderGameOverlayEvent(RenderGuiEvent.Post event) {
+//        ClientGuiEvent.RENDER_HUD.invoker().renderHud(event.getGuiGraphics(), event.getPartialTick());
+//    }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(ClientPlayerNetworkEvent.LoggingIn event) {

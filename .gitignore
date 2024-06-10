@@ -17,3 +17,5 @@ classes/
 
 .vscode/
 logs/
+
+.DS_Store

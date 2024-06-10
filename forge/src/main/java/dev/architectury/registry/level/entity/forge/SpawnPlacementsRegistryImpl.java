@@ -23,6 +23,7 @@ import dev.architectury.platform.hooks.EventBusesHooks;
 import dev.architectury.utils.ArchitecturyConstants;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.SpawnPlacementType;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.event.entity.SpawnPlacementRegisterEvent;
@@ -34,7 +35,7 @@ import java.util.function.Supplier;
 public class SpawnPlacementsRegistryImpl {
     private static List<Entry<?>> entries = new ArrayList<>();
     
-    private record Entry<T extends Mob>(Supplier<? extends EntityType<T>> type, SpawnPlacements.Type spawnPlacement,
+    private record Entry<T extends Mob>(Supplier<? extends EntityType<T>> type, SpawnPlacementType spawnPlacement,
                                         Heightmap.Types heightmapType,
                                         SpawnPlacements.SpawnPredicate<T> spawnPredicate) {
     }
@@ -51,7 +52,7 @@ public class SpawnPlacementsRegistryImpl {
         });
     }
     
-    public static <T extends Mob> void register(Supplier<? extends EntityType<T>> type, SpawnPlacements.Type spawnPlacement, Heightmap.Types heightmapType, SpawnPlacements.SpawnPredicate<T> spawnPredicate) {
+    public static <T extends Mob> void register(Supplier<? extends EntityType<T>> type, SpawnPlacementType spawnPlacement, Heightmap.Types heightmapType, SpawnPlacements.SpawnPredicate<T> spawnPredicate) {
         if (entries != null) {
             entries.add(new Entry<>(type, spawnPlacement, heightmapType, spawnPredicate));
         } else {

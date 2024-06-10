@@ -88,10 +88,10 @@ final class LootTableModificationContextImpl implements LootEvent.LootTableModif
         this.pools = pools;
     }
     
-    @Override
-    public void addPool(LootPool pool) {
-        this.pools.add(pool);
-    }
+//    @Override
+ // TODO   public void addPool(LootPool pool) {
+      //  this.pools.add(pool);
+  //  }
     
     @Override
     public void addPool(LootPool.Builder pool) {

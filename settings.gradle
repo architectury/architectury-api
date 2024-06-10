@@ -4,6 +4,7 @@ pluginManagement {
         maven { url "https://maven.architectury.dev/" }
         maven { url "https://files.minecraftforge.net/maven/" }
         gradlePluginPortal()
+        mavenLocal()
     }
 }
 
@@ -13,12 +14,11 @@ if (JavaVersion.current().ordinal() + 1 < 21) {
 
 include("common")
 include("fabric")
-//include("forge")
-//include("minecraftforge")
+include("forge")
 include("neoforge")
 include("testmod-common")
 include("testmod-fabric")
-//include("testmod-forge")
+include("testmod-forge")
 include("testmod-neoforge")
 
 rootProject.name = "architectury"

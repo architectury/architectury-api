@@ -24,13 +24,14 @@ import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.PlayerEvent;
 import dev.architectury.event.events.common.*;
 import dev.architectury.utils.value.IntValue;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.storage.loot.LootDataManager;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -65,7 +66,6 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 import java.lang.ref.WeakReference;
 
 public class EventHandlerImplCommon {
-    public static WeakReference<LootDataManager> lootDataManagerRef = null;
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(ServerTickEvent event) {
@@ -423,7 +423,7 @@ public class EventHandlerImplCommon {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(LootTableLoadEvent event) {
-        LootEvent.MODIFY_LOOT_TABLE.invoker().modifyLootTable(lootDataManagerRef == null ? null : lootDataManagerRef.get(), event.getName(), new LootTableModificationContextImpl(event.getTable()), true);
+        LootEvent.MODIFY_LOOT_TABLE.invoker().modifyLootTable(ResourceKey.create(Registries.LOOT_TABLE, event.getName()), new LootTableModificationContextImpl(event.getTable()), true);
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)

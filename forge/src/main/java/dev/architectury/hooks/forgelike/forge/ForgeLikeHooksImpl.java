@@ -17,25 +17,31 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.hooks.forgelike;
+package dev.architectury.hooks.forgelike.forge;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import dev.architectury.hooks.forgelike.forge.ForgeLikeHooksImpl;
+import dev.architectury.platform.hooks.EventBusesHooks;
+import dev.architectury.utils.ArchitecturyConstants;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.common.world.BiomeModifier;
-import org.jetbrains.annotations.ApiStatus;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegisterEvent;
 
 import java.util.function.Supplier;
 
-@ApiStatus.Internal
-public class ForgeLikeHooks {
+public class ForgeLikeHooksImpl {
     public static void registerBiomeModifier(ResourceLocation id, Supplier<MapCodec<? extends BiomeModifier>> codecSupplier) {
-        ForgeLikeHooksImpl.registerBiomeModifier(id, codecSupplier);
+        EventBusesHooks.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
+            bus.<RegisterEvent>addListener(event -> {
+                event.register(ForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, registry -> {
+                    registry.register(id, codecSupplier.get());
+                });
+            });
+        });
     }
     
     public static void registerBucketItemCapability(Item item) {
-       ForgeLikeHooksImpl.registerBucketItemCapability(item);
     }
 }

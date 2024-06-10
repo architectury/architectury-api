@@ -19,7 +19,6 @@
 
 package dev.architectury.plugin.forge;
 
-import dev.architectury.injectables.targets.ArchitecturyTarget;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -50,9 +49,7 @@ public class ArchitecturyMixinPlugin implements IMixinConfigPlugin {
     
     @Override
     public List<String> getMixins() {
-        return ArchitecturyTarget.getCurrentTarget().equals("forge")
-                ? List.of()
-                : List.of("neoforge.MixinChunkSerializer");
+        return null;
     }
     
     @Override
