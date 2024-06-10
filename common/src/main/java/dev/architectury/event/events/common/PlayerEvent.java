@@ -129,7 +129,7 @@ public interface PlayerEvent {
          * @param newPlayer    The respawned player.
          * @param conqueredEnd Whether the player has conquered the end. This is true when the player joined the end and now is leaving it. {@link ServerPlayer#wonGame}
          */
-        void respawn(ServerPlayer newPlayer, boolean conqueredEnd);
+        void respawn(ServerPlayer newPlayer, boolean conqueredEnd, Entity.RemovalReason removalReason);
     }
     
     interface PlayerClone {
