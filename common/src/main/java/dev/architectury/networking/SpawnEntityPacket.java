@@ -25,6 +25,7 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -48,11 +49,11 @@ public class SpawnEntityPacket {
     private static final CustomPacketPayload.Type<PacketPayload> PACKET_TYPE = new CustomPacketPayload.Type<>(PACKET_ID);
     private static final StreamCodec<RegistryFriendlyByteBuf, PacketPayload> PACKET_CODEC = CustomPacketPayload.codec(PacketPayload::write, PacketPayload::new);
     
-    public static Packet<ClientGamePacketListener> create(Entity entity, ServerEntity serverEntity) { // TODO FIX
+    public static Packet<ClientGamePacketListener> create(Entity entity, ServerEntity serverEntity) {
         if (entity.level().isClientSide()) {
             throw new IllegalStateException("SpawnPacketUtil.create called on the logical client!");
         }
-        return (Packet<ClientGamePacketListener>) NetworkManager.toPacket(NetworkManager.s2c(), new PacketPayload(entity), entity.registryAccess());
+        return (Packet<ClientGamePacketListener>) NetworkManager.toPacket(NetworkManager.s2c(), new PacketPayload(entity, serverEntity), entity.registryAccess());
     }
     
     public static void register() {
@@ -107,9 +108,16 @@ public class SpawnEntityPacket {
                     buf.readByteArray());
         }
         
-        public PacketPayload(Entity entity) {
-            this(entity.getType(), entity.getUUID(), entity.getId(), entity.getX(),
-                    entity.getY(), entity.getZ(), entity.getXRot(), entity.getYRot(), entity.getYHeadRot(),
+        public PacketPayload(Entity entity, ServerEntity serverEntity) {
+            this(entity.getType(), entity.getUUID(), entity.getId(), serverEntity.getPositionBase().x(),
+                    serverEntity.getPositionBase().y(), serverEntity.getPositionBase().z(), serverEntity.getLastSentXRot(),
+                    serverEntity.getLastSentYRot(), serverEntity.getLastSentYHeadRot(), serverEntity.getLastSentMovement().x,
+                    serverEntity.getLastSentMovement().y, serverEntity.getLastSentMovement().z, saveExtra(entity));
+        }
+        
+        public PacketPayload(Entity entity, BlockPos pos) {
+            this(entity.getType(), entity.getUUID(), entity.getId(), pos.getX(),
+                    pos.getY(), pos.getZ(), entity.getXRot(), entity.getYRot(), entity.getYHeadRot(),
                     entity.getDeltaMovement().x, entity.getDeltaMovement().y, entity.getDeltaMovement().z, saveExtra(entity));
         }
         
