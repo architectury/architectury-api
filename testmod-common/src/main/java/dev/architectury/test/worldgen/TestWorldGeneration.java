@@ -35,7 +35,7 @@ public class TestWorldGeneration {
                 if (ctx.hasTag(BiomeTags.IS_FOREST)) {
                     mutable.getGenerationProperties().addFeature(GenerationStep.Decoration.TOP_LAYER_MODIFICATION,
                             ResourceKey.create(Registries.PLACED_FEATURE,
-                                    new ResourceLocation(TestMod.MOD_ID + ":diamond_blocks")));
+                                    ResourceLocation.fromNamespaceAndPath(TestMod.MOD_ID, "diamond_blocks")));
                 }
             });
         });

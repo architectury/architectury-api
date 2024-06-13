@@ -44,10 +44,10 @@ public interface TestModNet {
     
     // An example Server to Client message
     MessageType SYNC_DATA = NET.registerS2C("sync_data", SyncDataMessage::new);
-    ResourceLocation BIG_DATA = new ResourceLocation(TestMod.MOD_ID, "big_data");
-    ResourceLocation SERVER_TO_CLIENT_TEST = new ResourceLocation(TestMod.MOD_ID, "s2c_test");
-    CustomPacketPayload.Type<ServerToClientTestPayload> SERVER_TO_CLIENT_TEST_PAYLOAD = new CustomPacketPayload.Type<>(new ResourceLocation(TestMod.MOD_ID, "s2c_test_payload"));
-    CustomPacketPayload.Type<BigDataPayload> BIG_DATA_PAYLOAD = new CustomPacketPayload.Type<>(new ResourceLocation(TestMod.MOD_ID, "big_data_payload"));
+    ResourceLocation BIG_DATA = ResourceLocation.fromNamespaceAndPath(TestMod.MOD_ID, "big_data");
+    ResourceLocation SERVER_TO_CLIENT_TEST = ResourceLocation.fromNamespaceAndPath(TestMod.MOD_ID, "s2c_test");
+    CustomPacketPayload.Type<ServerToClientTestPayload> SERVER_TO_CLIENT_TEST_PAYLOAD = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(TestMod.MOD_ID, "s2c_test_payload"));
+    CustomPacketPayload.Type<BigDataPayload> BIG_DATA_PAYLOAD = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(TestMod.MOD_ID, "big_data_payload"));
     String BIG_STRING = StringUtils.repeat('a', 100000);
     
     static void initialize() {

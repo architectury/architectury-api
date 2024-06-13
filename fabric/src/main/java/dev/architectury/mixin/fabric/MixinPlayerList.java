@@ -24,6 +24,7 @@ import net.minecraft.network.Connection;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.server.players.PlayerList;
+import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -43,7 +44,7 @@ public class MixinPlayerList {
     }
     
     @Inject(method = "respawn", at = @At("RETURN"))
-    private void respawn(ServerPlayer serverPlayer, boolean bl, CallbackInfoReturnable<ServerPlayer> cir) {
-        PlayerEvent.PLAYER_RESPAWN.invoker().respawn(cir.getReturnValue(), bl);
+    private void respawn(ServerPlayer serverPlayer, boolean bl, Entity.RemovalReason removalReason, CallbackInfoReturnable<ServerPlayer> cir) {
+        PlayerEvent.PLAYER_RESPAWN.invoker().respawn(cir.getReturnValue(), bl, removalReason);
     }
 }

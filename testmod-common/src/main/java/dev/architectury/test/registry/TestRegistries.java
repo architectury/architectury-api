@@ -77,7 +77,7 @@ public class TestRegistries {
         }
     }
     
-    public static final Registrar<TestInt> INTS = RegistrarManager.get(TestMod.MOD_ID).<TestInt>builder(new ResourceLocation(TestMod.MOD_ID, "ints"))
+    public static final Registrar<TestInt> INTS = RegistrarManager.get(TestMod.MOD_ID).<TestInt>builder(ResourceLocation.fromNamespaceAndPath(TestMod.MOD_ID, "ints"))
             .syncToClients()
             .build();
     public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(TestMod.MOD_ID, Registries.CREATIVE_MODE_TAB);
@@ -95,14 +95,14 @@ public class TestRegistries {
     
     public static final ArchitecturyFluidAttributes TEST_FLUID_ATTRIBUTES = SimpleArchitecturyFluidAttributes.ofSupplier(() -> TestRegistries.TEST_FLUID_FLOWING, () -> TestRegistries.TEST_FLUID)
             .convertToSource(true)
-            .flowingTexture(new ResourceLocation("block/water_flow"))
-            .sourceTexture(new ResourceLocation("block/water_still"))
+            .flowingTexture(ResourceLocation.withDefaultNamespace("block/water_flow"))
+            .sourceTexture(ResourceLocation.withDefaultNamespace("block/water_still"))
             .blockSupplier(() -> TestRegistries.TEST_FLUID_BLOCK)
             .bucketItemSupplier(() -> TestRegistries.TEST_FLUID_BUCKET)
             .color(0xFF0000);
     
-    public static final RegistrySupplier<TestInt> TEST_INT = INTS.register(new ResourceLocation(TestMod.MOD_ID, "test_int"), () -> new TestInt(1));
-    public static final RegistrySupplier<TestInt> TEST_INT_2 = INTS.register(new ResourceLocation(TestMod.MOD_ID, "test_int_2"), () -> new TestInt(2));
+    public static final RegistrySupplier<TestInt> TEST_INT = INTS.register(ResourceLocation.fromNamespaceAndPath(TestMod.MOD_ID, "test_int"), () -> new TestInt(1));
+    public static final RegistrySupplier<TestInt> TEST_INT_2 = INTS.register(ResourceLocation.fromNamespaceAndPath(TestMod.MOD_ID, "test_int_2"), () -> new TestInt(2));
     
     public static final RegistrySupplier<MobEffect> TEST_EFFECT = MOB_EFFECTS.register("test_effect", () ->
             new MobEffect(MobEffectCategory.NEUTRAL, 0x123456) {

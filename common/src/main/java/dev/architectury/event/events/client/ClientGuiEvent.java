@@ -26,6 +26,7 @@ import dev.architectury.event.EventResult;
 import dev.architectury.hooks.client.screen.ScreenAccess;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -81,7 +82,7 @@ public interface ClientGuiEvent {
          * @param graphics  The graphics context.
          * @param tickDelta The tick delta.
          */
-        void renderHud(GuiGraphics graphics, float tickDelta);
+        void renderHud(GuiGraphics graphics, DeltaTracker deltaTracker);
     }
     
     @Environment(EnvType.CLIENT)
@@ -136,7 +137,7 @@ public interface ClientGuiEvent {
          * @return A {@link EventResult} determining the outcome of the event,
          * the vanilla render may be cancelled by the result.
          */
-        EventResult render(Screen screen, GuiGraphics graphics, int mouseX, int mouseY, float delta);
+        EventResult render(Screen screen, GuiGraphics graphics, int mouseX, int mouseY, DeltaTracker delta);
     }
     
     @Environment(EnvType.CLIENT)
@@ -151,7 +152,7 @@ public interface ClientGuiEvent {
          * @param mouseY   The scaled y-coordinate of the mouse cursor.
          * @param delta    The current tick delta.
          */
-        void render(Screen screen, GuiGraphics graphics, int mouseX, int mouseY, float delta);
+        void render(Screen screen, GuiGraphics graphics, int mouseX, int mouseY, DeltaTracker delta);
     }
     
     @Environment(EnvType.CLIENT)

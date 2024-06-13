@@ -39,6 +39,7 @@ import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -130,8 +131,8 @@ public class NetworkManagerImpl {
         return player.connection.hasChannel(id);
     }
     
-    public static Packet<ClientGamePacketListener> createAddEntityPacket(Entity entity) {
-        return SpawnEntityPacket.create(entity);
+    public static Packet<ClientGamePacketListener> createAddEntityPacket(Entity entity, ServerEntity serverEntity) {
+        return SpawnEntityPacket.create(entity, serverEntity);
     }
     
     @OnlyIn(Dist.CLIENT)

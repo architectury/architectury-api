@@ -189,7 +189,7 @@ public class DebugEvents {
         PlayerEvent.PLAYER_QUIT.register(player -> {
             TestMod.SINK.accept(player.getScoreboardName() + " quit" + logSide(player.level()));
         });
-        PlayerEvent.PLAYER_RESPAWN.register((player, conqueredEnd) -> {
+        PlayerEvent.PLAYER_RESPAWN.register((player, conqueredEnd, removalReason) -> {
             if (!conqueredEnd) {
                 TestMod.SINK.accept(player.getScoreboardName() + " respawns " + logSide(player.level()));
             }

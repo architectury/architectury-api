@@ -75,7 +75,7 @@ public class SimpleNetworkManager {
      */
     @ApiStatus.Experimental
     public MessageType registerS2C(String id, MessageDecoder<BaseS2CMessage> decoder, List<PacketTransformer> transformers) {
-        MessageType messageType = new MessageType(this, new ResourceLocation(namespace, id), NetworkManager.s2c());
+        MessageType messageType = new MessageType(this, ResourceLocation.fromNamespaceAndPath(namespace, id), NetworkManager.s2c());
         
         if (Platform.getEnvironment() == Env.CLIENT) {
             NetworkManager.NetworkReceiver<RegistryFriendlyByteBuf> receiver = decoder.createReceiver();
@@ -107,7 +107,7 @@ public class SimpleNetworkManager {
      */
     @ApiStatus.Experimental
     public MessageType registerC2S(String id, MessageDecoder<BaseC2SMessage> decoder, List<PacketTransformer> transformers) {
-        MessageType messageType = new MessageType(this, new ResourceLocation(namespace, id), NetworkManager.c2s());
+        MessageType messageType = new MessageType(this, ResourceLocation.fromNamespaceAndPath(namespace, id), NetworkManager.c2s());
         NetworkManager.NetworkReceiver<RegistryFriendlyByteBuf> receiver = decoder.createReceiver();
         NetworkManager.registerReceiver(NetworkManager.c2s(), messageType.getId(), transformers, receiver);
         return messageType;

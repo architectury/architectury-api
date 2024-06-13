@@ -48,7 +48,7 @@ public interface PlayerEvent {
      */
     Event<PlayerQuit> PLAYER_QUIT = EventFactory.createLoop();
     /**
-     * @see PlayerRespawn#respawn(ServerPlayer, boolean)
+     * @see PlayerRespawn#respawn(ServerPlayer, boolean, net.minecraft.world.entity.Entity.RemovalReason)
      */
     Event<PlayerRespawn> PLAYER_RESPAWN = EventFactory.createLoop();
     /**
@@ -129,7 +129,7 @@ public interface PlayerEvent {
          * @param newPlayer    The respawned player.
          * @param conqueredEnd Whether the player has conquered the end. This is true when the player joined the end and now is leaving it. {@link ServerPlayer#wonGame}
          */
-        void respawn(ServerPlayer newPlayer, boolean conqueredEnd);
+        void respawn(ServerPlayer newPlayer, boolean conqueredEnd, Entity.RemovalReason removalReason);
     }
     
     interface PlayerClone {

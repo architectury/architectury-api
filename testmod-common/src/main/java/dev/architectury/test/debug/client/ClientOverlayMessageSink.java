@@ -26,6 +26,7 @@ import dev.architectury.test.debug.ConsoleMessageSink;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.Util;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -40,9 +41,9 @@ public class ClientOverlayMessageSink extends ConsoleMessageSink {
     
     public ClientOverlayMessageSink() {
         ClientGuiEvent.RENDER_POST.register((screen, graphics, mouseX, mouseY, delta) -> render(graphics, delta));
-        ClientGuiEvent.RENDER_HUD.register((graphics, tickDelta) -> {
+        ClientGuiEvent.RENDER_HUD.register((graphics, delta) -> {
             if (Minecraft.getInstance().screen == null && !Minecraft.getInstance().gui.getDebugOverlay().showDebugScreen()) {
-                render(graphics, tickDelta);
+                render(graphics, delta);
             }
         });
     }
@@ -53,7 +54,7 @@ public class ClientOverlayMessageSink extends ConsoleMessageSink {
         messages.add(0, new Message(Component.literal(message), Util.getMillis()));
     }
     
-    public void render(GuiGraphics graphics, float delta) {
+    public void render(GuiGraphics graphics, DeltaTracker delta) {
         graphics.pose().pushPose();
         graphics.pose().scale(0.5f, 0.5f, 1f);
         var minecraft = Minecraft.getInstance();

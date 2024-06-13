@@ -15,6 +15,7 @@
     "neoforge.LiquidBlockAccessor",
     "neoforge.MixinChunkSerializer",
     "MixinFallingBlockEntity",
+    "MixinInventory",
     "MixinItemExtension",
     "MixinLevelEvent"
   ],
