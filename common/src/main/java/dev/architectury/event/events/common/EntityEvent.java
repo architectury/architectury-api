@@ -76,7 +76,7 @@ public interface EntityEvent {
     interface LivingHurt {
         /**
          * Invoked before an entity is hurt by a damage source.
-         * Equivalent to Forge's {@code LivingAttackEvent} event.
+         * Equivalent to NeoForge's {@code LivingIncomingDamageEvent} or Forge's {@code LivingAttackEvent} event.
          *
          * <p>You currently cannot override the amount of damage the entity receives.
          *
