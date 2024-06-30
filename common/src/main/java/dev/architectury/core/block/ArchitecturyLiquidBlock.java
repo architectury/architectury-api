@@ -31,7 +31,7 @@ public class ArchitecturyLiquidBlock extends LiquidBlock {
     }
     
     private static <T> T checkPlatform(T obj) {
-        if (Platform.isForge()) {
+        if (Platform.isForgeLike()) {
             throw new IllegalStateException("This class should've been replaced on Forge!");
         }
         
