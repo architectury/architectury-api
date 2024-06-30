@@ -33,7 +33,7 @@ public class ArchitecturyMobBucketItem extends MobBucketItem {
     }
     
     private static <T> T checkPlatform(T obj) {
-        if (Platform.isForge()) {
+        if (Platform.isForgeLike()) {
             throw new IllegalStateException("This class should've been replaced on Forge!");
         }
         
