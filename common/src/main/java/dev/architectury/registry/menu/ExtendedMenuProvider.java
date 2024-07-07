@@ -19,9 +19,9 @@
 
 package dev.architectury.registry.menu;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.MenuProvider;
 
 public interface ExtendedMenuProvider extends MenuProvider {
-    void saveExtraData(FriendlyByteBuf buf);
+    void saveExtraData(RegistryFriendlyByteBuf buf);
 }
