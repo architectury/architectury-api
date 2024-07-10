@@ -287,6 +287,12 @@ public class RegistrarManagerImpl {
                 }
                 
                 @Override
+                public ResourceKey<E> getKey() {
+                    return RegistrySupplierImpl.super.getKey();
+                }
+                
+                
+                @Override
                 public RegistrarManager getRegistrarManager() {
                     return RegistrarManager.get(modId);
                 }

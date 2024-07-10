@@ -26,7 +26,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.SpawnPlacementType;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.neoforged.neoforge.event.entity.SpawnPlacementRegisterEvent;
+import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,10 +42,10 @@ public class SpawnPlacementsRegistryImpl {
     
     static {
         EventBusesHooks.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
-            bus.<SpawnPlacementRegisterEvent>addListener(event -> {
+            bus.<RegisterSpawnPlacementsEvent>addListener(event -> {
                 for (Entry<?> entry : entries) {
                     Entry<Mob> casted = (Entry<Mob>) entry;
-                    event.register(casted.type().get(), casted.spawnPlacement(), casted.heightmapType(), casted.spawnPredicate(), SpawnPlacementRegisterEvent.Operation.OR);
+                    event.register(casted.type().get(), casted.spawnPlacement(), casted.heightmapType(), casted.spawnPredicate(), RegisterSpawnPlacementsEvent.Operation.OR);
                 }
                 entries = null;
             });

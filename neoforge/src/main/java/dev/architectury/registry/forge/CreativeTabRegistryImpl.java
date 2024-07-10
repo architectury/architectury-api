@@ -63,13 +63,13 @@ public class CreativeTabRegistryImpl {
                 if (keyEntry.getKey() instanceof TabKey.SupplierTabKey supplierTabKey) {
                     if (Objects.equals(CreativeModeTabRegistry.getName(event.getTab()), supplierTabKey.supplier().getId())) {
                         for (ItemStack stack : stacks.get()) {
-                            event.getEntries().put(stack, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+                            event.accept(stack, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
                         }
                     }
                 } else if (keyEntry.getKey() instanceof TabKey.DirectTabKey directTabKey) {
                     if (event.getTab().equals(directTabKey.tab())) {
                         for (ItemStack stack : stacks.get()) {
-                            event.getEntries().put(stack, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+                            event.accept(stack, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
                         }
                     }
                 }
@@ -161,44 +161,24 @@ public class CreativeTabRegistryImpl {
         BUILD_CONTENTS_LISTENERS.add(event -> {
             if (tab.isPresent()) {
                 if (event.getTab().equals(tab.get())) {
-                    filler.accept(event.getFlags(), wrapTabOutput(event.getEntries()), event.hasPermissions());
+                    filler.accept(event.getFlags(), wrapTabOutput(event), event.hasPermissions());
                 }
             } else if (Objects.equals(CreativeModeTabRegistry.getName(event.getTab()), tab.getId())) {
-                filler.accept(event.getFlags(), wrapTabOutput(event.getEntries()), event.hasPermissions());
+                filler.accept(event.getFlags(), wrapTabOutput(event), event.hasPermissions());
             }
         });
     }
     
-    private static CreativeTabOutput wrapTabOutput(MutableHashedLinkedMap<ItemStack, CreativeModeTab.TabVisibility> entries) {
+    private static CreativeTabOutput wrapTabOutput(BuildCreativeModeTabContentsEvent event) {
         return new CreativeTabOutput() {
             @Override
             public void acceptAfter(ItemStack after, ItemStack stack, CreativeModeTab.TabVisibility visibility) {
-                if (after.isEmpty()) {
-                    entries.put(stack, visibility);
-                } else {
-                    for (Map.Entry<ItemStack, CreativeModeTab.TabVisibility> entry : entries) {
-                        if (ItemStack.isSameItemSameComponents(entry.getKey(), after)) {
-                            after = entry.getKey();
-                            break;
-                        }
-                    }
-                    entries.putAfter(after, stack, visibility);
-                }
+                event.insertAfter(after, stack, visibility);
             }
             
             @Override
             public void acceptBefore(ItemStack before, ItemStack stack, CreativeModeTab.TabVisibility visibility) {
-                if (before.isEmpty()) {
-                    entries.put(stack, visibility);
-                } else {
-                    for (Map.Entry<ItemStack, CreativeModeTab.TabVisibility> entry : entries) {
-                        if (ItemStack.isSameItemSameComponents(entry.getKey(), before)) {
-                            before = entry.getKey();
-                            break;
-                        }
-                    }
-                    entries.putBefore(before, stack, visibility);
-                }
+                event.insertBefore(before, stack, visibility);
             }
         };
     }
