@@ -24,7 +24,7 @@ side = "BOTH"
 [[dependencies.architectury]]
 modId = "neoforge"
 type = "required"
-versionRange = "[21.0.40-beta,)"
+versionRange = "[21.0.78-beta,)"
 ordering = "NONE"
 side = "BOTH"
 
