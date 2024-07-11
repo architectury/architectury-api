@@ -291,7 +291,6 @@ public class RegistrarManagerImpl {
                     return RegistrySupplierImpl.super.getKey();
                 }
                 
-                
                 @Override
                 public RegistrarManager getRegistrarManager() {
                     return RegistrarManager.get(modId);
