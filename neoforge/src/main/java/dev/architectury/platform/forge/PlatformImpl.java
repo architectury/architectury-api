@@ -178,7 +178,7 @@ public class PlatformImpl {
         
         @Override
         public void registerConfigurationScreen(ConfigurationScreenProvider configurationScreenProvider) {
-            container.registerExtensionPoint(IConfigScreenFactory.class, (minecraft, screen) -> configurationScreenProvider.provide(screen));
+            container.registerExtensionPoint(IConfigScreenFactory.class, (container, screen) -> configurationScreenProvider.provide(screen));
         }
     }
 }
