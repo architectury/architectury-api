@@ -51,7 +51,7 @@ jobs:
           cat $GITHUB_WORKSPACE/gradle.properties | grep ^base_version= >> $GITHUB_ENV
       - name: Create package name
         run: echo "package_name=[$minecraft_version] $archives_base_name-$base_version.${{ github.run_number }}" >> $GITHUB_ENV
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: ${{ env.package_name }}
           path: |
