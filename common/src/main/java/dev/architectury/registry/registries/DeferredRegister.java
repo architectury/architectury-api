@@ -122,6 +122,11 @@ public class DeferredRegister<T> implements Iterable<RegistrySupplier<T>> {
         }
         
         @Override
+        public ResourceKey<R> getKey() {
+            return ResourceKey.create(getRegistryKey(), getId());
+        }
+        
+        @Override
         public ResourceLocation getRegistryId() {
             return key.location();
         }
