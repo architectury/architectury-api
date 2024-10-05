@@ -37,6 +37,7 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 
 import java.util.UUID;
@@ -74,7 +75,7 @@ public class SpawnEntityPacket {
                 if (Minecraft.getInstance().level == null) {
                     throw new IllegalStateException("Client world is null!");
                 }
-                var entity = payload.entityType().create(Minecraft.getInstance().level);
+                var entity = payload.entityType().create(Minecraft.getInstance().level, EntitySpawnReason.LOAD);
                 if (entity == null) {
                     throw new IllegalStateException("Created entity is null!");
                 }

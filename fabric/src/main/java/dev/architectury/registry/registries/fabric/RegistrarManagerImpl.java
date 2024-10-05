@@ -52,7 +52,7 @@ public class RegistrarManagerImpl {
     
     private static void listen(ResourceKey<?> resourceKey, ResourceLocation id, Consumer<?> listener) {
         if (LISTENED_REGISTRIES.add(resourceKey)) {
-            Registry<?> registry = java.util.Objects.requireNonNull(BuiltInRegistries.REGISTRY.get(resourceKey.location()), "Registry " + resourceKey + " not found!");
+            Registry<?> registry = java.util.Objects.requireNonNull(BuiltInRegistries.REGISTRY.getValue(resourceKey.location()), "Registry " + resourceKey + " not found!");
             RegistryEntryAddedCallback.event(registry).register((rawId, entryId, object) -> {
                 RegistryEntryId<?> registryEntryId = new RegistryEntryId<>(resourceKey, entryId);
                 for (Consumer<?> consumer : LISTENERS.get(registryEntryId)) {
@@ -78,7 +78,7 @@ public class RegistrarManagerImpl {
         
         @Override
         public <T> Registrar<T> get(ResourceKey<Registry<T>> key) {
-            return new RegistrarImpl<>(modId, (Registry<T>) java.util.Objects.requireNonNull(BuiltInRegistries.REGISTRY.get(key.location()), "Registry " + key + " not found!"));
+            return new RegistrarImpl<>(modId, (Registry<T>) java.util.Objects.requireNonNull(BuiltInRegistries.REGISTRY.getValue(key.location()), "Registry " + key + " not found!"));
         }
         
         @Override
@@ -250,7 +250,7 @@ public class RegistrarManagerImpl {
         
         @Override
         public @Nullable T get(ResourceLocation id) {
-            return delegate.get(id);
+            return delegate.getValue(id);
         }
         
         @Override
@@ -286,7 +286,7 @@ public class RegistrarManagerImpl {
         @Override
         @Nullable
         public Holder<T> getHolder(ResourceKey<T> key) {
-            return delegate.getHolder(key).orElse(null);
+            return delegate.get(key).orElse(null);
         }
         
         @Override

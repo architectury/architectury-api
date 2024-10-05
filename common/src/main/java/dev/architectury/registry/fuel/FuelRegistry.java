@@ -19,9 +19,7 @@
 
 package dev.architectury.registry.fuel;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ItemLike;
 
 public final class FuelRegistry {
     private FuelRegistry() {
@@ -34,10 +32,10 @@ public final class FuelRegistry {
      *              and {@code -1} to use vanilla logic
      * @param items the array of items to register for
      */
-    @ExpectPlatform
+    /*@ExpectPlatform
     public static void register(int time, ItemLike... items) {
         throw new AssertionError();
-    }
+    }*/
     
     /**
      * Returns the burn time of an {@link ItemStack}.
@@ -45,8 +43,8 @@ public final class FuelRegistry {
      * @param stack the stack
      * @return the burn time of the stack, returns {@code 0} if not a fuel
      */
-    @ExpectPlatform
+    /*@ExpectPlatform
     public static int get(ItemStack stack) {
         throw new AssertionError();
-    }
+    }*/
 }

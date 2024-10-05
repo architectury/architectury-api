@@ -21,8 +21,8 @@ package dev.architectury.mixin.fabric;
 
 import dev.architectury.event.events.common.EntityEvent;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.NaturalSpawner;
 import org.spongepowered.asm.mixin.Mixin;
@@ -46,7 +46,7 @@ public abstract class MixinNaturalSpawner {
             )
     )
     private static boolean overrideNaturalSpawnCondition(ServerLevel level, Mob entity, double f) {
-        var result = EntityEvent.LIVING_CHECK_SPAWN.invoker().canSpawn(entity, level, entity.xOld, entity.yOld, entity.zOld, MobSpawnType.NATURAL, null);
+        var result = EntityEvent.LIVING_CHECK_SPAWN.invoker().canSpawn(entity, level, entity.xOld, entity.yOld, entity.zOld, EntitySpawnReason.NATURAL, null);
         if (result.value() != null) {
             return result.value();
         } else {
@@ -58,16 +58,16 @@ public abstract class MixinNaturalSpawner {
             method = "spawnMobsForChunkGeneration",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/entity/Mob;checkSpawnRules(Lnet/minecraft/world/level/LevelAccessor;Lnet/minecraft/world/entity/MobSpawnType;)Z",
+                    target = "Lnet/minecraft/world/entity/Mob;checkSpawnRules(Lnet/minecraft/world/level/LevelAccessor;Lnet/minecraft/world/entity/EntitySpawnReason;)Z",
                     ordinal = 0
             )
     )
-    private static boolean overrideChunkGenSpawnCondition(Mob mob, LevelAccessor level, MobSpawnType type) {
-        var result = EntityEvent.LIVING_CHECK_SPAWN.invoker().canSpawn(mob, level, mob.xOld, mob.yOld, mob.zOld, MobSpawnType.CHUNK_GENERATION, null);
+    private static boolean overrideChunkGenSpawnCondition(Mob mob, LevelAccessor level, EntitySpawnReason reason) {
+        var result = EntityEvent.LIVING_CHECK_SPAWN.invoker().canSpawn(mob, level, mob.xOld, mob.yOld, mob.zOld, reason, null);
         if (result.value() != null) {
             return result.value();
         } else {
-            return mob.checkSpawnRules(level, type);
+            return mob.checkSpawnRules(level, reason);
         }
     }
     

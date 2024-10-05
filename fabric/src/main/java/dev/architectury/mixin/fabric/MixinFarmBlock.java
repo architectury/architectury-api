@@ -21,6 +21,7 @@ package dev.architectury.mixin.fabric;
 
 import dev.architectury.event.events.common.InteractionEvent;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.FarmBlock;
@@ -54,7 +55,7 @@ public abstract class MixinFarmBlock {
         var triple = turnToDirtLocal.get();
         turnToDirtLocal.remove();
         if (triple != null && triple.getLeft() == pos.asLong() && triple.getRight() == entity) {
-            if (InteractionEvent.FARMLAND_TRAMPLE.invoker().trample(level, pos, state, triple.getMiddle(), entity).value() != null) {
+            if (InteractionEvent.FARMLAND_TRAMPLE.invoker().trample(level, pos, state, triple.getMiddle(), entity) != InteractionResult.PASS) {
                 ci.cancel();
             }
         }

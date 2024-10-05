@@ -29,7 +29,7 @@ import org.jetbrains.annotations.ApiStatus;
 import java.util.List;
 
 public interface GenerationProperties {
-    Iterable<Holder<ConfiguredWorldCarver<?>>> getCarvers(GenerationStep.Carving carving);
+    Iterable<Holder<ConfiguredWorldCarver<?>>> getCarvers();
     
     Iterable<Holder<PlacedFeature>> getFeatures(GenerationStep.Decoration decoration);
     
@@ -41,13 +41,13 @@ public interface GenerationProperties {
         @ApiStatus.Experimental
         Mutable addFeature(GenerationStep.Decoration decoration, ResourceKey<PlacedFeature> feature);
         
-        Mutable addCarver(GenerationStep.Carving carving, Holder<ConfiguredWorldCarver<?>> feature);
+        Mutable addCarver(Holder<ConfiguredWorldCarver<?>> feature);
         
         @ApiStatus.Experimental
-        Mutable addCarver(GenerationStep.Carving carving, ResourceKey<ConfiguredWorldCarver<?>> feature);
+        Mutable addCarver(ResourceKey<ConfiguredWorldCarver<?>> feature);
         
         Mutable removeFeature(GenerationStep.Decoration decoration, ResourceKey<PlacedFeature> feature);
         
-        Mutable removeCarver(GenerationStep.Carving carving, ResourceKey<ConfiguredWorldCarver<?>> feature);
+        Mutable removeCarver(ResourceKey<ConfiguredWorldCarver<?>> feature);
     }
 }

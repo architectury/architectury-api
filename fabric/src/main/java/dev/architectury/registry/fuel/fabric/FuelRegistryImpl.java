@@ -19,23 +19,23 @@
 
 package dev.architectury.registry.fuel.fabric;
 
-import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 
 public class FuelRegistryImpl {
     public static void register(int time, ItemLike... items) {
-        for (var item : items) {
+        /*for (var item : items) {
             if (time >= 0) {
                 FuelRegistry.INSTANCE.add(item, time);
             } else {
                 FuelRegistry.INSTANCE.remove(item);
             }
-        }
+        }*/
     }
     
     public static int get(ItemStack stack) {
-        var time = FuelRegistry.INSTANCE.get(stack.getItem());
-        return time == null ? 0 : time;
+        /*var time = FuelRegistry.INSTANCE.get(stack.getItem());
+        return time == null ? 0 : time;*/
+        return 0;
     }
 }

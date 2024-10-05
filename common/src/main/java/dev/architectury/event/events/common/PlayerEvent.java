@@ -19,7 +19,6 @@
 
 package dev.architectury.event.events.common;
 
-import dev.architectury.event.CompoundEventResult;
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
 import dev.architectury.event.EventResult;
@@ -28,6 +27,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -94,7 +94,7 @@ public interface PlayerEvent {
     /**
      * @see FillBucket#fill(Player, Level, ItemStack, HitResult)
      */
-    Event<FillBucket> FILL_BUCKET = EventFactory.createCompoundEventResult();
+    Event<FillBucket> FILL_BUCKET = EventFactory.createInteractionResult();
     /**
      * @see AttackEntity#attack(Player, Level, Entity, InteractionHand, EntityHitResult)
      */
@@ -265,9 +265,9 @@ public interface PlayerEvent {
          * @param level  The level the player is in.
          * @param stack  The bucket stack.
          * @param target The target which the player has aimed at.
-         * @return A {@link CompoundEventResult} determining the outcome of the event.
+         * @return A {@link InteractionResult} determining the outcome of the event.
          */
-        CompoundEventResult<ItemStack> fill(Player player, Level level, ItemStack stack, @Nullable HitResult target);
+        InteractionResult fill(Player player, Level level, ItemStack stack, @Nullable HitResult target);
     }
     
     interface AttackEntity {

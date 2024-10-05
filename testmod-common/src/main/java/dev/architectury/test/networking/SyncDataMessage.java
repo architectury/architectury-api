@@ -54,6 +54,6 @@ public class SyncDataMessage extends BaseS2CMessage {
     
     @Override
     public void handle(NetworkManager.PacketContext context) {
-        context.getPlayer().sendSystemMessage(Component.literal("Received data from server: " + serverData));
+        context.getPlayer().displayClientMessage(Component.literal("Received data from server: " + serverData), false);
     }
 }

@@ -20,8 +20,8 @@
 package dev.architectury.mixin.fabric;
 
 import dev.architectury.event.events.common.EntityEvent;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
@@ -35,17 +35,17 @@ public abstract class MixinBaseSpawner {
             method = "serverTick",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/entity/Mob;checkSpawnRules(Lnet/minecraft/world/level/LevelAccessor;Lnet/minecraft/world/entity/MobSpawnType;)Z",
+                    target = "Lnet/minecraft/world/entity/Mob;checkSpawnRules(Lnet/minecraft/world/level/LevelAccessor;Lnet/minecraft/world/entity/EntitySpawnReason;)Z",
                     ordinal = 0
             )
     )
-    private boolean checkSpawnerSpawn(Mob mob, LevelAccessor level, MobSpawnType type) {
+    private boolean checkSpawnerSpawn(Mob mob, LevelAccessor level, EntitySpawnReason reason) {
         var result = EntityEvent.LIVING_CHECK_SPAWN.invoker()
-                .canSpawn(mob, level, mob.getX(), mob.getY(), mob.getZ(), type, (BaseSpawner) (Object) this);
+                .canSpawn(mob, level, mob.getX(), mob.getY(), mob.getZ(), reason, (BaseSpawner) (Object) this);
         if (result.value() != null) {
             return result.value();
         }
-        return mob.checkSpawnRules(level, type) && mob.checkSpawnObstruction(level);
+        return mob.checkSpawnRules(level, reason) && mob.checkSpawnObstruction(level);
     }
     
     @Redirect(

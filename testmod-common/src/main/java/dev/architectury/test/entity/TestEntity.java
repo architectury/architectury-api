@@ -20,14 +20,15 @@
 package dev.architectury.test.entity;
 
 import com.google.common.base.Suppliers;
-import dev.architectury.injectables.targets.ArchitecturyTarget;
 import dev.architectury.networking.NetworkManager;
+import dev.architectury.test.TestMod;
 import io.netty.buffer.Unpooled;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerPlayer;
@@ -39,8 +40,8 @@ import net.minecraft.world.level.Level;
 import java.util.function.Supplier;
 
 public class TestEntity extends Cow {
-    public static final Supplier<EntityType<TestEntity>> TYPE = Suppliers.memoize(() -> EntityType.Builder.of(TestEntity::new, MobCategory.MISC).sized(0.98F, 0.7F).clientTrackingRange(8).build("test_entity"));
-    public static final Supplier<EntityType<TestEntity>> TYPE_2 = Suppliers.memoize(() -> EntityType.Builder.of(TestEntity::new, MobCategory.MISC).sized(0.98F, 0.7F).clientTrackingRange(8).build("test_entity_2"));
+    public static final Supplier<EntityType<TestEntity>> TYPE = Suppliers.memoize(() -> EntityType.Builder.of(TestEntity::new, MobCategory.MISC).sized(0.98F, 0.7F).clientTrackingRange(8).build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(TestMod.MOD_ID, "test_entity"))));
+    public static final Supplier<EntityType<TestEntity>> TYPE_2 = Suppliers.memoize(() -> EntityType.Builder.of(TestEntity::new, MobCategory.MISC).sized(0.98F, 0.7F).clientTrackingRange(8).build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(TestMod.MOD_ID, "test_entity_2"))));
     
     public TestEntity(EntityType<? extends Cow> entityType, Level level) {
         super(entityType, level);

@@ -23,6 +23,7 @@ import com.google.common.reflect.AbstractInvocationHandler;
 import dev.architectury.annotations.ForgeEvent;
 import dev.architectury.annotations.ForgeEventCancellable;
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import net.minecraft.world.InteractionResult;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.lang.invoke.MethodHandles;
@@ -106,6 +107,28 @@ public final class EventFactory {
                     }
                 }
                 return CompoundEventResult.pass();
+            }
+        }));
+    }
+    
+    @SafeVarargs
+    public static <T> Event<T> createInteractionResult(T... typeGetter) {
+        if (typeGetter.length != 0) throw new IllegalStateException("array must be empty!");
+        return createInteractionResult((Class<T>) typeGetter.getClass().getComponentType());
+    }
+    
+    @SuppressWarnings("UnstableApiUsage")
+    public static <T> Event<T> createInteractionResult(Class<T> clazz) {
+        return of(listeners -> (T) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{clazz}, new AbstractInvocationHandler() {
+            @Override
+            protected Object handleInvocation(Object proxy, Method method, Object[] args) throws Throwable {
+                for (var listener : listeners) {
+                    var result = (InteractionResult) Objects.requireNonNull(invokeMethod(listener, method, args));
+                    if (result != InteractionResult.PASS) {
+                        return result;
+                    }
+                }
+                return InteractionResult.PASS;
             }
         }));
     }

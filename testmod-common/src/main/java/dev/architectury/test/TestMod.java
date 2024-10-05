@@ -45,19 +45,11 @@ import dev.architectury.utils.EnvExecutor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.entity.CowRenderer;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.block.Blocks;
-
-import java.util.Collections;
-import java.util.List;
 
 public class TestMod {
     public static final MessageSink SINK = EnvExecutor.getEnvSpecific(() -> ClientOverlayMessageSink::new, () -> ConsoleMessageSink::new);
@@ -75,7 +67,7 @@ public class TestMod {
         TestLoot.init();
         TestWorldGeneration.initialize();
         EnvExecutor.runInEnv(Env.CLIENT, () -> TestMod.Client::initializeClient);
-        CreativeTabRegistry.modifyBuiltin(BuiltInRegistries.CREATIVE_MODE_TAB.get(CreativeModeTabs.BUILDING_BLOCKS), (flags, output, canUseGameMasterBlocks) -> {
+        CreativeTabRegistry.modifyBuiltin(BuiltInRegistries.CREATIVE_MODE_TAB.getValue(CreativeModeTabs.BUILDING_BLOCKS), (flags, output, canUseGameMasterBlocks) -> {
             ItemStack sword = Items.DIAMOND_SWORD.getDefaultInstance();
             output.acceptBefore(new ItemStack(Items.OAK_WOOD), sword);
             output.acceptAfter(Blocks.STRIPPED_OAK_LOG, Items.BEDROCK);

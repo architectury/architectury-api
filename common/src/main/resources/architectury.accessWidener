@@ -113,10 +113,6 @@ accessible field net/minecraft/world/item/ShovelItem FLATTENABLES Ljava/util/Map
 mutable field net/minecraft/world/item/ShovelItem FLATTENABLES Ljava/util/Map;
 accessible field net/minecraft/world/item/HoeItem TILLABLES Ljava/util/Map;
 mutable field net/minecraft/world/item/HoeItem TILLABLES Ljava/util/Map;
-transitive-accessible field net/minecraft/world/level/Explosion source Lnet/minecraft/world/entity/Entity;
-transitive-mutable field net/minecraft/world/level/Explosion source Lnet/minecraft/world/entity/Entity;
-transitive-accessible field net/minecraft/world/level/Explosion radius F
-transitive-mutable field net/minecraft/world/level/Explosion radius F
 transitive-accessible method net/minecraft/world/entity/player/Player closeContainer ()V
 transitive-accessible method net/minecraft/client/renderer/RenderType create (Ljava/lang/String;Lcom/mojang/blaze3d/vertex/VertexFormat;Lcom/mojang/blaze3d/vertex/VertexFormat$Mode;ILnet/minecraft/client/renderer/RenderType$CompositeState;)Lnet/minecraft/client/renderer/RenderType$CompositeRenderType;
 transitive-accessible method net/minecraft/client/renderer/RenderType create (Ljava/lang/String;Lcom/mojang/blaze3d/vertex/VertexFormat;Lcom/mojang/blaze3d/vertex/VertexFormat$Mode;IZZLnet/minecraft/client/renderer/RenderType$CompositeState;)Lnet/minecraft/client/renderer/RenderType$CompositeRenderType;
@@ -139,7 +135,7 @@ accessible field net/minecraft/client/multiplayer/MultiPlayerGameMode connection
 ##############################
 
 # Constructors of non-abstract item classes
-transitive-accessible method net/minecraft/world/item/DiggerItem <init> (Lnet/minecraft/world/item/Tier;Lnet/minecraft/tags/TagKey;Lnet/minecraft/world/item/Item$Properties;)V
+transitive-accessible method net/minecraft/world/item/DiggerItem <init> (Lnet/minecraft/world/item/ToolMaterial;Lnet/minecraft/tags/TagKey;FFLnet/minecraft/world/item/Item$Properties;)V
 
 # Constructors of non-abstract block classes
 transitive-accessible method net/minecraft/world/level/block/AttachedStemBlock <init> (Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
@@ -157,13 +153,14 @@ transitive-accessible method net/minecraft/world/level/block/CakeBlock <init> (L
 transitive-accessible method net/minecraft/world/level/block/CandleCakeBlock <init> (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/CartographyTableBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/CarvedPumpkinBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
-transitive-accessible method net/minecraft/world/level/block/ChestBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;Ljava/util/function/Supplier;)V
+transitive-accessible method net/minecraft/world/level/block/ChestBlock <init> (Ljava/util/function/Supplier;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/ChorusFlowerBlock <init> (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/ChorusPlantBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/CoralFanBlock <init> (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/CoralPlantBlock <init> (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/CoralWallFanBlock <init> (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/CraftingTableBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
+transitive-accessible method net/minecraft/world/level/block/CreakingHeartBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/CropBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/DeadBushBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/DecoratedPotBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
@@ -175,7 +172,6 @@ transitive-accessible method net/minecraft/world/level/block/EndGatewayBlock <in
 transitive-accessible method net/minecraft/world/level/block/EndPortalBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/EndRodBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/EnderChestBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
-transitive-accessible method net/minecraft/world/level/block/EquipableCarvedPumpkinBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/FarmBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/FletchingTableBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/FungusBlock <init> (Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
@@ -248,12 +244,17 @@ transitive-accessible field net/minecraft/client/renderer/RenderStateShard LIGHT
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard GLINT_TRANSPARENCY Lnet/minecraft/client/renderer/RenderStateShard$TransparencyStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard CRUMBLING_TRANSPARENCY Lnet/minecraft/client/renderer/RenderStateShard$TransparencyStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard TRANSLUCENT_TRANSPARENCY Lnet/minecraft/client/renderer/RenderStateShard$TransparencyStateShard;
+transitive-accessible field net/minecraft/client/renderer/RenderStateShard VIGNETTE_TRANSPARENCY Lnet/minecraft/client/renderer/RenderStateShard$TransparencyStateShard;
+transitive-accessible field net/minecraft/client/renderer/RenderStateShard CROSSHAIR_TRANSPARENCY Lnet/minecraft/client/renderer/RenderStateShard$TransparencyStateShard;
+transitive-accessible field net/minecraft/client/renderer/RenderStateShard MOJANG_LOGO_TRANSPARENCY Lnet/minecraft/client/renderer/RenderStateShard$TransparencyStateShard;
+transitive-accessible field net/minecraft/client/renderer/RenderStateShard NAUSEA_OVERLAY_TRANSPARENCY Lnet/minecraft/client/renderer/RenderStateShard$TransparencyStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard NO_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard POSITION_COLOR_LIGHTMAP_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard POSITION_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard POSITION_TEX_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard POSITION_COLOR_TEX_LIGHTMAP_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard POSITION_COLOR_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
+transitive-accessible field net/minecraft/client/renderer/RenderStateShard POSITION_TEXTURE_COLOR_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_SOLID_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_CUTOUT_MIPPED_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_CUTOUT_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
@@ -265,7 +266,6 @@ transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDE
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_ENTITY_CUTOUT_NO_CULL_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_ENTITY_CUTOUT_NO_CULL_Z_OFFSET_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_ITEM_ENTITY_TRANSLUCENT_CULL_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
-transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_ENTITY_TRANSLUCENT_CULL_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_ENTITY_TRANSLUCENT_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_ENTITY_TRANSLUCENT_EMISSIVE_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_ENTITY_SMOOTH_CUTOUT_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
@@ -283,7 +283,6 @@ transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDE
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_GLINT_TRANSLUCENT_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_GLINT_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_ENTITY_GLINT_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
-transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_ENTITY_GLINT_DIRECT_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_CRUMBLING_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_TEXT_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_TEXT_BACKGROUND_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
@@ -324,6 +323,7 @@ transitive-accessible field net/minecraft/client/renderer/RenderStateShard DEPTH
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard NO_LAYERING Lnet/minecraft/client/renderer/RenderStateShard$LayeringStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard POLYGON_OFFSET_LAYERING Lnet/minecraft/client/renderer/RenderStateShard$LayeringStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard VIEW_OFFSET_Z_LAYERING Lnet/minecraft/client/renderer/RenderStateShard$LayeringStateShard;
+transitive-accessible field net/minecraft/client/renderer/RenderStateShard VIEW_OFFSET_Z_LAYERING_FORWARD Lnet/minecraft/client/renderer/RenderStateShard$LayeringStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard MAIN_TARGET Lnet/minecraft/client/renderer/RenderStateShard$OutputStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard OUTLINE_TARGET Lnet/minecraft/client/renderer/RenderStateShard$OutputStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard TRANSLUCENT_TARGET Lnet/minecraft/client/renderer/RenderStateShard$OutputStateShard;

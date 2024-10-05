@@ -28,11 +28,11 @@ import org.jetbrains.annotations.Nullable;
 
 public interface ChunkEvent {
     /**
-     * @see SaveData#save(ChunkAccess, ServerLevel, CompoundTag)
+     * @see SaveData#save(ChunkAccess, ServerLevel)
      */
     Event<SaveData> SAVE_DATA = EventFactory.createLoop();
     /**
-     * @see LoadData#load(ChunkAccess, ServerLevel, CompoundTag)
+     * @see LoadData#load(ChunkAccess, ServerLevel)
      */
     Event<LoadData> LOAD_DATA = EventFactory.createLoop();
     
@@ -44,9 +44,8 @@ public interface ChunkEvent {
          *
          * @param chunk The chunk that is saved.
          * @param level The level the chunk is in.
-         * @param nbt   The chunk data that is written to the save file.
          */
-        void save(ChunkAccess chunk, ServerLevel level, CompoundTag nbt);
+        void save(ChunkAccess chunk, ServerLevel level);
     }
     
     interface LoadData {
@@ -57,8 +56,7 @@ public interface ChunkEvent {
          *
          * @param chunk The chunk that is loaded.
          * @param level The level the chunk is in, may be {@code null}.
-         * @param nbt   The chunk data that was read from the save file.
          */
-        void load(ChunkAccess chunk, @Nullable ServerLevel level, CompoundTag nbt);
+        void load(ChunkAccess chunk, @Nullable ServerLevel level);
     }
 }

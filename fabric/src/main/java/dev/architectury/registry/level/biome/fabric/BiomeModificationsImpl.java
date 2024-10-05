@@ -154,10 +154,10 @@ public class BiomeModificationsImpl {
         }
         
         @Override
-        public Mutable addCarver(GenerationStep.Carving carving, Holder<ConfiguredWorldCarver<?>> feature) {
+        public Mutable addCarver(Holder<ConfiguredWorldCarver<?>> feature) {
             Either<ResourceKey<ConfiguredWorldCarver<?>>, ConfiguredWorldCarver<?>> unwrap = feature.unwrap();
             if (unwrap.left().isPresent()) {
-                this.context.addCarver(carving, unwrap.left().get());
+                this.context.addCarver(unwrap.left().get());
             } else {
                 throw new UnsupportedOperationException("Cannot add a carver that is not registered: " + unwrap.right().orElseThrow());
             }
@@ -165,8 +165,8 @@ public class BiomeModificationsImpl {
         }
         
         @Override
-        public Mutable addCarver(GenerationStep.Carving carving, ResourceKey<ConfiguredWorldCarver<?>> feature) {
-            this.context.addCarver(carving, feature);
+        public Mutable addCarver(ResourceKey<ConfiguredWorldCarver<?>> feature) {
+            this.context.addCarver(feature);
             return this;
         }
         
@@ -177,8 +177,8 @@ public class BiomeModificationsImpl {
         }
         
         @Override
-        public Mutable removeCarver(GenerationStep.Carving carving, ResourceKey<ConfiguredWorldCarver<?>> feature) {
-            context.removeCarver(carving, feature);
+        public Mutable removeCarver(ResourceKey<ConfiguredWorldCarver<?>> feature) {
+            context.removeCarver(feature);
             return this;
         }
     }

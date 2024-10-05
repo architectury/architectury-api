@@ -19,6 +19,7 @@
 
 package dev.architectury.mixin.fabric.client;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientRawInputEvent;
 import dev.architectury.event.events.client.ClientScreenInputEvent;
@@ -34,7 +35,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(KeyboardHandler.class)
 public class MixinKeyboardHandler {
@@ -42,7 +42,7 @@ public class MixinKeyboardHandler {
     @Final
     private Minecraft minecraft;
     
-    @ModifyVariable(method = {"method_1458", "lambda$charTyped$5"}, at = @At("HEAD"), ordinal = 0, argsOnly = true)
+    @ModifyVariable(method = {"method_1458", "lambda$charTyped$6"}, at = @At("HEAD"), ordinal = 0, argsOnly = true)
     private static GuiEventListener wrapCharTypedFirst(GuiEventListener screen) {
         if (screen instanceof ScreenInputDelegate delegate) {
             return delegate.architectury_delegateInputs();
@@ -50,7 +50,7 @@ public class MixinKeyboardHandler {
         return screen;
     }
     
-    @ModifyVariable(method = {"method_1473", "lambda$charTyped$6"}, at = @At("HEAD"), ordinal = 0, argsOnly = true)
+    @ModifyVariable(method = {"method_1473", "lambda$charTyped$7"}, at = @At("HEAD"), ordinal = 0, argsOnly = true)
     private static GuiEventListener wrapCharTypedSecond(GuiEventListener screen) {
         if (screen instanceof ScreenInputDelegate delegate) {
             return delegate.architectury_delegateInputs();
@@ -79,9 +79,9 @@ public class MixinKeyboardHandler {
     
     @Inject(method = "keyPress", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/client/gui/screens/Screen;wrapScreenError(Ljava/lang/Runnable;Ljava/lang/String;Ljava/lang/String;)V",
-            ordinal = 0, shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD,
+            ordinal = 0, shift = At.Shift.AFTER),
             cancellable = true)
-    public void onKeyAfter(long long_1, int int_1, int int_2, int int_3, int int_4, CallbackInfo info, boolean f3Pressed, Screen screen, boolean[] bls) {
+    public void onKeyAfter(long long_1, int int_1, int int_2, int int_3, int int_4, CallbackInfo info, @Local Screen screen, @Local boolean[] bls) {
         if (!info.isCancelled() && !bls[0]) {
             EventResult result;
             if (int_3 != 1 && int_3 != 2) {

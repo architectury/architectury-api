@@ -24,9 +24,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.block.DispenserBlock;
@@ -50,7 +50,7 @@ public class ArchitecturySpawnEggItem extends SpawnEggItem {
                 EntityType<?> entityType = ((SpawnEggItem) stack.getItem()).getType(stack);
                 
                 try {
-                    entityType.spawn(source.level(), stack, null, source.pos().relative(direction), MobSpawnType.DISPENSER, direction != Direction.UP, false);
+                    entityType.spawn(source.level(), stack, null, source.pos().relative(direction), EntitySpawnReason.DISPENSER, direction != Direction.UP, false);
                 } catch (Exception var6) {
                     LOGGER.error("Error while dispensing spawn egg from dispenser at {}", source.pos(), var6);
                     return ItemStack.EMPTY;

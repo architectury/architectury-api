@@ -41,7 +41,7 @@ public final class TestBlockInteractions {
             if (!ctx.getLevel().isClientSide) {
                 Player player = ctx.getPlayer();
                 if (player != null)
-                    player.sendSystemMessage(Component.literal("Thou has successfully committed the dark arts of alchemy!!"));
+                    player.displayClientMessage(Component.literal("Thou has successfully committed the dark arts of alchemy!!"), false);
             }
         }, ctx -> {
             return Blocks.DIAMOND_BLOCK.defaultBlockState();

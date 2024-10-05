@@ -349,8 +349,8 @@ public final class BiomeHooks {
         }
         
         @Override
-        public Iterable<Holder<ConfiguredWorldCarver<?>>> getCarvers(GenerationStep.Carving carving) {
-            return settings.getCarvers(carving);
+        public Iterable<Holder<ConfiguredWorldCarver<?>>> getCarvers() {
+            return settings.getCarvers();
         }
         
         @Override

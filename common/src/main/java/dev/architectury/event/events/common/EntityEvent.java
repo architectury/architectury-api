@@ -22,11 +22,10 @@ package dev.architectury.event.events.common;
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
 import dev.architectury.event.EventResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BaseSpawner;
@@ -44,7 +43,7 @@ public interface EntityEvent {
      */
     Event<LivingHurt> LIVING_HURT = EventFactory.createEventResult();
     /**
-     * @see LivingCheckSpawn#canSpawn(LivingEntity, LevelAccessor, double, double, double, MobSpawnType, BaseSpawner)
+     * @see LivingCheckSpawn#canSpawn(LivingEntity, LevelAccessor, double, double, double, EntitySpawnReason, BaseSpawner)
      */
     Event<LivingCheckSpawn> LIVING_CHECK_SPAWN = EventFactory.createEventResult();
     /**
@@ -102,10 +101,10 @@ public interface EntityEvent {
          * @param z       The z-coordinate the spawn position.
          * @param type    The source of spawning.
          * @param spawner The spawner. Can be {@code null}.
-         * @return A {@link InteractionResultHolder} determining the outcome of the event,
+         * @return A {@link EventResult} determining the outcome of the event,
          * if an outcome is set, the vanilla result is overridden.
          */
-        EventResult canSpawn(LivingEntity entity, LevelAccessor world, double x, double y, double z, MobSpawnType type, @Nullable BaseSpawner spawner);
+        EventResult canSpawn(LivingEntity entity, LevelAccessor world, double x, double y, double z, EntitySpawnReason type, @Nullable BaseSpawner spawner);
     }
     
     interface Add {

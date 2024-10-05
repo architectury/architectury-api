@@ -51,6 +51,6 @@ public class ButtonClickedMessage extends BaseC2SMessage {
     
     @Override
     public void handle(NetworkManager.PacketContext context) {
-        context.getPlayer().sendSystemMessage(Component.literal("You clicked button #" + buttonId));
+        context.getPlayer().displayClientMessage(Component.literal("You clicked button #" + buttonId), false);
     }
 }

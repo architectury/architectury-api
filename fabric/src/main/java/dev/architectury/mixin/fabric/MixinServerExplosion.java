@@ -19,32 +19,27 @@
 
 package dev.architectury.mixin.fabric;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import dev.architectury.event.events.common.ExplosionEvent;
-import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.Level;
-import org.spongepowered.asm.mixin.Final;
+import net.minecraft.world.level.ServerExplosion;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.List;
-import java.util.Set;
 
-@Mixin(Explosion.class)
-public class MixinExplosion {
+@Mixin(ServerExplosion.class)
+public abstract class MixinServerExplosion {
     @Shadow
-    @Final
-    private Level level;
+    public abstract ServerLevel level();
     
     @SuppressWarnings("InvalidInjectorMethodSignature")
-    @Inject(method = "explode", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/Vec3;<init>(DDD)V", ordinal = 1),
-            locals = LocalCapture.CAPTURE_FAILHARD)
-    private void explodePost(CallbackInfo ci, Set<BlockPos> set, int i, float q, int r, int s, int t, int u, int v, int w, List<Entity> list) {
-        ExplosionEvent.DETONATE.invoker().explode(level, (Explosion) (Object) this, list);
+    @Inject(method = "hurtEntities", at = @At(value = "INVOKE", target = "Ljava/util/List;iterator()Ljava/util/Iterator;", ordinal = 0))
+    private void explodePost(CallbackInfo ci, @Local List<Entity> list) {
+        ExplosionEvent.DETONATE.invoker().explode(level(), (ServerExplosion) (Object) this, list);
     }
 }

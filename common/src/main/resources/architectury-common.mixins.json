@@ -10,7 +10,6 @@
     "inject.MixinBucketItem",
     "inject.MixinEntityType",
     "inject.MixinFluid",
-    "inject.MixinFoodPropertiesBuilder",
     "inject.MixinItem",
     "inject.MixinItemProperties",
     "inject.MixinLiquidBlock",

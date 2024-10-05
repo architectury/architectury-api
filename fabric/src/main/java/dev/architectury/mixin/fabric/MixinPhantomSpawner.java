@@ -19,26 +19,17 @@
 
 package dev.architectury.mixin.fabric;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import dev.architectury.event.events.common.EntityEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.stats.ServerStatsCounter;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.monster.Phantom;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.PhantomSpawner;
-import net.minecraft.world.level.material.FluidState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-
-import java.util.Iterator;
 
 @Mixin(PhantomSpawner.class)
 public abstract class MixinPhantomSpawner {
@@ -47,18 +38,15 @@ public abstract class MixinPhantomSpawner {
             method = "tick",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/entity/monster/Phantom;finalizeSpawn(Lnet/minecraft/world/level/ServerLevelAccessor;Lnet/minecraft/world/DifficultyInstance;Lnet/minecraft/world/entity/MobSpawnType;Lnet/minecraft/world/entity/SpawnGroupData;)Lnet/minecraft/world/entity/SpawnGroupData;",
+                    target = "Lnet/minecraft/world/entity/EntityType;create(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/EntitySpawnReason;)Lnet/minecraft/world/entity/Entity;",
                     ordinal = 0,
-                    shift = At.Shift.BEFORE
+                    shift = At.Shift.BY,
+                    by = 3
             ),
-            cancellable = true,
-            locals = LocalCapture.CAPTURE_FAILSOFT // SOFT, because this will break in 2 seconds
+            cancellable = true
     )
-    private void checkPhantomSpawn(ServerLevel level, boolean bl, boolean bl2, CallbackInfoReturnable<Integer> cir,
-                                   RandomSource random, int i, Iterator<ServerPlayer> it, ServerPlayer player, BlockPos pos, DifficultyInstance diff,
-                                   ServerStatsCounter serverStatsCounter, int j, int k, BlockPos pos2,
-                                   BlockState blockState, FluidState fluidState, SpawnGroupData sgd, int l, int m, Phantom entity) {
-        if (EntityEvent.LIVING_CHECK_SPAWN.invoker().canSpawn(entity, level, pos.getX(), pos.getY(), pos.getZ(), MobSpawnType.NATURAL, null).value() == Boolean.FALSE) {
+    private void checkPhantomSpawn(ServerLevel level, boolean bl, boolean bl2, CallbackInfoReturnable<Integer> cir, @Local(ordinal = 1) BlockPos pos, @Local Phantom entity) {
+        if (EntityEvent.LIVING_CHECK_SPAWN.invoker().canSpawn(entity, level, pos.getX(), pos.getY(), pos.getZ(), EntitySpawnReason.NATURAL, null).value() == Boolean.FALSE) {
             cir.setReturnValue(0);
             cir.cancel();
         }

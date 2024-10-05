@@ -20,6 +20,7 @@
 package dev.architectury.mixin.fabric;
 
 import dev.architectury.event.events.common.EntityEvent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -30,8 +31,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = {Player.class})
 public class PlayerAttackInvoker {
-    @Inject(method = "hurt", at = @At("HEAD"), cancellable = true)
-    private void hurt(DamageSource damageSource, float f, CallbackInfoReturnable<Boolean> cir) {
+    @Inject(method = "hurtServer", at = @At("HEAD"), cancellable = true)
+    private void hurtServer(ServerLevel level, DamageSource damageSource, float f, CallbackInfoReturnable<Boolean> cir) {
         if (EntityEvent.LIVING_HURT.invoker().hurt((LivingEntity) (Object) this, damageSource, f).isFalse() && (Object) this instanceof Player) {
             cir.setReturnValue(false);
         }

@@ -84,7 +84,7 @@ public final class RegistrarManager {
     public static <T> ResourceLocation getId(T object, @Nullable ResourceKey<Registry<T>> fallback) {
         if (fallback == null)
             return null;
-        return getId(object, (Registry<T>) BuiltInRegistries.REGISTRY.get(fallback.location()));
+        return getId(object, (Registry<T>) BuiltInRegistries.REGISTRY.getValue(fallback.location()));
     }
     
     /**

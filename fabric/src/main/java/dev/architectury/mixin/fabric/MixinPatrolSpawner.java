@@ -19,21 +19,18 @@
 
 package dev.architectury.mixin.fabric;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import dev.architectury.event.events.common.EntityEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.monster.PatrollingMonster;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.PatrolSpawner;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-
-import java.util.Random;
 
 @Mixin(PatrolSpawner.class)
 public abstract class MixinPatrolSpawner {
@@ -42,16 +39,15 @@ public abstract class MixinPatrolSpawner {
             method = "spawnPatrolMember",
             at = @At(
                     value = "INVOKE_ASSIGN",
-                    target = "Lnet/minecraft/world/entity/EntityType;create(Lnet/minecraft/world/level/Level;)Lnet/minecraft/world/entity/Entity;",
+                    target = "Lnet/minecraft/world/entity/EntityType;create(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/EntitySpawnReason;)Lnet/minecraft/world/entity/Entity;",
                     ordinal = 0,
                     shift = At.Shift.BY,
                     by = 2
             ),
-            cancellable = true,
-            locals = LocalCapture.CAPTURE_FAILHARD
+            cancellable = true
     )
-    private void checkPatrolSpawn(ServerLevel level, BlockPos pos, RandomSource r, boolean b, CallbackInfoReturnable<Boolean> cir, BlockState blockState, PatrollingMonster entity) {
-        var result = EntityEvent.LIVING_CHECK_SPAWN.invoker().canSpawn(entity, level, pos.getX(), pos.getY(), pos.getZ(), MobSpawnType.PATROL, null);
+    private void checkPatrolSpawn(ServerLevel level, BlockPos pos, RandomSource r, boolean b, CallbackInfoReturnable<Boolean> cir, @Local PatrollingMonster entity) {
+        var result = EntityEvent.LIVING_CHECK_SPAWN.invoker().canSpawn(entity, level, pos.getX(), pos.getY(), pos.getZ(), EntitySpawnReason.PATROL, null);
         if (result.value() != null) {
             cir.setReturnValue(result.value());
         }

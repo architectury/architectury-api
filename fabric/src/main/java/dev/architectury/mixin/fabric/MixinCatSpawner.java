@@ -19,17 +19,17 @@
 
 package dev.architectury.mixin.fabric;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import dev.architectury.event.events.common.EntityEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.animal.Cat;
 import net.minecraft.world.entity.npc.CatSpawner;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(CatSpawner.class)
 public abstract class MixinCatSpawner {
@@ -37,14 +37,15 @@ public abstract class MixinCatSpawner {
             method = "spawnCat",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/entity/animal/Cat;finalizeSpawn(Lnet/minecraft/world/level/ServerLevelAccessor;Lnet/minecraft/world/DifficultyInstance;Lnet/minecraft/world/entity/MobSpawnType;Lnet/minecraft/world/entity/SpawnGroupData;)Lnet/minecraft/world/entity/SpawnGroupData;",
-                    ordinal = 0
+                    target = "Lnet/minecraft/world/entity/EntityType;create(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/EntitySpawnReason;)Lnet/minecraft/world/entity/Entity;",
+                    ordinal = 0,
+                    shift = At.Shift.BY,
+                    by = 3
             ),
-            cancellable = true,
-            locals = LocalCapture.CAPTURE_FAILHARD
+            cancellable = true
     )
-    private void checkCatSpawn(BlockPos pos, ServerLevel level, CallbackInfoReturnable<Integer> cir, Cat entity) {
-        if (EntityEvent.LIVING_CHECK_SPAWN.invoker().canSpawn(entity, level, pos.getX(), pos.getY(), pos.getZ(), MobSpawnType.NATURAL, null).value() == Boolean.FALSE) {
+    private void checkCatSpawn(BlockPos pos, ServerLevel level, CallbackInfoReturnable<Integer> cir, @Local Cat entity) {
+        if (EntityEvent.LIVING_CHECK_SPAWN.invoker().canSpawn(entity, level, pos.getX(), pos.getY(), pos.getZ(), EntitySpawnReason.NATURAL, null).value() == Boolean.FALSE) {
             cir.setReturnValue(0);
             cir.cancel();
         }

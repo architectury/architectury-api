@@ -30,11 +30,8 @@ import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.CommonListenerCookie;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundLoginPacket;
-import net.minecraft.network.protocol.game.ClientboundRespawnPacket;
-import net.minecraft.network.protocol.game.ClientboundUpdateRecipesPacket;
-import net.minecraft.world.item.crafting.RecipeManager;
-import org.spongepowered.asm.mixin.Final;
+import net.minecraft.network.protocol.game.*;
+import net.minecraft.world.item.crafting.RecipeAccess;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -45,10 +42,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ClientPacketListener.class)
 public abstract class MixinClientPacketListener extends ClientCommonPacketListenerImpl {
     @Shadow
-    @Final
-    private RecipeManager recipeManager;
-    @Shadow
     private ClientLevel level;
+    
+    @Shadow
+    public abstract RecipeAccess recipes();
+    
     @Unique
     private LocalPlayer tmpPlayer;
     
@@ -75,7 +73,17 @@ public abstract class MixinClientPacketListener extends ClientCommonPacketListen
     
     @Inject(method = "handleUpdateRecipes", at = @At("RETURN"))
     private void handleUpdateRecipes(ClientboundUpdateRecipesPacket clientboundUpdateRecipesPacket, CallbackInfo ci) {
-        ClientRecipeUpdateEvent.EVENT.invoker().update(recipeManager);
+        ClientRecipeUpdateEvent.EVENT.invoker().update(recipes());
+    }
+    
+    @Inject(method = "handleRecipeBookAdd", at = @At("RETURN"))
+    private void handleRecipeBookAdd(ClientboundRecipeBookAddPacket packet, CallbackInfo ci) {
+        ClientRecipeUpdateEvent.ADD.invoker().add(recipes(), packet.entries());
+    }
+    
+    @Inject(method = "handleRecipeBookRemove", at = @At("RETURN"))
+    private void handleRecipeBookRemove(ClientboundRecipeBookRemovePacket packet, CallbackInfo ci) {
+        ClientRecipeUpdateEvent.REMOVE.invoker().remove(recipes(), packet.recipes());
     }
     
     @Inject(method = "sendChat(Ljava/lang/String;)V", at = @At(value = "HEAD"), cancellable = true)

@@ -19,11 +19,21 @@
 
 package dev.architectury.mixin.fabric;
 
+import com.llamalad7.mixinextras.sugar.Local;
+import dev.architectury.event.events.common.ExplosionEvent;
 import dev.architectury.event.events.common.LifecycleEvent;
 import dev.architectury.hooks.fabric.PersistentEntitySectionManagerHooks;
+import net.minecraft.core.Holder;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.ProgressListener;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.ExplosionDamageCalculator;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerExplosion;
 import net.minecraft.world.level.entity.PersistentEntitySectionManager;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -49,5 +59,13 @@ public class MixinServerLevel {
             cancellable = true)
     private void addEntity(Entity entity, CallbackInfoReturnable<Boolean> cir) {
         ((PersistentEntitySectionManagerHooks) this.entityManager).architectury_attachLevel((ServerLevel) (Object) this);
+    }
+    
+    @Inject(method = "explode(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/damagesource/DamageSource;Lnet/minecraft/world/level/ExplosionDamageCalculator;DDDFZLnet/minecraft/world/level/Level$ExplosionInteraction;Lnet/minecraft/core/particles/ParticleOptions;Lnet/minecraft/core/particles/ParticleOptions;Lnet/minecraft/core/Holder;)V",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/ServerExplosion;explode()V"), cancellable = true)
+    private void explodePre(Entity entity, DamageSource damageSource, ExplosionDamageCalculator explosionDamageCalculator, double d, double e, double f, float g, boolean bl, Level.ExplosionInteraction explosionInteraction, ParticleOptions particleOptions, ParticleOptions particleOptions2, Holder<SoundEvent> soundEvent, CallbackInfo ci, @Local Explosion.BlockInteraction blockInteraction, @Local ServerExplosion explosion) {
+        if (ExplosionEvent.PRE.invoker().explode((Level) (Object) this, explosion).isFalse()) {
+            ci.cancel();
+        }
     }
 }

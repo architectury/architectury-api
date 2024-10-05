@@ -19,29 +19,18 @@
 
 package dev.architectury.mixin.fabric.client;
 
-import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.shaders.Program;
-import com.mojang.datafixers.util.Pair;
+import com.llamalad7.mixinextras.sugar.Local;
 import dev.architectury.event.events.client.ClientGuiEvent;
-import dev.architectury.event.events.client.ClientReloadShadersEvent;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.ShaderInstance;
-import net.minecraft.server.packs.resources.ResourceProvider;
-import org.joml.Matrix4f;
-import org.joml.Matrix4fStack;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-
-import java.util.List;
-import java.util.function.Consumer;
 
 @Mixin(value = GameRenderer.class, priority = 1100)
 public abstract class MixinGameRenderer {
@@ -54,8 +43,8 @@ public abstract class MixinGameRenderer {
     
     @Inject(method = "render(Lnet/minecraft/client/DeltaTracker;Z)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;renderWithTooltip(Lnet/minecraft/client/gui/GuiGraphics;IIF)V",
-                    ordinal = 0), locals = LocalCapture.CAPTURE_FAILEXCEPTION, cancellable = true)
-    public void renderScreenPre(DeltaTracker tickDelta, boolean tick, CallbackInfo ci, boolean isGameLoadFinished, int mouseX, int mouseY, Window window, Matrix4f matrix, Matrix4fStack matrices, GuiGraphics graphics) {
+                    ordinal = 0), cancellable = true)
+    public void renderScreenPre(DeltaTracker tickDelta, boolean tick, CallbackInfo ci, @Local(ordinal = 0) int mouseX, @Local(ordinal = 1) int mouseY, @Local GuiGraphics graphics) {
         if (ClientGuiEvent.RENDER_PRE.invoker().render(minecraft.screen, graphics, mouseX, mouseY, tickDelta).isFalse()) {
             ci.cancel();
         }
@@ -63,16 +52,8 @@ public abstract class MixinGameRenderer {
     
     @Inject(method = "render(Lnet/minecraft/client/DeltaTracker;Z)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;renderWithTooltip(Lnet/minecraft/client/gui/GuiGraphics;IIF)V",
-                    shift = At.Shift.AFTER, ordinal = 0), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-    public void renderScreenPost(DeltaTracker tickDelta, boolean tick, CallbackInfo ci, boolean isGameLoadFinished, int mouseX, int mouseY, Window window, Matrix4f matrix, Matrix4fStack matrices, GuiGraphics graphics) {
+                    shift = At.Shift.AFTER, ordinal = 0))
+    public void renderScreenPost(DeltaTracker tickDelta, boolean tick, CallbackInfo ci, @Local(ordinal = 0) int mouseX, @Local(ordinal = 1) int mouseY, @Local GuiGraphics graphics) {
         ClientGuiEvent.RENDER_POST.invoker().render(minecraft.screen, graphics, mouseX, mouseY, tickDelta);
-    }
-    
-    @Inject(method = "reloadShaders",
-            at = @At(value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z", ordinal = 0), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-    public void reloadShaders(ResourceProvider provider, CallbackInfo ci, List<Program> programs, List<Pair<ShaderInstance, Consumer<ShaderInstance>>> shaders) {
-        ClientReloadShadersEvent.EVENT.invoker().reload(provider, (shader, callback) -> {
-            shaders.add(Pair.of(shader, callback));
-        });
     }
 }

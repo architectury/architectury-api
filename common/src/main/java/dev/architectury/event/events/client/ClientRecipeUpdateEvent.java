@@ -23,20 +23,47 @@ import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.network.protocol.game.ClientboundRecipeBookAddPacket;
+import net.minecraft.world.item.crafting.RecipeAccess;
+import net.minecraft.world.item.crafting.display.RecipeDisplayId;
+import org.jetbrains.annotations.ApiStatus;
+
+import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public interface ClientRecipeUpdateEvent {
     /**
-     * @see ClientRecipeUpdateEvent#update(RecipeManager)
+     * @see ClientRecipeUpdateEvent#update(RecipeAccess)
      */
     Event<ClientRecipeUpdateEvent> EVENT = EventFactory.createLoop();
+    
+    /**
+     * @see ClientRecipeUpdateEvent.Add#add(RecipeAccess, List)
+     */
+    @ApiStatus.Experimental
+    Event<Add> ADD = EventFactory.createLoop();
+    
+    /**
+     * @see ClientRecipeUpdateEvent.Remove#remove(RecipeAccess, List)
+     */
+    @ApiStatus.Experimental
+    Event<Remove> REMOVE = EventFactory.createLoop();
     
     /**
      * Invoked when the client has received an updated list of recipes from the server.
      * Equivalent to Forge's {@code RecipesUpdatedEvent} event.
      *
-     * @param recipeManager The recipe manager.
+     * @param recipeAccess The recipe access.
      */
-    void update(RecipeManager recipeManager);
+    void update(RecipeAccess recipeAccess);
+    
+    @ApiStatus.Experimental
+    interface Add {
+        void add(RecipeAccess recipeAccess, List<ClientboundRecipeBookAddPacket.Entry> entries);
+    }
+    
+    @ApiStatus.Experimental
+    interface Remove {
+        void remove(RecipeAccess recipeAccess, List<RecipeDisplayId> ids);
+    }
 }

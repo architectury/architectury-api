@@ -49,10 +49,6 @@ public interface ClientTooltipEvent {
      * @see RenderModifyPosition#renderTooltip(GuiGraphics, PositionContext)
      */
     Event<RenderModifyPosition> RENDER_MODIFY_POSITION = EventFactory.createLoop();
-    /**
-     * @see RenderModifyColor#renderTooltip(GuiGraphics, int, int, ColorContext)
-     */
-    Event<RenderModifyColor> RENDER_MODIFY_COLOR = EventFactory.createLoop();
     
     static AdditionalContexts additionalContexts() {
         return TooltipAdditionalContextsImpl.get();
@@ -108,19 +104,6 @@ public interface ClientTooltipEvent {
     }
     
     @Environment(EnvType.CLIENT)
-    interface RenderModifyColor {
-        /**
-         * Event to manipulate the color of the tooltip.
-         *
-         * @param graphics The graphics context.
-         * @param x        The x-coordinate of the tooltip.
-         * @param y        The y-coordinate of the tooltip.
-         * @param context  The current color context.
-         */
-        void renderTooltip(GuiGraphics graphics, int x, int y, ColorContext context);
-    }
-    
-    @Environment(EnvType.CLIENT)
     interface PositionContext {
         int getTooltipX();
         
@@ -129,20 +112,5 @@ public interface ClientTooltipEvent {
         int getTooltipY();
         
         void setTooltipY(int y);
-    }
-    
-    @Environment(EnvType.CLIENT)
-    interface ColorContext {
-        int getBackgroundColor();
-        
-        void setBackgroundColor(int color);
-        
-        int getOutlineGradientTopColor();
-        
-        void setOutlineGradientTopColor(int color);
-        
-        int getOutlineGradientBottomColor();
-        
-        void setOutlineGradientBottomColor(int color);
     }
 }

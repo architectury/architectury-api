@@ -20,7 +20,6 @@
 package dev.architectury.mixin.fabric.client;
 
 import dev.architectury.event.events.common.EntityEvent;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -30,11 +29,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(value = {LocalPlayer.class, RemotePlayer.class})
+@Mixin(value = {RemotePlayer.class})
 public class ClientPlayerAttackInvoker {
-    @Inject(method = "hurt", at = @At("HEAD"), cancellable = true)
-    private void hurt(DamageSource damageSource, float f, CallbackInfoReturnable<Boolean> cir) {
-        if (EntityEvent.LIVING_HURT.invoker().hurt((LivingEntity) (Object) this, damageSource, f).isFalse() && (Object) this instanceof Player) {
+    @Inject(method = "hurtClient", at = @At("HEAD"), cancellable = true)
+    private void hurt(DamageSource damageSource, CallbackInfoReturnable<Boolean> cir) {
+        if (EntityEvent.LIVING_HURT.invoker().hurt((LivingEntity) (Object) this, damageSource, 0).isFalse() && (Object) this instanceof Player) {
             cir.setReturnValue(false);
         }
     }

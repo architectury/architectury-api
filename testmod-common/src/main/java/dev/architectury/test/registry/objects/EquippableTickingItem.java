@@ -35,7 +35,7 @@ public class EquippableTickingItem extends Item implements ItemExtension {
     
     @Override
     public void tickArmor(ItemStack stack, Player player) {
-        TestMod.SINK.accept("Ticking " + Component.translatable(stack.getDescriptionId()).getString());
+        TestMod.SINK.accept("Ticking " + Component.translatable(stack.getItem().getDescriptionId()).getString());
     }
     
     @Nullable

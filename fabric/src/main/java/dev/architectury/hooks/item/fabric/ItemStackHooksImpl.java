@@ -19,18 +19,15 @@
 
 package dev.architectury.hooks.item.fabric;
 
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 public class ItemStackHooksImpl {
     public static boolean hasCraftingRemainingItem(ItemStack stack) {
-        return stack.getItem().hasCraftingRemainingItem();
+        return !getCraftingRemainingItem(stack).isEmpty();
     }
     
     public static ItemStack getCraftingRemainingItem(ItemStack stack) {
-        if (!hasCraftingRemainingItem(stack)) return ItemStack.EMPTY;
-        Item item = stack.getItem().getCraftingRemainingItem();
-        return item == null || item == Items.AIR ? ItemStack.EMPTY : item.getDefaultInstance();
+        ItemStack remainder = stack.getItem().getRecipeRemainder(stack);
+        return remainder == null || remainder.isEmpty() ? ItemStack.EMPTY : remainder;
     }
 }

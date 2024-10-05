@@ -19,8 +19,6 @@
 
 package dev.architectury.event;
 
-import net.minecraft.world.InteractionResultHolder;
-
 /**
  * A result from an event, determines if the event should continue to other listeners,
  * determines the outcome of the event, and provides extra result for the outcome.
@@ -169,14 +167,5 @@ public class CompoundEventResult<T> {
      */
     public T object() {
         return object;
-    }
-    
-    /**
-     * Returns the Minecraft-facing result, however ignores {@link #interruptsFurtherEvaluation()}.
-     *
-     * @return the Minecraft-facing result
-     */
-    public InteractionResultHolder<T> asMinecraft() {
-        return new InteractionResultHolder<>(result.asMinecraft(), object);
     }
 }

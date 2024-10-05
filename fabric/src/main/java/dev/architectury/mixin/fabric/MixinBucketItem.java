@@ -21,7 +21,7 @@ package dev.architectury.mixin.fabric;
 
 import dev.architectury.event.events.common.PlayerEvent;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
@@ -46,10 +46,10 @@ public class MixinBucketItem {
             locals = LocalCapture.CAPTURE_FAILHARD,
             cancellable = true
     )
-    public void fillBucket(Level level, Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir, ItemStack stack, BlockHitResult target) {
+    public void fillBucket(Level level, Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir, ItemStack stack, BlockHitResult target) {
         var result = PlayerEvent.FILL_BUCKET.invoker().fill(player, level, stack, target);
-        if (result.interruptsFurtherEvaluation() && result.value() != null) {
-            cir.setReturnValue(result.asMinecraft());
+        if (result != InteractionResult.PASS) {
+            cir.setReturnValue(result);
             cir.cancel();
         }
     }
