@@ -27,13 +27,13 @@ import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.server.level.ServerPlayer;
@@ -51,7 +51,8 @@ public class MenuRegistryImpl {
         player.openMenu(new ExtendedScreenHandlerFactory<byte[]>() {
             @Override
             public byte[] getScreenOpeningData(ServerPlayer player) {
-                FriendlyByteBuf buf = PacketByteBufs.create();
+                RegistryAccess access = player.registryAccess();
+                RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(Unpooled.buffer(), access);
                 provider.saveExtraData(buf);
                 byte[] bytes = ByteBufUtil.getBytes(buf);
                 buf.release();
@@ -77,7 +78,8 @@ public class MenuRegistryImpl {
     
     public static <T extends AbstractContainerMenu> MenuType<T> ofExtended(ExtendedMenuTypeFactory<T> factory) {
         return new ExtendedScreenHandlerType<>((syncId, inventory, data) -> {
-            FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(data));
+            RegistryAccess access = inventory.player.registryAccess();
+            RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(data), access);
             T menu = factory.create(syncId, inventory, buf);
             buf.release();
             return menu;

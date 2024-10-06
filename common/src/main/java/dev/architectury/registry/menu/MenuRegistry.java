@@ -25,6 +25,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
@@ -50,10 +51,10 @@ public final class MenuRegistry {
      * @param provider  The {@link MenuProvider} that provides the menu
      * @param bufWriter That writer that sends extra data for {@link MenuType} created with {@link MenuRegistry#ofExtended(ExtendedMenuTypeFactory)}
      */
-    public static void openExtendedMenu(ServerPlayer player, MenuProvider provider, Consumer<FriendlyByteBuf> bufWriter) {
+    public static void openExtendedMenu(ServerPlayer player, MenuProvider provider, Consumer<RegistryFriendlyByteBuf> bufWriter) {
         openExtendedMenu(player, new ExtendedMenuProvider() {
             @Override
-            public void saveExtraData(FriendlyByteBuf buf) {
+            public void saveExtraData(RegistryFriendlyByteBuf buf) {
                 bufWriter.accept(buf);
             }
             
@@ -183,6 +184,6 @@ public final class MenuRegistry {
          * @param buf       The {@link FriendlyByteBuf} for the menu to provide extra data
          * @return A new {@link T} that extends {@link AbstractContainerMenu}
          */
-        T create(int id, Inventory inventory, FriendlyByteBuf buf);
+        T create(int id, Inventory inventory, RegistryFriendlyByteBuf buf);
     }
 }
