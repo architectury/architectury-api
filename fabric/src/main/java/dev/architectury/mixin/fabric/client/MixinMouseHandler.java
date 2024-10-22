@@ -19,6 +19,9 @@
 
 package dev.architectury.mixin.fabric.client;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
 import dev.architectury.event.events.client.ClientRawInputEvent;
 import dev.architectury.event.events.client.ClientScreenInputEvent;
 import net.minecraft.client.Minecraft;
@@ -29,7 +32,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
@@ -79,27 +81,25 @@ public class MixinMouseHandler {
         }
     }
     
-    @SuppressWarnings("UnresolvedMixinReference")
-    @Inject(method = {"lambda$onPress$0", "method_1611"}, at = @At("HEAD"), cancellable = true, remap = false)
-    private static void onGuiMouseClicked(boolean[] bls, Screen screen, double d, double e, int button, CallbackInfo info) {
+    @Inject(method = "onPress", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;mouseClicked(DDI)Z", ordinal = 0), cancellable = true)
+    private void onGuiMouseClicked(long window, int button, int action, int mods, CallbackInfo info,
+                                   @Local(ordinal = 0) double mouseX, @Local(ordinal = 1) double mouseY, @Local(ordinal = 3) int b) {
         var minecraft = Minecraft.getInstance();
         if (!info.isCancelled()) {
-            var result = ClientScreenInputEvent.MOUSE_CLICKED_PRE.invoker().mouseClicked(minecraft, screen, d, e, button);
+            var result = ClientScreenInputEvent.MOUSE_CLICKED_PRE.invoker().mouseClicked(minecraft, minecraft.screen, mouseX, mouseY, b);
             if (result.isPresent()) {
-                bls[0] = true;
                 info.cancel();
             }
         }
     }
     
-    @SuppressWarnings("UnresolvedMixinReference")
-    @Inject(method = {"lambda$onPress$0", "method_1611"}, at = @At("RETURN"), cancellable = true, remap = false)
-    private static void onGuiMouseClickedPost(boolean[] bls, Screen screen, double d, double e, int button, CallbackInfo info) {
+    @Inject(method = "onPress", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;mouseClicked(DDI)Z", ordinal = 0, shift = At.Shift.AFTER), cancellable = true)
+    private void onGuiMouseClickedPost(long window, int button, int action, int mods, CallbackInfo info,
+                                       @Local(ordinal = 0) double mouseX, @Local(ordinal = 1) double mouseY, @Local(ordinal = 3) int b) {
         var minecraft = Minecraft.getInstance();
-        if (!info.isCancelled() && !bls[0]) {
-            var result = ClientScreenInputEvent.MOUSE_CLICKED_POST.invoker().mouseClicked(minecraft, screen, d, e, button);
+        if (!info.isCancelled()) {
+            var result = ClientScreenInputEvent.MOUSE_CLICKED_POST.invoker().mouseClicked(minecraft, minecraft.screen, mouseX, mouseY, b);
             if (result.isPresent()) {
-                bls[0] = true;
                 info.cancel();
             }
         }
@@ -125,46 +125,44 @@ public class MixinMouseHandler {
         }
     }
     
-    @SuppressWarnings("UnresolvedMixinReference")
-    @Inject(method = {"lambda$onPress$1", "method_1605"}, at = @At("HEAD"), cancellable = true, remap = false)
-    private static void onGuiMouseReleased(boolean[] bls, Screen screen, double d, double e, int button, CallbackInfo info) {
+    @Inject(method = "onPress", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;mouseReleased(DDI)Z", ordinal = 0), cancellable = true)
+    private void onGuiMouseReleased(long window, int button, int action, int mods, CallbackInfo info,
+                                    @Local(ordinal = 0) double mouseX, @Local(ordinal = 1) double mouseY, @Local(ordinal = 3) int b) {
         var minecraft = Minecraft.getInstance();
         if (!info.isCancelled()) {
-            var result = ClientScreenInputEvent.MOUSE_RELEASED_PRE.invoker().mouseReleased(minecraft, screen, d, e, button);
+            var result = ClientScreenInputEvent.MOUSE_RELEASED_PRE.invoker().mouseReleased(minecraft, minecraft.screen, mouseX, mouseY, b);
             if (result.isPresent()) {
-                bls[0] = true;
                 info.cancel();
             }
         }
     }
     
-    @SuppressWarnings("UnresolvedMixinReference")
-    @Inject(method = {"lambda$onPress$1", "method_1605"}, at = @At("RETURN"), cancellable = true, remap = false)
-    private static void onGuiMouseReleasedPost(boolean[] bls, Screen screen, double d, double e, int button, CallbackInfo info) {
+    @Inject(method = "onPress", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;mouseReleased(DDI)Z", ordinal = 0, shift = At.Shift.AFTER), cancellable = true)
+    private void onGuiMouseReleasedPost(long window, int button, int action, int mods, CallbackInfo info,
+                                        @Local(ordinal = 0) double mouseX, @Local(ordinal = 1) double mouseY, @Local(ordinal = 3) int b) {
         var minecraft = Minecraft.getInstance();
-        if (!info.isCancelled() && !bls[0]) {
-            var result = ClientScreenInputEvent.MOUSE_RELEASED_POST.invoker().mouseReleased(minecraft, screen, d, e, button);
+        if (!info.isCancelled()) {
+            var result = ClientScreenInputEvent.MOUSE_RELEASED_POST.invoker().mouseReleased(minecraft, minecraft.screen, mouseX, mouseY, b);
             if (result.isPresent()) {
-                bls[0] = true;
                 info.cancel();
             }
         }
     }
     
-    @SuppressWarnings("UnresolvedMixinReference")
-    @Inject(method = {"method_55795", "lambda$handleAccumulatedMovement$11"}, at = @At("HEAD"), cancellable = true, remap = false)
-    private void onGuiMouseDraggedPre(Screen screen, double mouseX, double mouseY, double deltaX, double deltaY, CallbackInfo ci) {
-        if (ClientScreenInputEvent.MOUSE_DRAGGED_PRE.invoker().mouseDragged(Minecraft.getInstance(), screen, mouseX, mouseY, this.activeButton, deltaX, deltaY).isPresent()) {
+    @Inject(method = "handleAccumulatedMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;mouseDragged(DDIDD)Z", ordinal = 0), cancellable = true)
+    private void onGuiMouseDraggedPre(CallbackInfo ci, @Local(ordinal = 2) double mouseX, @Local(ordinal = 3) double mouseY, @Local(ordinal = 4) double deltaX, @Local(ordinal = 5) double deltaY) {
+        if (ClientScreenInputEvent.MOUSE_DRAGGED_PRE.invoker().mouseDragged(Minecraft.getInstance(), Minecraft.getInstance().screen, mouseX, mouseY, this.activeButton, deltaX, deltaY).isPresent()) {
             ci.cancel();
         }
     }
     
     @SuppressWarnings({"UnresolvedMixinReference", "DefaultAnnotationParam"})
-    @Redirect(method = {"method_55795", "lambda$handleAccumulatedMovement$11"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;mouseDragged(DDIDD)Z", remap = true), remap = false)
-    private boolean onGuiMouseDraggedPost(Screen screen, double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-        if (screen.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)) {
+    @WrapOperation(method = "handleAccumulatedMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;mouseDragged(DDIDD)Z"))
+    private boolean onGuiMouseDraggedPost(Screen screen, double mouseX, double mouseY, int button, double deltaX, double deltaY, Operation<Boolean> original) {
+        if (original.call(screen, mouseX, mouseY, button, deltaX, deltaY)) {
             return true;
         }
+        
         return ClientScreenInputEvent.MOUSE_DRAGGED_POST.invoker().mouseDragged(Minecraft.getInstance(), screen, mouseX, mouseY, button, deltaX, deltaY).isPresent();
     }
 }
