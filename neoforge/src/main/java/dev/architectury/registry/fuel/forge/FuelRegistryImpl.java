@@ -22,10 +22,13 @@ package dev.architectury.registry.fuel.forge;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.entity.FuelValues;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.furnace.FurnaceFuelBurnTimeEvent;
+import org.jetbrains.annotations.Nullable;
 
 public class FuelRegistryImpl {
     private static final Object2IntMap<ItemLike> ITEMS = new Object2IntLinkedOpenHashMap<>();
@@ -40,8 +43,8 @@ public class FuelRegistryImpl {
         }
     }
     
-    public static int get(ItemStack stack) {
-        return stack.getBurnTime(null);
+    public static int get(ItemStack stack, @Nullable RecipeType<?> recipeType, FuelValues fuelValues) {
+        return stack.getBurnTime(recipeType, fuelValues);
     }
     
     @SubscribeEvent

@@ -142,9 +142,9 @@ public class BiomeModificationsImpl {
             public boolean hasTag(TagKey<Biome> tag) {
                 MinecraftServer server = GameInstance.getServer();
                 if (server != null) {
-                    Optional<? extends Registry<Biome>> registry = server.registryAccess().registry(Registries.BIOME);
+                    Optional<? extends Registry<Biome>> registry = server.registryAccess().lookup(Registries.BIOME);
                     if (registry.isPresent()) {
-                        Optional<Holder.Reference<Biome>> holder = registry.get().getHolder(biomeResourceKey.get());
+                        Optional<Holder.Reference<Biome>> holder = registry.get().get(biomeResourceKey.get());
                         if (holder.isPresent()) {
                             return holder.get().is(tag);
                         }
@@ -208,8 +208,8 @@ public class BiomeModificationsImpl {
         }
         
         @Override
-        public Iterable<Holder<ConfiguredWorldCarver<?>>> getCarvers(GenerationStep.Carving carving) {
-            return generation.getCarvers(carving);
+        public Iterable<Holder<ConfiguredWorldCarver<?>>> getCarvers() {
+            return generation.getCarvers();
         }
         
         @Override
@@ -489,9 +489,9 @@ public class BiomeModificationsImpl {
         public Mutable addFeature(GenerationStep.Decoration decoration, ResourceKey<PlacedFeature> feature) {
             MinecraftServer server = GameInstance.getServer();
             if (server != null) {
-                Optional<? extends Registry<PlacedFeature>> registry = server.registryAccess().registry(Registries.PLACED_FEATURE);
+                Optional<? extends Registry<PlacedFeature>> registry = server.registryAccess().lookup(Registries.PLACED_FEATURE);
                 if (registry.isPresent()) {
-                    Optional<Holder.Reference<PlacedFeature>> holder = registry.get().getHolder(feature);
+                    Optional<Holder.Reference<PlacedFeature>> holder = registry.get().get(feature);
                     if (holder.isPresent()) {
                         return addFeature(decoration, holder.get());
                     } else {
@@ -503,20 +503,20 @@ public class BiomeModificationsImpl {
         }
         
         @Override
-        public Mutable addCarver(GenerationStep.Carving carving, Holder<ConfiguredWorldCarver<?>> feature) {
-            generation.addCarver(carving, feature);
+        public Mutable addCarver(Holder<ConfiguredWorldCarver<?>> feature) {
+            generation.addCarver(feature);
             return this;
         }
         
         @Override
-        public Mutable addCarver(GenerationStep.Carving carving, ResourceKey<ConfiguredWorldCarver<?>> feature) {
+        public Mutable addCarver(ResourceKey<ConfiguredWorldCarver<?>> feature) {
             MinecraftServer server = GameInstance.getServer();
             if (server != null) {
-                Optional<? extends Registry<ConfiguredWorldCarver<?>>> registry = server.registryAccess().registry(Registries.CONFIGURED_CARVER);
+                Optional<? extends Registry<ConfiguredWorldCarver<?>>> registry = server.registryAccess().lookup(Registries.CONFIGURED_CARVER);
                 if (registry.isPresent()) {
-                    Optional<Holder.Reference<ConfiguredWorldCarver<?>>> holder = registry.get().getHolder(feature);
+                    Optional<Holder.Reference<ConfiguredWorldCarver<?>>> holder = registry.get().get(feature);
                     if (holder.isPresent()) {
-                        return addCarver(carving, holder.get());
+                        return addCarver(holder.get());
                     } else {
                         throw new IllegalArgumentException("Unknown carver: " + feature);
                     }
@@ -532,8 +532,8 @@ public class BiomeModificationsImpl {
         }
         
         @Override
-        public Mutable removeCarver(GenerationStep.Carving carving, ResourceKey<ConfiguredWorldCarver<?>> feature) {
-            generation.getCarvers(carving).removeIf(supplier -> supplier.is(feature));
+        public Mutable removeCarver(ResourceKey<ConfiguredWorldCarver<?>> feature) {
+            generation.getCarvers().removeIf(supplier -> supplier.is(feature));
             return this;
         }
     }

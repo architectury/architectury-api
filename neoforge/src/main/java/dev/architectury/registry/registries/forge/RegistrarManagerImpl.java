@@ -114,7 +114,7 @@ public class RegistrarManagerImpl {
         
         @Override
         public <T> Registrar<T> get(ResourceKey<Registry<T>> registryKey) {
-            Registry<T> registry = (Registry<T>) BuiltInRegistries.REGISTRY.get(registryKey.location());
+            Registry<T> registry = (Registry<T>) BuiltInRegistries.REGISTRY.getValue(registryKey.location());
             if (registry != null) {
                 return get(registry);
             }
@@ -363,7 +363,7 @@ public class RegistrarManagerImpl {
         @Override
         @Nullable
         public T get(ResourceLocation id) {
-            return delegate.get(id);
+            return delegate.getValue(id);
         }
         
         @Override
@@ -399,7 +399,7 @@ public class RegistrarManagerImpl {
         @Override
         @Nullable
         public Holder<T> getHolder(ResourceKey<T> key) {
-            return delegate.getHolder(key).orElse(null);
+            return delegate.get(key).orElse(null);
         }
         
         @Override

@@ -24,11 +24,11 @@ import com.google.common.base.Suppliers;
 import dev.architectury.core.fluid.ArchitecturyFluidAttributes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
@@ -82,7 +82,7 @@ public abstract class ArchitecturyFlowingFluid extends BaseFlowingFluid {
     }
     
     @Override
-    protected boolean canConvertToSource(Level level) {
+    protected boolean canConvertToSource(ServerLevel level) {
         return attributes.canConvertToSource();
     }
     

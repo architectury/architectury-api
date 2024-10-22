@@ -20,46 +20,31 @@
 package dev.architectury.mixin.forge.neoforge;
 
 import dev.architectury.event.forge.EventHandlerImplCommon;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.ai.village.poi.PoiManager;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.chunk.ProtoChunk;
-import net.minecraft.world.level.chunk.storage.ChunkSerializer;
-import net.minecraft.world.level.chunk.storage.RegionStorageInfo;
 import net.neoforged.bus.api.Event;
 import net.neoforged.neoforge.event.level.ChunkDataEvent;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.lang.ref.WeakReference;
-
-@Mixin(ChunkSerializer.class)
-public class MixinChunkSerializer {
-    @Unique
-    private static ThreadLocal<WeakReference<ServerLevel>> level = new ThreadLocal<>();
+@Mixin(ChunkMap.class)
+public class MixinChunkMap {
+    @Shadow
+    @Final
+    ServerLevel level;
     
-    @Inject(method = "read", at = @At("HEAD"))
-    private static void read(ServerLevel worldIn, PoiManager arg2, RegionStorageInfo arg3, ChunkPos arg4, CompoundTag arg5, CallbackInfoReturnable<ProtoChunk> cir) {
-        level.set(new WeakReference<>(worldIn));
-    }
-    
-    @ModifyArg(method = "read", at = @At(value = "INVOKE",
-            ordinal = 1,
+    @ModifyArg(method = {"method_43375", "lambda$scheduleChunkLoad$17"}, at = @At(value = "INVOKE",
+            ordinal = 0,
             target = "Lnet/neoforged/bus/api/IEventBus;post(Lnet/neoforged/bus/api/Event;)Lnet/neoforged/bus/api/Event;"),
-            index = 0)
-    private static Event modifyProtoChunkLevel(Event event) {
-        // We should get this PRed to Forge
-        WeakReference<ServerLevel> levelRef = level.get();
-        if (levelRef != null && event instanceof ChunkDataEvent.Load) {
+            index = 0, remap = false)
+    private Event modifyProtoChunkLevel(Event event) {
+        if (event instanceof ChunkDataEvent.Load) {
             ChunkDataEvent.Load load = (ChunkDataEvent.Load) event;
-            ((EventHandlerImplCommon.LevelEventAttachment) load).architectury$attachLevel(levelRef.get());
+            ((EventHandlerImplCommon.LevelEventAttachment) load).architectury$attachLevel(this.level);
         }
-        level.remove();
         return event;
     }
 }

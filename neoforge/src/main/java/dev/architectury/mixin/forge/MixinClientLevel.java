@@ -24,6 +24,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.profiling.Profiler;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.DimensionType;
@@ -33,17 +34,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.function.Supplier;
-
 @Mixin(ClientLevel.class)
 public abstract class MixinClientLevel extends Level {
-    protected MixinClientLevel(WritableLevelData arg, ResourceKey<Level> arg2, RegistryAccess arg3, Holder<DimensionType> arg4, Supplier<ProfilerFiller> supplier, boolean bl, boolean bl2, long l, int i) {
-        super(arg, arg2, arg3, arg4, supplier, bl, bl2, l, i);
+    protected MixinClientLevel(WritableLevelData arg, ResourceKey<Level> arg2, RegistryAccess arg3, Holder<DimensionType> arg4, boolean bl, boolean bl2, long l, int i) {
+        super(arg, arg2, arg3, arg4, bl, bl2, l, i);
     }
     
     @Inject(method = "tickEntities", at = @At("HEAD"))
     private void tickEntities(CallbackInfo ci) {
-        ProfilerFiller profiler = getProfiler();
+        ProfilerFiller profiler = Profiler.get();
         profiler.push("architecturyClientLevelPreTick");
         ClientTickEvent.CLIENT_LEVEL_PRE.invoker().tick((ClientLevel) (Object) this);
         profiler.pop();
@@ -51,7 +50,7 @@ public abstract class MixinClientLevel extends Level {
     
     @Inject(method = "tickEntities", at = @At("RETURN"))
     private void tickEntitiesPost(CallbackInfo ci) {
-        ProfilerFiller profiler = getProfiler();
+        ProfilerFiller profiler = Profiler.get();
         profiler.push("architecturyClientLevelPostTick");
         ClientTickEvent.CLIENT_LEVEL_POST.invoker().tick((ClientLevel) (Object) this);
         profiler.pop();

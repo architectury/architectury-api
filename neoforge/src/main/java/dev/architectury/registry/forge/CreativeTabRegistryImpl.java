@@ -151,7 +151,7 @@ public class CreativeTabRegistryImpl {
             
             private void resolve() {
                 if (this.tab == null) {
-                    this.tab = BuiltInRegistries.CREATIVE_MODE_TAB.get(name);
+                    this.tab = BuiltInRegistries.CREATIVE_MODE_TAB.getValue(name);
                 }
             }
         };

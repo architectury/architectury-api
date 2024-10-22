@@ -49,7 +49,7 @@ public class ArchitecturyMixinPlugin implements IMixinConfigPlugin {
     
     @Override
     public List<String> getMixins() {
-        return List.of("neoforge.MixinChunkSerializer");
+        return List.of();
     }
     
     @Override

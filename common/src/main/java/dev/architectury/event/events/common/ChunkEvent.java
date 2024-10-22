@@ -24,15 +24,16 @@ import dev.architectury.event.EventFactory;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.storage.SerializableChunkData;
 import org.jetbrains.annotations.Nullable;
 
 public interface ChunkEvent {
     /**
-     * @see SaveData#save(ChunkAccess, ServerLevel)
+     * @see SaveData#save(ChunkAccess, ServerLevel, SerializableChunkData)
      */
     Event<SaveData> SAVE_DATA = EventFactory.createLoop();
     /**
-     * @see LoadData#load(ChunkAccess, ServerLevel)
+     * @see LoadData#load(ChunkAccess, ServerLevel, SerializableChunkData)
      */
     Event<LoadData> LOAD_DATA = EventFactory.createLoop();
     
@@ -44,8 +45,9 @@ public interface ChunkEvent {
          *
          * @param chunk The chunk that is saved.
          * @param level The level the chunk is in.
+         * @param data  The data.
          */
-        void save(ChunkAccess chunk, ServerLevel level);
+        void save(ChunkAccess chunk, ServerLevel level, SerializableChunkData data);
     }
     
     interface LoadData {
@@ -56,7 +58,8 @@ public interface ChunkEvent {
          *
          * @param chunk The chunk that is loaded.
          * @param level The level the chunk is in, may be {@code null}.
+         * @param data  The data.
          */
-        void load(ChunkAccess chunk, @Nullable ServerLevel level);
+        void load(ChunkAccess chunk, @Nullable ServerLevel level, SerializableChunkData data);
     }
 }

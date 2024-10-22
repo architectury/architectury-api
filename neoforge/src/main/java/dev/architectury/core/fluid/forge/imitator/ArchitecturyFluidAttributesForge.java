@@ -21,7 +21,10 @@ package dev.architectury.core.fluid.forge.imitator;
 
 import com.google.common.base.MoreObjects;
 import dev.architectury.core.fluid.ArchitecturyFluidAttributes;
+import dev.architectury.hooks.client.forge.ClientExtensionsRegistryImpl;
 import dev.architectury.hooks.fluid.forge.FluidStackHooksForge;
+import dev.architectury.platform.Platform;
+import dev.architectury.utils.Env;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -37,13 +40,17 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.common.SoundAction;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Consumer;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Map;
 
 import static net.minecraft.sounds.SoundEvents.BUCKET_EMPTY;
 import static net.minecraft.sounds.SoundEvents.BUCKET_FILL;
@@ -56,6 +63,9 @@ class ArchitecturyFluidAttributesForge extends FluidType {
         super(addArchIntoBuilder(builder, attributes));
         this.attributes = attributes;
         this.defaultTranslationKey = Util.makeDescriptionId("fluid", BuiltInRegistries.FLUID.getKey(fluid));
+        if (Platform.getEnvironment() == Env.CLIENT) {
+            this.registerClient();
+        }
     }
     
     private static Properties addArchIntoBuilder(Properties builder, ArchitecturyFluidAttributes attributes) {
@@ -74,9 +84,29 @@ class ArchitecturyFluidAttributesForge extends FluidType {
         return item == null ? super.getBucket(stack) : new ItemStack(item);
     }
     
-    @Override
-    public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
-        consumer.accept(new IClientFluidTypeExtensions() {
+    @OnlyIn(Dist.CLIENT)
+    public void registerClient() {
+        ClientExtensionsRegistryImpl.register(event -> {
+            if (event != null) {
+                event.registerFluidType(initializeClient(), this);
+            } else {
+                try {
+                    Class<?> clazz = Class.forName("net.neoforged.neoforge.client.extensions.common.ClientExtensionsManager");
+                    Field field = clazz.getDeclaredField("FLUID_TYPE_EXTENSIONS");
+                    field.setAccessible(true);
+                    Method method = clazz.getDeclaredMethod("register", Object.class, Map.class, Object[].class);
+                    method.setAccessible(true);
+                    method.invoke(null, initializeClient(), (Map<?, ?>) field.get(null), new Object[]{this});
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+    
+    @OnlyIn(Dist.CLIENT)
+    public IClientFluidTypeExtensions initializeClient() {
+        return new IClientFluidTypeExtensions() {
             @Override
             public int getTintColor() {
                 return attributes.getColor();
@@ -139,7 +169,7 @@ class ArchitecturyFluidAttributesForge extends FluidType {
             public ResourceLocation getOverlayTexture(FluidStack stack) {
                 return attributes.getOverlayTexture(convertSafe(stack));
             }
-        });
+        };
     }
     
     @Override

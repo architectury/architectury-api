@@ -39,7 +39,6 @@ public class MixinSerializableChunkData {
     private void load(ServerLevel serverLevel, PoiManager poiManager, RegionStorageInfo regionStorageInfo, ChunkPos chunkPos,
                       CallbackInfoReturnable<ProtoChunk> cir,
                       @Local ChunkAccess chunkAccess) {
-        // TODO: Get the CompoundTag from constructor somewhere
-        ChunkEvent.LOAD_DATA.invoker().load(chunkAccess, serverLevel);
+        ChunkEvent.LOAD_DATA.invoker().load(chunkAccess, serverLevel, (SerializableChunkData) (Object) this);
     }
 }

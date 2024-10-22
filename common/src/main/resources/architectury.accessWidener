@@ -45,6 +45,7 @@ mutable field net/minecraft/world/level/block/state/BlockBehaviour$Properties em
 accessible field net/minecraft/world/level/block/state/BlockBehaviour$Properties dynamicShape Z
 mutable field net/minecraft/world/level/block/state/BlockBehaviour$Properties dynamicShape Z
 accessible method net/minecraft/world/level/block/state/BlockBehaviour$Properties <init> ()V
+accessible field net/minecraft/world/level/block/entity/FuelValues$Builder values Lit/unimi/dsi/fastutil/objects/Object2IntSortedMap;
 transitive-accessible method net/minecraft/world/entity/player/Player closeContainer ()V
 transitive-accessible method net/minecraft/advancements/CriteriaTriggers register (Ljava/lang/String;Lnet/minecraft/advancements/CriterionTrigger;)Lnet/minecraft/advancements/CriterionTrigger;
 transitive-accessible method net/minecraft/world/inventory/MenuType <init> (Lnet/minecraft/world/inventory/MenuType$MenuSupplier;Lnet/minecraft/world/flag/FeatureFlagSet;)V
@@ -237,7 +238,6 @@ transitive-accessible method net/minecraft/world/level/block/WitherWallSkullBloc
 transitive-accessible method net/minecraft/world/level/block/WoolCarpetBlock <init> (Lnet/minecraft/world/item/DyeColor;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 
 # RenderStateShard fields
-transitive-accessible field net/minecraft/client/renderer/RenderStateShard VIEW_SCALE_Z_EPSILON F
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard NO_TRANSPARENCY Lnet/minecraft/client/renderer/RenderStateShard$TransparencyStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard ADDITIVE_TRANSPARENCY Lnet/minecraft/client/renderer/RenderStateShard$TransparencyStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard LIGHTNING_TRANSPARENCY Lnet/minecraft/client/renderer/RenderStateShard$TransparencyStateShard;
@@ -261,6 +261,7 @@ transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDE
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_TRANSLUCENT_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_TRANSLUCENT_MOVING_BLOCK_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_ARMOR_CUTOUT_NO_CULL_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
+transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_ARMOR_TRANSLUCENT_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_ENTITY_SOLID_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_ENTITY_CUTOUT_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
 transitive-accessible field net/minecraft/client/renderer/RenderStateShard RENDERTYPE_ENTITY_CUTOUT_NO_CULL_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;

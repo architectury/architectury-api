@@ -19,23 +19,51 @@
 
 package dev.architectury.registry.fuel.fabric;
 
+import net.fabricmc.fabric.api.registry.FuelRegistryEvents;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.entity.FuelValues;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class FuelRegistryImpl {
+    private static final List<FuelRegistryEvents.BuildCallback> CALLBACKS = new ArrayList<>();
+    private static final List<FuelRegistryEvents.ExclusionsCallback> EXCLUSIONS_CALLBACKS = new ArrayList<>();
+    
     public static void register(int time, ItemLike... items) {
-        /*for (var item : items) {
-            if (time >= 0) {
-                FuelRegistry.INSTANCE.add(item, time);
-            } else {
-                FuelRegistry.INSTANCE.remove(item);
+        CALLBACKS.add((builder, context) -> {
+            for (var item : items) {
+                if (time >= 0) {
+                    builder.add(item, time);
+                }
             }
-        }*/
+        });
+        EXCLUSIONS_CALLBACKS.add((builder, context) -> {
+            for (var item : items) {
+                if (time < 0) {
+                    builder.values.keySet().remove(item.asItem());
+                }
+            }
+        });
     }
     
-    public static int get(ItemStack stack) {
-        /*var time = FuelRegistry.INSTANCE.get(stack.getItem());
-        return time == null ? 0 : time;*/
-        return 0;
+    public static int get(ItemStack stack, @Nullable RecipeType<?> recipeType, FuelValues fuelValues) {
+        return fuelValues.burnDuration(stack);
+    }
+    
+    static {
+        FuelRegistryEvents.BUILD.register((builder, context) -> {
+            for (var callback : CALLBACKS) {
+                callback.build(builder, context);
+            }
+        });
+        FuelRegistryEvents.EXCLUSIONS.register((builder, context) -> {
+            for (var callback : EXCLUSIONS_CALLBACKS) {
+                callback.buildExclusions(builder, context);
+            }
+        });
     }
 }

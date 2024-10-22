@@ -26,7 +26,6 @@ import dev.architectury.event.events.client.ClientChatEvent;
 import dev.architectury.event.events.client.*;
 import dev.architectury.event.events.common.InteractionEvent;
 import dev.architectury.impl.ScreenAccessImpl;
-import dev.architectury.impl.TooltipEventColorContextImpl;
 import dev.architectury.impl.TooltipEventPositionContextImpl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -38,8 +37,8 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
@@ -141,24 +140,24 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventDrawScreenEvent(ScreenEvent.Render.Pre event) {
-        if (ClientGuiEvent.RENDER_PRE.invoker().render(event.getScreen(), event.getGuiGraphics(), event.getMouseX(), event.getMouseY(), Minecraft.getInstance().getTimer()).isFalse()) {
+        if (ClientGuiEvent.RENDER_PRE.invoker().render(event.getScreen(), event.getGuiGraphics(), event.getMouseX(), event.getMouseY(), Minecraft.getInstance().getDeltaTracker()).isFalse()) {
             event.setCanceled(true);
         }
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventDrawScreenEvent(ScreenEvent.Render.Post event) {
-        ClientGuiEvent.RENDER_POST.invoker().render(event.getScreen(), event.getGuiGraphics(), event.getMouseX(), event.getMouseY(), Minecraft.getInstance().getTimer());
+        ClientGuiEvent.RENDER_POST.invoker().render(event.getScreen(), event.getGuiGraphics(), event.getMouseX(), event.getMouseY(), Minecraft.getInstance().getDeltaTracker());
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventContainerScreenEvent(ContainerScreenEvent.Render.Background event) {
-        ClientGuiEvent.RENDER_CONTAINER_BACKGROUND.invoker().render(event.getContainerScreen(), event.getGuiGraphics(), event.getMouseX(), event.getMouseY(), Minecraft.getInstance().getTimer().getRealtimeDeltaTicks());
+        ClientGuiEvent.RENDER_CONTAINER_BACKGROUND.invoker().render(event.getContainerScreen(), event.getGuiGraphics(), event.getMouseX(), event.getMouseY(), Minecraft.getInstance().getDeltaTracker().getRealtimeDeltaTicks());
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventContainerScreenEvent(ContainerScreenEvent.Render.Foreground event) {
-        ClientGuiEvent.RENDER_CONTAINER_FOREGROUND.invoker().render(event.getContainerScreen(), event.getGuiGraphics(), event.getMouseX(), event.getMouseY(), Minecraft.getInstance().getTimer().getRealtimeDeltaTicks());
+        ClientGuiEvent.RENDER_CONTAINER_FOREGROUND.invoker().render(event.getContainerScreen(), event.getGuiGraphics(), event.getMouseX(), event.getMouseY(), Minecraft.getInstance().getDeltaTracker().getRealtimeDeltaTicks());
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
@@ -169,11 +168,6 @@ public class EventHandlerImplClient {
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventPlayerInteractEvent(PlayerInteractEvent.LeftClickEmpty event) {
         InteractionEvent.CLIENT_LEFT_CLICK_AIR.invoker().click(event.getEntity(), event.getHand());
-    }
-    
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void event(RecipesUpdatedEvent event) {
-        ClientRecipeUpdateEvent.EVENT.invoker().update(event.getRecipeManager());
     }
     
     private static final ThreadLocal<TooltipEventPositionContextImpl> tooltipPositionContext = ThreadLocal.withInitial(TooltipEventPositionContextImpl::new);
@@ -194,26 +188,6 @@ public class EventHandlerImplClient {
             ClientTooltipEvent.RENDER_MODIFY_POSITION.invoker().renderTooltip(graphics, positionContext);
             event.setX(positionContext.getTooltipX());
             event.setY(positionContext.getTooltipY());
-        } finally {
-            ClientTooltipEvent.additionalContexts().setItem(null);
-        }
-    }
-    
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void eventRenderTooltipEvent(RenderTooltipEvent.Color event) {
-        GuiGraphics graphics = event.getGraphics();
-        ClientTooltipEvent.additionalContexts().setItem(event.getItemStack());
-        
-        try {
-            TooltipEventColorContextImpl colorContext = TooltipEventColorContextImpl.CONTEXT.get();
-            colorContext.reset();
-            colorContext.setBackgroundColor(event.getBackgroundStart());
-            colorContext.setOutlineGradientTopColor(event.getBorderStart());
-            colorContext.setOutlineGradientBottomColor(event.getBorderEnd());
-            ClientTooltipEvent.RENDER_MODIFY_COLOR.invoker().renderTooltip(graphics, event.getX(), event.getY(), colorContext);
-            event.setBackground(colorContext.getBackgroundColor());
-            event.setBorderEnd(colorContext.getOutlineGradientBottomColor());
-            event.setBorderStart(colorContext.getOutlineGradientTopColor());
         } finally {
             ClientTooltipEvent.additionalContexts().setItem(null);
         }
@@ -343,11 +317,6 @@ public class EventHandlerImplClient {
         @SubscribeEvent(priority = EventPriority.HIGH)
         public static void event(FMLClientSetupEvent event) {
             ClientLifecycleEvent.CLIENT_SETUP.invoker().stateChanged(Minecraft.getInstance());
-        }
-        
-        @SubscribeEvent(priority = EventPriority.HIGH)
-        public static void event(RegisterShadersEvent event) {
-            ClientReloadShadersEvent.EVENT.invoker().reload(event.getResourceProvider(), event::registerShader);
         }
     }
 }

@@ -19,7 +19,6 @@
 
 package dev.architectury.event.forge;
 
-import dev.architectury.event.CompoundEventResult;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.PlayerEvent;
 import dev.architectury.event.events.common.*;
@@ -28,7 +27,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.neoforged.bus.api.EventPriority;
@@ -241,7 +240,7 @@ public class EventHandlerImplCommon {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(FarmlandTrampleEvent event) {
-        if (event.getLevel() instanceof Level && InteractionEvent.FARMLAND_TRAMPLE.invoker().trample((Level) event.getLevel(), event.getPos(), event.getState(), event.getFallDistance(), event.getEntity()).value() != null) {
+        if (event.getLevel() instanceof Level && InteractionEvent.FARMLAND_TRAMPLE.invoker().trample((Level) event.getLevel(), event.getPos(), event.getState(), event.getFallDistance(), event.getEntity()) != InteractionResult.PASS) {
             event.setCanceled(true);
         }
     }
@@ -312,19 +311,19 @@ public class EventHandlerImplCommon {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventPlayerInteractEvent(PlayerInteractEvent.RightClickItem event) {
-        CompoundEventResult<ItemStack> result = InteractionEvent.RIGHT_CLICK_ITEM.invoker().click(event.getEntity(), event.getHand());
-        if (result.isPresent()) {
+        InteractionResult result = InteractionEvent.RIGHT_CLICK_ITEM.invoker().click(event.getEntity(), event.getHand());
+        if (result != InteractionResult.PASS) {
             event.setCanceled(true);
-            event.setCancellationResult(result.result().asMinecraft());
+            event.setCancellationResult(result);
         }
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventPlayerInteractEvent(PlayerInteractEvent.RightClickBlock event) {
-        EventResult result = InteractionEvent.RIGHT_CLICK_BLOCK.invoker().click(event.getEntity(), event.getHand(), event.getPos(), event.getFace());
-        if (result.isPresent()) {
+        InteractionResult result = InteractionEvent.RIGHT_CLICK_BLOCK.invoker().click(event.getEntity(), event.getHand(), event.getPos(), event.getFace());
+        if (result != InteractionResult.PASS) {
             event.setCanceled(true);
-            event.setCancellationResult(result.asMinecraft());
+            event.setCancellationResult(result);
             event.setUseBlock(TriState.FALSE);
             event.setUseItem(TriState.FALSE);
         }
@@ -342,11 +341,11 @@ public class EventHandlerImplCommon {
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventPlayerInteractEvent(PlayerInteractEvent.LeftClickBlock event) {
         if (event.getAction() != PlayerInteractEvent.LeftClickBlock.Action.START) return;
-        EventResult result = InteractionEvent.LEFT_CLICK_BLOCK.invoker().click(event.getEntity(), event.getHand(), event.getPos(), event.getFace());
-        if (result.isPresent()) {
+        InteractionResult result = InteractionEvent.LEFT_CLICK_BLOCK.invoker().click(event.getEntity(), event.getHand(), event.getPos(), event.getFace());
+        if (result != InteractionResult.PASS) {
             event.setCanceled(true);
-            event.setUseBlock(result.value() ? TriState.TRUE : TriState.FALSE);
-            event.setUseItem(result.value() ? TriState.TRUE : TriState.FALSE);
+            event.setUseBlock(result.consumesAction() ? TriState.TRUE : TriState.FALSE);
+            event.setUseItem(result.consumesAction() ? TriState.TRUE : TriState.FALSE);
         }
     }
     

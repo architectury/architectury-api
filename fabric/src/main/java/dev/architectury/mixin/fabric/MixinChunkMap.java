@@ -19,17 +19,18 @@
 
 package dev.architectury.mixin.fabric;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import dev.architectury.event.events.common.ChunkEvent;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.storage.SerializableChunkData;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(ChunkMap.class)
 public class MixinChunkMap {
@@ -39,10 +40,9 @@ public class MixinChunkMap {
     
     @Inject(
             method = "save",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ChunkMap;write(Lnet/minecraft/world/level/ChunkPos;Ljava/util/function/Supplier;)Ljava/util/concurrent/CompletableFuture;", ordinal = 0),
-            locals = LocalCapture.CAPTURE_FAILHARD
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ChunkMap;write(Lnet/minecraft/world/level/ChunkPos;Ljava/util/function/Supplier;)Ljava/util/concurrent/CompletableFuture;", ordinal = 0)
     )
-    private void save(ChunkAccess chunkAccess, CallbackInfoReturnable<Boolean> cir) {
-        ChunkEvent.SAVE_DATA.invoker().save(chunkAccess, this.level);
+    private void save(ChunkAccess chunkAccess, CallbackInfoReturnable<Boolean> cir, @Local SerializableChunkData data) {
+        ChunkEvent.SAVE_DATA.invoker().save(chunkAccess, this.level, data);
     }
 }

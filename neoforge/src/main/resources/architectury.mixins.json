@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_16",
   "minVersion": "0.8",
   "client": [
+    "client.MixinClientPacketListener",
     "client.MixinCommandSourceStack",
     "MixinClientLevel",
     "MixinMinecraft"
@@ -13,7 +14,7 @@
     "neoforge.MixinBucketItem",
     "neoforge.BucketItemAccessor",
     "neoforge.LiquidBlockAccessor",
-    "neoforge.MixinChunkSerializer",
+    "neoforge.MixinChunkMap",
     "MixinFallingBlockEntity",
     "MixinInventory",
     "MixinItemExtension",
