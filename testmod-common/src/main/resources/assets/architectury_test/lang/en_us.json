@@ -1,4 +1,5 @@
 {
+  "modmenu.descriptionTranslation.architectury": "A intermediary api aimed to ease developing multiplatform mods.",
   "category.architectury_test": "Architectury Test",
   "key.architectury_test.test": "Test Keybind"
 }
