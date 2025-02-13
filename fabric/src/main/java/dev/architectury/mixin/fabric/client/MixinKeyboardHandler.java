@@ -61,12 +61,12 @@ public class MixinKeyboardHandler {
     
     @WrapOperation(method = "keyPress", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;keyReleased(III)Z"))
     private boolean wrapKeyReleased(Screen screen, int keyCode, int scanCode, int modifiers, Operation<Boolean> original) {
-        var result = ClientScreenInputEvent.KEY_PRESSED_PRE.invoker().keyPressed(minecraft, screen, keyCode, scanCode, modifiers);
+        var result = ClientScreenInputEvent.KEY_RELEASED_PRE.invoker().keyReleased(minecraft, screen, keyCode, scanCode, modifiers);
         if (result.isPresent())
             return true;
         if (original.call(screen, keyCode, scanCode, modifiers))
             return true;
-        result = ClientScreenInputEvent.KEY_PRESSED_POST.invoker().keyPressed(minecraft, screen, keyCode, scanCode, modifiers);
+        result = ClientScreenInputEvent.KEY_RELEASED_POST.invoker().keyReleased(minecraft, screen, keyCode, scanCode, modifiers);
         return result.isPresent();
     }
     
