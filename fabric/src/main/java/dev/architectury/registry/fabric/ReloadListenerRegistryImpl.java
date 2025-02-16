@@ -38,7 +38,7 @@ import java.util.concurrent.Executor;
 public class ReloadListenerRegistryImpl {
     private static final SecureRandom RANDOM = new SecureRandom();
     
-    public static void register(PackType type, PreparableReloadListener listener, @Nullable ResourceLocation listenerId, Collection<ResourceLocation> dependencies) {
+    public static void register(PackType type, PreparableReloadListener listener, ResourceLocation listenerId, Collection<ResourceLocation> dependencies) {
         var bytes = new byte[8];
         RANDOM.nextBytes(bytes);
         var id = listenerId != null ? listenerId : ResourceLocation.parse("architectury:reload_" + StringUtils.leftPad(Math.abs(Longs.fromByteArray(bytes)) + "", 19, '0'));

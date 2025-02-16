@@ -19,7 +19,12 @@
 
 package dev.architectury.registry.forge;
 
-import com.google.common.collect.Lists;
+import dev.architectury.platform.Platform;
+import dev.architectury.platform.hooks.EventBusesHooks;
+import dev.architectury.utils.ArchitecturyConstants;
+import dev.architectury.utils.Env;
+import dev.architectury.utils.EnvExecutor;
+import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
@@ -27,36 +32,49 @@ import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.AddReloadListenerEvent;
-import org.jetbrains.annotations.Nullable;
+import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ReloadListenerRegistryImpl {
-    private static List<PreparableReloadListener> serverDataReloadListeners = Lists.newArrayList();
+    private static Map<ResourceLocation, PreparableReloadListener> clientDataReloadListeners = new HashMap<>();
+    private static Map<ResourceLocation, Collection<ResourceLocation>> clientDataReloadListenerDependencies = new HashMap<>();
+
+    private static Map<ResourceLocation, PreparableReloadListener> serverDataReloadListeners = new HashMap<>();
+    private static Map<ResourceLocation, Collection<ResourceLocation>> serverDataReloadListenerDependencies = new HashMap<>();
     
     static {
-        NeoForge.EVENT_BUS.addListener(ReloadListenerRegistryImpl::addReloadListeners);
+        EventBusesHooks.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
+            if(Platform.getEnvironment() == Env.CLIENT) {
+                bus.addListener(ReloadListenerRegistryImpl::addClientReloadListeners);
+            }
+        });
+
+        NeoForge.EVENT_BUS.addListener(ReloadListenerRegistryImpl::addServerReloadListeners);
     }
     
-    public static void register(PackType type, PreparableReloadListener listener, @Nullable ResourceLocation listenerId, Collection<ResourceLocation> dependencies) {
+    public static void register(PackType type, PreparableReloadListener listener, ResourceLocation listenerId, Collection<ResourceLocation> dependencies) {
         if (type == PackType.SERVER_DATA) {
-            serverDataReloadListeners.add(listener);
+            serverDataReloadListeners.put(listenerId, listener);
+            serverDataReloadListenerDependencies.put(listenerId, dependencies);
         } else if (type == PackType.CLIENT_RESOURCES) {
-            registerClient(listener);
+            clientDataReloadListeners.put(listenerId, listener);
+            clientDataReloadListenerDependencies.put(listenerId, dependencies);
         }
     }
-    
+
     @OnlyIn(Dist.CLIENT)
-    private static void registerClient(PreparableReloadListener listener) {
-        ((ReloadableResourceManager) Minecraft.getInstance().getResourceManager()).registerReloadListener(listener);
+    public static void addClientReloadListeners(AddClientReloadListenersEvent event) {
+        clientDataReloadListeners.forEach(event::addListener);
+        clientDataReloadListenerDependencies.forEach((listener, dependencies) -> dependencies.forEach(dependency -> event.addDependency(listener, dependency)));
     }
-    
-    public static void addReloadListeners(AddReloadListenerEvent event) {
-        for (PreparableReloadListener listener : serverDataReloadListeners) {
-            event.addListener(listener);
-        }
+
+    public static void addServerReloadListeners(AddServerReloadListenersEvent event) {
+        serverDataReloadListeners.forEach(event::addListener);
+        serverDataReloadListenerDependencies.forEach((listener, dependencies) -> dependencies.forEach(dependency -> event.addDependency(listener, dependency)));
     }
 }

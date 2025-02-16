@@ -43,7 +43,7 @@ public class ReloadListenerRegistryImpl {
         MinecraftForge.EVENT_BUS.addListener(ReloadListenerRegistryImpl::addReloadListeners);
     }
     
-    public static void register(PackType type, PreparableReloadListener listener, @Nullable ResourceLocation listenerId, Collection<ResourceLocation> dependencies) {
+    public static void register(PackType type, PreparableReloadListener listener, ResourceLocation listenerId, Collection<ResourceLocation> dependencies) {
         if (type == PackType.SERVER_DATA) {
             serverDataReloadListeners.add(listener);
         } else if (type == PackType.CLIENT_RESOURCES) {

@@ -31,17 +31,13 @@ import java.util.List;
 public final class ReloadListenerRegistry {
     private ReloadListenerRegistry() {
     }
-    
-    public static void register(PackType type, PreparableReloadListener listener) {
-        register(type, listener, null);
-    }
-    
-    public static void register(PackType type, PreparableReloadListener listener, @Nullable ResourceLocation listenerId) {
+
+    public static void register(PackType type, PreparableReloadListener listener, ResourceLocation listenerId) {
         register(type, listener, listenerId, List.of());
     }
     
     @ExpectPlatform
-    public static void register(PackType type, PreparableReloadListener listener, @Nullable ResourceLocation listenerId, Collection<ResourceLocation> dependencies) {
+    public static void register(PackType type, PreparableReloadListener listener, ResourceLocation listenerId, Collection<ResourceLocation> dependencies) {
         throw new AssertionError();
     }
 }
