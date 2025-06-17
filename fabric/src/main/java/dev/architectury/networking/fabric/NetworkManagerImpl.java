@@ -54,7 +54,7 @@ public class NetworkManagerImpl {
                 LOGGER.info("Registering C2S receiver with id {}", type.id());
                 PayloadTypeRegistry.playC2S().register(type, codec);
                 ServerPlayNetworking.registerGlobalReceiver(type, (payload, fabricContext) -> {
-                    var context = context(fabricContext.player(), fabricContext.player().server, false);
+                    var context = context(fabricContext.player(), fabricContext.player().getServer(), false);
                     receiver.receive(payload, context);
                 });
             }

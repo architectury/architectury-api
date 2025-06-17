@@ -42,17 +42,17 @@ public abstract class MixinGuiGraphics {
     @Unique
     private static ThreadLocal<TooltipEventPositionContextImpl> tooltipPositionContext = ThreadLocal.withInitial(TooltipEventPositionContextImpl::new);
     
-    @Inject(method = "renderTooltip(Lnet/minecraft/client/gui/Font;Lnet/minecraft/world/item/ItemStack;II)V", at = @At("HEAD"))
+    @Inject(method = "setTooltipForNextFrame(Lnet/minecraft/client/gui/Font;Lnet/minecraft/world/item/ItemStack;II)V", at = @At("HEAD"))
     private void preRenderTooltipItem(Font font, ItemStack stack, int x, int y, CallbackInfo ci) {
         ClientTooltipEvent.additionalContexts().setItem(stack);
     }
     
-    @Inject(method = "renderTooltip(Lnet/minecraft/client/gui/Font;Lnet/minecraft/world/item/ItemStack;II)V", at = @At("RETURN"))
-    private void postRenderTooltipItem(Font font, ItemStack stack, int x, int y, CallbackInfo ci) {
+    @Inject(method = "renderTooltip", at = @At("RETURN"))
+    private void postRenderTooltipItem(Font font, List<ClientTooltipComponent> list, int i, int j, ClientTooltipPositioner clientTooltipPositioner, ResourceLocation resourceLocation, CallbackInfo ci) {
         ClientTooltipEvent.additionalContexts().setItem(null);
     }
     
-    @Inject(method = "renderTooltipInternal", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "renderTooltip", at = @At("HEAD"), cancellable = true)
     private void renderTooltip(Font font, List<ClientTooltipComponent> list, int x, int y, ClientTooltipPositioner positioner, @Nullable ResourceLocation background, CallbackInfo ci) {
         if (!list.isEmpty()) {
             var positionContext = tooltipPositionContext.get();
@@ -65,13 +65,13 @@ public abstract class MixinGuiGraphics {
         }
     }
     
-    @ModifyVariable(method = "renderTooltipInternal",
+    @ModifyVariable(method = "renderTooltip",
             at = @At(value = "HEAD"), ordinal = 0, argsOnly = true)
     private int modifyTooltipX(int original) {
         return tooltipPositionContext.get().getTooltipX();
     }
     
-    @ModifyVariable(method = "renderTooltipInternal",
+    @ModifyVariable(method = "renderTooltip",
             at = @At(value = "HEAD"), ordinal = 1, argsOnly = true)
     private int modifyTooltipY(int original) {
         return tooltipPositionContext.get().getTooltipY();

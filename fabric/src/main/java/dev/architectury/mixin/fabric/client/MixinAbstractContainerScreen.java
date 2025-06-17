@@ -42,7 +42,7 @@ public abstract class MixinAbstractContainerScreen extends Screen {
         ClientGuiEvent.RENDER_CONTAINER_BACKGROUND.invoker().render((AbstractContainerScreen<?>) (Object) this, graphics, mouseX, mouseY, delta);
     }
     
-    @Inject(method = "render",
+    @Inject(method = "renderContents",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;renderLabels(Lnet/minecraft/client/gui/GuiGraphics;II)V",
                     ordinal = 0, shift = At.Shift.AFTER))
     public void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float delta, CallbackInfo ci) {

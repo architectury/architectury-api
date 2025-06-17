@@ -54,8 +54,8 @@ public class ClientOverlayMessageSink extends ConsoleMessageSink {
     }
     
     public void render(GuiGraphics graphics, DeltaTracker delta) {
-        graphics.pose().pushPose();
-        graphics.pose().scale(0.5f, 0.5f, 1f);
+        graphics.pose().pushMatrix();
+        graphics.pose().scale(0.5f, 0.5f);
         var minecraft = Minecraft.getInstance();
         var currentMills = Util.getMillis();
         var lineHeight = minecraft.font.lineHeight;
@@ -82,7 +82,7 @@ public class ClientOverlayMessageSink extends ConsoleMessageSink {
             }
         }
         
-        graphics.pose().popPose();
+        graphics.pose().popMatrix();
     }
     
     private record Message(Component text, long created) {

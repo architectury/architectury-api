@@ -73,7 +73,7 @@ public final class Platform {
     }
     
     public static String getMinecraftVersion() {
-        return SharedConstants.getCurrentVersion().getId();
+        return SharedConstants.getCurrentVersion().id();
     }
     
     /**

@@ -59,10 +59,10 @@ public class ItemWithTooltip extends Item {
         
         @Override
         public void renderImage(Font font, int x, int y, int w, int h, GuiGraphics graphics) {
-            graphics.pose().pushPose();
-            graphics.pose().translate(0, 0, 400);
+            graphics.pose().pushMatrix();
+            graphics.pose().translate(0, 0);
             graphics.drawString(font, "Count: " + component.count, x + getWidth(font) / 2, y + (getHeight(font) - font.lineHeight) / 2, 0xFF00FF00);
-            graphics.pose().popPose();
+            graphics.pose().popMatrix();
         }
     }
 }

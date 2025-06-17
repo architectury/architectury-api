@@ -34,7 +34,7 @@ public class TradeRegistryImpl {
     
     public static void registerTradeForWanderingTrader(TradeRegistry.WandererTradeType type, VillagerTrades.ItemListing... trades) {
         TradeOfferHelper.registerWanderingTraderOffers(builder -> {
-            builder.addAll(switch (type) {
+            builder.addOffersToPool(switch (type) {
                 case BUYING_TRADES -> TradeOfferHelper.WanderingTraderOffersBuilder.BUY_ITEMS_POOL;
                 case GENERIC_TRADES -> TradeOfferHelper.WanderingTraderOffersBuilder.SELL_COMMON_ITEMS_POOL;
                 case RARE_TRADES -> TradeOfferHelper.WanderingTraderOffersBuilder.SELL_SPECIAL_ITEMS_POOL;
