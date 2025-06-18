@@ -34,7 +34,7 @@
   },
   "icon": "icon.png",
   "depends": {
-    "minecraft": "~1.21.6~",
+    "minecraft": "~1.21.6",
     "fabricloader": ">=0.15.4",
     "fabric-api": ">=0.127.0"
   },
