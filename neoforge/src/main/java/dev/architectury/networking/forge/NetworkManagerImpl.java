@@ -30,7 +30,6 @@ import dev.architectury.utils.ArchitecturyConstants;
 import dev.architectury.utils.Env;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.Packet;
@@ -48,6 +47,9 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.slf4j.Logger;
+
+import static dev.architectury.networking.forge.client.ClientNetworkManagerImpl.getClientPlayer;
+import static dev.architectury.networking.forge.client.ClientNetworkManagerImpl.getClientRegistryAccess;
 
 public class NetworkManagerImpl {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -133,25 +135,5 @@ public class NetworkManagerImpl {
     
     public static Packet<ClientGamePacketListener> createAddEntityPacket(Entity entity, ServerEntity serverEntity) {
         return SpawnEntityPacket.create(entity, serverEntity);
-    }
-    
-    @OnlyIn(Dist.CLIENT)
-    public static Player getClientPlayer() {
-        return Minecraft.getInstance().player;
-    }
-    
-    @OnlyIn(Dist.CLIENT)
-    public static RegistryAccess getClientRegistryAccess() {
-        if (Minecraft.getInstance().level != null) {
-            return Minecraft.getInstance().level.registryAccess();
-        } else if (Minecraft.getInstance().getConnection() != null) {
-            return Minecraft.getInstance().getConnection().registryAccess();
-        } else if (Minecraft.getInstance().gameMode != null) {
-            // Sometimes the packet is sent way too fast and is between the connection and the level, better safe than sorry
-            return Minecraft.getInstance().gameMode.connection.registryAccess();
-        }
-        
-        // Fail-safe
-        return RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
     }
 }

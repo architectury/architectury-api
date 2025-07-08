@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-@EventBusSubscriber(modid = ArchitecturyConstants.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+@EventBusSubscriber(modid = ArchitecturyConstants.MOD_ID, value = Dist.CLIENT)
 public class ClientExtensionsRegistryImpl {
     private static final List<Consumer<@Nullable RegisterClientExtensionsEvent>> CALLBACKS = new ArrayList<>();
     private static boolean called = false;
