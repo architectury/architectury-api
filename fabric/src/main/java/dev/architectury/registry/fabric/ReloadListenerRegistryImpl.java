@@ -59,8 +59,8 @@ public class ReloadListenerRegistryImpl {
             }
             
             @Override
-            public CompletableFuture<Void> reload(PreparationBarrier preparationBarrier, ResourceManager resourceManager, Executor executor, Executor executor2) {
-                return listener.reload(preparationBarrier, resourceManager, executor, executor2);
+            public CompletableFuture<Void> reload(SharedState sharedState, Executor executor, PreparationBarrier preparationBarrier, Executor executor2) {
+                return listener.reload(sharedState, executor, preparationBarrier, executor2);
             }
         });
     }

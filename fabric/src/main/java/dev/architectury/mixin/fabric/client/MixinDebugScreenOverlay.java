@@ -19,24 +19,22 @@
 
 package dev.architectury.mixin.fabric.client;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import dev.architectury.event.events.client.ClientGuiEvent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.DebugScreenOverlay;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 
 @Mixin(DebugScreenOverlay.class)
 public class MixinDebugScreenOverlay {
-    @Inject(method = "getGameInformation", at = @At("RETURN"))
-    private void getLeftTexts(CallbackInfoReturnable<List<String>> cir) {
-        ClientGuiEvent.DEBUG_TEXT_LEFT.invoker().gatherText(cir.getReturnValue());
-    }
-    
-    @Inject(method = "getSystemInformation", at = @At("RETURN"))
-    private void getRightTexts(CallbackInfoReturnable<List<String>> cir) {
-        ClientGuiEvent.DEBUG_TEXT_RIGHT.invoker().gatherText(cir.getReturnValue());
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/DebugScreenOverlay;renderLines(Lnet/minecraft/client/gui/GuiGraphics;Ljava/util/List;Z)V", ordinal = 0))
+    private void getTexts(GuiGraphics guiGraphics, CallbackInfo ci, @Local(ordinal = 0) List<String> left, @Local(ordinal = 1) List<String> right) {
+        ClientGuiEvent.DEBUG_TEXT_LEFT.invoker().gatherText(left);
+        ClientGuiEvent.DEBUG_TEXT_RIGHT.invoker().gatherText(right);
     }
 }

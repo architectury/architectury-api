@@ -48,7 +48,7 @@ public class ArchitecturySpawnEggItem extends SpawnEggItem {
             @Override
             public ItemStack execute(BlockSource source, ItemStack stack) {
                 Direction direction = source.state().getValue(DispenserBlock.FACING);
-                EntityType<?> entityType = ((SpawnEggItem) stack.getItem()).getType(source.level().registryAccess(), stack);
+                EntityType<?> entityType = ((SpawnEggItem) stack.getItem()).getType(stack);
                 
                 try {
                     entityType.spawn(source.level(), stack, null, source.pos().relative(direction), EntitySpawnReason.DISPENSER, direction != Direction.UP, false);
@@ -70,14 +70,13 @@ public class ArchitecturySpawnEggItem extends SpawnEggItem {
     
     public ArchitecturySpawnEggItem(RegistrySupplier<? extends EntityType<? extends Mob>> entityType, Properties properties,
                                     @Nullable DispenseItemBehavior dispenseItemBehavior) {
-        super(null, properties);
+        super(properties);
         this.entityType = Objects.requireNonNull(entityType, "entityType");
         SpawnEggItem.BY_ID.remove(null);
         entityType.listen(type -> {
             LOGGER.debug("Registering spawn egg {} for {}", toString(),
                     Objects.toString(type.arch$registryName()));
             SpawnEggItem.BY_ID.put(type, this);
-            this.defaultType = type;
             
             if (dispenseItemBehavior != null) {
                 DispenserBlock.registerBehavior(this, dispenseItemBehavior);
@@ -86,8 +85,8 @@ public class ArchitecturySpawnEggItem extends SpawnEggItem {
     }
     
     @Override
-    public EntityType<?> getType(HolderLookup.Provider provider, ItemStack itemStack) {
-        EntityType<?> type = super.getType(provider, itemStack);
+    public @Nullable EntityType<?> getType(ItemStack itemStack) {
+        EntityType<?> type = super.getType(itemStack);
         return type == null ? entityType.get() : type;
     }
 }

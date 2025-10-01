@@ -22,6 +22,7 @@ package dev.architectury.impl.fabric;
 import dev.architectury.event.events.client.ClientScreenInputEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.network.chat.Component;
 
 public interface ScreenInputDelegate {
@@ -36,12 +37,12 @@ public interface ScreenInputDelegate {
         }
         
         @Override
-        public boolean charTyped(char c, int i) {
-            if (ClientScreenInputEvent.CHAR_TYPED_PRE.invoker().charTyped(Minecraft.getInstance(), parent, c, i).isPresent())
+        public boolean charTyped(CharacterEvent characterEvent) {
+            if (ClientScreenInputEvent.CHAR_TYPED_PRE.invoker().charTyped(Minecraft.getInstance(), parent, characterEvent).isPresent())
                 return true;
-            if (parent.charTyped(c, i))
+            if (parent.charTyped(characterEvent))
                 return true;
-            return ClientScreenInputEvent.CHAR_TYPED_POST.invoker().charTyped(Minecraft.getInstance(), parent, c, i).isPresent();
+            return ClientScreenInputEvent.CHAR_TYPED_POST.invoker().charTyped(Minecraft.getInstance(), parent, characterEvent).isPresent();
         }
     }
 }

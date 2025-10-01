@@ -1,4 +1,4 @@
-name: Build PR snapshot (1.21.6)
+name: Build PR snapshot (1.21.9)
 
 on:
   pull_request:
@@ -7,7 +7,7 @@ on:
       - '**.properties'
       - '**/src/**'
     branches:
-      - "1.21.7"
+      - "1.21.9"
     types: [ opened, synchronize, reopened ]
 jobs:
   validate-gradle:

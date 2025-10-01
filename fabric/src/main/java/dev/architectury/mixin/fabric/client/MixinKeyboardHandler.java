@@ -72,7 +72,7 @@ public class MixinKeyboardHandler {
     
     @Inject(method = "keyPress", at = @At("RETURN"), cancellable = true)
     public void onRawKey(long handle, int key, int scanCode, int action, int modifiers, CallbackInfo info) {
-        if (handle == this.minecraft.getWindow().getWindow()) {
+        if (handle == this.minecraft.getWindow().handle()) {
             var result = ClientRawInputEvent.KEY_PRESSED.invoker().keyPressed(minecraft, key, scanCode, action, modifiers);
             if (result.isPresent())
                 info.cancel();

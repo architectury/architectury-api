@@ -42,6 +42,8 @@ import net.minecraft.world.entity.EntityType;
 
 import java.util.UUID;
 
+import net.minecraft.world.phys.Vec3;
+
 /**
  * @see net.minecraft.network.protocol.game.ClientboundAddEntityPacket
  */
@@ -91,7 +93,7 @@ public class SpawnEntityPacket {
                     buf.release();
                 }
                 Minecraft.getInstance().level.addEntity(entity);
-                entity.lerpMotion(payload.deltaX(), payload.deltaY(), payload.deltaZ());
+                entity.lerpMotion(payload.delta());
             });
         }
     }
@@ -99,25 +101,25 @@ public class SpawnEntityPacket {
     private record PacketPayload(EntityType<?> entityType, UUID uuid, int id, double x, double y, double z, float xRot,
                                  float yRot,
                                  float yHeadRot,
-                                 double deltaX, double deltaY, double deltaZ,
+                                 Vec3 delta,
                                  byte[] data) implements CustomPacketPayload {
         public PacketPayload(RegistryFriendlyByteBuf buf) {
             this(ByteBufCodecs.registry(Registries.ENTITY_TYPE).decode(buf), buf.readUUID(), buf.readVarInt(), buf.readDouble(), buf.readDouble(), buf.readDouble(),
-                    buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readDouble(), buf.readDouble(), buf.readDouble(),
+                    buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readVec3(),
                     buf.readByteArray());
         }
         
         public PacketPayload(Entity entity, ServerEntity serverEntity) {
             this(entity.getType(), entity.getUUID(), entity.getId(), serverEntity.getPositionBase().x(),
                     serverEntity.getPositionBase().y(), serverEntity.getPositionBase().z(), serverEntity.getLastSentXRot(),
-                    serverEntity.getLastSentYRot(), serverEntity.getLastSentYHeadRot(), serverEntity.getLastSentMovement().x,
-                    serverEntity.getLastSentMovement().y, serverEntity.getLastSentMovement().z, saveExtra(entity));
+                    serverEntity.getLastSentYRot(), serverEntity.getLastSentYHeadRot(), serverEntity.getLastSentMovement(),
+                    saveExtra(entity));
         }
         
         public PacketPayload(Entity entity, BlockPos pos) {
             this(entity.getType(), entity.getUUID(), entity.getId(), pos.getX(),
                     pos.getY(), pos.getZ(), entity.getXRot(), entity.getYRot(), entity.getYHeadRot(),
-                    entity.getDeltaMovement().x, entity.getDeltaMovement().y, entity.getDeltaMovement().z, saveExtra(entity));
+                    entity.getDeltaMovement(), saveExtra(entity));
         }
         
         private static byte[] saveExtra(Entity entity) {
@@ -142,9 +144,7 @@ public class SpawnEntityPacket {
             buf.writeFloat(xRot);
             buf.writeFloat(yRot);
             buf.writeFloat(yHeadRot);
-            buf.writeDouble(deltaX);
-            buf.writeDouble(deltaY);
-            buf.writeDouble(deltaZ);
+            buf.writeVec3(delta);
             buf.writeByteArray(data);
         }
         

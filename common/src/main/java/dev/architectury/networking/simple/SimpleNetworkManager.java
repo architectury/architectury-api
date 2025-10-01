@@ -19,6 +19,7 @@
 
 package dev.architectury.networking.simple;
 
+import dev.architectury.impl.NetworkAggregator;
 import dev.architectury.networking.NetworkManager;
 import dev.architectury.networking.transformers.PacketTransformer;
 import dev.architectury.platform.Platform;
@@ -79,7 +80,7 @@ public class SimpleNetworkManager {
         
         if (Platform.getEnvironment() == Env.CLIENT) {
             NetworkManager.NetworkReceiver<RegistryFriendlyByteBuf> receiver = decoder.createReceiver();
-            NetworkManager.registerReceiver(NetworkManager.s2c(), messageType.getId(), transformers, receiver);
+            NetworkAggregator.registerReceiver(NetworkManager.s2c(), messageType.getId(), transformers, receiver);
         }
         
         return messageType;
@@ -109,7 +110,7 @@ public class SimpleNetworkManager {
     public MessageType registerC2S(String id, MessageDecoder<BaseC2SMessage> decoder, List<PacketTransformer> transformers) {
         MessageType messageType = new MessageType(this, ResourceLocation.fromNamespaceAndPath(namespace, id), NetworkManager.c2s());
         NetworkManager.NetworkReceiver<RegistryFriendlyByteBuf> receiver = decoder.createReceiver();
-        NetworkManager.registerReceiver(NetworkManager.c2s(), messageType.getId(), transformers, receiver);
+        NetworkAggregator.registerReceiver(NetworkManager.c2s(), messageType.getId(), transformers, receiver);
         return messageType;
     }
 }

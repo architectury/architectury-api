@@ -25,6 +25,7 @@ import dev.architectury.event.EventResult;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.input.MouseButtonInfo;
 
 @Environment(EnvType.CLIENT)
 public interface ClientRawInputEvent {
@@ -77,13 +78,12 @@ public interface ClientRawInputEvent {
          * Invoked whenever a mouse button is pressed.
          * There are two variants, either a raw mouse input or the input after it is processed by the game.
          *
-         * @param client The Minecraft instance performing it.
-         * @param button The pressed mouse button.
-         * @param action The action that should be performed.
-         * @param mods   Additional modifiers.
+         * @param client          The Minecraft instance performing it.
+         * @param mouseButtonInfo Info about the pressed mouse button.
+         * @param mods            Additional modifiers.
          * @return A {@link EventResult} determining the outcome of the event,
          * the execution of the vanilla clicking mechanism may be cancelled by the result.
          */
-        EventResult mouseClicked(Minecraft client, int button, int action, int mods);
+        EventResult mouseClicked(Minecraft client, MouseButtonInfo mouseButtonInfo, int mods);
     }
 }

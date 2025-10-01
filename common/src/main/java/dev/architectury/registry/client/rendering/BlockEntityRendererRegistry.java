@@ -23,6 +23,7 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
@@ -32,7 +33,7 @@ public final class BlockEntityRendererRegistry {
     }
     
     @ExpectPlatform
-    public static <T extends BlockEntity> void register(BlockEntityType<T> type, BlockEntityRendererProvider<? super T> provider) {
+    public static <T extends BlockEntity, S extends BlockEntityRenderState> void register(BlockEntityType<T> type, BlockEntityRendererProvider<? super T, ? super S> provider) {
         throw new AssertionError();
     }
 }
