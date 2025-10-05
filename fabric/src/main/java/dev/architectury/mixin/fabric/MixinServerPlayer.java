@@ -25,6 +25,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -62,5 +64,12 @@ public class MixinServerPlayer {
     @Inject(method = "triggerDimensionChangeTriggers", at = @At("HEAD"))
     private void changeDimension(ServerLevel serverLevel, CallbackInfo ci) {
         PlayerEvent.CHANGE_DIMENSION.invoker().change((ServerPlayer) (Object) this, serverLevel.dimension(), ((ServerPlayer) (Object) this).level().dimension());
+    }
+    
+    @Inject(method = "drop(Lnet/minecraft/world/item/ItemStack;ZZ)Lnet/minecraft/world/entity/item/ItemEntity;", at = @At("RETURN"), cancellable = true)
+    private void dropItem(ItemStack itemStack, boolean bl, boolean bl2, CallbackInfoReturnable<ItemEntity> cir) {
+        if (cir.getReturnValue() != null && PlayerEvent.DROP_ITEM.invoker().drop((ServerPlayer) (Object) this, cir.getReturnValue()).isFalse()) {
+            cir.setReturnValue(null);
+        }
     }
 }
