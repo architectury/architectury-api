@@ -32,7 +32,7 @@ public interface ClientRawInputEvent {
      */
     Event<MouseScrolled> MOUSE_SCROLLED = EventFactory.createEventResult();
     /**
-     * @see MouseClicked#mouseClicked(Minecraft, int, int, int)
+     * @see MouseClicked#mouseClicked(Minecraft, MouseButtonInfo, int)
      */
     Event<MouseClicked> MOUSE_CLICKED_PRE = EventFactory.createEventResult();
     Event<MouseClicked> MOUSE_CLICKED_POST = EventFactory.createEventResult();

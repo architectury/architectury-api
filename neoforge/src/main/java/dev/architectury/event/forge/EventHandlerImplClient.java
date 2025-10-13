@@ -298,7 +298,7 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventInputEvent(InputEvent.Key event) {
-        ClientRawInputEvent.KEY_PRESSED.invoker().keyPressed(Minecraft.getInstance(), event.getKey(), event.getKeyEvent());
+        ClientRawInputEvent.KEY_PRESSED.invoker().keyPressed(Minecraft.getInstance(), event.getAction(), event.getKeyEvent());
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
