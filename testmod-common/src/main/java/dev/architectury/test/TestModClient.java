@@ -21,6 +21,7 @@ package dev.architectury.test;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import dev.architectury.event.events.client.ClientCommandRegistrationEvent;
+import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.event.events.client.ClientLifecycleEvent;
 import dev.architectury.registry.client.gui.ClientTooltipComponentRegistry;
 import dev.architectury.registry.client.level.entity.EntityRendererRegistry;
@@ -29,9 +30,13 @@ import dev.architectury.test.registry.TestRegistries;
 import dev.architectury.test.registry.client.TestKeybinds;
 import dev.architectury.test.registry.objects.ItemWithTooltip;
 import dev.architectury.test.registry.objects.MyClientTooltipComponent;
+import net.minecraft.client.gui.components.FocusableTextWidget;
 import net.minecraft.client.renderer.entity.CowRenderer;
 
 import static dev.architectury.test.TestMod.SINK;
+
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public class TestModClient {
     public static void initializeClient() {
@@ -51,5 +56,8 @@ public class TestModClient {
                                 return 0;
                             })));
         });
+        ClientGuiEvent.RENDER_CONTAINER_BACKGROUND.register(((screen, graphics, mouseX, mouseY, delta) -> {
+            graphics.renderItem(new ItemStack(Items.DIAMOND), mouseX, mouseY);
+        }));
     }
 }

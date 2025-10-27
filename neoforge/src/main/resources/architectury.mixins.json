@@ -7,6 +7,7 @@
   "client": [
     "client.MixinClientPacketListener",
     "client.MixinCommandSourceStack",
+    "client.MixinAbstractContainerScreen",
     "MixinClientLevel",
     "MixinMinecraft"
   ],
