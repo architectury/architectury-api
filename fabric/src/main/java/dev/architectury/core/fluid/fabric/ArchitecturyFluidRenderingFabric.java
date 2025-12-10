@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.material.FluidState;
 import org.jetbrains.annotations.Nullable;
@@ -52,7 +52,7 @@ class ArchitecturyFluidRenderingFabric implements FluidVariantRenderHandler, Flu
     @Nullable
     public TextureAtlasSprite[] getSprites(FluidVariant variant) {
         FluidStack stack = FluidStackHooksFabric.fromFabric(variant, FluidStack.bucketAmount());
-        ResourceLocation overlayTexture = attributes.getOverlayTexture(stack);
+        Identifier overlayTexture = attributes.getOverlayTexture(stack);
         TextureAtlasSprite overlaySprite = overlayTexture == null ? null : atlas.getSprite(overlayTexture);
         TextureAtlasSprite[] sprites = overlaySprite == null ? this.sprites : spritesOverlaid;
         sprites[0] = atlas.getSprite(attributes.getSourceTexture(stack));
@@ -68,7 +68,7 @@ class ArchitecturyFluidRenderingFabric implements FluidVariantRenderHandler, Flu
     
     @Override
     public TextureAtlasSprite[] getFluidSprites(@Nullable BlockAndTintGetter view, @Nullable BlockPos pos, FluidState state) {
-        ResourceLocation overlayTexture = attributes.getOverlayTexture(state, view, pos);
+        Identifier overlayTexture = attributes.getOverlayTexture(state, view, pos);
         TextureAtlasSprite overlaySprite = overlayTexture == null ? null : atlas.getSprite(overlayTexture);
         TextureAtlasSprite[] sprites = overlaySprite == null ? this.spritesOther : spritesOtherOverlaid;
         sprites[0] = atlas.getSprite(attributes.getSourceTexture(state, view, pos));

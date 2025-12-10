@@ -29,7 +29,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
@@ -40,8 +40,8 @@ import net.minecraft.world.level.Level;
 import java.util.function.Supplier;
 
 public class TestEntity extends Cow {
-    public static final Supplier<EntityType<TestEntity>> TYPE = Suppliers.memoize(() -> EntityType.Builder.of(TestEntity::new, MobCategory.MISC).sized(0.98F, 0.7F).clientTrackingRange(8).build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(TestMod.MOD_ID, "test_entity"))));
-    public static final Supplier<EntityType<TestEntity>> TYPE_2 = Suppliers.memoize(() -> EntityType.Builder.of(TestEntity::new, MobCategory.MISC).sized(0.98F, 0.7F).clientTrackingRange(8).build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(TestMod.MOD_ID, "test_entity_2"))));
+    public static final Supplier<EntityType<TestEntity>> TYPE = Suppliers.memoize(() -> EntityType.Builder.of(TestEntity::new, MobCategory.MISC).sized(0.98F, 0.7F).clientTrackingRange(8).build(ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(TestMod.MOD_ID, "test_entity"))));
+    public static final Supplier<EntityType<TestEntity>> TYPE_2 = Suppliers.memoize(() -> EntityType.Builder.of(TestEntity::new, MobCategory.MISC).sized(0.98F, 0.7F).clientTrackingRange(8).build(ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(TestMod.MOD_ID, "test_entity_2"))));
     
     public TestEntity(EntityType<? extends Cow> entityType, Level level) {
         super(entityType, level);
@@ -61,7 +61,7 @@ public class TestEntity extends Cow {
                 compoundTag.putString("DeathCauser", player.getStringUUID());
                 RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(Unpooled.buffer(), this.registryAccess());
                 buf.writeNbt(compoundTag);
-                NetworkManager.sendToPlayer(player, ResourceLocation.fromNamespaceAndPath("architectury_test", "sync_data"), buf);
+                NetworkManager.sendToPlayer(player, Identifier.fromNamespaceAndPath("architectury_test", "sync_data"), buf);
             }
         }
     }

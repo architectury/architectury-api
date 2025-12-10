@@ -19,9 +19,10 @@
 
 package dev.architectury.registry.level.entity.trade;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.entity.npc.villager.VillagerTrades;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
@@ -58,7 +59,7 @@ public record SimpleTrade(ItemCost primaryPrice, Optional<ItemCost> secondaryPri
     
     @Nullable
     @Override
-    public MerchantOffer getOffer(Entity entity, RandomSource random) {
+    public MerchantOffer getOffer(ServerLevel level, Entity entity, RandomSource random) {
         return new MerchantOffer(this.primaryPrice, this.secondaryPrice, this.sale, this.maxTrades, this.experiencePoints, this.priceMultiplier);
     }
 }

@@ -24,7 +24,7 @@ import dev.architectury.impl.RegistrySupplierImpl;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -55,10 +55,10 @@ public class DeferredRegister<T> implements Iterable<RegistrySupplier<T>> {
             throw new NullPointerException("You must create the deferred register with a mod id to register entries without the namespace!");
         }
         
-        return register(ResourceLocation.fromNamespaceAndPath(modId, id), supplier);
+        return register(Identifier.fromNamespaceAndPath(modId, id), supplier);
     }
     
-    public <R extends T> RegistrySupplier<R> register(ResourceLocation id, Supplier<? extends R> supplier) {
+    public <R extends T> RegistrySupplier<R> register(Identifier id, Supplier<? extends R> supplier) {
         var entry = new Entry<T>(id, (Supplier<T>) supplier);
         this.entries.add(entry);
         if (registered) {
@@ -93,13 +93,13 @@ public class DeferredRegister<T> implements Iterable<RegistrySupplier<T>> {
     }
     
     private class Entry<R> implements RegistrySupplierImpl<R> {
-        private final ResourceLocation id;
+        private final Identifier id;
         private final Supplier<R> supplier;
         private RegistrySupplier<R> value;
         @Nullable
         private Holder<R> holder = null;
         
-        public Entry(ResourceLocation id, Supplier<R> supplier) {
+        public Entry(Identifier id, Supplier<R> supplier) {
             this.id = id;
             this.supplier = supplier;
         }
@@ -127,12 +127,12 @@ public class DeferredRegister<T> implements Iterable<RegistrySupplier<T>> {
         }
         
         @Override
-        public ResourceLocation getRegistryId() {
-            return key.location();
+        public Identifier getRegistryId() {
+            return key.identifier();
         }
         
         @Override
-        public ResourceLocation getId() {
+        public Identifier getId() {
             return id;
         }
         

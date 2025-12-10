@@ -25,7 +25,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -48,12 +48,12 @@ public abstract class MixinGuiGraphics {
     }
     
     @Inject(method = "renderTooltip", at = @At("RETURN"))
-    private void postRenderTooltipItem(Font font, List<ClientTooltipComponent> list, int i, int j, ClientTooltipPositioner clientTooltipPositioner, ResourceLocation resourceLocation, CallbackInfo ci) {
+    private void postRenderTooltipItem(Font font, List<ClientTooltipComponent> list, int i, int j, ClientTooltipPositioner clientTooltipPositioner, Identifier resourceLocation, CallbackInfo ci) {
         ClientTooltipEvent.additionalContexts().setItem(null);
     }
     
     @Inject(method = "renderTooltip", at = @At("HEAD"), cancellable = true)
-    private void renderTooltip(Font font, List<ClientTooltipComponent> list, int x, int y, ClientTooltipPositioner positioner, @Nullable ResourceLocation background, CallbackInfo ci) {
+    private void renderTooltip(Font font, List<ClientTooltipComponent> list, int x, int y, ClientTooltipPositioner positioner, @Nullable Identifier background, CallbackInfo ci) {
         if (!list.isEmpty()) {
             var positionContext = tooltipPositionContext.get();
             positionContext.reset(x, y);

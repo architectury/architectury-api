@@ -24,7 +24,7 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.registry.registries.DeferredSupplier;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -93,7 +93,7 @@ public final class CreativeTabRegistry {
      */
     @ExpectPlatform
     @ApiStatus.Experimental
-    public static DeferredSupplier<CreativeModeTab> defer(ResourceLocation name) {
+    public static DeferredSupplier<CreativeModeTab> defer(Identifier name) {
         throw new AssertionError();
     }
     
@@ -105,7 +105,7 @@ public final class CreativeTabRegistry {
      */
     @ApiStatus.Experimental
     public static DeferredSupplier<CreativeModeTab> defer(ResourceKey<CreativeModeTab> name) {
-        return defer(name.location());
+        return defer(name.identifier());
     }
     
     @ApiStatus.Experimental

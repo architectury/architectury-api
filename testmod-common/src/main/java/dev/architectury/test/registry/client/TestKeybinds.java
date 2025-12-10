@@ -25,12 +25,12 @@ import dev.architectury.registry.client.keymappings.KeyMappingRegistry;
 import dev.architectury.test.TestMod;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 public class TestKeybinds {
     public static void initialize() {
-        var category = KeyMapping.Category.register(ResourceLocation.fromNamespaceAndPath("architectury", "architectury-test"));
+        var category = KeyMapping.Category.register(Identifier.fromNamespaceAndPath("architectury", "architectury-test"));
         var mapping = new KeyMapping("key.architectury-test.test", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_O, category);
         KeyMappingRegistry.register(mapping);
         ClientTickEvent.CLIENT_POST.register(instance -> {

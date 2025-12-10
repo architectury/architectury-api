@@ -19,7 +19,7 @@
 
 package dev.architectury.registry.registries.options;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
-public record DefaultIdRegistrarOption(ResourceLocation defaultId) implements RegistrarOption {
+public record DefaultIdRegistrarOption(Identifier defaultId) implements RegistrarOption {
 }

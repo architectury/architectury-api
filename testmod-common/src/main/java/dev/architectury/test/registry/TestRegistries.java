@@ -38,7 +38,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -78,7 +78,7 @@ public class TestRegistries {
         }
     }
     
-    public static final Registrar<TestInt> INTS = RegistrarManager.get(TestMod.MOD_ID).<TestInt>builder(ResourceLocation.fromNamespaceAndPath(TestMod.MOD_ID, "ints"))
+    public static final Registrar<TestInt> INTS = RegistrarManager.get(TestMod.MOD_ID).<TestInt>builder(Identifier.fromNamespaceAndPath(TestMod.MOD_ID, "ints"))
             .syncToClients()
             .build();
     public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(TestMod.MOD_ID, Registries.CREATIVE_MODE_TAB);
@@ -96,14 +96,14 @@ public class TestRegistries {
     
     public static final ArchitecturyFluidAttributes TEST_FLUID_ATTRIBUTES = SimpleArchitecturyFluidAttributes.ofSupplier(() -> TestRegistries.TEST_FLUID_FLOWING, () -> TestRegistries.TEST_FLUID)
             .convertToSource(true)
-            .flowingTexture(ResourceLocation.withDefaultNamespace("block/water_flow"))
-            .sourceTexture(ResourceLocation.withDefaultNamespace("block/water_still"))
+            .flowingTexture(Identifier.withDefaultNamespace("block/water_flow"))
+            .sourceTexture(Identifier.withDefaultNamespace("block/water_still"))
             .blockSupplier(() -> TestRegistries.TEST_FLUID_BLOCK)
             .bucketItemSupplier(() -> TestRegistries.TEST_FLUID_BUCKET)
             .color(0xFF0000);
     
-    public static final RegistrySupplier<TestInt> TEST_INT = INTS.register(ResourceLocation.fromNamespaceAndPath(TestMod.MOD_ID, "test_int"), () -> new TestInt(1));
-    public static final RegistrySupplier<TestInt> TEST_INT_2 = INTS.register(ResourceLocation.fromNamespaceAndPath(TestMod.MOD_ID, "test_int_2"), () -> new TestInt(2));
+    public static final RegistrySupplier<TestInt> TEST_INT = INTS.register(Identifier.fromNamespaceAndPath(TestMod.MOD_ID, "test_int"), () -> new TestInt(1));
+    public static final RegistrySupplier<TestInt> TEST_INT_2 = INTS.register(Identifier.fromNamespaceAndPath(TestMod.MOD_ID, "test_int_2"), () -> new TestInt(2));
     
     public static final RegistrySupplier<MobEffect> TEST_EFFECT = MOB_EFFECTS.register("test_effect", () ->
             new MobEffect(MobEffectCategory.NEUTRAL, 0x123456) {
@@ -228,6 +228,6 @@ public class TestRegistries {
     }
     
     private static <T> ResourceKey<T> id(ResourceKey<Registry<T>> key, String string) {
-        return ResourceKey.create(key, ResourceLocation.fromNamespaceAndPath(TestMod.MOD_ID, string));
+        return ResourceKey.create(key, Identifier.fromNamespaceAndPath(TestMod.MOD_ID, string));
     }
 }

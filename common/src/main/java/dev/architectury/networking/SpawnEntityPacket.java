@@ -31,7 +31,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -42,7 +42,7 @@ import java.util.UUID;
  * @see net.minecraft.network.protocol.game.ClientboundAddEntityPacket
  */
 public class SpawnEntityPacket {
-    static final ResourceLocation PACKET_ID = ResourceLocation.fromNamespaceAndPath("architectury", "spawn_entity_packet");
+    static final Identifier PACKET_ID = Identifier.fromNamespaceAndPath("architectury", "spawn_entity_packet");
     static final CustomPacketPayload.Type<PacketPayload> PACKET_TYPE = new CustomPacketPayload.Type<>(PACKET_ID);
     static final StreamCodec<RegistryFriendlyByteBuf, PacketPayload> PACKET_CODEC = CustomPacketPayload.codec(PacketPayload::write, PacketPayload::new);
     

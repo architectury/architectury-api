@@ -21,13 +21,14 @@ package dev.architectury.hooks.level.biome;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.Holder;
-import net.minecraft.sounds.Music;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.level.biome.*;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeGenerationSettings;
+import net.minecraft.world.level.biome.BiomeSpecialEffects;
 import net.minecraft.world.level.biome.BiomeSpecialEffects.GrassColorModifier;
+import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
@@ -206,32 +207,20 @@ public final class BiomeHooks {
         }
         
         @Override
-        public EffectsProperties.Mutable setFogColor(int color) {
-            effects.fogColor = color;
-            return this;
-        }
-        
-        @Override
         public EffectsProperties.Mutable setWaterColor(int color) {
             effects.waterColor = color;
             return this;
         }
         
         @Override
-        public EffectsProperties.Mutable setWaterFogColor(int color) {
-            effects.waterFogColor = color;
-            return this;
-        }
-        
-        @Override
-        public EffectsProperties.Mutable setSkyColor(int color) {
-            effects.skyColor = color;
-            return this;
-        }
-        
-        @Override
         public EffectsProperties.Mutable setFoliageColorOverride(@Nullable Integer colorOverride) {
             effects.foliageColorOverride = Optional.ofNullable(colorOverride);
+            return this;
+        }
+        
+        @Override
+        public EffectsProperties.Mutable setDryFoliageColorOverride(@Nullable Integer colorOverride) {
+            effects.dryFoliageColorOverride = Optional.ofNullable(colorOverride);
             return this;
         }
         
@@ -248,58 +237,18 @@ public final class BiomeHooks {
         }
         
         @Override
-        public EffectsProperties.Mutable setAmbientParticle(@Nullable AmbientParticleSettings settings) {
-            effects.ambientParticleSettings = Optional.ofNullable(settings);
-            return this;
-        }
-        
-        @Override
-        public EffectsProperties.Mutable setAmbientLoopSound(@Nullable Holder<SoundEvent> sound) {
-            effects.ambientLoopSoundEvent = Optional.ofNullable(sound);
-            return this;
-        }
-        
-        @Override
-        public EffectsProperties.Mutable setAmbientMoodSound(@Nullable AmbientMoodSettings settings) {
-            effects.ambientMoodSettings = Optional.ofNullable(settings);
-            return this;
-        }
-        
-        @Override
-        public EffectsProperties.Mutable setAmbientAdditionsSound(@Nullable AmbientAdditionsSettings settings) {
-            effects.ambientAdditionsSettings = Optional.ofNullable(settings);
-            return this;
-        }
-        
-        @Override
-        public EffectsProperties.Mutable setBackgroundMusic(@Nullable WeightedList<Music> music) {
-            effects.backgroundMusic = Optional.ofNullable(music);
-            return this;
-        }
-        
-        @Override
-        public int getFogColor() {
-            return effects.fogColor;
-        }
-        
-        @Override
         public int getWaterColor() {
             return effects.waterColor;
         }
         
         @Override
-        public int getWaterFogColor() {
-            return effects.waterFogColor;
-        }
-        
-        @Override
-        public int getSkyColor() {
-            return effects.skyColor;
-        }
-        
-        @Override
         public OptionalInt getFoliageColorOverride() {
             return effects.foliageColorOverride.map(OptionalInt::of).orElseGet(OptionalInt::empty);
+        }
+        
+        @Override
+        public OptionalInt getDryFoliageColorOverride() {
+            return effects.dryFoliageColorOverride.map(OptionalInt::of).orElseGet(OptionalInt::empty);
         }
         
         @Override
@@ -310,31 +259,6 @@ public final class BiomeHooks {
         @Override
         public GrassColorModifier getGrassColorModifier() {
             return effects.grassColorModifier;
-        }
-        
-        @Override
-        public Optional<AmbientParticleSettings> getAmbientParticle() {
-            return effects.ambientParticleSettings;
-        }
-        
-        @Override
-        public Optional<Holder<SoundEvent>> getAmbientLoopSound() {
-            return effects.ambientLoopSoundEvent;
-        }
-        
-        @Override
-        public Optional<AmbientMoodSettings> getAmbientMoodSound() {
-            return effects.ambientMoodSettings;
-        }
-        
-        @Override
-        public Optional<AmbientAdditionsSettings> getAmbientAdditionsSound() {
-            return effects.ambientAdditionsSettings;
-        }
-        
-        @Override
-        public Optional<WeightedList<Music>> getBackgroundMusic() {
-            return effects.backgroundMusic;
         }
     }
     

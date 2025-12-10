@@ -23,7 +23,7 @@ import dev.architectury.event.events.common.EntityEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.Ocelot;
+import net.minecraft.world.entity.animal.feline.Ocelot;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -35,7 +35,7 @@ public class MixinOcelot {
     @Inject(method = "mobInteract",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/entity/animal/Ocelot;setTrusting(Z)V"
+                    target = "Lnet/minecraft/world/entity/animal/feline/Ocelot;setTrusting(Z)V"
             ), cancellable = true)
     private void mobInteract(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
         if (EntityEvent.ANIMAL_TAME.invoker().tame((Animal) (Object) this, player).isFalse()) {

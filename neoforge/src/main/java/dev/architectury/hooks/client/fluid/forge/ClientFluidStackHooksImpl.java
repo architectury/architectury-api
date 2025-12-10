@@ -26,7 +26,7 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
@@ -38,42 +38,42 @@ public class ClientFluidStackHooksImpl {
     @Nullable
     public static TextureAtlasSprite getStillTexture(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, FluidState state) {
         if (state.getType() == Fluids.EMPTY) return null;
-        ResourceLocation texture = IClientFluidTypeExtensions.of(state).getStillTexture(state, level, pos);
+        Identifier texture = IClientFluidTypeExtensions.of(state).getStillTexture(state, level, pos);
         return Minecraft.getInstance().getAtlasManager().get(new Material(TextureAtlas.LOCATION_BLOCKS, texture));
     }
     
     @Nullable
     public static TextureAtlasSprite getStillTexture(FluidStack stack) {
         if (stack.getFluid() == Fluids.EMPTY) return null;
-        ResourceLocation texture = IClientFluidTypeExtensions.of(stack.getFluid()).getStillTexture(FluidStackHooksForge.toForge(stack));
+        Identifier texture = IClientFluidTypeExtensions.of(stack.getFluid()).getStillTexture(FluidStackHooksForge.toForge(stack));
         return Minecraft.getInstance().getAtlasManager().get(new Material(TextureAtlas.LOCATION_BLOCKS, texture));
     }
     
     @Nullable
     public static TextureAtlasSprite getStillTexture(Fluid fluid) {
         if (fluid == Fluids.EMPTY) return null;
-        ResourceLocation texture = IClientFluidTypeExtensions.of(fluid).getStillTexture();
+        Identifier texture = IClientFluidTypeExtensions.of(fluid).getStillTexture();
         return Minecraft.getInstance().getAtlasManager().get(new Material(TextureAtlas.LOCATION_BLOCKS, texture));
     }
     
     @Nullable
     public static TextureAtlasSprite getFlowingTexture(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, FluidState state) {
         if (state.getType() == Fluids.EMPTY) return null;
-        ResourceLocation texture = IClientFluidTypeExtensions.of(state).getFlowingTexture(state, level, pos);
+        Identifier texture = IClientFluidTypeExtensions.of(state).getFlowingTexture(state, level, pos);
         return Minecraft.getInstance().getAtlasManager().get(new Material(TextureAtlas.LOCATION_BLOCKS, texture));
     }
     
     @Nullable
     public static TextureAtlasSprite getFlowingTexture(FluidStack stack) {
         if (stack.getFluid() == Fluids.EMPTY) return null;
-        ResourceLocation texture = IClientFluidTypeExtensions.of(stack.getFluid()).getFlowingTexture(FluidStackHooksForge.toForge(stack));
+        Identifier texture = IClientFluidTypeExtensions.of(stack.getFluid()).getFlowingTexture(FluidStackHooksForge.toForge(stack));
         return Minecraft.getInstance().getAtlasManager().get(new Material(TextureAtlas.LOCATION_BLOCKS, texture));
     }
     
     @Nullable
     public static TextureAtlasSprite getFlowingTexture(Fluid fluid) {
         if (fluid == Fluids.EMPTY) return null;
-        ResourceLocation texture = IClientFluidTypeExtensions.of(fluid).getFlowingTexture();
+        Identifier texture = IClientFluidTypeExtensions.of(fluid).getFlowingTexture();
         return Minecraft.getInstance().getAtlasManager().get(new Material(TextureAtlas.LOCATION_BLOCKS, texture));
     }
     

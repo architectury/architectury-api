@@ -19,67 +19,31 @@
 
 package dev.architectury.hooks.level.biome;
 
-import net.minecraft.core.Holder;
-import net.minecraft.sounds.Music;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.util.random.WeightedList;
-import net.minecraft.world.level.biome.AmbientAdditionsSettings;
-import net.minecraft.world.level.biome.AmbientMoodSettings;
-import net.minecraft.world.level.biome.AmbientParticleSettings;
 import net.minecraft.world.level.biome.BiomeSpecialEffects.GrassColorModifier;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
 import java.util.OptionalInt;
 
 public interface EffectsProperties {
-    int getFogColor();
-    
     int getWaterColor();
     
-    int getWaterFogColor();
-    
-    int getSkyColor();
-    
     OptionalInt getFoliageColorOverride();
+    
+    OptionalInt getDryFoliageColorOverride();
     
     OptionalInt getGrassColorOverride();
     
     GrassColorModifier getGrassColorModifier();
     
-    Optional<AmbientParticleSettings> getAmbientParticle();
-    
-    Optional<Holder<SoundEvent>> getAmbientLoopSound();
-    
-    Optional<AmbientMoodSettings> getAmbientMoodSound();
-    
-    Optional<AmbientAdditionsSettings> getAmbientAdditionsSound();
-    
-    Optional<WeightedList<Music>> getBackgroundMusic();
-    
     interface Mutable extends EffectsProperties {
-        EffectsProperties.Mutable setFogColor(int color);
-        
         EffectsProperties.Mutable setWaterColor(int color);
         
-        EffectsProperties.Mutable setWaterFogColor(int color);
-        
-        EffectsProperties.Mutable setSkyColor(int color);
-        
         EffectsProperties.Mutable setFoliageColorOverride(@Nullable Integer colorOverride);
+        
+        EffectsProperties.Mutable setDryFoliageColorOverride(@Nullable Integer colorOverride);
         
         EffectsProperties.Mutable setGrassColorOverride(@Nullable Integer colorOverride);
         
         EffectsProperties.Mutable setGrassColorModifier(GrassColorModifier modifier);
-        
-        EffectsProperties.Mutable setAmbientParticle(@Nullable AmbientParticleSettings settings);
-        
-        EffectsProperties.Mutable setAmbientLoopSound(@Nullable Holder<SoundEvent> sound);
-        
-        EffectsProperties.Mutable setAmbientMoodSound(@Nullable AmbientMoodSettings settings);
-        
-        EffectsProperties.Mutable setAmbientAdditionsSound(@Nullable AmbientAdditionsSettings settings);
-        
-        EffectsProperties.Mutable setBackgroundMusic(@Nullable WeightedList<Music> music);
     }
 }

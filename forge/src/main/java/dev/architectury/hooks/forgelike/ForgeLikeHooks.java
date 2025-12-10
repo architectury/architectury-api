@@ -21,7 +21,7 @@ package dev.architectury.hooks.forgelike;
 
 import com.mojang.serialization.Codec;
 import dev.architectury.injectables.annotations.ExpectPlatform;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.common.world.BiomeModifier;
 import org.jetbrains.annotations.ApiStatus;
@@ -31,7 +31,7 @@ import java.util.function.Supplier;
 @ApiStatus.Internal
 public class ForgeLikeHooks {
     @ExpectPlatform
-    public static void registerBiomeModifier(ResourceLocation id, Supplier<Codec<? extends BiomeModifier>> codecSupplier) {
+    public static void registerBiomeModifier(Identifier id, Supplier<Codec<? extends BiomeModifier>> codecSupplier) {
         throw new AssertionError();
     }
     

@@ -26,7 +26,7 @@ import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 public class ClientNetworkManagerImpl {
@@ -48,7 +48,7 @@ public class ClientNetworkManagerImpl {
         return RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
     }
     
-    public static boolean canServerReceive(ResourceLocation id) {
+    public static boolean canServerReceive(Identifier id) {
         if (Minecraft.getInstance().getConnection() != null) {
             return Minecraft.getInstance().getConnection().hasChannel(id);
         } else {

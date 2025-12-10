@@ -24,7 +24,7 @@ import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderOwner;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -49,7 +49,7 @@ public interface RegistrySupplierImpl<T> extends RegistrySupplier<T> {
     }
     
     @Override
-    default boolean is(ResourceLocation resourceLocation) {
+    default boolean is(Identifier resourceLocation) {
         return getId().equals(resourceLocation);
     }
     

@@ -28,17 +28,17 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;
 import java.util.List;
 
 public interface TestModNet {
-    ResourceLocation BIG_DATA = ResourceLocation.fromNamespaceAndPath(TestMod.MOD_ID, "big_data");
-    ResourceLocation SERVER_TO_CLIENT_TEST = ResourceLocation.fromNamespaceAndPath(TestMod.MOD_ID, "s2c_test");
-    CustomPacketPayload.Type<ServerToClientTestPayload> SERVER_TO_CLIENT_TEST_PAYLOAD = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(TestMod.MOD_ID, "s2c_test_payload"));
-    CustomPacketPayload.Type<BigDataPayload> BIG_DATA_PAYLOAD = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(TestMod.MOD_ID, "big_data_payload"));
+    Identifier BIG_DATA = Identifier.fromNamespaceAndPath(TestMod.MOD_ID, "big_data");
+    Identifier SERVER_TO_CLIENT_TEST = Identifier.fromNamespaceAndPath(TestMod.MOD_ID, "s2c_test");
+    CustomPacketPayload.Type<ServerToClientTestPayload> SERVER_TO_CLIENT_TEST_PAYLOAD = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(TestMod.MOD_ID, "s2c_test_payload"));
+    CustomPacketPayload.Type<BigDataPayload> BIG_DATA_PAYLOAD = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(TestMod.MOD_ID, "big_data_payload"));
     String BIG_STRING = StringUtils.repeat('a', 100000);
     
     static void initialize() {

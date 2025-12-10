@@ -23,7 +23,7 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -71,7 +71,7 @@ public final class RegistrarManager {
     }
     
     @SafeVarargs
-    public final <T> RegistrarBuilder<T> builder(ResourceLocation registryId, T... typeGetter) {
+    public final <T> RegistrarBuilder<T> builder(Identifier registryId, T... typeGetter) {
         if (typeGetter.length != 0) throw new IllegalStateException("array must be empty!");
         return this.provider.builder((Class<T>) typeGetter.getClass().getComponentType(), registryId);
     }
@@ -81,10 +81,10 @@ public final class RegistrarManager {
      * Fabric: Use registry
      */
     @Nullable
-    public static <T> ResourceLocation getId(T object, @Nullable ResourceKey<Registry<T>> fallback) {
+    public static <T> Identifier getId(T object, @Nullable ResourceKey<Registry<T>> fallback) {
         if (fallback == null)
             return null;
-        return getId(object, (Registry<T>) BuiltInRegistries.REGISTRY.getValue(fallback.location()));
+        return getId(object, (Registry<T>) BuiltInRegistries.REGISTRY.getValue(fallback.identifier()));
     }
     
     /**
@@ -93,7 +93,7 @@ public final class RegistrarManager {
      */
     @Nullable
     @Deprecated
-    public static <T> ResourceLocation getId(T object, @Nullable Registry<T> fallback) {
+    public static <T> Identifier getId(T object, @Nullable Registry<T> fallback) {
         if (fallback == null)
             return null;
         return fallback.getKey(object);
@@ -117,6 +117,6 @@ public final class RegistrarManager {
         
         <T> void forRegistry(ResourceKey<Registry<T>> key, Consumer<Registrar<T>> consumer);
         
-        <T> RegistrarBuilder<T> builder(Class<T> type, ResourceLocation registryId);
+        <T> RegistrarBuilder<T> builder(Class<T> type, Identifier registryId);
     }
 }

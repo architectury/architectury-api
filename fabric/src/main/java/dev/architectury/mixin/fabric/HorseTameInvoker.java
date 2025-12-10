@@ -21,7 +21,7 @@ package dev.architectury.mixin.fabric;
 
 import dev.architectury.event.events.common.EntityEvent;
 import net.minecraft.world.entity.ai.goal.RunAroundLikeCrazyGoal;
-import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.entity.animal.equine.AbstractHorse;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -39,7 +39,7 @@ public class HorseTameInvoker {
     @Inject(method = "tick",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/entity/animal/horse/AbstractHorse;tameWithName(Lnet/minecraft/world/entity/player/Player;)Z"
+                    target = "Lnet/minecraft/world/entity/animal/equine/AbstractHorse;tameWithName(Lnet/minecraft/world/entity/player/Player;)Z"
             ), cancellable = true
     )
     private void tick(CallbackInfo ci) {

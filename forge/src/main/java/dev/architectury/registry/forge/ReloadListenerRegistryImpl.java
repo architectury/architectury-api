@@ -23,7 +23,7 @@ import com.google.common.collect.Lists;
 import dev.architectury.platform.hooks.EventBusesHooks;
 import dev.architectury.utils.ArchitecturyConstants;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
@@ -43,7 +43,7 @@ public class ReloadListenerRegistryImpl {
         MinecraftForge.EVENT_BUS.addListener(ReloadListenerRegistryImpl::addReloadListeners);
     }
     
-    public static void register(PackType type, PreparableReloadListener listener, ResourceLocation listenerId, Collection<ResourceLocation> dependencies) {
+    public static void register(PackType type, PreparableReloadListener listener, Identifier listenerId, Collection<Identifier> dependencies) {
         if (type == PackType.SERVER_DATA) {
             serverDataReloadListeners.add(listener);
         } else if (type == PackType.CLIENT_RESOURCES) {

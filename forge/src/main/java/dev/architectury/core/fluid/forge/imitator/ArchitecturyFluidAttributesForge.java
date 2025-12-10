@@ -26,7 +26,7 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -83,34 +83,34 @@ class ArchitecturyFluidAttributesForge extends FluidType {
             }
             
             @Override
-            public ResourceLocation getStillTexture() {
+            public Identifier getStillTexture() {
                 return attributes.getSourceTexture();
             }
             
             @Override
-            public ResourceLocation getFlowingTexture() {
+            public Identifier getFlowingTexture() {
                 return attributes.getFlowingTexture();
             }
             
             @Override
             @Nullable
-            public ResourceLocation getOverlayTexture() {
+            public Identifier getOverlayTexture() {
                 return attributes.getOverlayTexture();
             }
             
             @Override
-            public ResourceLocation getStillTexture(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
+            public Identifier getStillTexture(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
                 return attributes.getSourceTexture(state, getter, pos);
             }
             
             @Override
-            public ResourceLocation getFlowingTexture(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
+            public Identifier getFlowingTexture(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
                 return attributes.getFlowingTexture(state, getter, pos);
             }
             
             @Override
             @Nullable
-            public ResourceLocation getOverlayTexture(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
+            public Identifier getOverlayTexture(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
                 return attributes.getOverlayTexture(state, getter, pos);
             }
             
@@ -125,18 +125,18 @@ class ArchitecturyFluidAttributesForge extends FluidType {
             }
             
             @Override
-            public ResourceLocation getStillTexture(FluidStack stack) {
+            public Identifier getStillTexture(FluidStack stack) {
                 return attributes.getSourceTexture(convertSafe(stack));
             }
             
             @Override
-            public ResourceLocation getFlowingTexture(FluidStack stack) {
+            public Identifier getFlowingTexture(FluidStack stack) {
                 return attributes.getFlowingTexture(convertSafe(stack));
             }
             
             @Override
             @Nullable
-            public ResourceLocation getOverlayTexture(FluidStack stack) {
+            public Identifier getOverlayTexture(FluidStack stack) {
                 return attributes.getOverlayTexture(convertSafe(stack));
             }
         });

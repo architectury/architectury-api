@@ -31,7 +31,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -54,7 +54,7 @@ import java.util.function.Consumer;
 
 @Mod.EventBusSubscriber(modid = "architectury")
 public class NetworkManagerImpl {
-    public static void registerReceiver(NetworkManager.Side side, ResourceLocation id, List<PacketTransformer> packetTransformers, NetworkReceiver receiver) {
+    public static void registerReceiver(NetworkManager.Side side, Identifier id, List<PacketTransformer> packetTransformers, NetworkReceiver receiver) {
         Objects.requireNonNull(id, "Cannot register receiver with a null ID!");
         packetTransformers = Objects.requireNonNullElse(packetTransformers, List.of());
         Objects.requireNonNull(receiver, "Cannot register a null receiver!");
@@ -65,14 +65,14 @@ public class NetworkManagerImpl {
         }
     }
     
-    public static Packet<?> toPacket(NetworkManager.Side side, ResourceLocation id, FriendlyByteBuf buffer) {
+    public static Packet<?> toPacket(NetworkManager.Side side, Identifier id, FriendlyByteBuf buffer) {
         FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
-        packetBuffer.writeResourceLocation(id);
+        packetBuffer.writeIdentifier(id);
         packetBuffer.writeBytes(buffer);
         return (side == NetworkManager.Side.C2S ? NetworkDirection.PLAY_TO_SERVER : NetworkDirection.PLAY_TO_CLIENT).buildPacket(packetBuffer, CHANNEL_ID).getThis();
     }
     
-    public static void collectPackets(PacketSink sink, NetworkManager.Side side, ResourceLocation id, FriendlyByteBuf buf) {
+    public static void collectPackets(PacketSink sink, NetworkManager.Side side, Identifier id, FriendlyByteBuf buf) {
         PacketTransformer transformer = side == NetworkManager.Side.C2S ? C2S_TRANSFORMERS.get(id) : S2C_TRANSFORMERS.get(id);
         if (transformer != null) {
             transformer.outbound(side, id, buf, (side1, id1, buf1) -> {
@@ -84,15 +84,15 @@ public class NetworkManagerImpl {
     }
     
     private static final Logger LOGGER = LogUtils.getLogger();
-    private static final ResourceLocation CHANNEL_ID = new ResourceLocation("architectury:network");
-    static final ResourceLocation SYNC_IDS = new ResourceLocation("architectury:sync_ids");
+    private static final Identifier CHANNEL_ID = new Identifier("architectury:network");
+    static final Identifier SYNC_IDS = new Identifier("architectury:sync_ids");
     static final EventNetworkChannel CHANNEL = ChannelBuilder.named(CHANNEL_ID).acceptedVersions((status, version) -> true).optional().eventNetworkChannel();
-    static final Map<ResourceLocation, NetworkReceiver> S2C = Maps.newHashMap();
-    static final Map<ResourceLocation, NetworkReceiver> C2S = Maps.newHashMap();
-    static final Map<ResourceLocation, PacketTransformer> S2C_TRANSFORMERS = Maps.newHashMap();
-    static final Map<ResourceLocation, PacketTransformer> C2S_TRANSFORMERS = Maps.newHashMap();
-    static final Set<ResourceLocation> serverReceivables = Sets.newHashSet();
-    private static final Multimap<Player, ResourceLocation> clientReceivables = Multimaps.newMultimap(Maps.newHashMap(), Sets::newHashSet);
+    static final Map<Identifier, NetworkReceiver> S2C = Maps.newHashMap();
+    static final Map<Identifier, NetworkReceiver> C2S = Maps.newHashMap();
+    static final Map<Identifier, PacketTransformer> S2C_TRANSFORMERS = Maps.newHashMap();
+    static final Map<Identifier, PacketTransformer> C2S_TRANSFORMERS = Maps.newHashMap();
+    static final Set<Identifier> serverReceivables = Sets.newHashSet();
+    private static final Multimap<Player, Identifier> clientReceivables = Multimaps.newMultimap(Maps.newHashMap(), Sets::newHashSet);
     
     static {
         CHANNEL.addListener(createPacketHandler(NetworkDirection.PLAY_TO_SERVER, C2S_TRANSFORMERS));
@@ -100,23 +100,23 @@ public class NetworkManagerImpl {
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> ClientNetworkingManager::initClient);
         
         registerC2SReceiver(SYNC_IDS, Collections.emptyList(), (buffer, context) -> {
-            Set<ResourceLocation> receivables = (Set<ResourceLocation>) clientReceivables.get(context.getPlayer());
+            Set<Identifier> receivables = (Set<Identifier>) clientReceivables.get(context.getPlayer());
             int size = buffer.readInt();
             receivables.clear();
             for (int i = 0; i < size; i++) {
-                receivables.add(buffer.readResourceLocation());
+                receivables.add(buffer.readIdentifier());
             }
         });
     }
     
-    static <T extends CustomPayloadEvent> Consumer<T> createPacketHandler(NetworkDirection direction, Map<ResourceLocation, PacketTransformer> map) {
+    static <T extends CustomPayloadEvent> Consumer<T> createPacketHandler(NetworkDirection direction, Map<Identifier, PacketTransformer> map) {
         return event -> {
             CustomPayloadEvent.Context context = event.getSource();
             if (context.getDirection() != direction) return;
             if (context.getPacketHandled()) return;
             FriendlyByteBuf buffer = event.getPayload();
             if (buffer == null) return;
-            ResourceLocation type = buffer.readResourceLocation();
+            Identifier type = buffer.readIdentifier();
             PacketTransformer transformer = map.get(type);
             
             if (transformer != null) {
@@ -157,25 +157,25 @@ public class NetworkManagerImpl {
     }
     
     @OnlyIn(Dist.CLIENT)
-    public static void registerS2CReceiver(ResourceLocation id, List<PacketTransformer> packetTransformers, NetworkReceiver receiver) {
+    public static void registerS2CReceiver(Identifier id, List<PacketTransformer> packetTransformers, NetworkReceiver receiver) {
         LOGGER.info("Registering S2C receiver with id {}", id);
         S2C.put(id, receiver);
         PacketTransformer transformer = PacketTransformer.concat(packetTransformers);
         S2C_TRANSFORMERS.put(id, transformer);
     }
     
-    public static void registerC2SReceiver(ResourceLocation id, List<PacketTransformer> packetTransformers, NetworkReceiver receiver) {
+    public static void registerC2SReceiver(Identifier id, List<PacketTransformer> packetTransformers, NetworkReceiver receiver) {
         LOGGER.info("Registering C2S receiver with id {}", id);
         C2S.put(id, receiver);
         PacketTransformer transformer = PacketTransformer.concat(packetTransformers);
         C2S_TRANSFORMERS.put(id, transformer);
     }
     
-    public static boolean canServerReceive(ResourceLocation id) {
+    public static boolean canServerReceive(Identifier id) {
         return serverReceivables.contains(id);
     }
     
-    public static boolean canPlayerReceive(ServerPlayer player, ResourceLocation id) {
+    public static boolean canPlayerReceive(ServerPlayer player, Identifier id) {
         return clientReceivables.get(player).contains(id);
     }
     
@@ -183,12 +183,12 @@ public class NetworkManagerImpl {
         return ForgeHooks.getEntitySpawnPacket(entity);
     }
     
-    static FriendlyByteBuf sendSyncPacket(Map<ResourceLocation, NetworkReceiver> map) {
-        List<ResourceLocation> availableIds = Lists.newArrayList(map.keySet());
+    static FriendlyByteBuf sendSyncPacket(Map<Identifier, NetworkReceiver> map) {
+        List<Identifier> availableIds = Lists.newArrayList(map.keySet());
         FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
         packetBuffer.writeInt(availableIds.size());
-        for (ResourceLocation availableId : availableIds) {
-            packetBuffer.writeResourceLocation(availableId);
+        for (Identifier availableId : availableIds) {
+            packetBuffer.writeIdentifier(availableId);
         }
         return packetBuffer;
     }

@@ -28,7 +28,7 @@ import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
@@ -39,7 +39,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class CreativeTabRegistryImpl {
-    private static final Multimap<ResourceLocation, Supplier<ItemStack>> APPENDS = MultimapBuilder.hashKeys().arrayListValues().build();
+    private static final Multimap<Identifier, Supplier<ItemStack>> APPENDS = MultimapBuilder.hashKeys().arrayListValues().build();
     
     @ApiStatus.Experimental
     public static CreativeModeTab create(Consumer<CreativeModeTab.Builder> callback) {
@@ -50,18 +50,18 @@ public class CreativeTabRegistryImpl {
     
     @ApiStatus.Experimental
     public static DeferredSupplier<CreativeModeTab> ofBuiltin(CreativeModeTab tab) {
-        ResourceLocation key = BuiltInRegistries.CREATIVE_MODE_TAB.getKey(tab);
+        Identifier key = BuiltInRegistries.CREATIVE_MODE_TAB.getKey(tab);
         if (key == null) {
             throw new IllegalArgumentException("Builtin tab %s is not registered!".formatted(tab));
         }
         return new DeferredSupplier<>() {
             @Override
-            public ResourceLocation getRegistryId() {
-                return Registries.CREATIVE_MODE_TAB.location();
+            public Identifier getRegistryId() {
+                return Registries.CREATIVE_MODE_TAB.identifier();
             }
             
             @Override
-            public ResourceLocation getId() {
+            public Identifier getId() {
                 return BuiltInRegistries.CREATIVE_MODE_TAB.getKey(tab);
             }
             
@@ -78,18 +78,18 @@ public class CreativeTabRegistryImpl {
     }
     
     @ApiStatus.Experimental
-    public static DeferredSupplier<CreativeModeTab> defer(ResourceLocation name) {
+    public static DeferredSupplier<CreativeModeTab> defer(Identifier name) {
         return new DeferredSupplier<>() {
             @Nullable
             private CreativeModeTab tab;
             
             @Override
-            public ResourceLocation getRegistryId() {
-                return Registries.CREATIVE_MODE_TAB.location();
+            public Identifier getRegistryId() {
+                return Registries.CREATIVE_MODE_TAB.identifier();
             }
             
             @Override
-            public ResourceLocation getId() {
+            public Identifier getId() {
                 return name;
             }
             

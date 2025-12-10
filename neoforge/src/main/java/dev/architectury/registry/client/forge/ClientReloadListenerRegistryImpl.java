@@ -19,7 +19,7 @@
 
 package dev.architectury.registry.client.forge;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -32,10 +32,10 @@ import java.util.Map;
 
 @EventBusSubscriber(modid = "architectury", value = Dist.CLIENT)
 public class ClientReloadListenerRegistryImpl {
-    private static Map<ResourceLocation, PreparableReloadListener> clientDataReloadListeners = new HashMap<>();
-    private static Map<ResourceLocation, Collection<ResourceLocation>> clientDataReloadListenerDependencies = new HashMap<>();
+    private static Map<Identifier, PreparableReloadListener> clientDataReloadListeners = new HashMap<>();
+    private static Map<Identifier, Collection<Identifier>> clientDataReloadListenerDependencies = new HashMap<>();
     
-    public static void register(PreparableReloadListener listener, ResourceLocation listenerId, Collection<ResourceLocation> dependencies) {
+    public static void register(PreparableReloadListener listener, Identifier listenerId, Collection<Identifier> dependencies) {
         clientDataReloadListeners.put(listenerId, listener);
         clientDataReloadListenerDependencies.put(listenerId, dependencies);
     }

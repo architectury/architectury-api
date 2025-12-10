@@ -20,7 +20,7 @@
 package dev.architectury.registry.forge;
 
 import dev.architectury.registry.client.forge.ClientReloadListenerRegistryImpl;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.neoforged.neoforge.common.NeoForge;
@@ -31,14 +31,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ReloadListenerRegistryImpl {
-    private static Map<ResourceLocation, PreparableReloadListener> serverDataReloadListeners = new HashMap<>();
-    private static Map<ResourceLocation, Collection<ResourceLocation>> serverDataReloadListenerDependencies = new HashMap<>();
+    private static Map<Identifier, PreparableReloadListener> serverDataReloadListeners = new HashMap<>();
+    private static Map<Identifier, Collection<Identifier>> serverDataReloadListenerDependencies = new HashMap<>();
     
     static {
         NeoForge.EVENT_BUS.addListener(ReloadListenerRegistryImpl::addServerReloadListeners);
     }
     
-    public static void register(PackType type, PreparableReloadListener listener, ResourceLocation listenerId, Collection<ResourceLocation> dependencies) {
+    public static void register(PackType type, PreparableReloadListener listener, Identifier listenerId, Collection<Identifier> dependencies) {
         if (type == PackType.SERVER_DATA) {
             serverDataReloadListeners.put(listenerId, listener);
             serverDataReloadListenerDependencies.put(listenerId, dependencies);

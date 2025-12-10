@@ -27,7 +27,7 @@ import dev.architectury.utils.EnvExecutor;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.ApiStatus;
@@ -49,11 +49,11 @@ public class SplitPacketTransformer implements PacketTransformer {
     }
     
     public record PartData(
-            ResourceLocation id,
+            Identifier id,
             int partsExpected,
             List<RegistryFriendlyByteBuf> parts
     ) {
-        private PartData(ResourceLocation id, int partsExpected) {
+        private PartData(Identifier id, int partsExpected) {
             this(id, partsExpected, new ArrayList<>());
         }
     }
@@ -68,7 +68,7 @@ public class SplitPacketTransformer implements PacketTransformer {
     }
     
     @Override
-    public void inbound(NetworkManager.Side side, ResourceLocation id, RegistryFriendlyByteBuf buf, NetworkManager.PacketContext context, TransformationSink sink) {
+    public void inbound(NetworkManager.Side side, Identifier id, RegistryFriendlyByteBuf buf, NetworkManager.PacketContext context, TransformationSink sink) {
         PartKey key = side == NetworkManager.Side.S2C ? new PartKey(side, null) : new PartKey(side, context.getPlayer().getUUID());
         PartData data;
         switch (buf.readByte()) {
@@ -138,7 +138,7 @@ public class SplitPacketTransformer implements PacketTransformer {
     }
     
     @Override
-    public void outbound(NetworkManager.Side side, ResourceLocation id, RegistryFriendlyByteBuf buf, TransformationSink sink) {
+    public void outbound(NetworkManager.Side side, Identifier id, RegistryFriendlyByteBuf buf, TransformationSink sink) {
         int maxSize = (side == NetworkManager.Side.C2S ? 32767 : 1048576) - 1 - 20 - id.toString().getBytes(StandardCharsets.UTF_8).length;
         if (buf.readableBytes() <= maxSize) {
             ByteBuf stateBuf = Unpooled.buffer(1);

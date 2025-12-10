@@ -22,7 +22,7 @@ package dev.architectury.registry.level.biome;
 import com.google.common.base.Predicates;
 import dev.architectury.hooks.level.biome.BiomeProperties;
 import dev.architectury.injectables.annotations.ExpectPlatform;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 
@@ -89,7 +89,7 @@ public final class BiomeModifications {
     }
     
     public interface BiomeContext {
-        Optional<ResourceLocation> getKey();
+        Optional<Identifier> getKey();
         
         BiomeProperties getProperties();
         

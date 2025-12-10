@@ -21,7 +21,7 @@ package dev.architectury.networking.forge;
 
 import dev.architectury.networking.NetworkManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -40,11 +40,11 @@ public class ClientNetworkingManager {
         MinecraftForge.EVENT_BUS.register(ClientNetworkingManager.class);
         
         NetworkManagerImpl.registerS2CReceiver(NetworkManagerImpl.SYNC_IDS, Collections.emptyList(), (buffer, context) -> {
-            Set<ResourceLocation> receivables = NetworkManagerImpl.serverReceivables;
+            Set<Identifier> receivables = NetworkManagerImpl.serverReceivables;
             int size = buffer.readInt();
             receivables.clear();
             for (int i = 0; i < size; i++) {
-                receivables.add(buffer.readResourceLocation());
+                receivables.add(buffer.readIdentifier());
             }
             context.queue(() -> {
                 NetworkManager.sendToServer(NetworkManagerImpl.SYNC_IDS, NetworkManagerImpl.sendSyncPacket(NetworkManagerImpl.C2S));

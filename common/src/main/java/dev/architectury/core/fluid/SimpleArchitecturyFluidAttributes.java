@@ -22,9 +22,9 @@ package dev.architectury.core.fluid;
 import com.google.common.base.Suppliers;
 import dev.architectury.fluid.FluidStack;
 import dev.architectury.registry.registries.RegistrySupplier;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.Item;
@@ -51,11 +51,11 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
     private float explosionResistance = 100.0F;
     private Supplier<? extends Optional<? extends LiquidBlock>> block = Optional::empty;
     @Nullable
-    private ResourceLocation sourceTexture;
+    private Identifier sourceTexture;
     @Nullable
-    private ResourceLocation flowingTexture;
+    private Identifier flowingTexture;
     @Nullable
-    private ResourceLocation overlayTexture;
+    private Identifier overlayTexture;
     private int color = 0xffffff;
     private int luminosity = 0;
     private int density = 1000;
@@ -170,7 +170,7 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
     /**
      * @see ArchitecturyFluidAttributes#getSourceTexture(FluidState, BlockAndTintGetter, BlockPos)
      */
-    public SimpleArchitecturyFluidAttributes sourceTexture(ResourceLocation sourceTexture) {
+    public SimpleArchitecturyFluidAttributes sourceTexture(Identifier sourceTexture) {
         this.sourceTexture = sourceTexture;
         return this;
     }
@@ -178,7 +178,7 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
     /**
      * @see ArchitecturyFluidAttributes#getFlowingTexture(FluidState, BlockAndTintGetter, BlockPos)
      */
-    public SimpleArchitecturyFluidAttributes flowingTexture(ResourceLocation flowingTexture) {
+    public SimpleArchitecturyFluidAttributes flowingTexture(Identifier flowingTexture) {
         this.flowingTexture = flowingTexture;
         return this;
     }
@@ -186,7 +186,7 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
     /**
      * @see ArchitecturyFluidAttributes#getFlowingTexture(FluidState, BlockAndTintGetter, BlockPos)
      */
-    public SimpleArchitecturyFluidAttributes overlayTexture(ResourceLocation overlayTexture) {
+    public SimpleArchitecturyFluidAttributes overlayTexture(Identifier overlayTexture) {
         this.overlayTexture = overlayTexture;
         return this;
     }
@@ -317,17 +317,17 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
     }
     
     @Override
-    public ResourceLocation getSourceTexture(@Nullable FluidStack stack, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos) {
+    public Identifier getSourceTexture(@Nullable FluidStack stack, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos) {
         return sourceTexture;
     }
     
     @Override
-    public ResourceLocation getFlowingTexture(@Nullable FluidStack stack, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos) {
+    public Identifier getFlowingTexture(@Nullable FluidStack stack, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos) {
         return flowingTexture;
     }
     
     @Override
-    public ResourceLocation getOverlayTexture(@Nullable FluidState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos) {
+    public Identifier getOverlayTexture(@Nullable FluidState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos) {
         return overlayTexture;
     }
     

@@ -22,13 +22,13 @@ package dev.architectury.registry.registries;
 import dev.architectury.utils.OptionalSupplier;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public interface DeferredSupplier<T> extends OptionalSupplier<T> {
     /**
      * @return the identifier of the registry
      */
-    ResourceLocation getRegistryId();
+    Identifier getRegistryId();
     
     /**
      * @return the identifier of the registry
@@ -40,7 +40,7 @@ public interface DeferredSupplier<T> extends OptionalSupplier<T> {
     /**
      * @return the identifier of the entry
      */
-    ResourceLocation getId();
+    Identifier getId();
     
     /**
      * Returns the registry key of the creative tab.

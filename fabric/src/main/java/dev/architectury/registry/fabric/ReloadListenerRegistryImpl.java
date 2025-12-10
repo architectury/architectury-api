@@ -22,7 +22,7 @@ package dev.architectury.registry.fabric;
 import com.google.common.primitives.Longs;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import org.apache.commons.lang3.StringUtils;
@@ -35,13 +35,13 @@ import java.util.concurrent.Executor;
 public class ReloadListenerRegistryImpl {
     private static final SecureRandom RANDOM = new SecureRandom();
     
-    public static void register(PackType type, PreparableReloadListener listener, ResourceLocation listenerId, Collection<ResourceLocation> dependencies) {
+    public static void register(PackType type, PreparableReloadListener listener, Identifier listenerId, Collection<Identifier> dependencies) {
         var bytes = new byte[8];
         RANDOM.nextBytes(bytes);
-        var id = listenerId != null ? listenerId : ResourceLocation.parse("architectury:reload_" + StringUtils.leftPad(Math.abs(Longs.fromByteArray(bytes)) + "", 19, '0'));
+        var id = listenerId != null ? listenerId : Identifier.parse("architectury:reload_" + StringUtils.leftPad(Math.abs(Longs.fromByteArray(bytes)) + "", 19, '0'));
         ResourceManagerHelper.get(type).registerReloadListener(new IdentifiableResourceReloadListener() {
             @Override
-            public ResourceLocation getFabricId() {
+            public Identifier getFabricId() {
                 return id;
             }
             
@@ -51,7 +51,7 @@ public class ReloadListenerRegistryImpl {
             }
             
             @Override
-            public Collection<ResourceLocation> getFabricDependencies() {
+            public Collection<Identifier> getFabricDependencies() {
                 return dependencies;
             }
             

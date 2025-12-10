@@ -22,7 +22,7 @@ package dev.architectury.core.fluid;
 import dev.architectury.fluid.FluidStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
@@ -202,7 +202,7 @@ public interface ArchitecturyFluidAttributes {
      * or {@link #getSourceTexture(FluidStack)} instead, this method will be removed in a future version.
      */
     @Deprecated(forRemoval = true)
-    ResourceLocation getSourceTexture(@Nullable FluidStack stack, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos);
+    Identifier getSourceTexture(@Nullable FluidStack stack, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos);
     
     /**
      * Returns the texture location of this fluid in its source form.
@@ -214,7 +214,7 @@ public interface ArchitecturyFluidAttributes {
      * @param pos   the position, can be {@code null}
      * @return the texture location
      */
-    default ResourceLocation getSourceTexture(@Nullable FluidState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos) {
+    default Identifier getSourceTexture(@Nullable FluidState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos) {
         return getSourceTexture(state == null ? null : FluidStack.create(state.getType(), FluidStack.bucketAmount()), level, pos);
     }
     
@@ -226,7 +226,7 @@ public interface ArchitecturyFluidAttributes {
      * @param stack the fluid stack, can be {@code null}
      * @return the texture location
      */
-    default ResourceLocation getSourceTexture(@Nullable FluidStack stack) {
+    default Identifier getSourceTexture(@Nullable FluidStack stack) {
         return getSourceTexture(stack, null, null);
     }
     
@@ -237,7 +237,7 @@ public interface ArchitecturyFluidAttributes {
      *
      * @return the texture location
      */
-    default ResourceLocation getSourceTexture() {
+    default Identifier getSourceTexture() {
         return getSourceTexture(null);
     }
     
@@ -254,7 +254,7 @@ public interface ArchitecturyFluidAttributes {
      * or {@link #getFlowingTexture(FluidStack)} instead, this method will be removed in a future version.
      */
     @Deprecated(forRemoval = true)
-    ResourceLocation getFlowingTexture(@Nullable FluidStack stack, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos);
+    Identifier getFlowingTexture(@Nullable FluidStack stack, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos);
     
     /**
      * Returns the texture location of this fluid in its flowing form.
@@ -266,7 +266,7 @@ public interface ArchitecturyFluidAttributes {
      * @param pos   the position, can be {@code null}
      * @return the texture location
      */
-    default ResourceLocation getFlowingTexture(@Nullable FluidState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos) {
+    default Identifier getFlowingTexture(@Nullable FluidState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos) {
         return getFlowingTexture(state == null ? null : FluidStack.create(state.getType(), FluidStack.bucketAmount()), level, pos);
     }
     
@@ -278,7 +278,7 @@ public interface ArchitecturyFluidAttributes {
      * @param stack the fluid stack, can be {@code null}
      * @return the texture location
      */
-    default ResourceLocation getFlowingTexture(@Nullable FluidStack stack) {
+    default Identifier getFlowingTexture(@Nullable FluidStack stack) {
         return getFlowingTexture(stack, null, null);
     }
     
@@ -289,7 +289,7 @@ public interface ArchitecturyFluidAttributes {
      *
      * @return the texture location
      */
-    default ResourceLocation getFlowingTexture() {
+    default Identifier getFlowingTexture() {
         return getFlowingTexture(null);
     }
     
@@ -304,7 +304,7 @@ public interface ArchitecturyFluidAttributes {
      * @return the texture location, can be {@code null}
      */
     @Nullable
-    default ResourceLocation getOverlayTexture(@Nullable FluidState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos) {
+    default Identifier getOverlayTexture(@Nullable FluidState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos) {
         return null;
     }
     
@@ -317,7 +317,7 @@ public interface ArchitecturyFluidAttributes {
      * @return the texture location, can be {@code null}
      */
     @Nullable
-    default ResourceLocation getOverlayTexture(@Nullable FluidStack stack) {
+    default Identifier getOverlayTexture(@Nullable FluidStack stack) {
         return null;
     }
     
@@ -329,7 +329,7 @@ public interface ArchitecturyFluidAttributes {
      * @return the texture location, can be {@code null}
      */
     @Nullable
-    default ResourceLocation getOverlayTexture() {
+    default Identifier getOverlayTexture() {
         return getOverlayTexture(null);
     }
     

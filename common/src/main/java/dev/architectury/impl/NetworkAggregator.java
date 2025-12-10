@@ -32,7 +32,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.lang.reflect.Method;
@@ -53,16 +53,16 @@ public class NetworkAggregator {
             throw new RuntimeException(throwable);
         }
     });
-    public static final Map<ResourceLocation, CustomPacketPayload.Type<BufCustomPacketPayload>> C2S_TYPE = new HashMap<>();
-    public static final Map<ResourceLocation, CustomPacketPayload.Type<BufCustomPacketPayload>> S2C_TYPE = new HashMap<>();
-    public static final Map<ResourceLocation, NetworkManager.NetworkReceiver<?>> C2S_RECEIVER = new HashMap<>();
-    public static final Map<ResourceLocation, NetworkManager.NetworkReceiver<?>> S2C_RECEIVER = new HashMap<>();
-    public static final Map<ResourceLocation, StreamCodec<ByteBuf, ?>> C2S_CODECS = new HashMap<>();
-    public static final Map<ResourceLocation, StreamCodec<ByteBuf, ?>> S2C_CODECS = new HashMap<>();
-    public static final Map<ResourceLocation, PacketTransformer> C2S_TRANSFORMERS = new HashMap<>();
-    public static final Map<ResourceLocation, PacketTransformer> S2C_TRANSFORMERS = new HashMap<>();
+    public static final Map<Identifier, CustomPacketPayload.Type<BufCustomPacketPayload>> C2S_TYPE = new HashMap<>();
+    public static final Map<Identifier, CustomPacketPayload.Type<BufCustomPacketPayload>> S2C_TYPE = new HashMap<>();
+    public static final Map<Identifier, NetworkManager.NetworkReceiver<?>> C2S_RECEIVER = new HashMap<>();
+    public static final Map<Identifier, NetworkManager.NetworkReceiver<?>> S2C_RECEIVER = new HashMap<>();
+    public static final Map<Identifier, StreamCodec<ByteBuf, ?>> C2S_CODECS = new HashMap<>();
+    public static final Map<Identifier, StreamCodec<ByteBuf, ?>> S2C_CODECS = new HashMap<>();
+    public static final Map<Identifier, PacketTransformer> C2S_TRANSFORMERS = new HashMap<>();
+    public static final Map<Identifier, PacketTransformer> S2C_TRANSFORMERS = new HashMap<>();
     
-    public static void registerReceiver(NetworkManager.Side side, ResourceLocation id, List<PacketTransformer> packetTransformers, NetworkManager.NetworkReceiver<RegistryFriendlyByteBuf> receiver) {
+    public static void registerReceiver(NetworkManager.Side side, Identifier id, List<PacketTransformer> packetTransformers, NetworkManager.NetworkReceiver<RegistryFriendlyByteBuf> receiver) {
         CustomPacketPayload.Type<BufCustomPacketPayload> type = new CustomPacketPayload.Type<>(id);
         if (side == NetworkManager.Side.C2S) {
             C2S_TYPE.put(id, type);
@@ -130,7 +130,7 @@ public class NetworkAggregator {
         });
     }
     
-    public static void collectPackets(PacketSink sink, NetworkManager.Side side, ResourceLocation id, RegistryFriendlyByteBuf buf) {
+    public static void collectPackets(PacketSink sink, NetworkManager.Side side, Identifier id, RegistryFriendlyByteBuf buf) {
         if (side == NetworkManager.Side.C2S) {
             collectPackets(sink, side, new BufCustomPacketPayload(C2S_TYPE.get(id), ByteBufUtil.getBytes(buf)), buf.registryAccess());
         } else {
@@ -171,7 +171,7 @@ public class NetworkAggregator {
         throw new IllegalArgumentException("Invalid side: " + side);
     }
     
-    public static void registerS2CType(ResourceLocation id, List<PacketTransformer> packetTransformers) {
+    public static void registerS2CType(Identifier id, List<PacketTransformer> packetTransformers) {
         CustomPacketPayload.Type<BufCustomPacketPayload> type = new CustomPacketPayload.Type<>(id);
         S2C_TYPE.put(id, type);
         registerS2CType(type, BufCustomPacketPayload.streamCodec(type), packetTransformers);

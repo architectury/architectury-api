@@ -29,7 +29,7 @@ import dev.architectury.registry.registries.DeferredSupplier;
 import dev.architectury.utils.ArchitecturyConstants;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.CreativeModeTabRegistry;
@@ -92,18 +92,18 @@ public class CreativeTabRegistryImpl {
     
     @ApiStatus.Experimental
     public static DeferredSupplier<CreativeModeTab> ofBuiltin(CreativeModeTab tab) {
-        ResourceLocation key = BuiltInRegistries.CREATIVE_MODE_TAB.getKey(tab);
+        Identifier key = BuiltInRegistries.CREATIVE_MODE_TAB.getKey(tab);
         if (key == null) {
             throw new IllegalArgumentException("Builtin tab %s is not registered!".formatted(tab));
         }
         return new DeferredSupplier<>() {
             @Override
-            public ResourceLocation getRegistryId() {
+            public Identifier getRegistryId() {
                 return Registries.CREATIVE_MODE_TAB.location();
             }
             
             @Override
-            public ResourceLocation getId() {
+            public Identifier getId() {
                 return BuiltInRegistries.CREATIVE_MODE_TAB.getKey(tab);
             }
             
@@ -120,18 +120,18 @@ public class CreativeTabRegistryImpl {
     }
     
     @ApiStatus.Experimental
-    public static DeferredSupplier<CreativeModeTab> defer(ResourceLocation name) {
+    public static DeferredSupplier<CreativeModeTab> defer(Identifier name) {
         return new DeferredSupplier<>() {
             @Nullable
             private CreativeModeTab tab;
             
             @Override
-            public ResourceLocation getRegistryId() {
+            public Identifier getRegistryId() {
                 return Registries.CREATIVE_MODE_TAB.location();
             }
             
             @Override
-            public ResourceLocation getId() {
+            public Identifier getId() {
                 return name;
             }
             

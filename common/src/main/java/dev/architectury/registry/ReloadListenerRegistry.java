@@ -20,7 +20,7 @@
 package dev.architectury.registry;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import org.jetbrains.annotations.Nullable;
@@ -32,12 +32,12 @@ public final class ReloadListenerRegistry {
     private ReloadListenerRegistry() {
     }
 
-    public static void register(PackType type, PreparableReloadListener listener, ResourceLocation listenerId) {
+    public static void register(PackType type, PreparableReloadListener listener, Identifier listenerId) {
         register(type, listener, listenerId, List.of());
     }
     
     @ExpectPlatform
-    public static void register(PackType type, PreparableReloadListener listener, ResourceLocation listenerId, Collection<ResourceLocation> dependencies) {
+    public static void register(PackType type, PreparableReloadListener listener, Identifier listenerId, Collection<Identifier> dependencies) {
         throw new AssertionError();
     }
 }

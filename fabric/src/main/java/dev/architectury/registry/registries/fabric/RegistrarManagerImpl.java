@@ -39,7 +39,7 @@ import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -50,9 +50,9 @@ public class RegistrarManagerImpl {
     private static final Multimap<RegistryEntryId<?>, Consumer<?>> LISTENERS = HashMultimap.create();
     private static final Set<ResourceKey<?>> LISTENED_REGISTRIES = new HashSet<>();
     
-    private static void listen(ResourceKey<?> resourceKey, ResourceLocation id, Consumer<?> listener) {
+    private static void listen(ResourceKey<?> resourceKey, Identifier id, Consumer<?> listener) {
         if (LISTENED_REGISTRIES.add(resourceKey)) {
-            Registry<?> registry = java.util.Objects.requireNonNull(BuiltInRegistries.REGISTRY.getValue(resourceKey.location()), "Registry " + resourceKey + " not found!");
+            Registry<?> registry = java.util.Objects.requireNonNull(BuiltInRegistries.REGISTRY.getValue(resourceKey.identifier()), "Registry " + resourceKey + " not found!");
             RegistryEntryAddedCallback.event(registry).register((rawId, entryId, object) -> {
                 RegistryEntryId<?> registryEntryId = new RegistryEntryId<>(resourceKey, entryId);
                 for (Consumer<?> consumer : LISTENERS.get(registryEntryId)) {
@@ -78,7 +78,7 @@ public class RegistrarManagerImpl {
         
         @Override
         public <T> Registrar<T> get(ResourceKey<Registry<T>> key) {
-            return new RegistrarImpl<>(modId, (Registry<T>) java.util.Objects.requireNonNull(BuiltInRegistries.REGISTRY.getValue(key.location()), "Registry " + key + " not found!"));
+            return new RegistrarImpl<>(modId, (Registry<T>) java.util.Objects.requireNonNull(BuiltInRegistries.REGISTRY.getValue(key.identifier()), "Registry " + key + " not found!"));
         }
         
         @Override
@@ -92,16 +92,16 @@ public class RegistrarManagerImpl {
         }
         
         @Override
-        public <T> RegistrarBuilder<T> builder(Class<T> type, ResourceLocation registryId) {
+        public <T> RegistrarBuilder<T> builder(Class<T> type, Identifier registryId) {
             return new RegistrarBuilderWrapper<>(modId, type, registryId);
         }
     }
     
     public static class RegistryEntryId<T> {
         private final ResourceKey<T> registryKey;
-        private final ResourceLocation id;
+        private final Identifier id;
         
-        public RegistryEntryId(ResourceKey<T> registryKey, ResourceLocation id) {
+        public RegistryEntryId(ResourceKey<T> registryKey, Identifier id) {
             this.registryKey = registryKey;
             this.id = id;
         }
@@ -123,12 +123,12 @@ public class RegistrarManagerImpl {
     public static class RegistrarBuilderWrapper<T> implements RegistrarBuilder<T> {
         private final String modId;
         private final Class<T> type;
-        private final ResourceLocation registryId;
+        private final Identifier registryId;
         private final List<Consumer<FabricRegistryBuilder<T, ? extends MappedRegistry<T>>>> apply = new ArrayList<>();
         @Nullable
-        private ResourceLocation defaultId;
+        private Identifier defaultId;
         
-        public RegistrarBuilderWrapper(String modId, Class<T> type, ResourceLocation registryId) {
+        public RegistrarBuilderWrapper(String modId, Class<T> type, Identifier registryId) {
             this.modId = modId;
             this.type = type;
             this.registryId = registryId;
@@ -164,7 +164,7 @@ public class RegistrarManagerImpl {
         }
         
         @Override
-        public RegistrySupplier<T> delegate(ResourceLocation id) {
+        public RegistrySupplier<T> delegate(Identifier id) {
             Supplier<T> value = Suppliers.memoize(() -> get(id));
             RegistrarImpl<T> registrar = this;
             return new RegistrySupplierImpl<T>() {
@@ -189,12 +189,12 @@ public class RegistrarManagerImpl {
                 }
                 
                 @Override
-                public ResourceLocation getRegistryId() {
-                    return delegate.key().location();
+                public Identifier getRegistryId() {
+                    return delegate.key().identifier();
                 }
                 
                 @Override
-                public ResourceLocation getId() {
+                public Identifier getId() {
                     return id;
                 }
                 
@@ -228,13 +228,13 @@ public class RegistrarManagerImpl {
         }
         
         @Override
-        public <E extends T> RegistrySupplier<E> register(ResourceLocation id, Supplier<E> supplier) {
+        public <E extends T> RegistrySupplier<E> register(Identifier id, Supplier<E> supplier) {
             Registry.register(delegate, id, supplier.get());
             return (RegistrySupplier<E>) delegate(id);
         }
         
         @Override
-        public @Nullable ResourceLocation getId(T obj) {
+        public @Nullable Identifier getId(T obj) {
             return delegate.getKey(obj);
         }
         
@@ -249,7 +249,7 @@ public class RegistrarManagerImpl {
         }
         
         @Override
-        public @Nullable T get(ResourceLocation id) {
+        public @Nullable T get(Identifier id) {
             return delegate.getValue(id);
         }
         
@@ -259,7 +259,7 @@ public class RegistrarManagerImpl {
         }
         
         @Override
-        public boolean contains(ResourceLocation id) {
+        public boolean contains(Identifier id) {
             return delegate.keySet().contains(id);
         }
         
@@ -269,7 +269,7 @@ public class RegistrarManagerImpl {
         }
         
         @Override
-        public Set<ResourceLocation> getIds() {
+        public Set<Identifier> getIds() {
             return delegate.keySet();
         }
         
@@ -295,7 +295,7 @@ public class RegistrarManagerImpl {
         }
         
         @Override
-        public void listen(ResourceLocation id, Consumer<T> callback) {
+        public void listen(Identifier id, Consumer<T> callback) {
             if (contains(id)) {
                 callback.accept(get(id));
             } else {

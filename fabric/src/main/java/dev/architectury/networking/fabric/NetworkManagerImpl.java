@@ -41,7 +41,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.thread.BlockableEventLoop;
@@ -113,11 +113,11 @@ public class NetworkManagerImpl {
     }
     
     @Environment(EnvType.CLIENT)
-    public static boolean canServerReceive(ResourceLocation id) {
+    public static boolean canServerReceive(Identifier id) {
         return ClientPlayNetworking.canSend(id);
     }
     
-    public static boolean canPlayerReceive(ServerPlayer player, ResourceLocation id) {
+    public static boolean canPlayerReceive(ServerPlayer player, Identifier id) {
         return ServerPlayNetworking.canSend(player, id);
     }
     

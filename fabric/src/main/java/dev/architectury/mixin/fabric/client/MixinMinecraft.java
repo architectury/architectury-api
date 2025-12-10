@@ -57,9 +57,9 @@ public abstract class MixinMinecraft {
     @Unique
     private ThreadLocal<Boolean> setScreenCancelled = new ThreadLocal<>();
     
-    @Inject(method = "disconnect(Lnet/minecraft/client/gui/screens/Screen;Z)V",
+    @Inject(method = "Lnet/minecraft/client/Minecraft;disconnect(Lnet/minecraft/client/gui/screens/Screen;ZZ)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/GameNarrator;clear()V"))
-    private void handleLogin(Screen screen, boolean retainDownloadedPacks, CallbackInfo ci) {
+    private void handleLogin(Screen screen, boolean retainDownloadedPacks, boolean bl2, CallbackInfo ci) {
         ClientPlayerEvent.CLIENT_PLAYER_QUIT.invoker().quit(player);
     }
     

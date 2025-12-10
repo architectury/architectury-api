@@ -30,7 +30,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.sounds.Music;
 import net.minecraft.sounds.SoundEvent;
@@ -62,7 +62,7 @@ public class BiomeModificationsImpl {
     private static Codec<BiomeModifierImpl> noneBiomeModCodec = null;
     
     public static void init() {
-        ForgeLikeHooks.registerBiomeModifier(new ResourceLocation(ArchitecturyConstants.MOD_ID, "none_biome_mod_codec"),
+        ForgeLikeHooks.registerBiomeModifier(new Identifier(ArchitecturyConstants.MOD_ID, "none_biome_mod_codec"),
                 () -> noneBiomeModCodec = Codec.unit(BiomeModifierImpl.INSTANCE));
     }
     
@@ -121,7 +121,7 @@ public class BiomeModificationsImpl {
             BiomeProperties properties = new BiomeWrapped(event);
             
             @Override
-            public Optional<ResourceLocation> getKey() {
+            public Optional<Identifier> getKey() {
                 return biomeResourceKey.map(ResourceKey::location);
             }
             
@@ -330,32 +330,18 @@ public class BiomeModificationsImpl {
         }
         
         @Override
-        public int getFogColor() {
-            if (builder instanceof BiomeSpecialEffectsBuilder b) return b.getFogColor();
-            return builder.fogColor.orElse(-1);
-        }
-        
-        @Override
         public int getWaterColor() {
-            if (builder instanceof BiomeSpecialEffectsBuilder b) return b.getWaterFogColor();
             return builder.waterColor.orElse(-1);
-        }
-        
-        @Override
-        public int getWaterFogColor() {
-            if (builder instanceof BiomeSpecialEffectsBuilder b) return b.getWaterFogColor();
-            return builder.waterFogColor.orElse(-1);
-        }
-        
-        @Override
-        public int getSkyColor() {
-            if (builder instanceof BiomeSpecialEffectsBuilder b) return b.getSkyColor();
-            return builder.skyColor.orElse(-1);
         }
         
         @Override
         public OptionalInt getFoliageColorOverride() {
             return builder.foliageColorOverride.map(OptionalInt::of).orElseGet(OptionalInt::empty);
+        }
+        
+        @Override
+        public OptionalInt getDryFoliageColorOverride() {
+            return builder.dryFoliageColorOverride.map(OptionalInt::of).orElseGet(OptionalInt::empty);
         }
         
         @Override
@@ -369,57 +355,20 @@ public class BiomeModificationsImpl {
         }
         
         @Override
-        public Optional<AmbientParticleSettings> getAmbientParticle() {
-            return builder.ambientParticle;
-        }
-        
-        @Override
-        public Optional<Holder<SoundEvent>> getAmbientLoopSound() {
-            return builder.ambientLoopSoundEvent;
-        }
-        
-        @Override
-        public Optional<AmbientMoodSettings> getAmbientMoodSound() {
-            return builder.ambientMoodSettings;
-        }
-        
-        @Override
-        public Optional<AmbientAdditionsSettings> getAmbientAdditionsSound() {
-            return builder.ambientAdditionsSettings;
-        }
-        
-        @Override
-        public Optional<Music> getBackgroundMusic() {
-            return builder.backgroundMusic;
-        }
-        
-        @Override
-        public Mutable setFogColor(int color) {
-            builder.fogColor(color);
-            return this;
-        }
-        
-        @Override
         public Mutable setWaterColor(int color) {
             builder.waterColor(color);
             return this;
         }
         
         @Override
-        public Mutable setWaterFogColor(int color) {
-            builder.waterFogColor(color);
-            return this;
-        }
-        
-        @Override
-        public Mutable setSkyColor(int color) {
-            builder.skyColor(color);
-            return this;
-        }
-        
-        @Override
         public Mutable setFoliageColorOverride(@Nullable Integer colorOverride) {
             builder.foliageColorOverride = Optional.ofNullable(colorOverride);
+            return this;
+        }
+        
+        @Override
+        public Mutable setDryFoliageColorOverride(@Nullable Integer colorOverride) {
+            builder.dryFoliageColorOverride = Optional.ofNullable(colorOverride);
             return this;
         }
         
@@ -432,36 +381,6 @@ public class BiomeModificationsImpl {
         @Override
         public Mutable setGrassColorModifier(BiomeSpecialEffects.GrassColorModifier modifier) {
             builder.grassColorModifier(modifier);
-            return this;
-        }
-        
-        @Override
-        public Mutable setAmbientParticle(@Nullable AmbientParticleSettings settings) {
-            builder.ambientParticle = Optional.ofNullable(settings);
-            return this;
-        }
-        
-        @Override
-        public Mutable setAmbientLoopSound(@Nullable Holder<SoundEvent> sound) {
-            builder.ambientLoopSoundEvent = Optional.ofNullable(sound);
-            return this;
-        }
-        
-        @Override
-        public Mutable setAmbientMoodSound(@Nullable AmbientMoodSettings settings) {
-            builder.ambientMoodSettings = Optional.ofNullable(settings);
-            return this;
-        }
-        
-        @Override
-        public Mutable setAmbientAdditionsSound(@Nullable AmbientAdditionsSettings settings) {
-            builder.ambientAdditionsSettings = Optional.ofNullable(settings);
-            return this;
-        }
-        
-        @Override
-        public Mutable setBackgroundMusic(@Nullable Music music) {
-            builder.backgroundMusic = Optional.ofNullable(music);
             return this;
         }
     }

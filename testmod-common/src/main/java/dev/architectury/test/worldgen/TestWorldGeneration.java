@@ -24,7 +24,7 @@ import dev.architectury.registry.level.biome.BiomeModifications;
 import dev.architectury.test.TestMod;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.levelgen.GenerationStep;
 
@@ -35,7 +35,7 @@ public class TestWorldGeneration {
                 if (ctx.hasTag(BiomeTags.IS_FOREST)) {
                     mutable.getGenerationProperties().addFeature(GenerationStep.Decoration.TOP_LAYER_MODIFICATION,
                             ResourceKey.create(Registries.PLACED_FEATURE,
-                                    ResourceLocation.fromNamespaceAndPath(TestMod.MOD_ID, "diamond_blocks")));
+                                    Identifier.fromNamespaceAndPath(TestMod.MOD_ID, "diamond_blocks")));
                 }
             });
         });

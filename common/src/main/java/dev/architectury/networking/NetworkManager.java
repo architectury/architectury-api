@@ -33,7 +33,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -50,7 +50,7 @@ public final class NetworkManager {
      * while {@link #registerS2CPayloadType} should be called on the server side.
      */
     @Deprecated(forRemoval = true)
-    public static void registerS2CPayloadType(ResourceLocation id) {
+    public static void registerS2CPayloadType(Identifier id) {
         NetworkAggregator.registerS2CType(id, List.of());
     }
     
@@ -67,7 +67,7 @@ public final class NetworkManager {
      * while {@link #registerS2CPayloadType} should be called on the server side.
      */
     @Deprecated(forRemoval = true)
-    public static void registerS2CPayloadType(ResourceLocation id, List<PacketTransformer> packetTransformers) {
+    public static void registerS2CPayloadType(Identifier id, List<PacketTransformer> packetTransformers) {
         NetworkAggregator.registerS2CType(id, packetTransformers);
     }
     
@@ -80,13 +80,13 @@ public final class NetworkManager {
     }
     
     @Deprecated(forRemoval = true)
-    public static void registerReceiver(Side side, ResourceLocation id, NetworkReceiver<RegistryFriendlyByteBuf> receiver) {
+    public static void registerReceiver(Side side, Identifier id, NetworkReceiver<RegistryFriendlyByteBuf> receiver) {
         registerReceiver(side, id, Collections.emptyList(), receiver);
     }
     
     @ApiStatus.Experimental
     @Deprecated(forRemoval = true)
-    public static void registerReceiver(Side side, ResourceLocation id, List<PacketTransformer> packetTransformers, NetworkReceiver<RegistryFriendlyByteBuf> receiver) {
+    public static void registerReceiver(Side side, Identifier id, List<PacketTransformer> packetTransformers, NetworkReceiver<RegistryFriendlyByteBuf> receiver) {
         NetworkAggregator.registerReceiver(side, id, packetTransformers, receiver);
     }
     
@@ -100,14 +100,14 @@ public final class NetworkManager {
     }
     
     @Deprecated(forRemoval = true)
-    public static Packet<?> toPacket(Side side, ResourceLocation id, RegistryFriendlyByteBuf buf) {
+    public static Packet<?> toPacket(Side side, Identifier id, RegistryFriendlyByteBuf buf) {
         SinglePacketCollector sink = new SinglePacketCollector(null);
         collectPackets(sink, side, id, buf);
         return sink.getPacket();
     }
     
     @Deprecated(forRemoval = true)
-    public static List<Packet<?>> toPackets(Side side, ResourceLocation id, RegistryFriendlyByteBuf buf) {
+    public static List<Packet<?>> toPackets(Side side, Identifier id, RegistryFriendlyByteBuf buf) {
         PacketCollector sink = new PacketCollector(null);
         collectPackets(sink, side, id, buf);
         return sink.collect();
@@ -126,7 +126,7 @@ public final class NetworkManager {
     }
     
     @Deprecated(forRemoval = true)
-    public static void collectPackets(PacketSink sink, Side side, ResourceLocation id, RegistryFriendlyByteBuf buf) {
+    public static void collectPackets(PacketSink sink, Side side, Identifier id, RegistryFriendlyByteBuf buf) {
         NetworkAggregator.collectPackets(sink, side, id, buf);
     }
     
@@ -135,17 +135,17 @@ public final class NetworkManager {
     }
     
     @Deprecated(forRemoval = true)
-    public static void sendToPlayer(ServerPlayer player, ResourceLocation id, RegistryFriendlyByteBuf buf) {
+    public static void sendToPlayer(ServerPlayer player, Identifier id, RegistryFriendlyByteBuf buf) {
         collectPackets(PacketSink.ofPlayer(player), serverToClient(), id, buf);
     }
     
     @Deprecated(forRemoval = true)
-    public static void sendToPlayers(Iterable<ServerPlayer> players, ResourceLocation id, RegistryFriendlyByteBuf buf) {
+    public static void sendToPlayers(Iterable<ServerPlayer> players, Identifier id, RegistryFriendlyByteBuf buf) {
         collectPackets(PacketSink.ofPlayers(players), serverToClient(), id, buf);
     }
     
     @Deprecated(forRemoval = true)
-    public static void sendToServer(ResourceLocation id, RegistryFriendlyByteBuf buf) {
+    public static void sendToServer(Identifier id, RegistryFriendlyByteBuf buf) {
         collectPackets(PacketSink.client(), clientToServer(), id, buf);
     }
     
@@ -165,12 +165,12 @@ public final class NetworkManager {
     }
     
     @ExpectPlatform
-    public static boolean canServerReceive(ResourceLocation id) {
+    public static boolean canServerReceive(Identifier id) {
         throw new AssertionError();
     }
     
     @ExpectPlatform
-    public static boolean canPlayerReceive(ServerPlayer player, ResourceLocation id) {
+    public static boolean canPlayerReceive(ServerPlayer player, Identifier id) {
         throw new AssertionError();
     }
     

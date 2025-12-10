@@ -22,7 +22,7 @@ package dev.architectury.registry.registries;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -32,10 +32,10 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public interface Registrar<T> extends Iterable<T> {
-    RegistrySupplier<T> delegate(ResourceLocation id);
+    RegistrySupplier<T> delegate(Identifier id);
     
     default <R extends T> RegistrySupplier<R> wrap(R obj) {
-        ResourceLocation id = getId(obj);
+        Identifier id = getId(obj);
         
         if (id == null) {
             throw new IllegalArgumentException("Cannot wrap an object without an id: " + obj);
@@ -44,26 +44,26 @@ public interface Registrar<T> extends Iterable<T> {
         }
     }
     
-    <E extends T> RegistrySupplier<E> register(ResourceLocation id, Supplier<E> supplier);
+    <E extends T> RegistrySupplier<E> register(Identifier id, Supplier<E> supplier);
     
     @Nullable
-    ResourceLocation getId(T obj);
+    Identifier getId(T obj);
     
     int getRawId(T obj);
     
     Optional<ResourceKey<T>> getKey(T obj);
     
     @Nullable
-    T get(ResourceLocation id);
+    T get(Identifier id);
     
     @Nullable
     T byRawId(int rawId);
     
-    boolean contains(ResourceLocation id);
+    boolean contains(Identifier id);
     
     boolean containsValue(T obj);
     
-    Set<ResourceLocation> getIds();
+    Set<Identifier> getIds();
     
     Set<Map.Entry<ResourceKey<T>, T>> entrySet();
     
@@ -73,7 +73,7 @@ public interface Registrar<T> extends Iterable<T> {
     Holder<T> getHolder(ResourceKey<T> key);
     
     @Nullable
-    default Holder<T> getHolder(ResourceLocation id) {
+    default Holder<T> getHolder(Identifier id) {
         return getHolder(ResourceKey.create(key(), id));
     }
     
@@ -103,5 +103,5 @@ public interface Registrar<T> extends Iterable<T> {
      * @param id       the entry to listen to
      * @param callback the action to call when the registry entry is registered
      */
-    void listen(ResourceLocation id, Consumer<T> callback);
+    void listen(Identifier id, Consumer<T> callback);
 }

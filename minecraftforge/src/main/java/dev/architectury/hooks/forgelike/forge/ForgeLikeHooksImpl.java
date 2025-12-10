@@ -22,7 +22,7 @@ package dev.architectury.hooks.forgelike.forge;
 import com.mojang.serialization.Codec;
 import dev.architectury.platform.hooks.EventBusesHooks;
 import dev.architectury.utils.ArchitecturyConstants;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -31,7 +31,7 @@ import net.minecraftforge.registries.RegisterEvent;
 import java.util.function.Supplier;
 
 public class ForgeLikeHooksImpl {
-    public static void registerBiomeModifier(ResourceLocation id, Supplier<Codec<? extends BiomeModifier>> codecSupplier) {
+    public static void registerBiomeModifier(Identifier id, Supplier<Codec<? extends BiomeModifier>> codecSupplier) {
         EventBusesHooks.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
             bus.<RegisterEvent>addListener(event -> {
                 event.register(ForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, registry -> {

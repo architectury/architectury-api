@@ -22,8 +22,8 @@ package dev.architectury.registry.level.entity.trade.fabric;
 import dev.architectury.registry.level.entity.trade.TradeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.entity.npc.VillagerProfession;
-import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.entity.npc.villager.VillagerProfession;
+import net.minecraft.world.entity.npc.villager.VillagerTrades;
 
 import java.util.Collections;
 
