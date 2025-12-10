@@ -48,7 +48,7 @@ public class TestMod {
     public static void initialize() {
         DebugEvents.initialize();
         TestRegistries.initialize();
-        TestGameRules.init();
+        TestGameRules.GAME_RULE.register();
         TestTags.initialize();
         TestTrades.init();
         TestParticles.initialize();

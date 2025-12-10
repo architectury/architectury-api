@@ -19,18 +19,51 @@
 
 package dev.architectury.test.gamerule;
 
+import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.serialization.Codec;
+import dev.architectury.registry.registries.DeferredRegister;
+import dev.architectury.registry.registries.DeferredSupplier;
+import dev.architectury.test.TestMod;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.level.gamerules.GameRule;
 import net.minecraft.world.level.gamerules.GameRuleCategory;
-import net.minecraft.world.level.gamerules.GameRules;
+import net.minecraft.world.level.gamerules.GameRuleType;
+import net.minecraft.world.level.gamerules.GameRuleTypeVisitor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class TestGameRules {
     private static final Logger LOGGER = LogManager.getLogger();
     
-    public static final GameRule<Boolean> SIMPLE_BOOL = GameRules.registerBoolean("simple_bool", GameRuleCategory.MISC, true);
-    public static final GameRule<Integer> SIMPLE_INT = GameRules.registerInteger("simple_int", GameRuleCategory.MISC, 10, 0);
+    public static final DeferredRegister<GameRule<?>> GAME_RULE = DeferredRegister.create(TestMod.MOD_ID, Registries.GAME_RULE);
     
+    public static final DeferredSupplier<GameRule<Boolean>> SIMPLE_BOOL = GAME_RULE.register("simple_bool", () -> new GameRule<>(
+            GameRuleCategory.MISC,
+            GameRuleType.BOOL,
+            BoolArgumentType.bool(),
+            GameRuleTypeVisitor::visitBoolean,
+            Codec.BOOL,
+            gameRuleValue -> gameRuleValue ? 1 : 0,
+            false,
+            FeatureFlagSet.of()
+    ));
+    
+    public static final DeferredSupplier<GameRule<Integer>> SIMPLE_INT = GAME_RULE.register(
+            "simple_int",
+            () -> new GameRule<>(
+                    GameRuleCategory.MISC,
+                    GameRuleType.INT,
+                    IntegerArgumentType.integer(0, 5),
+                    GameRuleTypeVisitor::visitInteger,
+                    Codec.intRange(0, 5),
+                    gameRuleValue -> gameRuleValue,
+                    3,
+                    FeatureFlagSet.of()
+            )
+    );
+
     public static void init() {
     }
 }
