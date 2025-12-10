@@ -23,7 +23,6 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;

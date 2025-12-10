@@ -22,7 +22,6 @@ package dev.architectury.impl.fabric;
 import dev.architectury.event.events.common.ChatEvent;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
 
 @ApiStatus.Internal
 public class ChatComponentImpl implements ChatEvent.ChatComponent {
