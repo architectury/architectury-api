@@ -34,15 +34,17 @@ jobs:
       - name: Validate Gradle Wrapper
         uses: gradle/actions/wrapper-validation@v5
 
-      - name: Verify license using Licenser
+      - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
-        with:
-          arguments: licenseCheck
 
-      - name: Setup and Build with Gradle
+      - name: Verify license using Licenser
+        run: ./gradlew licenseCheck
+
+      - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
-        with:
-          arguments: build --stacktrace --no-daemon
+
+      - name: Build with Gradle
+        run: ./gradlew build --stacktrace --no-daemon
 
       - name: Setting mod version
         run: |
@@ -62,16 +64,22 @@ jobs:
             !**/*-transformProduction*.jar
             !**/testmod*/
 
-      - name: Release to Maven and CurseForge
-        uses: gradle/actions/setup-gradle@v5
+
+      # ── 直接替换你原来的整个步骤 ──────────────────────
+      - name: Setup Gradle (for release)
         if: |
-          !contains(github.event.head_commit.message, '[norelease]') && github.event.inputs.norelease != 'true'
+          !contains(github.event.head_commit.message, '[norelease]') && 
+          github.event.inputs.norelease != 'true'
+        uses: gradle/actions/setup-gradle@v5
+        # 注意：这里故意什么都不写 with，旧的 arguments 已经彻底删除
+
+      - name: Release to Maven and CurseForge
+        if: |
+          !contains(github.event.head_commit.message, '[norelease]') && 
+          github.event.inputs.norelease != 'true'
         env:
-          # currently unused, may want to use these for changelogs though!
-          # GIT_COMMIT: ${{ github.event.after }}
-          # GIT_PREVIOUS_COMMIT: ${{ github.event.before }}
           MAVEN_PASS: ${{ secrets.MAVEN_PASS }}
           CURSE_API_KEY: ${{ secrets.CURSE_API_KEY }}
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
-        with:
-          arguments: publish publishUnified --stacktrace --no-daemon
+        run: |
+          ./gradlew publish publishUnified --stacktrace --no-daemon

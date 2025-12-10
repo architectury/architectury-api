@@ -31,10 +31,11 @@ jobs:
           java-version: 21
           distribution: 'temurin'
 
-      - name: Setup Gradle and verify license using Licenser
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: licenseCheck
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+
+      - name: Verify license using Licenser
+        run: ./gradlew licenseCheck
 
   build:
     name: "Build"
@@ -50,10 +51,11 @@ jobs:
           java-version: 21
           distribution: 'temurin'
 
-      - name: Setup and Build with Gradle
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: build --stacktrace --no-daemon
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+
+      - name: Build with Gradle
+        run: ./gradlew build --stacktrace --no-daemon
 
       - name: Setting mod version
         run: |
