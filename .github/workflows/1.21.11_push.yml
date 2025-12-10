@@ -40,9 +40,6 @@ jobs:
       - name: Verify license using Licenser
         run: ./gradlew licenseCheck
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v5
-
       - name: Build with Gradle
         run: ./gradlew build --stacktrace --no-daemon
 
@@ -63,15 +60,6 @@ jobs:
             !**/*-shadow.jar
             !**/*-transformProduction*.jar
             !**/testmod*/
-
-
-      # ── 直接替换你原来的整个步骤 ──────────────────────
-      - name: Setup Gradle (for release)
-        if: |
-          !contains(github.event.head_commit.message, '[norelease]') && 
-          github.event.inputs.norelease != 'true'
-        uses: gradle/actions/setup-gradle@v5
-        # 注意：这里故意什么都不写 with，旧的 arguments 已经彻底删除
 
       - name: Release to Maven and CurseForge
         if: |
