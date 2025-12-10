@@ -19,17 +19,17 @@
 
 package dev.architectury.test.gamerule;
 
-import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.gamerules.GameRule;
+import net.minecraft.world.level.gamerules.GameRuleCategory;
+import net.minecraft.world.level.gamerules.GameRules;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class TestGameRules {
     private static final Logger LOGGER = LogManager.getLogger();
     
-    public static final GameRules.Key<GameRules.BooleanValue> SIMPLE_BOOL = GameRules.register("simpleBool", GameRules.Category.MISC, GameRules.BooleanValue.create(true));
-    public static final GameRules.Key<GameRules.IntegerValue> SIMPLE_INT = GameRules.register("simpleInt", GameRules.Category.MISC, GameRules.IntegerValue.create(10));
-    public static final GameRules.Key<GameRules.BooleanValue> CALLBACK_BOOL = GameRules.register("callbackBool", GameRules.Category.MISC, GameRules.BooleanValue.create(true, (server, value) -> LOGGER.info("changed to {}", value.get())));
-    public static final GameRules.Key<GameRules.IntegerValue> CALLBACK_INT = GameRules.register("callbackInt", GameRules.Category.MISC, GameRules.IntegerValue.create(10, (server, value) -> LOGGER.info("changed to {}", value.get())));
+    public static final GameRule<Boolean> SIMPLE_BOOL = GameRules.registerBoolean("simple_bool", GameRuleCategory.MISC, true);
+    public static final GameRule<Integer> SIMPLE_INT = GameRules.registerInteger("simple_int", GameRuleCategory.MISC, 10, 0);
     
     public static void init() {
     }

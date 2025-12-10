@@ -92,7 +92,7 @@ public class DebugEvents {
         });
         EntityEvent.ADD.register((entity, level) -> {
             if (entity instanceof Player) {
-                TestMod.SINK.accept(entity.getScoreboardName() + " was added to " + level.dimension().location().toString() + logSide(level));
+                TestMod.SINK.accept(entity.getScoreboardName() + " was added to " + level.dimension().identifier().toString() + logSide(level));
             }
             return EventResult.pass();
         });
@@ -110,7 +110,7 @@ public class DebugEvents {
             sb.append(toShortString(new Vec3(x, y, z)));
             if (level instanceof Level) {
                 sb.append(" in world ");
-                sb.append(((Level) level).dimension().location());
+                sb.append(((Level) level).dimension().identifier());
             }
             sb.append(" from cause ");
             sb.append(type.name());
@@ -128,7 +128,7 @@ public class DebugEvents {
             return EventResult.pass();
         }));
         ExplosionEvent.DETONATE.register((world, explosion, affectedEntities) -> {
-            TestMod.SINK.accept(world.dimension().location() + " explodes at " + toShortString(explosion.center()) + logSide(world));
+            TestMod.SINK.accept(world.dimension().identifier() + " explodes at " + toShortString(explosion.center()) + logSide(world));
         });
         InteractionEvent.LEFT_CLICK_BLOCK.register((player, hand, pos, face) -> {
             TestMod.SINK.accept(player.getScoreboardName() + " left clicks " + toShortString(pos) + logSide(player.level()));
@@ -169,13 +169,13 @@ public class DebugEvents {
             TestMod.SINK.accept("Server stopped");
         });
         LifecycleEvent.SERVER_LEVEL_LOAD.register(instance -> {
-            TestMod.SINK.accept("Server world loaded: " + instance.dimension().location());
+            TestMod.SINK.accept("Server world loaded: " + instance.dimension().identifier());
         });
         LifecycleEvent.SERVER_LEVEL_UNLOAD.register(instance -> {
-            TestMod.SINK.accept("Server world unloaded: " + instance.dimension().location());
+            TestMod.SINK.accept("Server world unloaded: " + instance.dimension().identifier());
         });
         LifecycleEvent.SERVER_LEVEL_SAVE.register(instance -> {
-            TestMod.SINK.accept("Server world saved: " + instance.dimension().location());
+            TestMod.SINK.accept("Server world saved: " + instance.dimension().identifier());
         });
         PlayerEvent.PLAYER_JOIN.register(player -> {
             TestMod.SINK.accept(player.getScoreboardName() + " joined" + logSide(player.level()));
@@ -214,10 +214,10 @@ public class DebugEvents {
             TestMod.SINK.accept(player.getScoreboardName() + " closes " + toSimpleName(menu) + logSide(player.level()));
         });
         PlayerEvent.CHANGE_DIMENSION.register((player, oldLevel, newLevel) -> {
-            TestMod.SINK.accept(player.getScoreboardName() + " switched from " + oldLevel.location() + " to " + newLevel.location() + logSide(player.level()));
+            TestMod.SINK.accept(player.getScoreboardName() + " switched from " + oldLevel.identifier() + " to " + newLevel.identifier() + logSide(player.level()));
         });
         PlayerEvent.FILL_BUCKET.register(((player, level, stack, target) -> {
-            TestMod.SINK.accept("%s used a bucket (%s) in %s%s while looking at %s", player.getScoreboardName(), stack, level.dimension().location(), logSide(level), target == null ? "nothing" : target.getLocation());
+            TestMod.SINK.accept("%s used a bucket (%s) in %s%s while looking at %s", player.getScoreboardName(), stack, level.dimension().identifier(), logSide(level), target == null ? "nothing" : target.getLocation());
             return InteractionResult.PASS;
         }));
         LightningEvent.STRIKE.register((bolt, level, pos, toStrike) -> {

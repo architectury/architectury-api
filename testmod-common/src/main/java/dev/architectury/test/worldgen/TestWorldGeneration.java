@@ -23,8 +23,8 @@ import dev.architectury.event.events.common.LifecycleEvent;
 import dev.architectury.registry.level.biome.BiomeModifications;
 import dev.architectury.test.TestMod;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.levelgen.GenerationStep;
 

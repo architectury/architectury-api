@@ -22,12 +22,11 @@ package dev.architectury.test.debug.client;
 import com.google.common.collect.Lists;
 import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.test.debug.ConsoleMessageSink;
-import net.minecraft.Util;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.minecraft.util.Util;
 
 import java.util.Collections;
 import java.util.List;

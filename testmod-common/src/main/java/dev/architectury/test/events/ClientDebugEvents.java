@@ -59,7 +59,7 @@ public class ClientDebugEvents {
             return CompoundEventResult.pass();
         });
         ClientLifecycleEvent.CLIENT_LEVEL_LOAD.register(world -> {
-            TestMod.SINK.accept("Client world loaded: " + world.dimension().location().toString());
+            TestMod.SINK.accept("Client world loaded: " + world.dimension().identifier().toString());
         });
         ClientPlayerEvent.CLIENT_PLAYER_JOIN.register(player -> {
             TestMod.SINK.accept(player.getScoreboardName() + " joined (client)");

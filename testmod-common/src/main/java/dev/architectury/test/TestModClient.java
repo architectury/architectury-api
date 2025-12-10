@@ -30,13 +30,11 @@ import dev.architectury.test.registry.TestRegistries;
 import dev.architectury.test.registry.client.TestKeybinds;
 import dev.architectury.test.registry.objects.ItemWithTooltip;
 import dev.architectury.test.registry.objects.MyClientTooltipComponent;
-import net.minecraft.client.gui.components.FocusableTextWidget;
 import net.minecraft.client.renderer.entity.CowRenderer;
-
-import static dev.architectury.test.TestMod.SINK;
-
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+
+import static dev.architectury.test.TestMod.SINK;
 
 public class TestModClient {
     public static void initializeClient() {
