@@ -383,7 +383,7 @@ public class BiomeModificationsImpl {
         
         @Override
         public Mutable setGrassColorOverride(@Nullable Integer colorOverride) {
-            builder.foliageColorOverride = Optional.ofNullable(colorOverride);
+            builder.grassColorOverride = Optional.ofNullable(colorOverride);
             return this;
         }
         
