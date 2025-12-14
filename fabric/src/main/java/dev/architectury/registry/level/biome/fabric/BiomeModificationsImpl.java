@@ -269,6 +269,12 @@ public class BiomeModificationsImpl {
             }
             
             @Override
+            public EffectsProperties.Mutable setDryFoliageColorOverride(@Nullable Integer colorOverride) {
+                context.setDryFoliageColor(Optional.ofNullable(colorOverride));
+                return this;
+            }
+            
+            @Override
             public EffectsProperties.Mutable setGrassColorOverride(@Nullable Integer colorOverride) {
                 context.setGrassColor(Optional.ofNullable(colorOverride));
                 return this;
