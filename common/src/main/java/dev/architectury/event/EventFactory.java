@@ -197,7 +197,7 @@ public final class EventFactory {
     private static class EventImpl<T> implements Event<T> {
         private final Function<List<T>, T> function;
         private T invoker = null;
-        private ArrayList<T> listeners;
+        private List<T> listeners;
         
         public EventImpl(Function<List<T>, T> function) {
             this.function = function;
@@ -221,7 +221,9 @@ public final class EventFactory {
         @Override
         public void unregister(T listener) {
             listeners.remove(listener);
-            listeners.trimToSize();
+            if(listeners instanceof ArrayList<?> arrayListListeners) {
+                arrayListListeners.trimToSize();
+            }
             invoker = null;
         }
         
@@ -233,7 +235,9 @@ public final class EventFactory {
         @Override
         public void clearListeners() {
             listeners.clear();
-            listeners.trimToSize();
+            if(listeners instanceof ArrayList<?> arrayListListeners) {
+                arrayListListeners.trimToSize();
+            }
             invoker = null;
         }
         
