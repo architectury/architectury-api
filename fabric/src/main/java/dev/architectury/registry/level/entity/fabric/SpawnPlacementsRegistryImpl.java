@@ -29,6 +29,5 @@ import java.util.function.Supplier;
 
 public class SpawnPlacementsRegistryImpl {
     public static <T extends Mob> void register(Supplier<? extends EntityType<T>> type, SpawnPlacementType spawnPlacement, Heightmap.Types heightmapType, SpawnPlacements.SpawnPredicate<T> spawnPredicate) {
-        SpawnPlacements.register(type.get(), spawnPlacement, heightmapType, spawnPredicate);
     }
 }

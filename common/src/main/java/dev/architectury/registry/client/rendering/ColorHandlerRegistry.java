@@ -20,7 +20,7 @@
 package dev.architectury.registry.client.rendering;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
-import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.client.color.block.BlockTintSource;
 import net.minecraft.world.level.block.Block;
 
 import java.util.Objects;
@@ -30,7 +30,7 @@ public final class ColorHandlerRegistry {
     private ColorHandlerRegistry() {
     }
     
-    public static void registerBlockColors(BlockColor color, Block... blocks) {
+    public static void registerBlockColors(BlockTintSource color, Block... blocks) {
         Supplier<Block>[] array = new Supplier[blocks.length];
         for (var i = 0; i < blocks.length; i++) {
             var block = Objects.requireNonNull(blocks[i], "blocks[i] is null!");
@@ -41,7 +41,7 @@ public final class ColorHandlerRegistry {
     
     @SafeVarargs
     @ExpectPlatform
-    public static void registerBlockColors(BlockColor color, Supplier<? extends Block>... blocks) {
+    public static void registerBlockColors(BlockTintSource color, Supplier<? extends Block>... blocks) {
         throw new AssertionError();
     }
 }

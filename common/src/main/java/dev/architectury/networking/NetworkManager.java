@@ -20,6 +20,7 @@
 package dev.architectury.networking;
 
 import dev.architectury.impl.NetworkAggregator;
+import dev.architectury.injectables.ExpectPlatformFallback;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.networking.transformers.PacketCollector;
 import dev.architectury.networking.transformers.PacketSink;
@@ -161,17 +162,17 @@ public final class NetworkManager {
     
     @ExpectPlatform
     public static <T extends CustomPacketPayload> void sendToServer(T payload) {
-        throw new AssertionError();
+        ExpectPlatformFallback.run("dev.architectury.networking.fabric.NetworkManagerImpl", "sendToServer", new Class[]{CustomPacketPayload.class}, payload);
     }
     
     @ExpectPlatform
     public static boolean canServerReceive(Identifier id) {
-        throw new AssertionError();
+        return (boolean) ExpectPlatformFallback.call("dev.architectury.networking.fabric.NetworkManagerImpl", "canServerReceive", new Class[]{Identifier.class}, id);
     }
     
     @ExpectPlatform
     public static boolean canPlayerReceive(ServerPlayer player, Identifier id) {
-        throw new AssertionError();
+        return (boolean) ExpectPlatformFallback.call("dev.architectury.networking.fabric.NetworkManagerImpl", "canPlayerReceive", new Class[]{ServerPlayer.class, Identifier.class}, player, id);
     }
     
     public static boolean canServerReceive(CustomPacketPayload.Type<?> type) {
@@ -196,12 +197,12 @@ public final class NetworkManager {
      */
     @ExpectPlatform
     public static Packet<ClientGamePacketListener> createAddEntityPacket(Entity entity, ServerEntity serverEntity) {
-        throw new AssertionError();
+        return (Packet<ClientGamePacketListener>) ExpectPlatformFallback.call("dev.architectury.networking.fabric.NetworkManagerImpl", "createAddEntityPacket", new Class[]{Entity.class, ServerEntity.class}, entity, serverEntity);
     }
     
     @ExpectPlatform
     private static NetworkAggregator.Adaptor getAdaptor() {
-        throw new AssertionError();
+        return (NetworkAggregator.Adaptor) ExpectPlatformFallback.call("dev.architectury.networking.fabric.NetworkManagerImpl", "getAdaptor", new Class[0]);
     }
     
     @FunctionalInterface

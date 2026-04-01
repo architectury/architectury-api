@@ -23,6 +23,7 @@ import com.mojang.datafixers.util.Either;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderOwner;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
@@ -46,6 +47,12 @@ public interface RegistrySupplierImpl<T> extends RegistrySupplier<T> {
     @Override
     default boolean isBound() {
         return isPresent();
+    }
+
+    @Override
+    default boolean areComponentsBound() {
+        Holder<T> holder = getHolder();
+        return holder != null && holder.areComponentsBound();
     }
     
     @Override
@@ -78,6 +85,12 @@ public interface RegistrySupplierImpl<T> extends RegistrySupplier<T> {
     default Stream<TagKey<T>> tags() {
         Holder<T> holder = getHolder();
         return holder != null ? holder.tags() : Stream.empty();
+    }
+
+    @Override
+    default DataComponentMap components() {
+        Holder<T> holder = getHolder();
+        return holder != null ? holder.components() : DataComponentMap.EMPTY;
     }
     
     @Override

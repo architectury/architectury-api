@@ -55,7 +55,7 @@ class ArchitecturyFluidAttributesFabric implements FluidVariantAttributeHandler 
     }
     
     @Override
-    public int getLuminance(FluidVariant variant) {
+    public int getLightEmission(FluidVariant variant) {
         return attributes.getLuminosity(FluidStackHooksFabric.fromFabric(variant, FluidStack.bucketAmount()));
     }
     
@@ -66,7 +66,7 @@ class ArchitecturyFluidAttributesFabric implements FluidVariantAttributeHandler 
     
     @Override
     public int getViscosity(FluidVariant variant, @Nullable Level world) {
-        return attributes.getViscosity(FluidStackHooksFabric.fromFabric(variant, FluidStack.bucketAmount()), world, null);
+        return attributes.getViscosity(FluidStackHooksFabric.fromFabric(variant, FluidStack.bucketAmount()));
     }
     
     @Override

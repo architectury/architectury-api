@@ -202,19 +202,19 @@ public final class EventFactory {
     @ExpectPlatform
     @ApiStatus.Internal
     public static <T> Event<Consumer<T>> attachToForge(Event<Consumer<T>> event) {
-        throw new AssertionError();
+        return event;
     }
     
     @ExpectPlatform
     @ApiStatus.Internal
     public static <T> Event<EventActor<T>> attachToForgeEventActor(Event<EventActor<T>> event) {
-        throw new AssertionError();
+        return event;
     }
     
     @ExpectPlatform
     @ApiStatus.Internal
     public static <T> Event<EventActor<T>> attachToForgeEventActorCancellable(Event<EventActor<T>> event) {
-        throw new AssertionError();
+        return event;
     }
     
     private static class EventImpl<T> implements Event<T> {

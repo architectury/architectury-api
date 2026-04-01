@@ -19,6 +19,7 @@
 
 package dev.architectury.utils;
 
+import dev.architectury.injectables.ExpectPlatformFallback;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.server.MinecraftServer;
 import org.jetbrains.annotations.Nullable;
@@ -27,6 +28,6 @@ public final class GameInstance {
     @Nullable
     @ExpectPlatform
     public static MinecraftServer getServer() {
-        throw new AssertionError();
+        return (MinecraftServer) ExpectPlatformFallback.call("dev.architectury.utils.fabric.GameInstanceImpl", "getServer", new Class[0]);
     }
 }

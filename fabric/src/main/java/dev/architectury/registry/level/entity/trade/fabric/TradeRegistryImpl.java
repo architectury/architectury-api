@@ -20,25 +20,15 @@
 package dev.architectury.registry.level.entity.trade.fabric;
 
 import dev.architectury.registry.level.entity.trade.TradeRegistry;
-import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.npc.villager.VillagerProfession;
-import net.minecraft.world.entity.npc.villager.VillagerTrades;
-
-import java.util.Collections;
 
 public class TradeRegistryImpl {
-    public static void registerVillagerTrade0(ResourceKey<VillagerProfession> profession, int level, VillagerTrades.ItemListing... trades) {
-        TradeOfferHelper.registerVillagerOffers(profession, level, allTradesList -> Collections.addAll(allTradesList, trades));
+    public static void registerVillagerTrade0(ResourceKey<VillagerProfession> profession, int level, TradeRegistry.ItemListing... trades) {
+        throw new UnsupportedOperationException("Villager trade registration is not implemented for Fabric on Minecraft 26.1 yet.");
     }
     
-    public static void registerTradeForWanderingTrader(TradeRegistry.WandererTradeType type, VillagerTrades.ItemListing... trades) {
-        TradeOfferHelper.registerWanderingTraderOffers(builder -> {
-            builder.addOffersToPool(switch (type) {
-                case BUYING_TRADES -> TradeOfferHelper.WanderingTraderOffersBuilder.BUY_ITEMS_POOL;
-                case GENERIC_TRADES -> TradeOfferHelper.WanderingTraderOffersBuilder.SELL_COMMON_ITEMS_POOL;
-                case RARE_TRADES -> TradeOfferHelper.WanderingTraderOffersBuilder.SELL_SPECIAL_ITEMS_POOL;
-            }, trades);
-        });
+    public static void registerTradeForWanderingTrader(TradeRegistry.WandererTradeType type, TradeRegistry.ItemListing... trades) {
+        throw new UnsupportedOperationException("Wandering trader registration is not implemented for Fabric on Minecraft 26.1 yet.");
     }
 }

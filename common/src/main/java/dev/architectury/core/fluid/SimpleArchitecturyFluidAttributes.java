@@ -23,13 +23,14 @@ import com.google.common.base.Suppliers;
 import dev.architectury.fluid.FluidStack;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.util.Util;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.Fluid;
@@ -67,7 +68,7 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
     private SoundEvent fillSound = SoundEvents.BUCKET_FILL;
     @Nullable
     private SoundEvent emptySound = SoundEvents.BUCKET_EMPTY;
-    private final Supplier<String> defaultTranslationKey = Suppliers.memoize(() -> Util.makeDescriptionId("fluid", getSourceFluid().arch$registryName()));
+    private final Supplier<String> defaultTranslationKey = Suppliers.memoize(() -> Util.makeDescriptionId("fluid", BuiltInRegistries.FLUID.getKey(getSourceFluid())));
     
     public static SimpleArchitecturyFluidAttributes ofSupplier(Supplier<? extends Supplier<? extends Fluid>> flowingFluid, Supplier<? extends Supplier<? extends Fluid>> sourceFluid) {
         return of(() -> flowingFluid.get().get(), () -> sourceFluid.get().get());

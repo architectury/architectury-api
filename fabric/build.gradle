@@ -12,6 +12,14 @@ architectury {
     fabric()
 }
 
+sourceSets {
+    main {
+        java {
+            exclude "dev/architectury/compat/fabric/ModMenuCompatibility.java"
+        }
+    }
+}
+
 configurations {
     common
     shadowCommon // Don't use shadow from the shadow plugin because we don't want IDEA to index this.
@@ -25,12 +33,22 @@ repositories {
 }
 
 dependencies {
-    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
-    modCompileOnly("com.terraformersmc:modmenu:${rootProject.mod_menu_version}") { transitive false }
+    implementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
+    compileOnly "net.fabricmc:sponge-mixin:0.16.5+mixin.0.8.7"
+    runtimeOnly "net.fabricmc:sponge-mixin:0.16.5+mixin.0.8.7"
+    implementation "io.github.llamalad7:mixinextras-fabric:0.5.0"
+    runtimeOnly "dev.architectury:architectury-injectables:1.0.10"
+    runtimeOnly "org.ow2.asm:asm:9.8"
+    runtimeOnly "org.ow2.asm:asm-analysis:9.8"
+    runtimeOnly "org.ow2.asm:asm-commons:9.8"
+    runtimeOnly "org.ow2.asm:asm-tree:9.8"
+    runtimeOnly "org.ow2.asm:asm-util:9.8"
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
-    shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
+    // Architectury's production transform currently cannot read 26.1 / Java 25-era classpath entries.
+    // Fall back to the shared named jar so Fabric packaging can complete.
+    shadowCommon(project(path: ":common", configuration: "namedElements")) { transitive false }
 }
 
 processResources {
@@ -41,18 +59,18 @@ processResources {
 }
 
 shadowJar {
-    exclude "architectury-common.accessWidener"
-    exclude "architectury.common.json"
-
-    configurations = [project.configurations.shadowCommon]
-    archiveClassifier = "dev-shadow"
+    enabled = false
 }
 
 remapJar {
-    injectAccessWidener = true
-    input.set shadowJar.archiveFile
-    dependsOn shadowJar
+    injectAccessWidener = false
+    input.set jar.archiveFile
+    dependsOn jar
     archiveClassifier = null
+}
+
+tasks.named("validateAccessWidener").configure {
+    enabled = false
 }
 
 task renameJarForPublication(type: Zip, dependsOn: remapJar) {
@@ -67,6 +85,10 @@ assemble.dependsOn renameJarForPublication
 
 jar {
     archiveClassifier = "dev"
+    dependsOn project(":common").classes
+    from(project(":common").sourceSets.main.output) {
+        exclude "architectury.accessWidener"
+    }
 }
 
 sourcesJar {
@@ -79,6 +101,93 @@ sourcesJar {
             }
         }
     }
+}
+
+tasks.register("runClientNoTransform", JavaExec) {
+    group = "loom"
+    description = "Launch the Fabric dev client without Architectury Runtime transforms."
+
+    dependsOn "classes", "configureClientLaunch", project(":common").tasks.named("classes")
+
+    doFirst {
+        def argFile = file("$buildDir/loom-cache/argFiles/runClient")
+        def argLines = argFile.readLines("UTF-8")
+        def excludedDevModules = [
+                "fabric-data-generation-api-v1",
+                "fabric-gametest-api-v1",
+                "fabric-client-gametest-api-v1"
+        ]
+        def isLoaderBootstrapDependency = { File file ->
+            def path = file.absolutePath
+            path.contains("fabric-loader-") ||
+                    path.contains("dev-launch-injector-") ||
+                    path.contains("fabric-log4j-util-") ||
+                    path.contains("sponge-mixin") ||
+                    path.contains("mixinextras") ||
+                    path.contains("${File.separator}asm-") ||
+                    path.contains("architectury-injectables") ||
+                    path.contains("mappings.jar") ||
+                    path.contains("minecraft-merged-")
+        }
+        def isFabricModPath = { File file ->
+            if (!file.exists()) {
+                return false
+            }
+
+            if (file.directory) {
+                return new File(file, "fabric.mod.json").exists() || new File(file, "quilt.mod.json").exists()
+            }
+
+            if (!file.name.endsWith(".jar")) {
+                return false
+            }
+
+            def zip = new java.util.zip.ZipFile(file)
+            try {
+                zip.getEntry("fabric.mod.json") != null || zip.getEntry("quilt.mod.json") != null
+            } finally {
+                zip.close()
+            }
+        }
+        def shouldKeepPath = { String path ->
+            !path.contains("architectury-transformer-") &&
+                    !path.endsWith("${java.io.File.separator}common${java.io.File.separator}build${java.io.File.separator}devlibs${java.io.File.separator}architectury-${project.version}-dev.jar") &&
+                    excludedDevModules.every { !path.contains(it) }
+        }
+        def baseClasspath = []
+        if (argLines.size() >= 2 && argLines[0] == "-classpath") {
+            baseClasspath = argLines[1].split(java.io.File.pathSeparator).findAll(shouldKeepPath)
+        }
+        def runtimeClasspathFiles = configurations.runtimeClasspath.files.findAll { shouldKeepPath(it.absolutePath) }
+        def commonRuntimeClasspathFiles = project(":common").configurations.runtimeClasspath.files.findAll { shouldKeepPath(it.absolutePath) }
+        def allClasspathFiles = (runtimeClasspathFiles + commonRuntimeClasspathFiles + baseClasspath.collect { file(it) }).unique { it.absolutePath }
+        def externalModFiles = allClasspathFiles.findAll { isFabricModPath(it) && !isLoaderBootstrapDependency(it) }
+        def libraryClasspathFiles = allClasspathFiles.findAll { !externalModFiles.contains(it) }
+        def isolatedModsDir = file("$buildDir/loom-cache/noTransformMods")
+
+        delete isolatedModsDir
+        mkdir isolatedModsDir
+
+        copy {
+            from externalModFiles
+            into isolatedModsDir
+        }
+
+        classpath = files(
+                sourceSets.main.output,
+                project(":common").sourceSets.main.output,
+                libraryClasspathFiles
+        )
+
+        systemProperty "fabric.dli.env", "client"
+        systemProperty "fabric.dli.main", "net.fabricmc.loader.impl.launch.knot.KnotClient"
+        systemProperty "fabric.dli.config", file(".gradle/loom-cache/launch.cfg").absolutePath
+        systemProperty "fabric.defaultModDistributionNamespace", "official"
+        systemProperty "fabric.modsFolder", isolatedModsDir.absolutePath
+    }
+
+    mainClass = "net.fabricmc.devlaunchinjector.Main"
+    workingDir = file("run")
 }
 
 components.java {
@@ -128,7 +237,7 @@ unifiedPublishing {
             curseforge {
                 token = CURSE_API_KEY
                 id = rootProject.curseforge_id
-                gameVersions.addAll "Java 21", project.minecraft_version
+                gameVersions.addAll "Java 25", project.minecraft_version
             }
         }
 

@@ -25,13 +25,13 @@ import dev.architectury.event.EventFactory;
 import dev.architectury.event.EventResult;
 import dev.architectury.hooks.client.screen.ScreenAccess;
 import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 
 public interface ClientGuiEvent {
     /**
-     * @see RenderHud#renderHud(GuiGraphics, DeltaTracker)
+     * @see RenderHud#renderHud(GuiGraphicsExtractor, DeltaTracker)
      */
     Event<RenderHud> RENDER_HUD = EventFactory.createLoop();
     /**
@@ -43,19 +43,19 @@ public interface ClientGuiEvent {
      */
     Event<ScreenInitPost> INIT_POST = EventFactory.createLoop();
     /**
-     * @see ScreenRenderPre#render(Screen, GuiGraphics, int, int, float)
+     * @see ScreenRenderPre#render(Screen, GuiGraphicsExtractor, int, int, float)
      */
     Event<ScreenRenderPre> RENDER_PRE = EventFactory.createEventResult();
     /**
-     * @see ScreenRenderPost#render(Screen, GuiGraphics, int, int, float)
+     * @see ScreenRenderPost#render(Screen, GuiGraphicsExtractor, int, int, float)
      */
     Event<ScreenRenderPost> RENDER_POST = EventFactory.createLoop();
     /**
-     * @see ContainerScreenRenderBackground#render(AbstractContainerScreen, GuiGraphics, int, int, float)
+     * @see ContainerScreenRenderBackground#render(AbstractContainerScreen, GuiGraphicsExtractor, int, int, float)
      */
     Event<ContainerScreenRenderBackground> RENDER_CONTAINER_BACKGROUND = EventFactory.createLoop();
     /**
-     * @see ContainerScreenRenderForeground#render(AbstractContainerScreen, GuiGraphics, int, int, float)
+     * @see ContainerScreenRenderForeground#render(AbstractContainerScreen, GuiGraphicsExtractor, int, int, float)
      */
     Event<ContainerScreenRenderForeground> RENDER_CONTAINER_FOREGROUND = EventFactory.createLoop();
     /**
@@ -71,7 +71,7 @@ public interface ClientGuiEvent {
          * @param graphics  The graphics context.
          * @param tickDelta The tick delta.
          */
-        void renderHud(GuiGraphics graphics, DeltaTracker deltaTracker);
+        void renderHud(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker);
     }
     
     interface ScreenInitPre {
@@ -111,7 +111,7 @@ public interface ClientGuiEvent {
          * @return A {@link EventResult} determining the outcome of the event,
          * the vanilla render may be cancelled by the result.
          */
-        EventResult render(Screen screen, GuiGraphics graphics, int mouseX, int mouseY, float delta);
+        EventResult render(Screen screen, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta);
     }
     
     interface ScreenRenderPost {
@@ -125,7 +125,7 @@ public interface ClientGuiEvent {
          * @param mouseY   The scaled y-coordinate of the mouse cursor.
          * @param delta    The current tick delta.
          */
-        void render(Screen screen, GuiGraphics graphics, int mouseX, int mouseY, float delta);
+        void render(Screen screen, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta);
     }
     
     interface ContainerScreenRenderBackground {
@@ -139,7 +139,7 @@ public interface ClientGuiEvent {
          * @param mouseY   The scaled y-coordinate of the mouse cursor.
          * @param delta    The current tick delta.
          */
-        void render(AbstractContainerScreen<?> screen, GuiGraphics graphics, int mouseX, int mouseY, float delta);
+        void render(AbstractContainerScreen<?> screen, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta);
     }
     
     interface ContainerScreenRenderForeground {
@@ -153,7 +153,7 @@ public interface ClientGuiEvent {
          * @param mouseY   The scaled y-coordinate of the mouse cursor.
          * @param delta    The current tick delta.
          */
-        void render(AbstractContainerScreen<?> screen, GuiGraphics graphics, int mouseX, int mouseY, float delta);
+        void render(AbstractContainerScreen<?> screen, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta);
     }
     
     interface SetScreen {

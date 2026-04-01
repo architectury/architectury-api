@@ -5,6 +5,7 @@ run/
 out/
 *.iml
 .gradle/
+.gradle-user/
 output/
 bin/
 libs/

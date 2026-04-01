@@ -23,7 +23,7 @@ import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
 import dev.architectury.event.EventResult;
 import dev.architectury.impl.TooltipAdditionalContextsImpl;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -39,11 +39,11 @@ public interface ClientTooltipEvent {
      */
     Event<Item> ITEM = EventFactory.createLoop();
     /**
-     * @see Render#renderTooltip(GuiGraphics, List, int, int)
+     * @see Render#renderTooltip(GuiGraphicsExtractor, List, int, int)
      */
     Event<Render> RENDER_PRE = EventFactory.createEventResult();
     /**
-     * @see RenderModifyPosition#renderTooltip(GuiGraphics, PositionContext)
+     * @see RenderModifyPosition#renderTooltip(GuiGraphicsExtractor, PositionContext)
      */
     Event<RenderModifyPosition> RENDER_MODIFY_POSITION = EventFactory.createLoop();
     
@@ -84,7 +84,7 @@ public interface ClientTooltipEvent {
          * @return A {@link EventResult} determining the outcome of the event,
          * the execution of the vanilla tooltip rendering may be cancelled by the result.
          */
-        EventResult renderTooltip(GuiGraphics graphics, List<? extends ClientTooltipComponent> texts, int x, int y);
+        EventResult renderTooltip(GuiGraphicsExtractor graphics, List<? extends ClientTooltipComponent> texts, int x, int y);
     }
     
     interface RenderModifyPosition {
@@ -94,7 +94,7 @@ public interface ClientTooltipEvent {
          * @param graphics The graphics context.
          * @param context  The current position context.
          */
-        void renderTooltip(GuiGraphics graphics, PositionContext context);
+        void renderTooltip(GuiGraphicsExtractor graphics, PositionContext context);
     }
     
     interface PositionContext {

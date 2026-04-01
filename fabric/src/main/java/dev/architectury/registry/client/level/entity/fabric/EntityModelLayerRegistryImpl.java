@@ -19,7 +19,7 @@
 
 package dev.architectury.registry.client.level.entity.fabric;
 
-import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 
@@ -27,6 +27,6 @@ import java.util.function.Supplier;
 
 public class EntityModelLayerRegistryImpl {
     public static void register(ModelLayerLocation location, Supplier<LayerDefinition> definition) {
-        EntityModelLayerRegistry.registerModelLayer(location, definition::get);
+        ModelLayerRegistry.registerModelLayer(location, definition::get);
     }
 }

@@ -5,13 +5,20 @@ loom {
 dependencies {
     // We depend on fabric loader here to use the fabric @Environment annotations
     // Do NOT use other classes from fabric loader
-    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+    implementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+    compileOnly "net.fabricmc:sponge-mixin:0.16.5+mixin.0.8.7"
 }
 
 architectury {
     common(rootProject.platforms.split(",")) {
         it.platformPackage "neoforge", "forge"
     }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    // Architectury's transformer currently fails on Java 25 class files, but it only consumes the common jar.
+    // Keep the shared code on Java 21 bytecode so transformProductionFabric can finish.
+    options.release = 21
 }
 
 /**

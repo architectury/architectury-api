@@ -21,6 +21,7 @@ package dev.architectury.hooks.fluid.fabric;
 
 import dev.architectury.fluid.FluidStack;
 import dev.architectury.fluid.fabric.FluidStackImpl;
+import net.minecraft.core.component.DataComponentPatch;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 
@@ -33,7 +34,7 @@ public final class FluidStackHooksFabric {
     }
 
     public static FluidStack fromFabric(FluidVariant variant, long amount) {
-        return FluidStackImpl.fromValue.apply(new FluidStackImpl.Pair(variant.getFluid(), variant.getComponents(), amount));
+        return FluidStackImpl.fromValue.apply(new FluidStackImpl.Pair(variant.getFluid(), DataComponentPatch.EMPTY, amount));
     }
 
     public static FluidVariant toFabric(FluidStack stack) {

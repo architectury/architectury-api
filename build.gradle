@@ -9,7 +9,6 @@ buildscript {
 plugins {
     id "architectury-plugin" version "3.4-SNAPSHOT"
     id "dev.architectury.loom" version "1.13-SNAPSHOT" apply false
-    id "org.cadixdev.licenser" version "0.6.1"
     id "me.shedaniel.unified-publishing" version "0.1.+" apply false
     id "maven-publish"
 }
@@ -22,12 +21,12 @@ subprojects {
     apply plugin: "dev.architectury.loom"
 
     loom {
-        silentMojangMappingsLicense()
+        noIntermediateMappings()
     }
 
     dependencies {
         minecraft "com.mojang:minecraft:${rootProject.architectury.minecraft}"
-        mappings loom.officialMojangMappings()
+        mappings files(rootProject.file("gradle/identity-mappings-${rootProject.architectury.minecraft}.jar"))
     }
 
     repositories {
@@ -46,7 +45,6 @@ subprojects {
 allprojects {
     apply plugin: "java"
     apply plugin: "architectury-plugin"
-    apply plugin: "org.cadixdev.licenser"
 
     ext {
         isSnapshot = System.getenv("PR_NUM") != null
@@ -56,10 +54,14 @@ allprojects {
 
     if (!ext.isSnapshot) {
         version = rootProject.base_version + "." + runNumber + rootProject.version_suffix
-        archivesBaseName = rootProject.archives_base_name
+        ext.archivesBaseName = rootProject.archives_base_name
     } else {
         version = rootProject.base_version + "-PR." + System.getenv("PR_NUM") + "." + runNumber
-        archivesBaseName = rootProject.archives_base_name_snapshot
+        ext.archivesBaseName = rootProject.archives_base_name_snapshot
+    }
+
+    base {
+        archivesName = project.ext.archivesBaseName
     }
 
     group = rootProject.maven_group
@@ -73,20 +75,6 @@ allprojects {
         // Architectury's common javadoc has references to platform code, which cannot be resolved normally.
         // Let's just skip the errors!
         failOnError = false
-    }
-
-    license {
-        header = rootProject.file("HEADER")
-
-        ext {
-            name = "architectury"
-            year = "2020, 2021, 2022"
-        }
-
-        include "**/*.java"
-        exclude "**/NbtType.java"
-
-        ignoreFailures = true
     }
 
     ext {
@@ -122,6 +110,3 @@ allprojects {
         withSourcesJar()
     }
 }
-
-task licenseFormatAll
-subprojects { p -> licenseFormatAll.dependsOn("${p.path}:licenseFormat") }

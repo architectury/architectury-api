@@ -57,7 +57,7 @@ public class NetworkManagerImpl {
             @Override
             public <T extends CustomPacketPayload> void registerC2S(CustomPacketPayload.Type<T> type, StreamCodec<? super RegistryFriendlyByteBuf, T> codec, NetworkReceiver<T> receiver) {
                 LOGGER.info("Registering C2S receiver with id {}", type.id());
-                PayloadTypeRegistry.playC2S().register(type, codec);
+                PayloadTypeRegistry.serverboundPlay().register(type, codec);
                 ServerPlayNetworking.registerGlobalReceiver(type, (payload, fabricContext) -> {
                     var context = context(fabricContext.player(), fabricContext.server(), false);
                     receiver.receive(payload, context);
@@ -66,24 +66,24 @@ public class NetworkManagerImpl {
             
             @Override
             public <T extends CustomPacketPayload> void registerS2C(CustomPacketPayload.Type<T> type, StreamCodec<? super RegistryFriendlyByteBuf, T> codec, NetworkReceiver<T> receiver) {
-                PayloadTypeRegistry.playS2C().register(type, codec);
+                PayloadTypeRegistry.clientboundPlay().register(type, codec);
                 if (Platform.getEnvironment() == Env.CLIENT)
                     ClientNetworkManagerImpl.registerS2C(type, codec, receiver);
             }
             
             @Override
             public <T extends CustomPacketPayload> Packet<?> toC2SPacket(T payload) {
-                return ClientPlayNetworking.createC2SPacket(payload);
+                return ClientPlayNetworking.createServerboundPacket(payload);
             }
             
             @Override
             public <T extends CustomPacketPayload> Packet<?> toS2CPacket(T payload) {
-                return ServerPlayNetworking.createS2CPacket(payload);
+                return ServerPlayNetworking.createClientboundPacket(payload);
             }
             
             @Override
             public <T extends CustomPacketPayload> void registerS2CType(CustomPacketPayload.Type<T> type, StreamCodec<? super RegistryFriendlyByteBuf, T> codec) {
-                PayloadTypeRegistry.playS2C().register(type, codec);
+                PayloadTypeRegistry.clientboundPlay().register(type, codec);
             }
         };
     }

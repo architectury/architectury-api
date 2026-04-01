@@ -24,8 +24,8 @@ import com.google.common.collect.MultimapBuilder;
 import dev.architectury.registry.CreativeTabOutput;
 import dev.architectury.registry.CreativeTabRegistry;
 import dev.architectury.registry.registries.DeferredSupplier;
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -43,7 +43,7 @@ public class CreativeTabRegistryImpl {
     
     @ApiStatus.Experimental
     public static CreativeModeTab create(Consumer<CreativeModeTab.Builder> callback) {
-        CreativeModeTab.Builder builder = FabricItemGroup.builder();
+        CreativeModeTab.Builder builder = FabricCreativeModeTab.builder();
         callback.accept(builder);
         return builder.build();
     }
@@ -116,20 +116,20 @@ public class CreativeTabRegistryImpl {
     }
     
     static {
-        ItemGroupEvents.MODIFY_ENTRIES_ALL.register((tab, output) -> {
+        CreativeModeTabEvents.MODIFY_OUTPUT_ALL.register((tab, output) -> {
             APPENDS.get(BuiltInRegistries.CREATIVE_MODE_TAB.getKey(tab)).forEach(s -> output.accept(s.get()));
         });
     }
     
     public static void modify(DeferredSupplier<CreativeModeTab> tab, CreativeTabRegistry.ModifyTabCallback filler) {
-        ItemGroupEvents.modifyEntriesEvent(tab.getKey()).register(entries -> {
+        CreativeModeTabEvents.modifyOutputEvent(tab.getKey()).register(entries -> {
             filler.accept(entries.getEnabledFeatures(), new CreativeTabOutput() {
                 @Override
                 public void acceptAfter(ItemStack after, ItemStack stack, CreativeModeTab.TabVisibility visibility) {
                     if (after.isEmpty()) {
                         entries.accept(stack, visibility);
                     } else {
-                        entries.addAfter(after, List.of(stack), visibility);
+                        entries.insertAfter(after, List.of(stack), visibility);
                     }
                 }
                 
@@ -138,7 +138,7 @@ public class CreativeTabRegistryImpl {
                     if (before.isEmpty()) {
                         entries.accept(stack, visibility);
                     } else {
-                        entries.addBefore(before, List.of(stack), visibility);
+                        entries.insertBefore(before, List.of(stack), visibility);
                     }
                 }
             }, entries.shouldShowOpRestrictedItems());

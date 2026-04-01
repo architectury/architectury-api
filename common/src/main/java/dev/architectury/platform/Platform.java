@@ -19,6 +19,7 @@
 
 package dev.architectury.platform;
 
+import dev.architectury.injectables.ExpectPlatformFallback;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.injectables.targets.ArchitecturyTarget;
 import dev.architectury.utils.Env;
@@ -83,7 +84,7 @@ public final class Platform {
      */
     @ExpectPlatform
     public static Path getGameFolder() {
-        throw new AssertionError();
+        return (Path) ExpectPlatformFallback.call("dev.architectury.platform.fabric.PlatformImpl", "getGameFolder", new Class[0]);
     }
     
     /**
@@ -93,7 +94,7 @@ public final class Platform {
      */
     @ExpectPlatform
     public static Path getConfigFolder() {
-        throw new AssertionError();
+        return (Path) ExpectPlatformFallback.call("dev.architectury.platform.fabric.PlatformImpl", "getConfigFolder", new Class[0]);
     }
     
     /**
@@ -103,7 +104,7 @@ public final class Platform {
      */
     @ExpectPlatform
     public static Path getModsFolder() {
-        throw new AssertionError();
+        return (Path) ExpectPlatformFallback.call("dev.architectury.platform.fabric.PlatformImpl", "getModsFolder", new Class[0]);
     }
     
     /**
@@ -119,7 +120,7 @@ public final class Platform {
      */
     @ExpectPlatform
     public static Env getEnvironment() {
-        throw new AssertionError();
+        return (Env) ExpectPlatformFallback.call("dev.architectury.platform.fabric.PlatformImpl", "getEnvironment", new Class[0]);
     }
     
     /**
@@ -132,7 +133,7 @@ public final class Platform {
      */
     @ExpectPlatform
     public static EnvType getEnv() {
-        throw new AssertionError();
+        return (EnvType) ExpectPlatformFallback.call("dev.architectury.platform.fabric.PlatformImpl", "getEnv", new Class[0]);
     }
     
     /**
@@ -143,7 +144,7 @@ public final class Platform {
      */
     @ExpectPlatform
     public static boolean isModLoaded(String id) {
-        throw new AssertionError();
+        return (boolean) ExpectPlatformFallback.call("dev.architectury.platform.fabric.PlatformImpl", "isModLoaded", new Class[]{String.class}, id);
     }
     
     /**
@@ -155,7 +156,7 @@ public final class Platform {
      */
     @ExpectPlatform
     public static Mod getMod(String id) {
-        throw new AssertionError();
+        return (Mod) ExpectPlatformFallback.call("dev.architectury.platform.fabric.PlatformImpl", "getMod", new Class[]{String.class}, id);
     }
     
     /**
@@ -180,7 +181,7 @@ public final class Platform {
      */
     @ExpectPlatform
     public static Collection<Mod> getMods() {
-        throw new AssertionError();
+        return (Collection<Mod>) ExpectPlatformFallback.call("dev.architectury.platform.fabric.PlatformImpl", "getMods", new Class[0]);
     }
     
     /**
@@ -190,11 +191,11 @@ public final class Platform {
      */
     @ExpectPlatform
     public static Collection<String> getModIds() {
-        throw new AssertionError();
+        return (Collection<String>) ExpectPlatformFallback.call("dev.architectury.platform.fabric.PlatformImpl", "getModIds", new Class[0]);
     }
     
     @ExpectPlatform
     public static boolean isDevelopmentEnvironment() {
-        throw new AssertionError();
+        return (boolean) ExpectPlatformFallback.call("dev.architectury.platform.fabric.PlatformImpl", "isDevelopmentEnvironment", new Class[0]);
     }
 }

@@ -26,8 +26,28 @@ import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+
 public class MenuScreenRegistryImpl {
     public static <H extends AbstractContainerMenu, S extends Screen & MenuAccess<H>> void registerScreenFactory(MenuType<? extends H> type, ScreenFactory<H, S> factory) {
-        MenuScreens.register(type, factory::create);
+        try {
+            Class<?> constructorClass = Class.forName("net.minecraft.client.gui.screens.MenuScreens$ScreenConstructor");
+            Object constructor = Proxy.newProxyInstance(
+                    MenuScreenRegistryImpl.class.getClassLoader(),
+                    new Class[]{constructorClass},
+                    (proxy, method, args) -> {
+                        if ("create".equals(method.getName())) {
+                            return factory.create((H) args[0], (net.minecraft.world.entity.player.Inventory) args[1], (net.minecraft.network.chat.Component) args[2]);
+                        }
+                        throw new UnsupportedOperationException(method.getName());
+                    }
+            );
+            Method register = MenuScreens.class.getDeclaredMethod("register", MenuType.class, constructorClass);
+            register.setAccessible(true);
+            register.invoke(null, type, constructor);
+        } catch (ReflectiveOperationException exception) {
+            throw new RuntimeException("Failed to register menu screen factory for " + type, exception);
+        }
     }
 }

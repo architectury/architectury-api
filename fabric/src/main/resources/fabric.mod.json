@@ -27,16 +27,14 @@
     ],
     "client": [
       "dev.architectury.init.fabric.ArchitecturyClient::init"
-    ],
-    "modmenu": [
-      "dev.architectury.compat.fabric.ModMenuCompatibility"
     ]
   },
   "icon": "icon.png",
   "depends": {
-    "minecraft": "~1.21.11",
-    "fabricloader": ">=0.15.4",
-    "fabric-api": ">=0.127.0"
+    "minecraft": "~26.1",
+    "fabricloader": ">=0.18.5",
+    "java": ">=25",
+    "fabric-api": ">=0.144.3+26.1"
   },
   "breaks": {
     "optifabric": "<1.13.0"

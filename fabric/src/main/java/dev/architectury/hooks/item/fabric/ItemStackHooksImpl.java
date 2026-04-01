@@ -27,7 +27,7 @@ public class ItemStackHooksImpl {
     }
     
     public static ItemStack getCraftingRemainingItem(ItemStack stack) {
-        ItemStack remainder = stack.getItem().getRecipeRemainder(stack);
-        return remainder == null || remainder.isEmpty() ? ItemStack.EMPTY : remainder;
+        ItemStack remainder = stack.getItem().getCraftingRemainder().create();
+        return remainder.isEmpty() ? ItemStack.EMPTY : remainder;
     }
 }

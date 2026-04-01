@@ -22,7 +22,6 @@ package dev.architectury.registry.level.entity.trade;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.npc.villager.VillagerTrades;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
@@ -32,20 +31,20 @@ import java.util.Optional;
 
 /**
  * This class is the easiest implementation of a trade object.
- * All trades added by vanilla do have custom classes like {@link VillagerTrades.EmeraldForItems}, but they aren't accessible.
+ * All trades added by vanilla do have custom classes, but they aren't accessible.
  * <p>
  * Instead of widening the access of those classes or recreating them, this class was added to serve a basic trading implementation.
  * To register a trade, just call
- * {@link TradeRegistry#registerVillagerTrade(net.minecraft.world.entity.npc.VillagerProfession, int, VillagerTrades.ItemListing...)}
+ * {@link TradeRegistry#registerVillagerTrade(net.minecraft.resources.ResourceKey, int, TradeRegistry.ItemListing...)}
  * or
- * {@link TradeRegistry#registerTradeForWanderingTrader(boolean, VillagerTrades.ItemListing...)}.
+ * {@link TradeRegistry#registerTradeForWanderingTrader(dev.architectury.registry.level.entity.trade.TradeRegistry.WandererTradeType, TradeRegistry.ItemListing...)}.
  */
 public record SimpleTrade(ItemCost primaryPrice, Optional<ItemCost> secondaryPrice,
                           ItemStack sale, int maxTrades, int experiencePoints,
-                          float priceMultiplier) implements VillagerTrades.ItemListing {
+                          float priceMultiplier) implements TradeRegistry.ItemListing {
     /**
      * Constructor for creating the trade.
-     * You can take a look at all the values the vanilla game uses right here {@link VillagerTrades#TRADES}.
+     * You can take a look at all the values the vanilla game uses in the trade bootstrap data.
      *
      * @param primaryPrice     The first price a player has to pay to get the 'sale' stack.
      * @param secondaryPrice   An optional, secondary price to pay as well as the primary one. If not needed just use {@link Optional#empty()}.

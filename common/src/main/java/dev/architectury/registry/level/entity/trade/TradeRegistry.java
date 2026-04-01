@@ -21,22 +21,26 @@ package dev.architectury.registry.level.entity.trade;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.npc.villager.VillagerProfession;
-import net.minecraft.world.entity.npc.villager.VillagerTrades;
+import net.minecraft.world.item.trading.MerchantOffer;
+import org.jetbrains.annotations.Nullable;
 
 public class TradeRegistry {
     private TradeRegistry() {
     }
     
     /**
-     * Register a trade ({@link VillagerTrades.ItemListing}) for a villager by its profession and level.
+     * Register a trade ({@link ItemListing}) for a villager by its profession and level.
      * When the mod loader is Forge, the {@code VillagerTradesEvent} event is used.
      *
      * @param profession The Profession the villager needs to have this trade.
      * @param level      The level the villager needs. Vanilla range is 1 to 5, however mods may extend that upper limit further.
      * @param trades     The trades to add to this profession at the specified level.
      */
-    public static void registerVillagerTrade(ResourceKey<VillagerProfession> profession, int level, VillagerTrades.ItemListing... trades) {
+    public static void registerVillagerTrade(ResourceKey<VillagerProfession> profession, int level, ItemListing... trades) {
         if (level < 1) {
             throw new IllegalArgumentException("Villager Trade level has to be at least 1!");
         }
@@ -44,19 +48,19 @@ public class TradeRegistry {
     }
     
     @ExpectPlatform
-    private static void registerVillagerTrade0(ResourceKey<VillagerProfession> profession, int level, VillagerTrades.ItemListing... trades) {
+    private static void registerVillagerTrade0(ResourceKey<VillagerProfession> profession, int level, ItemListing... trades) {
         throw new AssertionError();
     }
     
     /**
-     * Register a trade ({@link VillagerTrades.ItemListing}) to a wandering trader by its rarity.
+     * Register a trade ({@link ItemListing}) to a wandering trader by its rarity.
      * When the mod loader is Forge, the {@code WandererTradesEvent} event is used.
      *
      * @param type   The type of trade to add to the wandering trader.
      * @param trades The trades to add to the wandering trader.
      */
     @ExpectPlatform
-    public static void registerTradeForWanderingTrader(WandererTradeType type, VillagerTrades.ItemListing... trades) {
+    public static void registerTradeForWanderingTrader(WandererTradeType type, ItemListing... trades) {
         throw new AssertionError();
     }
     
@@ -64,6 +68,12 @@ public class TradeRegistry {
         BUYING_TRADES,
         GENERIC_TRADES,
         RARE_TRADES,
+    }
+
+    @FunctionalInterface
+    public interface ItemListing {
+        @Nullable
+        MerchantOffer getOffer(ServerLevel level, Entity entity, RandomSource random);
     }
     
 }

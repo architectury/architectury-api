@@ -22,7 +22,7 @@ package dev.architectury.mixin.fabric.client;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import dev.architectury.event.events.client.ClientGuiEvent;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import org.spongepowered.asm.mixin.Mixin;
@@ -30,10 +30,10 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(value = GameRenderer.class, priority = 1100)
 public abstract class MixinGameRenderer {
-    @WrapOperation(method = "render(Lnet/minecraft/client/DeltaTracker;Z)V",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;renderWithTooltipAndSubtitles(Lnet/minecraft/client/gui/GuiGraphics;IIF)V",
+    @WrapOperation(method = "extractGui(Lnet/minecraft/client/DeltaTracker;ZZ)V",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;extractRenderStateWithTooltipAndSubtitles(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V",
                     ordinal = 0))
-    public void wrapRenderScreen(Screen screen, GuiGraphics graphics, int mouseX, int mouseY, float delta, Operation<Void> original) {
+    public void wrapRenderScreen(Screen screen, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, Operation<Void> original) {
         if (ClientGuiEvent.RENDER_PRE.invoker().render(screen, graphics, mouseX, mouseY, delta).isFalse()) {
             return;
         }

@@ -19,14 +19,17 @@
 
 package dev.architectury.hooks.client.fluid.fabric;
 
+import dev.architectury.core.fluid.ArchitecturyFluidAttributes;
+import dev.architectury.core.fluid.fabric.ArchitecturyFlowingFluidImpl;
 import dev.architectury.fluid.FluidStack;
 import dev.architectury.hooks.fluid.fabric.FluidStackHooksFabric;
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
@@ -35,53 +38,38 @@ import org.jetbrains.annotations.Nullable;
 public class ClientFluidStackHooksImpl {
     @Nullable
     public static TextureAtlasSprite getStillTexture(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, FluidState state) {
-        if (state.getType() == Fluids.EMPTY) return null;
-        var handler = FluidRenderHandlerRegistry.INSTANCE.get(state.getType());
-        if (handler == null) return null;
-        var sprites = handler.getFluidSprites(level, pos, state);
-        if (sprites == null) return null;
-        return sprites[0];
+        return getSprite(state.getType(), true, state, level, pos);
     }
     
     @Nullable
     public static TextureAtlasSprite getStillTexture(FluidStack stack) {
-        var sprites = FluidVariantRendering.getSprites(FluidStackHooksFabric.toFabric(stack));
-        return sprites == null ? null : sprites[0];
+        return getSprite(stack.getFluid(), true, stack);
     }
     
     @Nullable
     public static TextureAtlasSprite getStillTexture(Fluid fluid) {
-        var sprites = FluidVariantRendering.getSprites(FluidVariant.of(fluid));
-        return sprites == null ? null : sprites[0];
+        return getSprite(fluid, true, null);
     }
     
     @Nullable
     public static TextureAtlasSprite getFlowingTexture(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, FluidState state) {
-        if (state.getType() == Fluids.EMPTY) return null;
-        var handler = FluidRenderHandlerRegistry.INSTANCE.get(state.getType());
-        if (handler == null) return null;
-        var sprites = handler.getFluidSprites(level, pos, state);
-        if (sprites == null) return null;
-        return sprites[1];
+        return getSprite(state.getType(), false, state, level, pos);
     }
     
     @Nullable
     public static TextureAtlasSprite getFlowingTexture(FluidStack stack) {
-        var sprites = FluidVariantRendering.getSprites(FluidStackHooksFabric.toFabric(stack));
-        return sprites == null ? null : sprites[1];
+        return getSprite(stack.getFluid(), false, stack);
     }
     
     @Nullable
     public static TextureAtlasSprite getFlowingTexture(Fluid fluid) {
-        var sprites = FluidVariantRendering.getSprites(FluidVariant.of(fluid));
-        return sprites == null ? null : sprites[1];
+        return getSprite(fluid, false, null);
     }
     
     public static int getColor(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, FluidState state) {
         if (state.getType() == Fluids.EMPTY) return -1;
-        var handler = FluidRenderHandlerRegistry.INSTANCE.get(state.getType());
-        if (handler == null) return -1;
-        return handler.getFluidColor(level, pos, state);
+        ArchitecturyFluidAttributes attributes = ArchitecturyFlowingFluidImpl.getAttributes(state.getType());
+        return attributes == null ? -1 : attributes.getColor(state, level, pos);
     }
     
     public static int getColor(FluidStack stack) {
@@ -90,8 +78,25 @@ public class ClientFluidStackHooksImpl {
     
     public static int getColor(Fluid fluid) {
         if (fluid == Fluids.EMPTY) return -1;
-        var handler = FluidRenderHandlerRegistry.INSTANCE.get(fluid);
-        if (handler == null) return -1;
-        return handler.getFluidColor(null, null, fluid.defaultFluidState());
+        return FluidVariantRendering.getColor(FluidVariant.of(fluid));
+    }
+    
+    @Nullable
+    private static TextureAtlasSprite getSprite(Fluid fluid, boolean still, @Nullable FluidStack stack) {
+        ArchitecturyFluidAttributes attributes = ArchitecturyFlowingFluidImpl.getAttributes(fluid);
+        if (attributes == null) return null;
+        return getBlocksAtlas().getSprite(still ? attributes.getSourceTexture(stack) : attributes.getFlowingTexture(stack));
+    }
+    
+    @Nullable
+    private static TextureAtlasSprite getSprite(Fluid fluid, boolean still, FluidState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos) {
+        if (fluid == Fluids.EMPTY) return null;
+        ArchitecturyFluidAttributes attributes = ArchitecturyFlowingFluidImpl.getAttributes(fluid);
+        if (attributes == null) return null;
+        return getBlocksAtlas().getSprite(still ? attributes.getSourceTexture(state, level, pos) : attributes.getFlowingTexture(state, level, pos));
+    }
+    
+    private static TextureAtlas getBlocksAtlas() {
+        return (TextureAtlas) Minecraft.getInstance().getTextureManager().getTexture(TextureAtlas.LOCATION_BLOCKS);
     }
 }

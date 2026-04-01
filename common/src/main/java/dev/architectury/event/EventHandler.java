@@ -19,6 +19,7 @@
 
 package dev.architectury.event;
 
+import dev.architectury.injectables.ExpectPlatformFallback;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.platform.Platform;
 import dev.architectury.utils.Env;
@@ -41,16 +42,16 @@ public final class EventHandler {
     
     @ExpectPlatform
     private static void registerClient() {
-        throw new AssertionError();
+        ExpectPlatformFallback.run("dev.architectury.event.fabric.EventHandlerImpl", "registerClient", new Class[0]);
     }
     
     @ExpectPlatform
     private static void registerCommon() {
-        throw new AssertionError();
+        ExpectPlatformFallback.run("dev.architectury.event.fabric.EventHandlerImpl", "registerCommon", new Class[0]);
     }
     
     @ExpectPlatform
     private static void registerServer() {
-        throw new AssertionError();
+        ExpectPlatformFallback.run("dev.architectury.event.fabric.EventHandlerImpl", "registerServer", new Class[0]);
     }
 }

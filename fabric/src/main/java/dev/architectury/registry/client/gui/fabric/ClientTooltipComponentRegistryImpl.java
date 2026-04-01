@@ -21,7 +21,7 @@ package dev.architectury.registry.client.gui.fabric;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.ClientTooltipComponentCallback;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import org.jetbrains.annotations.ApiStatus;
@@ -32,7 +32,7 @@ import java.util.function.Function;
 @ApiStatus.Internal
 public class ClientTooltipComponentRegistryImpl {
     public static <T extends TooltipComponent> void register(Class<T> clazz, Function<? super T, ? extends ClientTooltipComponent> factory) {
-        TooltipComponentCallback.EVENT.register((tooltipComponent) -> {
+        ClientTooltipComponentCallback.EVENT.register((tooltipComponent) -> {
             if (clazz.isInstance(tooltipComponent)) {
                 return factory.apply(clazz.cast(tooltipComponent));
             }

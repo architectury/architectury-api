@@ -59,6 +59,6 @@ public interface MixinFabricClientCommandSource extends ClientCommandRegistratio
     
     @Override
     default ClientLevel arch$getLevel() {
-        return ((FabricClientCommandSource) this).getWorld();
+        return ((FabricClientCommandSource) this).getLevel();
     }
 }

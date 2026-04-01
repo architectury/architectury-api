@@ -19,7 +19,7 @@
 
 package dev.architectury.registry.fuel.fabric;
 
-import net.fabricmc.fabric.api.registry.FuelRegistryEvents;
+import net.fabricmc.fabric.api.registry.FuelValueEvents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ItemLike;
@@ -30,8 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FuelRegistryImpl {
-    private static final List<FuelRegistryEvents.BuildCallback> CALLBACKS = new ArrayList<>();
-    private static final List<FuelRegistryEvents.ExclusionsCallback> EXCLUSIONS_CALLBACKS = new ArrayList<>();
+    private static final List<FuelValueEvents.BuildCallback> CALLBACKS = new ArrayList<>();
+    private static final List<FuelValueEvents.ExclusionsCallback> EXCLUSIONS_CALLBACKS = new ArrayList<>();
     
     public static void register(int time, ItemLike... items) {
         CALLBACKS.add((builder, context) -> {
@@ -55,12 +55,12 @@ public class FuelRegistryImpl {
     }
     
     static {
-        FuelRegistryEvents.BUILD.register((builder, context) -> {
+        FuelValueEvents.BUILD.register((builder, context) -> {
             for (var callback : CALLBACKS) {
                 callback.build(builder, context);
             }
         });
-        FuelRegistryEvents.EXCLUSIONS.register((builder, context) -> {
+        FuelValueEvents.EXCLUSIONS.register((builder, context) -> {
             for (var callback : EXCLUSIONS_CALLBACKS) {
                 callback.buildExclusions(builder, context);
             }

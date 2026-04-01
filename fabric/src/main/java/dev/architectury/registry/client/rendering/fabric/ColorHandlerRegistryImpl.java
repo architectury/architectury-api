@@ -19,18 +19,19 @@
 
 package dev.architectury.registry.client.rendering.fabric;
 
-import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
-import net.minecraft.client.color.block.BlockColor;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockColorRegistry;
+import net.minecraft.client.color.block.BlockTintSource;
 import net.minecraft.world.level.block.Block;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
 public class ColorHandlerRegistryImpl {
     @SafeVarargs
-    public static void registerBlockColors(BlockColor blockColor, Supplier<? extends Block>... blocks) {
+    public static void registerBlockColors(BlockTintSource blockColor, Supplier<? extends Block>... blocks) {
         Objects.requireNonNull(blockColor, "color is null!");
-        ColorProviderRegistry.BLOCK.register(blockColor, unpackBlocks(blocks));
+        BlockColorRegistry.register(List.of(blockColor), unpackBlocks(blocks));
     }
     
     private static Block[] unpackBlocks(Supplier<? extends Block>[] blocks) {

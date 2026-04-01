@@ -122,7 +122,7 @@ public class BiomeModificationsImpl {
                 wrapWeather(biome, context.getWeather()),
                 wrapEffects(biome, context.getEffects()),
                 new MutableGenerationProperties(biome, context.getGenerationSettings()),
-                new MutableSpawnProperties(biome, context.getSpawnSettings())
+                new MutableSpawnProperties(biome, context.getMobSpawnSettings())
         ) {
         };
     }
@@ -183,16 +183,16 @@ public class BiomeModificationsImpl {
     }
     
     private static class MutableSpawnProperties extends BiomeHooks.SpawnSettingsWrapped implements SpawnProperties.Mutable {
-        protected final SpawnSettingsContext context;
+        protected final MobSpawnSettingsContext context;
         
-        public MutableSpawnProperties(Biome biome, SpawnSettingsContext context) {
+        public MutableSpawnProperties(Biome biome, MobSpawnSettingsContext context) {
             super(biome);
             this.context = context;
         }
         
         @Override
         public Mutable setCreatureProbability(float probability) {
-            context.setCreatureSpawnProbability(probability);
+            context.setCreatureGenerationProbability(probability);
             return this;
         }
         
@@ -209,19 +209,19 @@ public class BiomeModificationsImpl {
         
         @Override
         public Mutable setSpawnCost(EntityType<?> entityType, MobSpawnSettings.MobSpawnCost cost) {
-            context.setSpawnCost(entityType, cost.charge(), cost.energyBudget());
+            context.addMobCharge(entityType, cost.charge(), cost.energyBudget());
             return this;
         }
         
         @Override
         public Mutable setSpawnCost(EntityType<?> entityType, double charge, double energyBudget) {
-            context.setSpawnCost(entityType, charge, energyBudget);
+            context.addMobCharge(entityType, charge, energyBudget);
             return this;
         }
         
         @Override
         public Mutable clearSpawnCost(EntityType<?> entityType) {
-            context.clearSpawnCost(entityType);
+            context.clearMobCharge(entityType);
             return this;
         }
     }
@@ -264,19 +264,19 @@ public class BiomeModificationsImpl {
             
             @Override
             public EffectsProperties.Mutable setFoliageColorOverride(@Nullable Integer colorOverride) {
-                context.setFoliageColor(Optional.ofNullable(colorOverride));
+                context.setFoliageColorOverride(Optional.ofNullable(colorOverride));
                 return this;
             }
             
             @Override
             public EffectsProperties.Mutable setDryFoliageColorOverride(@Nullable Integer colorOverride) {
-                context.setDryFoliageColor(Optional.ofNullable(colorOverride));
+                context.setDryFoliageColorOverride(Optional.ofNullable(colorOverride));
                 return this;
             }
             
             @Override
             public EffectsProperties.Mutable setGrassColorOverride(@Nullable Integer colorOverride) {
-                context.setGrassColor(Optional.ofNullable(colorOverride));
+                context.setGrassColorOverride(Optional.ofNullable(colorOverride));
                 return this;
             }
             

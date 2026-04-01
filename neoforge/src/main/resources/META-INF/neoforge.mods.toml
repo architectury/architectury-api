@@ -17,7 +17,7 @@ license = "LGPL-3"
 [[dependencies.architectury]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.21.4,)"
+versionRange = "[26.1,)"
 ordering = "NONE"
 side = "BOTH"
 

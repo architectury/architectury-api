@@ -22,7 +22,7 @@ package dev.architectury.mixin.fabric.client;
 import dev.architectury.event.events.client.ClientTooltipEvent;
 import dev.architectury.impl.TooltipEventPositionContextImpl;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
 import net.minecraft.resources.Identifier;
@@ -37,7 +37,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 
-@Mixin(GuiGraphics.class)
+@Mixin(GuiGraphicsExtractor.class)
 public abstract class MixinGuiGraphics {
     @Unique
     private static ThreadLocal<TooltipEventPositionContextImpl> tooltipPositionContext = ThreadLocal.withInitial(TooltipEventPositionContextImpl::new);
@@ -47,31 +47,31 @@ public abstract class MixinGuiGraphics {
         ClientTooltipEvent.additionalContexts().setItem(stack);
     }
     
-    @Inject(method = "renderTooltip", at = @At("RETURN"))
+    @Inject(method = "tooltip", at = @At("RETURN"))
     private void postRenderTooltipItem(Font font, List<ClientTooltipComponent> list, int i, int j, ClientTooltipPositioner clientTooltipPositioner, Identifier resourceLocation, CallbackInfo ci) {
         ClientTooltipEvent.additionalContexts().setItem(null);
     }
     
-    @Inject(method = "renderTooltip", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "tooltip", at = @At("HEAD"), cancellable = true)
     private void renderTooltip(Font font, List<ClientTooltipComponent> list, int x, int y, ClientTooltipPositioner positioner, @Nullable Identifier background, CallbackInfo ci) {
         if (!list.isEmpty()) {
             var positionContext = tooltipPositionContext.get();
             positionContext.reset(x, y);
-            if (ClientTooltipEvent.RENDER_PRE.invoker().renderTooltip((GuiGraphics) (Object) this, list, x, y).isFalse()) {
+            if (ClientTooltipEvent.RENDER_PRE.invoker().renderTooltip((GuiGraphicsExtractor) (Object) this, list, x, y).isFalse()) {
                 ci.cancel();
             } else {
-                ClientTooltipEvent.RENDER_MODIFY_POSITION.invoker().renderTooltip((GuiGraphics) (Object) this, positionContext);
+                ClientTooltipEvent.RENDER_MODIFY_POSITION.invoker().renderTooltip((GuiGraphicsExtractor) (Object) this, positionContext);
             }
         }
     }
     
-    @ModifyVariable(method = "renderTooltip",
+    @ModifyVariable(method = "tooltip",
             at = @At(value = "HEAD"), ordinal = 0, argsOnly = true)
     private int modifyTooltipX(int original) {
         return tooltipPositionContext.get().getTooltipX();
     }
     
-    @ModifyVariable(method = "renderTooltip",
+    @ModifyVariable(method = "tooltip",
             at = @At(value = "HEAD"), ordinal = 1, argsOnly = true)
     private int modifyTooltipY(int original) {
         return tooltipPositionContext.get().getTooltipY();

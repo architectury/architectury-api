@@ -2,7 +2,7 @@
   "required": true,
   "package": "dev.architectury.mixin.fabric",
   "plugin": "dev.architectury.plugin.fabric.ArchitecturyMixinPlugin",
-  "compatibilityLevel": "JAVA_16",
+  "compatibilityLevel": "JAVA_25",
   "minVersion": "0.7.11",
   "client": [
     "client.ClientPlayerAttackInvoker",

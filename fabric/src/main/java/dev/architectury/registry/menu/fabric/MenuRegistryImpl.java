@@ -24,9 +24,8 @@ import dev.architectury.registry.menu.MenuRegistry.ExtendedMenuTypeFactory;
 import dev.architectury.registry.menu.MenuRegistry.SimpleMenuTypeFactory;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
+import net.fabricmc.fabric.api.networking.v1.FriendlyByteBufs;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -42,10 +41,10 @@ import java.util.function.Function;
 
 public class MenuRegistryImpl {
     public static void openExtendedMenu(ServerPlayer player, ExtendedMenuProvider provider) {
-        player.openMenu(new ExtendedScreenHandlerFactory<byte[]>() {
+        player.openMenu(new net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider<byte[]>() {
             @Override
             public byte[] getScreenOpeningData(ServerPlayer player) {
-                FriendlyByteBuf buf = PacketByteBufs.create();
+                FriendlyByteBuf buf = FriendlyByteBufs.create();
                 provider.saveExtraData(buf);
                 byte[] bytes = ByteBufUtil.getBytes(buf);
                 buf.release();
@@ -70,7 +69,7 @@ public class MenuRegistryImpl {
     }
     
     public static <T extends AbstractContainerMenu> MenuType<T> ofExtended(ExtendedMenuTypeFactory<T> factory) {
-        return new ExtendedScreenHandlerType<>((syncId, inventory, data) -> {
+        return new ExtendedMenuType<>((syncId, inventory, data) -> {
             FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(data));
             T menu = factory.create(syncId, inventory, buf);
             buf.release();
