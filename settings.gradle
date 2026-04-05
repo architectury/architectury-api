@@ -2,7 +2,9 @@ pluginManagement {
     repositories {
         maven { url "https://maven.fabricmc.net/" }
         maven { url "https://maven.architectury.dev/" }
+        maven { url "https://maven.shedaniel.me/" }
         maven { url "https://files.minecraftforge.net/maven/" }
+        mavenCentral()
         gradlePluginPortal()
     }
 }
@@ -12,10 +14,10 @@ if (JavaVersion.current().ordinal() + 1 < 25) {
 }
 
 include("common")
-include("fabric")
+//include("fabric")
 //include("forge")
 //include("minecraftforge")
-//include("neoforge")
+include("neoforge")
 //include("testmod-common")
 //include("testmod-fabric")
 //include("testmod-forge")
