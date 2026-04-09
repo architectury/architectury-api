@@ -19,21 +19,14 @@
 
 package dev.architectury.registry.client.rendering.forge;
 
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 
 public class RenderTypeRegistryImpl {
     public static void register(ChunkSectionLayer type, Block... blocks) {
-        for (Block block : blocks) {
-            ItemBlockRenderTypes.setRenderLayer(block, type);
-        }
     }
     
     public static void register(ChunkSectionLayer type, Fluid... fluids) {
-        for (Fluid fluid : fluids) {
-            ItemBlockRenderTypes.setRenderLayer(fluid, type);
-        }
     }
 }

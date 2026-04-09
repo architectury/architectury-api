@@ -23,7 +23,7 @@ import com.google.common.collect.Lists;
 import dev.architectury.platform.hooks.EventBusesHooks;
 import dev.architectury.utils.ArchitecturyConstants;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.client.color.block.BlockTintSource;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
@@ -34,7 +34,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 public class ColorHandlerRegistryImpl {
-    private static final List<Pair<BlockColor, Supplier<? extends Block>[]>> BLOCK_COLORS = Lists.newArrayList();
+    private static final List<Pair<BlockTintSource, Supplier<? extends Block>[]>> BLOCK_COLORS = Lists.newArrayList();
     
     static {
         EventBusesHooks.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
@@ -43,19 +43,19 @@ public class ColorHandlerRegistryImpl {
     }
     
     @SubscribeEvent
-    public static void onBlockColorEvent(RegisterColorHandlersEvent.Block event) {
-        for (Pair<BlockColor, Supplier<? extends Block>[]> pair : BLOCK_COLORS) {
-            event.register(pair.getLeft(), unpackBlocks(pair.getRight()));
+    public static void onBlockColorEvent(RegisterColorHandlersEvent.BlockTintSources event) {
+        for (Pair<BlockTintSource, Supplier<? extends Block>[]> pair : BLOCK_COLORS) {
+            event.register(List.of(pair.getLeft()), unpackBlocks(pair.getRight()));
         }
     }
     
     @SafeVarargs
-    public static void registerBlockColors(BlockColor blockColor, Supplier<? extends Block>... blocks) {
+    public static void registerBlockColors(BlockTintSource blockColor, Supplier<? extends Block>... blocks) {
         Objects.requireNonNull(blockColor, "color is null!");
         if (Minecraft.getInstance().getBlockColors() == null) {
             BLOCK_COLORS.add(Pair.of(blockColor, blocks));
         } else {
-            Minecraft.getInstance().getBlockColors().register(blockColor, unpackBlocks(blocks));
+            Minecraft.getInstance().getBlockColors().register(List.of(blockColor), unpackBlocks(blocks));
         }
     }
     

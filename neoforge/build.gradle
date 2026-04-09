@@ -1,5 +1,5 @@
 plugins {
-    id "com.github.johnrengelman.shadow" version "8.1.1"
+    id "com.gradleup.shadow" version "8.3.10"
 }
 
 loom {
@@ -24,8 +24,8 @@ configurations {
 dependencies {
     neoForge "net.neoforged:neoforge:${rootProject.neoforge_version}"
 
-    common(project(path: ":common", configuration: "namedElements")) { transitive false }
-    shadowCommon(project(path: ":common", configuration: "transformProductionNeoForge")) { transitive false }
+    common(project(path: ":common", configuration: "apiElements")) { transitive false }
+    shadowCommon(files(project(":common").tasks.named("transformProductionNeoForge")))
 }
 
 processResources {
@@ -54,15 +54,10 @@ shadowJar {
     relocate "dev.architectury.core.item.forge.imitator", "dev.architectury.core.item"
 }
 
-remapJar {
-    input.set shadowJar.archiveFile
-    dependsOn shadowJar
-    archiveClassifier = null
-    atAccessWideners.add "architectury.accessWidener"
-}
+shadowJar.dependsOn(project(":common").tasks.named("transformProductionNeoForge"))
 
-task renameJarForPublication(type: Zip, dependsOn: remapJar) {
-    from remapJar.archiveFile.map { zipTree(it) }
+task renameJarForPublication(type: Zip, dependsOn: shadowJar) {
+    from shadowJar.archiveFile.map { zipTree(it) }
     archiveExtension = "jar"
     metadataCharset "UTF-8"
     destinationDirectory = base.libsDirectory

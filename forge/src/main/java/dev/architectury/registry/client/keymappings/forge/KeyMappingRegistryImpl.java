@@ -19,16 +19,17 @@
 
 package dev.architectury.registry.client.keymappings.forge;
 
-import dev.architectury.platform.hooks.EventBusesHooks;
-import dev.architectury.utils.ArchitecturyConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,9 +39,7 @@ public class KeyMappingRegistryImpl {
     private static boolean eventCalled = false;
     
     static {
-        EventBusesHooks.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
-            bus.addListener(KeyMappingRegistryImpl::event);
-        });
+        FMLJavaModLoadingContext.get().getModBusGroup().register(MethodHandles.lookup(), KeyMappingRegistryImpl.class);
     }
     
     public static void register(KeyMapping mapping) {
@@ -53,6 +52,7 @@ public class KeyMappingRegistryImpl {
         }
     }
     
+    @SubscribeEvent
     public static void event(RegisterKeyMappingsEvent event) {
         MAPPINGS.forEach(event::register);
         eventCalled = true;

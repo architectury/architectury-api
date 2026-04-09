@@ -19,14 +19,14 @@
 
 package dev.architectury.registry.level.entity.forge;
 
-import dev.architectury.platform.hooks.EventBusesHooks;
-import dev.architectury.utils.ArchitecturyConstants;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
+import java.lang.invoke.MethodHandles;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
@@ -39,9 +39,7 @@ public class EntityAttributeRegistryImpl {
     }
     
     static {
-        EventBusesHooks.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
-            bus.register(EntityAttributeRegistryImpl.class);
-        });
+        FMLJavaModLoadingContext.get().getModBusGroup().register(MethodHandles.lookup(), EntityAttributeRegistryImpl.class);
     }
     
     @SubscribeEvent

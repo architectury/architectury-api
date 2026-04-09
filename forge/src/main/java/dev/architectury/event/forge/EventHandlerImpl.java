@@ -19,33 +19,26 @@
 
 package dev.architectury.event.forge;
 
-import dev.architectury.platform.hooks.EventBusesHooks;
-import dev.architectury.utils.ArchitecturyConstants;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+
+import java.lang.invoke.MethodHandles;
 
 public class EventHandlerImpl {
     @OnlyIn(Dist.CLIENT)
     public static void registerClient() {
         MinecraftForge.EVENT_BUS.register(EventHandlerImplClient.class);
-        EventBusesHooks.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
-            bus.register(EventHandlerImplClient.ModBasedEventHandler.class);
-        });
+        FMLJavaModLoadingContext.get().getModBusGroup().register(MethodHandles.lookup(), EventHandlerImplClient.ModBasedEventHandler.class);
     }
     
     public static void registerCommon() {
         MinecraftForge.EVENT_BUS.register(EventHandlerImplCommon.class);
-        EventBusesHooks.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
-            bus.register(EventHandlerImplCommon.ModBasedEventHandler.class);
-        });
+        FMLJavaModLoadingContext.get().getModBusGroup().register(MethodHandles.lookup(), EventHandlerImplCommon.ModBasedEventHandler.class);
     }
     
     @OnlyIn(Dist.DEDICATED_SERVER)
     public static void registerServer() {
-        // MinecraftForge.EVENT_BUS.register(EventHandlerImplServer.class);
-        // EventBusesHooks.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
-        //     bus.register(EventHandlerImplServer.ModBasedEventHandler.class);
-        // });
     }
 }

@@ -41,7 +41,7 @@ public class ClientNetworkManagerImpl {
             return Minecraft.getInstance().getConnection().registryAccess();
         } else if (Minecraft.getInstance().gameMode != null) {
             // Sometimes the packet is sent way too fast and is between the connection and the level, better safe than sorry
-            return Minecraft.getInstance().gameMode.connection.registryAccess();
+            return Minecraft.getInstance().getConnection().registryAccess();
         }
         
         // Fail-safe

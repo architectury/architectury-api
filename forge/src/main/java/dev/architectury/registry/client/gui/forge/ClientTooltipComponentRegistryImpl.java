@@ -19,17 +19,18 @@
 
 package dev.architectury.registry.client.gui.forge;
 
-import dev.architectury.platform.hooks.EventBusesHooks;
-import dev.architectury.utils.ArchitecturyConstants;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.listener.Priority;
+import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -39,29 +40,30 @@ import java.util.function.Function;
 public class ClientTooltipComponentRegistryImpl {
     @Nullable
     private static List<Entry<?>> entries = new ArrayList<>();
-    
+
     static {
-        EventBusesHooks.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
-            bus.<RegisterClientTooltipComponentFactoriesEvent>addListener(EventPriority.HIGH, event -> {
-                if (entries != null) {
-                    for (Entry<?> entry : entries) {
-                        Entry<TooltipComponent> casted = (Entry<TooltipComponent>) entry;
-                        event.register(casted.clazz(), casted.factory());
-                    }
-                    
-                    entries = null;
-                }
-            });
-        });
+        FMLJavaModLoadingContext.get().getModBusGroup().register(MethodHandles.lookup(), ClientTooltipComponentRegistryImpl.class);
     }
-    
+
     public static <T extends TooltipComponent> void register(Class<T> clazz, Function<? super T, ? extends ClientTooltipComponent> factory) {
         if (entries == null) {
             throw new IllegalStateException("Cannot register ClientTooltipComponent factory when factories are already aggregated!");
         }
         entries.add(new Entry<>(clazz, factory));
     }
-    
+
+    @SubscribeEvent(priority = Priority.HIGH)
+    public static void event(RegisterClientTooltipComponentFactoriesEvent event) {
+        if (entries != null) {
+            for (Entry<?> entry : entries) {
+                Entry<TooltipComponent> casted = (Entry<TooltipComponent>) entry;
+                event.register(casted.clazz(), casted.factory());
+            }
+
+            entries = null;
+        }
+    }
+
     public record Entry<T extends TooltipComponent>(
             Class<T> clazz, Function<? super T, ? extends ClientTooltipComponent> factory
     ) {

@@ -22,11 +22,9 @@ package dev.architectury.registry.forge;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
-import dev.architectury.platform.hooks.EventBusesHooks;
 import dev.architectury.registry.CreativeTabOutput;
 import dev.architectury.registry.CreativeTabRegistry;
 import dev.architectury.registry.registries.DeferredSupplier;
-import dev.architectury.utils.ArchitecturyConstants;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -35,11 +33,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.CreativeModeTabRegistry;
 import net.minecraftforge.common.util.MutableHashedLinkedMap;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
+import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.invoke.MethodHandles;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -51,9 +52,7 @@ public class CreativeTabRegistryImpl {
     private static final Multimap<TabKey, Supplier<ItemStack>> APPENDS = MultimapBuilder.hashKeys().arrayListValues().build();
     
     static {
-        EventBusesHooks.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
-            bus.addListener(CreativeTabRegistryImpl::event);
-        });
+        FMLJavaModLoadingContext.get().getModBusGroup().register(MethodHandles.lookup(), CreativeTabRegistryImpl.class);
         
         BUILD_CONTENTS_LISTENERS.add(event -> {
             for (Map.Entry<TabKey, Collection<Supplier<ItemStack>>> keyEntry : APPENDS.asMap().entrySet()) {
@@ -77,6 +76,7 @@ public class CreativeTabRegistryImpl {
         });
     }
     
+    @SubscribeEvent
     public static void event(BuildCreativeModeTabContentsEvent event) {
         for (Consumer<BuildCreativeModeTabContentsEvent> listener : BUILD_CONTENTS_LISTENERS) {
             listener.accept(event);
@@ -99,7 +99,7 @@ public class CreativeTabRegistryImpl {
         return new DeferredSupplier<>() {
             @Override
             public Identifier getRegistryId() {
-                return Registries.CREATIVE_MODE_TAB.location();
+                return Registries.CREATIVE_MODE_TAB.identifier();
             }
             
             @Override
@@ -127,7 +127,7 @@ public class CreativeTabRegistryImpl {
             
             @Override
             public Identifier getRegistryId() {
-                return Registries.CREATIVE_MODE_TAB.location();
+                return Registries.CREATIVE_MODE_TAB.identifier();
             }
             
             @Override
@@ -151,7 +151,7 @@ public class CreativeTabRegistryImpl {
             
             private void resolve() {
                 if (this.tab == null) {
-                    this.tab = BuiltInRegistries.CREATIVE_MODE_TAB.get(name);
+                    this.tab = BuiltInRegistries.CREATIVE_MODE_TAB.getValue(name);
                 }
             }
         };

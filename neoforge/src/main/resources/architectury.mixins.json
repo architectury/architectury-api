@@ -17,7 +17,9 @@
     "neoforge.LiquidBlockAccessor",
     "neoforge.MixinChunkMap",
     "MixinFallingBlockEntity",
-    "MixinLevelEvent"
+    "MixinLevelEvent",
+    "MixinVillager",
+    "MixinWanderingTrader"
   ],
   "injectors": {
     "defaultRequire": 1

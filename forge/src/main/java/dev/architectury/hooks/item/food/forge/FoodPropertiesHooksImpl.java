@@ -25,9 +25,8 @@ import net.minecraft.world.food.FoodProperties;
 import java.util.function.Supplier;
 
 public class FoodPropertiesHooksImpl {
-    @SuppressWarnings("unchecked")
     public static void effect(FoodProperties.Builder builder,
                               Supplier<? extends MobEffectInstance> effectSupplier, float chance) {
-        builder.effect((Supplier<MobEffectInstance>) effectSupplier, chance);
+        // MC 26 removed runtime food effect registration from the builder API on Forge.
     }
 }

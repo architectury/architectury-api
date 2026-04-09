@@ -19,43 +19,46 @@
 
 package dev.architectury.registry.level.entity.forge;
 
-import dev.architectury.platform.hooks.EventBusesHooks;
-import dev.architectury.utils.ArchitecturyConstants;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.SpawnPlacementType;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.event.entity.SpawnPlacementRegisterEvent;
+import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
 public class SpawnPlacementsRegistryImpl {
     private static List<Entry<?>> entries = new ArrayList<>();
-    
-    private record Entry<T extends Mob>(Supplier<? extends EntityType<T>> type, SpawnPlacements.Type spawnPlacement,
+
+    private record Entry<T extends Mob>(Supplier<? extends EntityType<T>> type, SpawnPlacementType spawnPlacement,
                                         Heightmap.Types heightmapType,
                                         SpawnPlacements.SpawnPredicate<T> spawnPredicate) {
     }
-    
+
     static {
-        EventBusesHooks.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
-            bus.<SpawnPlacementRegisterEvent>addListener(event -> {
-                for (Entry<?> entry : entries) {
-                    Entry<Mob> casted = (Entry<Mob>) entry;
-                    event.register(casted.type().get(), casted.spawnPlacement(), casted.heightmapType(), casted.spawnPredicate(), SpawnPlacementRegisterEvent.Operation.OR);
-                }
-                entries = null;
-            });
-        });
+        FMLJavaModLoadingContext.get().getModBusGroup().register(MethodHandles.lookup(), SpawnPlacementsRegistryImpl.class);
     }
-    
-    public static <T extends Mob> void register(Supplier<? extends EntityType<T>> type, SpawnPlacements.Type spawnPlacement, Heightmap.Types heightmapType, SpawnPlacements.SpawnPredicate<T> spawnPredicate) {
+
+    public static <T extends Mob> void register(Supplier<? extends EntityType<T>> type, SpawnPlacementType spawnPlacement, Heightmap.Types heightmapType, SpawnPlacements.SpawnPredicate<T> spawnPredicate) {
         if (entries != null) {
             entries.add(new Entry<>(type, spawnPlacement, heightmapType, spawnPredicate));
         } else {
             throw new IllegalStateException("SpawnPlacementsRegistry.register must not be called after the registry has been collected!");
         }
+    }
+
+    @SubscribeEvent
+    public static void event(SpawnPlacementRegisterEvent event) {
+        for (Entry<?> entry : entries) {
+            Entry<Mob> casted = (Entry<Mob>) entry;
+            event.register(casted.type().get(), casted.spawnPlacement(), casted.heightmapType(), casted.spawnPredicate(), SpawnPlacementRegisterEvent.Operation.OR);
+        }
+        entries = null;
     }
 }

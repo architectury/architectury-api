@@ -24,13 +24,14 @@ import dev.architectury.platform.hooks.EventBusesHooks;
 import dev.architectury.registry.client.particle.ParticleProviderRegistry;
 import dev.architectury.utils.ArchitecturyConstants;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleResources;
+import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.data.AtlasIds;
 import net.minecraft.util.RandomSource;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import org.slf4j.Logger;
@@ -41,51 +42,59 @@ import java.util.function.Consumer;
 
 public class ParticleProviderRegistryImpl {
     public static final Logger LOGGER = LogUtils.getLogger();
-    
+
     static {
         EventBusesHooks.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
             bus.addListener(ParticleProviderRegistryImpl::onParticleFactoryRegister);
         });
     }
-    
-    private record ExtendedSpriteSetImpl(ParticleResources.MutableSpriteSet set) implements ParticleProviderRegistry.ExtendedSpriteSet {
+
+    private static final class ExtendedSpriteSetImpl implements ParticleProviderRegistry.ExtendedSpriteSet {
+        private final ParticleEngine engine;
+        private final SpriteSet delegate;
+
+        private ExtendedSpriteSetImpl(ParticleEngine engine, SpriteSet delegate) {
+            this.engine = engine;
+            this.delegate = delegate;
+        }
+
         @Override
         public TextureAtlas getAtlas() {
-            return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.PARTICLES);
+            return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(TextureAtlas.LOCATION_PARTICLES);
         }
-        
+
         @Override
         public List<TextureAtlasSprite> getSprites() {
-            return set.sprites;
+            return List.of(delegate.first());
         }
-        
+
         @Override
         public TextureAtlasSprite get(int i, int j) {
-            return set.get(i, j);
+            return delegate.get(i, j);
         }
-        
+
         @Override
         public TextureAtlasSprite get(RandomSource random) {
-            return set.get(random);
+            return delegate.get(random);
         }
-        
+
         @Override
         public TextureAtlasSprite first() {
-            return set.first();
+            return delegate.first();
         }
     }
-    
+
     private static List<Consumer<ParticleProviderRegistrar>> deferred = new ArrayList<>();
-    
+
     private static <T extends ParticleOptions> void doRegister(ParticleProviderRegistrar registrar, ParticleType<T> type, ParticleProvider<T> provider) {
         registrar.register(type, provider);
     }
-    
+
     private static <T extends ParticleOptions> void doRegister(ParticleProviderRegistrar registrar, ParticleType<T> type, ParticleProviderRegistry.DeferredParticleProvider<T> provider) {
         registrar.register(type, sprites ->
-                provider.create(new ExtendedSpriteSetImpl((ParticleResources.MutableSpriteSet) sprites)));
+                provider.create(new ExtendedSpriteSetImpl(Minecraft.getInstance().particleEngine, sprites)));
     }
-    
+
     public static <T extends ParticleOptions> void register(ParticleType<T> type, ParticleProvider<T> provider) {
         if (deferred == null) {
             LOGGER.warn("Something is attempting to register particle providers at a later point than intended! This might cause issues!", new Throwable());
@@ -94,7 +103,7 @@ public class ParticleProviderRegistryImpl {
             deferred.add(registrar -> doRegister(registrar, type, provider));
         }
     }
-    
+
     public static <T extends ParticleOptions> void register(ParticleType<T> type, ParticleProviderRegistry.DeferredParticleProvider<T> provider) {
         if (deferred == null) {
             LOGGER.warn("Something is attempting to register particle providers at a later point than intended! This might cause issues!", new Throwable());
@@ -103,7 +112,7 @@ public class ParticleProviderRegistryImpl {
             deferred.add(registrar -> doRegister(registrar, type, provider));
         }
     }
-    
+
     public static void onParticleFactoryRegister(RegisterParticleProvidersEvent event) {
         if (deferred != null) {
             ParticleProviderRegistrar registrar = ParticleProviderRegistrar.ofForge(event);
@@ -115,36 +124,36 @@ public class ParticleProviderRegistryImpl {
             deferred = null;
         }
     }
-    
+
     private interface ParticleProviderRegistrar {
         <T extends ParticleOptions> void register(ParticleType<T> type, ParticleProvider<T> provider);
-        
+
         <T extends ParticleOptions> void register(ParticleType<T> type, ParticleResources.SpriteParticleRegistration<T> registration);
-        
+
         static ParticleProviderRegistrar ofForge(RegisterParticleProvidersEvent event) {
             return new ParticleProviderRegistrar() {
                 @Override
                 public <T extends ParticleOptions> void register(ParticleType<T> type, ParticleProvider<T> provider) {
                     event.registerSpecial(type, provider);
                 }
-                
+
                 @Override
                 public <T extends ParticleOptions> void register(ParticleType<T> type, ParticleResources.SpriteParticleRegistration<T> registration) {
                     event.registerSpriteSet(type, registration);
                 }
             };
         }
-        
+
         static ParticleProviderRegistrar ofFallback() {
             return new ParticleProviderRegistrar() {
                 @Override
                 public <T extends ParticleOptions> void register(ParticleType<T> type, ParticleProvider<T> provider) {
-                    Minecraft.getInstance().particleResources.register(type, provider);
+                    LOGGER.warn("Skipping late particle provider registration for {}", type);
                 }
-                
+
                 @Override
                 public <T extends ParticleOptions> void register(ParticleType<T> type, ParticleResources.SpriteParticleRegistration<T> registration) {
-                    Minecraft.getInstance().particleResources.register(type, registration);
+                    LOGGER.warn("Skipping late sprite particle registration for {}", type);
                 }
             };
         }

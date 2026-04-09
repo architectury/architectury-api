@@ -28,7 +28,7 @@ import dev.architectury.event.events.common.InteractionEvent;
 import dev.architectury.impl.ScreenAccessImpl;
 import dev.architectury.impl.TooltipEventPositionContextImpl;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
@@ -161,7 +161,7 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventRenderTooltipEvent(RenderTooltipEvent.Pre event) {
-        GuiGraphics graphics = event.getGraphics();
+        GuiGraphicsExtractor graphics = event.getGraphics();
         ClientTooltipEvent.additionalContexts().setItem(event.getItemStack());
         
         try {
@@ -225,7 +225,7 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventMouseReleasedEvent(ScreenEvent.MouseButtonReleased.Post event) {
-        ClientScreenInputEvent.MOUSE_RELEASED_PRE.invoker().mouseReleased(Minecraft.getInstance(), event.getScreen(), event.getMouseButtonEvent());
+        ClientScreenInputEvent.MOUSE_RELEASED_POST.invoker().mouseReleased(Minecraft.getInstance(), event.getScreen(), event.getMouseButtonEvent());
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)

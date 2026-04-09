@@ -14,9 +14,10 @@ architectury {
 }
 
 dependencies {
-    forge "net.minecraftforge:forge:${rootProject.architectury.minecraft}-${rootProject.forge_version}"
+    def forgeMinecraftVersion = rootProject.findProperty("forge_minecraft_version") ?: rootProject.architectury.minecraft
+    forge "net.minecraftforge:forge:${forgeMinecraftVersion}-${rootProject.forge_version}"
 
-    compileOnly(project(path: ":common", configuration: "namedElements")) { transitive false }
+    compileOnly(project(path: ":common", configuration: "apiElements")) { transitive false }
 }
 
 publishing {

@@ -21,11 +21,12 @@ package dev.architectury.registry.client.rendering.forge;
 
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class BlockEntityRendererRegistryImpl {
-    public static <T extends BlockEntity> void register(BlockEntityType<T> type, BlockEntityRendererProvider<? super T> provider) {
+    public static <E extends BlockEntity, S extends BlockEntityRenderState> void register(BlockEntityType<E> type, BlockEntityRendererProvider<? super E, ? super S> provider) {
         BlockEntityRenderers.register(type, provider);
     }
 }

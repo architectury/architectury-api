@@ -20,14 +20,8 @@
 package dev.architectury.core.item.forge.imitator;
 
 import dev.architectury.hooks.forgelike.ForgeLikeHooks;
-import dev.architectury.injectables.annotations.PlatformOnly;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.BucketItem;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fluids.capability.wrappers.FluidBucketWrapper;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
@@ -39,11 +33,5 @@ public class ArchitecturyBucketItem extends BucketItem {
     
     public final Fluid getContainedFluid() {
         return getFluid();
-    }
-    
-    @Override
-    @PlatformOnly(PlatformOnly.FORGE)
-    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        return this.getClass() == ArchitecturyBucketItem.class ? new FluidBucketWrapper(stack) : super.initCapabilities(stack, nbt);
     }
 }

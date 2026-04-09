@@ -48,6 +48,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -63,7 +64,7 @@ public class BiomeModificationsImpl {
     private static final List<Pair<Predicate<BiomeContext>, BiConsumer<BiomeContext, BiomeProperties.Mutable>>> REPLACEMENTS = Lists.newArrayList();
     @Nullable
     private static MapCodec<BiomeModifierImpl> noneBiomeModCodec = null;
-    
+
     public static void init() {
         EventBusesHooks.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
             bus.<RegisterEvent>addListener(event -> {
@@ -74,27 +75,27 @@ public class BiomeModificationsImpl {
             });
         });
     }
-    
+
     public static void addProperties(Predicate<BiomeContext> predicate, BiConsumer<BiomeContext, BiomeProperties.Mutable> modifier) {
         ADDITIONS.add(Pair.of(predicate, modifier));
     }
-    
+
     public static void postProcessProperties(Predicate<BiomeContext> predicate, BiConsumer<BiomeContext, BiomeProperties.Mutable> modifier) {
         POST_PROCESSING.add(Pair.of(predicate, modifier));
     }
-    
+
     public static void removeProperties(Predicate<BiomeContext> predicate, BiConsumer<BiomeContext, BiomeProperties.Mutable> modifier) {
         REMOVALS.add(Pair.of(predicate, modifier));
     }
-    
+
     public static void replaceProperties(Predicate<BiomeContext> predicate, BiConsumer<BiomeContext, BiomeProperties.Mutable> modifier) {
         REPLACEMENTS.add(Pair.of(predicate, modifier));
     }
-    
+
     private static class BiomeModifierImpl implements BiomeModifier {
         // cry about it
         private static final BiomeModifierImpl INSTANCE = new BiomeModifierImpl();
-        
+
         @Override
         public void modify(Holder<Biome> arg, Phase phase, ModifiableBiomeInfo.BiomeInfo.Builder builder) {
             List<Pair<Predicate<BiomeContext>, BiConsumer<BiomeContext, BiomeProperties.Mutable>>> list = switch (phase) {
@@ -104,7 +105,7 @@ public class BiomeModificationsImpl {
                 case AFTER_EVERYTHING -> POST_PROCESSING;
                 default -> null;
             };
-            
+
             if (list == null) return;
             BiomeContext biomeContext = wrapSelectionContext(arg.unwrapKey(), builder);
             BiomeProperties.Mutable mutableBiome = new MutableBiomeWrapped(builder);
@@ -114,7 +115,7 @@ public class BiomeModificationsImpl {
                 }
             }
         }
-        
+
         @Override
         public MapCodec<? extends BiomeModifier> codec() {
             if (noneBiomeModCodec != null) {
@@ -124,21 +125,21 @@ public class BiomeModificationsImpl {
             }
         }
     }
-    
+
     private static BiomeContext wrapSelectionContext(Optional<ResourceKey<Biome>> biomeResourceKey, ModifiableBiomeInfo.BiomeInfo.Builder event) {
         return new BiomeContext() {
             BiomeProperties properties = new BiomeWrapped(event);
-            
+
             @Override
             public Optional<Identifier> getKey() {
                 return biomeResourceKey.map(ResourceKey::identifier);
             }
-            
+
             @Override
             public BiomeProperties getProperties() {
                 return properties;
             }
-            
+
             @Override
             public boolean hasTag(TagKey<Biome> tag) {
                 MinecraftServer server = GameInstance.getServer();
@@ -155,14 +156,14 @@ public class BiomeModificationsImpl {
             }
         };
     }
-    
+
     public static class BiomeWrapped implements BiomeProperties {
         protected final ModifiableBiomeInfo.BiomeInfo.Builder event;
         protected final ClimateProperties climateProperties;
         protected final EffectsProperties effectsProperties;
         protected final GenerationProperties generationProperties;
         protected final SpawnProperties spawnProperties;
-        
+
         public BiomeWrapped(ModifiableBiomeInfo.BiomeInfo.Builder event) {
             this(event,
                     new MutableClimatePropertiesWrapped(event.getClimateSettings()),
@@ -171,7 +172,7 @@ public class BiomeModificationsImpl {
                     new SpawnSettingsBuilderWrapped(event.getMobSpawnSettings())
             );
         }
-        
+
         public BiomeWrapped(ModifiableBiomeInfo.BiomeInfo.Builder event, ClimateProperties climateProperties, EffectsProperties effectsProperties, GenerationProperties generationProperties, SpawnProperties spawnProperties) {
             this.event = event;
             this.climateProperties = climateProperties;
@@ -179,74 +180,74 @@ public class BiomeModificationsImpl {
             this.generationProperties = generationProperties;
             this.spawnProperties = spawnProperties;
         }
-        
+
         @Override
         public ClimateProperties getClimateProperties() {
             return climateProperties;
         }
-        
+
         @Override
         public EffectsProperties getEffectsProperties() {
             return effectsProperties;
         }
-        
+
         @Override
         public GenerationProperties getGenerationProperties() {
             return generationProperties;
         }
-        
+
         @Override
         public SpawnProperties getSpawnProperties() {
             return spawnProperties;
         }
     }
-    
+
     private static class GenerationSettingsBuilderWrapped implements GenerationProperties {
         protected final BiomeGenerationSettingsBuilder generation;
-        
+
         public GenerationSettingsBuilderWrapped(BiomeGenerationSettingsBuilder generation) {
             this.generation = generation;
         }
-        
+
         @Override
         public Iterable<Holder<ConfiguredWorldCarver<?>>> getCarvers() {
             return generation.getCarvers();
         }
-        
+
         @Override
         public Iterable<Holder<PlacedFeature>> getFeatures(GenerationStep.Decoration decoration) {
             return generation.getFeatures(decoration);
         }
-        
+
         @Override
         public List<Iterable<Holder<PlacedFeature>>> getFeatures() {
-            return (List<Iterable<Holder<PlacedFeature>>>) (List<?>) generation.features;
+            return (List<Iterable<Holder<PlacedFeature>>>) (List<?>) getField(generation, "features");
         }
     }
-    
+
     private static class SpawnSettingsBuilderWrapped implements SpawnProperties {
         protected final MobSpawnSettingsBuilder builder;
-        
+
         public SpawnSettingsBuilderWrapped(MobSpawnSettingsBuilder builder) {
             this.builder = builder;
         }
-        
+
         @Override
         public float getCreatureProbability() {
             return builder.getProbability();
         }
-        
+
         @Override
         public Map<MobCategory, WeightedList.Builder<MobSpawnSettings.SpawnerData>> getSpawners() {
-            return builder.spawners;
+            return (Map<MobCategory, WeightedList.Builder<MobSpawnSettings.SpawnerData>>) getField(builder, "spawners");
         }
-        
+
         @Override
         public Map<EntityType<?>, MobSpawnSettings.MobSpawnCost> getMobSpawnCosts() {
-            return builder.mobSpawnCosts;
+            return (Map<EntityType<?>, MobSpawnSettings.MobSpawnCost>) getField(builder, "mobSpawnCosts");
         }
     }
-    
+
     public static class MutableBiomeWrapped extends BiomeWrapped implements BiomeProperties.Mutable {
         public MutableBiomeWrapped(ModifiableBiomeInfo.BiomeInfo.Builder event) {
             super(event,
@@ -256,155 +257,155 @@ public class BiomeModificationsImpl {
                     new MutableSpawnSettingsBuilderWrapped(event.getMobSpawnSettings())
             );
         }
-        
+
         @Override
         public ClimateProperties.Mutable getClimateProperties() {
             return (ClimateProperties.Mutable) super.getClimateProperties();
         }
-        
+
         @Override
         public EffectsProperties.Mutable getEffectsProperties() {
             return (EffectsProperties.Mutable) super.getEffectsProperties();
         }
-        
+
         @Override
         public GenerationProperties.Mutable getGenerationProperties() {
             return (GenerationProperties.Mutable) super.getGenerationProperties();
         }
-        
+
         @Override
         public SpawnProperties.Mutable getSpawnProperties() {
             return (SpawnProperties.Mutable) super.getSpawnProperties();
         }
     }
-    
+
     public static class MutableClimatePropertiesWrapped implements ClimateProperties.Mutable {
         public ClimateSettingsBuilder builder;
-        
+
         public MutableClimatePropertiesWrapped(ClimateSettingsBuilder builder) {
             this.builder = builder;
         }
-        
+
         @Override
         public boolean hasPrecipitation() {
             return builder.hasPrecipitation();
         }
-        
+
         @Override
         public float getTemperature() {
             return builder.getTemperature();
         }
-        
+
         @Override
         public Biome.TemperatureModifier getTemperatureModifier() {
             return builder.getTemperatureModifier();
         }
-        
+
         @Override
         public float getDownfall() {
             return builder.getDownfall();
         }
-        
+
         @Override
         public Mutable setHasPrecipitation(boolean hasPrecipitation) {
             this.builder.setHasPrecipitation(hasPrecipitation);
             return this;
         }
-        
+
         @Override
         public Mutable setTemperature(float temperature) {
             this.builder.setTemperature(temperature);
             return this;
         }
-        
+
         @Override
         public Mutable setTemperatureModifier(Biome.TemperatureModifier temperatureModifier) {
             this.builder.setTemperatureModifier(temperatureModifier);
             return this;
         }
-        
+
         @Override
         public Mutable setDownfall(float downfall) {
             this.builder.setDownfall(downfall);
             return this;
         }
-        
+
     }
-    
+
     public static class MutableEffectsPropertiesWrapped implements EffectsProperties.Mutable {
         public BiomeSpecialEffects.Builder builder;
-        
+
         public MutableEffectsPropertiesWrapped(BiomeSpecialEffects.Builder builder) {
             this.builder = builder;
         }
-        
+
         @Override
         public int getWaterColor() {
-            return builder.waterColor.orElse(-1);
+            return ((Optional<Integer>) getField(builder, "waterColor")).orElse(-1);
         }
-        
+
         @Override
         public OptionalInt getFoliageColorOverride() {
-            return builder.foliageColorOverride.map(OptionalInt::of).orElseGet(OptionalInt::empty);
+            return ((Optional<Integer>) getField(builder, "foliageColorOverride")).map(OptionalInt::of).orElseGet(OptionalInt::empty);
         }
-        
+
         @Override
         public OptionalInt getDryFoliageColorOverride() {
-            return builder.dryFoliageColorOverride.map(OptionalInt::of).orElseGet(OptionalInt::empty);
+            return ((Optional<Integer>) getField(builder, "dryFoliageColorOverride")).map(OptionalInt::of).orElseGet(OptionalInt::empty);
         }
-        
+
         @Override
         public OptionalInt getGrassColorOverride() {
-            return builder.grassColorOverride.map(OptionalInt::of).orElseGet(OptionalInt::empty);
+            return ((Optional<Integer>) getField(builder, "grassColorOverride")).map(OptionalInt::of).orElseGet(OptionalInt::empty);
         }
-        
+
         @Override
         public BiomeSpecialEffects.GrassColorModifier getGrassColorModifier() {
-            return builder.grassColorModifier;
+            return (BiomeSpecialEffects.GrassColorModifier) getField(builder, "grassColorModifier");
         }
-        
+
         @Override
         public Mutable setWaterColor(int color) {
             builder.waterColor(color);
             return this;
         }
-        
+
         @Override
         public Mutable setFoliageColorOverride(@Nullable Integer colorOverride) {
-            builder.foliageColorOverride = Optional.ofNullable(colorOverride);
+            setField(builder, "foliageColorOverride", Optional.ofNullable(colorOverride));
             return this;
         }
-        
+
         @Override
         public Mutable setDryFoliageColorOverride(@Nullable Integer colorOverride) {
-            builder.dryFoliageColorOverride = Optional.ofNullable(colorOverride);
+            setField(builder, "dryFoliageColorOverride", Optional.ofNullable(colorOverride));
             return this;
         }
-        
+
         @Override
         public Mutable setGrassColorOverride(@Nullable Integer colorOverride) {
-            builder.grassColorOverride = Optional.ofNullable(colorOverride);
+            setField(builder, "grassColorOverride", Optional.ofNullable(colorOverride));
             return this;
         }
-        
+
         @Override
         public Mutable setGrassColorModifier(BiomeSpecialEffects.GrassColorModifier modifier) {
             builder.grassColorModifier(modifier);
             return this;
         }
     }
-    
+
     private static class MutableGenerationSettingsBuilderWrapped extends GenerationSettingsBuilderWrapped implements GenerationProperties.Mutable {
         public MutableGenerationSettingsBuilderWrapped(BiomeGenerationSettingsBuilder generation) {
             super(generation);
         }
-        
+
         @Override
         public Mutable addFeature(GenerationStep.Decoration decoration, Holder<PlacedFeature> feature) {
             generation.addFeature(decoration, feature);
             return this;
         }
-        
+
         @Override
         public Mutable addFeature(GenerationStep.Decoration decoration, ResourceKey<PlacedFeature> feature) {
             MinecraftServer server = GameInstance.getServer();
@@ -421,13 +422,13 @@ public class BiomeModificationsImpl {
             }
             return this;
         }
-        
+
         @Override
         public Mutable addCarver(Holder<ConfiguredWorldCarver<?>> feature) {
             generation.addCarver(feature);
             return this;
         }
-        
+
         @Override
         public Mutable addCarver(ResourceKey<ConfiguredWorldCarver<?>> feature) {
             MinecraftServer server = GameInstance.getServer();
@@ -444,37 +445,37 @@ public class BiomeModificationsImpl {
             }
             return this;
         }
-        
+
         @Override
         public Mutable removeFeature(GenerationStep.Decoration decoration, ResourceKey<PlacedFeature> feature) {
             generation.getFeatures(decoration).removeIf(supplier -> supplier.is(feature));
             return this;
         }
-        
+
         @Override
         public Mutable removeCarver(ResourceKey<ConfiguredWorldCarver<?>> feature) {
             generation.getCarvers().removeIf(supplier -> supplier.is(feature));
             return this;
         }
     }
-    
+
     private static class MutableSpawnSettingsBuilderWrapped extends SpawnSettingsBuilderWrapped implements SpawnProperties.Mutable {
         public MutableSpawnSettingsBuilderWrapped(MobSpawnSettingsBuilder builder) {
             super(builder);
         }
-        
+
         @Override
         public Mutable setCreatureProbability(float probability) {
             builder.creatureGenerationProbability(probability);
             return this;
         }
-        
+
         @Override
         public Mutable addSpawn(MobCategory category, MobSpawnSettings.SpawnerData data, int weight) {
             builder.addSpawn(category, weight, data);
             return this;
         }
-        
+
         @Override
         public boolean removeSpawns(BiPredicate<MobCategory, MobSpawnSettings.SpawnerData> predicate) {
             boolean removed = false;
@@ -487,23 +488,56 @@ public class BiomeModificationsImpl {
             }
             return removed;
         }
-        
+
         @Override
         public Mutable setSpawnCost(EntityType<?> entityType, MobSpawnSettings.MobSpawnCost cost) {
             builder.addMobCharge(entityType, cost.charge(), cost.energyBudget());
             return this;
         }
-        
+
         @Override
         public Mutable setSpawnCost(EntityType<?> entityType, double charge, double energyBudget) {
             builder.addMobCharge(entityType, charge, energyBudget);
             return this;
         }
-        
+
         @Override
         public Mutable clearSpawnCost(EntityType<?> entityType) {
             getMobSpawnCosts().remove(entityType);
             return this;
         }
+    }
+
+    private static Object getField(Object target, String name) {
+        Class<?> current = target.getClass();
+        while (current != null) {
+            try {
+                Field field = current.getDeclaredField(name);
+                field.setAccessible(true);
+                return field.get(target);
+            } catch (NoSuchFieldException ignored) {
+                current = current.getSuperclass();
+            } catch (IllegalAccessException exception) {
+                throw new IllegalStateException("Failed to access field '" + name + "' on " + target.getClass(), exception);
+            }
+        }
+        throw new IllegalStateException("Could not find field '" + name + "' on " + target.getClass());
+    }
+
+    private static void setField(Object target, String name, Object value) {
+        Class<?> current = target.getClass();
+        while (current != null) {
+            try {
+                Field field = current.getDeclaredField(name);
+                field.setAccessible(true);
+                field.set(target, value);
+                return;
+            } catch (NoSuchFieldException ignored) {
+                current = current.getSuperclass();
+            } catch (IllegalAccessException exception) {
+                throw new IllegalStateException("Failed to set field '" + name + "' on " + target.getClass(), exception);
+            }
+        }
+        throw new IllegalStateException("Could not find field '" + name + "' on " + target.getClass());
     }
 }

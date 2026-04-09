@@ -36,7 +36,7 @@ public class MixinChunkMap {
     @Final
     ServerLevel level;
     
-    @ModifyArg(method = {"method_43375", "lambda$scheduleChunkLoad$17"}, at = @At(value = "INVOKE",
+    @ModifyArg(method = "lambda$scheduleChunkLoad$3", at = @At(value = "INVOKE",
             ordinal = 0,
             target = "Lnet/neoforged/bus/api/IEventBus;post(Lnet/neoforged/bus/api/Event;)Lnet/neoforged/bus/api/Event;"),
             index = 0, remap = false)

@@ -4,11 +4,24 @@ buildscript {
     configurations.classpath {
         resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
     }
+
+    repositories {
+        maven { url "https://maven.fabricmc.net/" }
+        maven { url "https://maven.architectury.dev/" }
+        maven { url "https://maven.shedaniel.me/" }
+        maven { url "https://maven.minecraftforge.net/" }
+        mavenCentral()
+        gradlePluginPortal()
+    }
+
+    dependencies {
+        classpath files("$rootDir/gradle/architectury-loom-1.14.10001.jar")
+        classpath "dev.architectury:architectury-loom:1.14.473"
+    }
 }
 
 plugins {
-    id "architectury-plugin" version "3.4-SNAPSHOT"
-    id "dev.architectury.loom" version "1.13-SNAPSHOT" apply false
+    id "architectury-plugin" version "3.5-SNAPSHOT"
     id "maven-publish"
 }
 
@@ -17,18 +30,14 @@ architectury {
 }
 
 subprojects {
-    apply plugin: "dev.architectury.loom"
-
-    loom {
-        noIntermediateMappings()
-    }
+    apply plugin: "dev.architectury.loom-no-remap"
 
     dependencies {
         minecraft "com.mojang:minecraft:${rootProject.architectury.minecraft}"
-        mappings files(rootProject.file("gradle/identity-mappings-${rootProject.architectury.minecraft}.jar"))
     }
 
     repositories {
+        maven { url "https://maven.minecraftforge.net/" }
         maven { url "https://maven.neoforged.net/releases/" }
         if (rootProject.neoforge_pr != "") {
             maven {
@@ -65,9 +74,15 @@ allprojects {
 
     group = rootProject.maven_group
 
-    tasks.withType(JavaCompile) {
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(25)
+        }
+    }
+
+    tasks.withType(JavaCompile).configureEach {
         options.encoding = "UTF-8"
-        options.release = 21
+        options.release = 25
     }
 
     javadoc {

@@ -19,25 +19,20 @@
 
 package dev.architectury.mixin.forge;
 
-import dev.architectury.event.forge.EventHandlerImplCommon;
-import net.minecraft.server.packs.resources.PreparableReloadListener;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraft.world.level.storage.loot.LootDataManager;
+import dev.architectury.registry.level.entity.trade.forge.TradeRegistryImpl;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.npc.villager.Villager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.lang.ref.WeakReference;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-
-@Mixin(LootDataManager.class)
-public class MixinLootDataManager {
-    @Inject(method = "reload", at = @At("HEAD"))
-    private void reload(PreparableReloadListener.PreparationBarrier arg, ResourceManager arg2, ProfilerFiller arg3,
-                        ProfilerFiller arg4, Executor executor, Executor executor2, CallbackInfoReturnable<CompletableFuture<Void>> cir) {
-        EventHandlerImplCommon.lootDataManagerRef = new WeakReference<>((LootDataManager) (Object) this);
+@Mixin(Villager.class)
+public class MixinVillager {
+    @Inject(method = "updateTrades", at = @At("RETURN"))
+    private void architectury$appendRegisteredTrades(ServerLevel level, CallbackInfo ci) {
+        Villager villager = (Villager) (Object) this;
+        villager.getVillagerData().profession().unwrapKey().ifPresent(profession -> TradeRegistryImpl.appendVillagerTrades(
+                level, villager.getOffers(), profession, villager.getVillagerData().level(), villager, villager.getRandom()));
     }
 }

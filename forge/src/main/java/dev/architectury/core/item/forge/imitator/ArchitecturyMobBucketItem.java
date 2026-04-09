@@ -21,13 +21,14 @@ package dev.architectury.core.item.forge.imitator;
 
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.MobBucketItem;
 import net.minecraft.world.level.material.Fluid;
 
 import java.util.function.Supplier;
 
 public class ArchitecturyMobBucketItem extends MobBucketItem {
-    public ArchitecturyMobBucketItem(Supplier<? extends EntityType<?>> entity, Supplier<? extends Fluid> fluid, Supplier<? extends SoundEvent> sound, Properties properties) {
+    public ArchitecturyMobBucketItem(Supplier<? extends EntityType<? extends Mob>> entity, Supplier<? extends Fluid> fluid, Supplier<? extends SoundEvent> sound, Properties properties) {
         super(entity, fluid, sound, properties);
     }
 }

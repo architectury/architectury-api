@@ -23,50 +23,67 @@ import dev.architectury.event.Event;
 import dev.architectury.event.EventActor;
 import dev.architectury.event.EventResult;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.bus.EventBus;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.lang.reflect.Field;
 import java.util.function.Consumer;
 
 public class EventFactoryImpl {
     public static <T> Event<Consumer<T>> attachToForge(Event<Consumer<T>> event) {
         event.register(eventObj -> {
-            if (!(eventObj instanceof net.minecraftforge.eventbus.api.Event)) {
+            if (!(eventObj instanceof net.minecraftforge.eventbus.internal.Event)) {
                 throw new ClassCastException(eventObj.getClass() + " is not an instance of forge Event!");
             }
-            MinecraftForge.EVENT_BUS.post((net.minecraftforge.eventbus.api.Event) eventObj);
+            post((net.minecraftforge.eventbus.internal.Event) eventObj);
         });
         return event;
     }
-    
+
     @ApiStatus.Internal
     public static <T> Event<EventActor<T>> attachToForgeEventActor(Event<EventActor<T>> event) {
         event.register(eventObj -> {
-            if (!(eventObj instanceof net.minecraftforge.eventbus.api.Event)) {
+            if (!(eventObj instanceof net.minecraftforge.eventbus.internal.Event)) {
                 throw new ClassCastException(eventObj.getClass() + " is not an instance of forge Event!");
             }
-            if (!((net.minecraftforge.eventbus.api.Event) eventObj).isCancelable()) {
+            if (!(eventObj instanceof net.minecraftforge.eventbus.api.event.characteristic.Cancellable)) {
                 throw new ClassCastException(eventObj.getClass() + " is not cancellable Event!");
             }
-            MinecraftForge.EVENT_BUS.post((net.minecraftforge.eventbus.api.Event) eventObj);
+            post((net.minecraftforge.eventbus.internal.Event) eventObj);
             return EventResult.pass();
         });
         return event;
     }
-    
+
     @ApiStatus.Internal
     public static <T> Event<EventActor<T>> attachToForgeEventActorCancellable(Event<EventActor<T>> event) {
         event.register(eventObj -> {
-            if (!(eventObj instanceof net.minecraftforge.eventbus.api.Event)) {
+            if (!(eventObj instanceof net.minecraftforge.eventbus.internal.Event)) {
                 throw new ClassCastException(eventObj.getClass() + " is not an instance of forge Event!");
             }
-            if (!((net.minecraftforge.eventbus.api.Event) eventObj).isCancelable()) {
+            if (!(eventObj instanceof net.minecraftforge.eventbus.api.event.characteristic.Cancellable)) {
                 throw new ClassCastException(eventObj.getClass() + " is not cancellable Event!");
             }
-            if (MinecraftForge.EVENT_BUS.post((net.minecraftforge.eventbus.api.Event) eventObj)) {
+            if (post((net.minecraftforge.eventbus.internal.Event) eventObj)) {
                 return EventResult.interrupt(false);
             }
             return EventResult.pass();
         });
         return event;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static boolean post(net.minecraftforge.eventbus.internal.Event event) {
+        try {
+            Field busField = event.getClass().getField("BUS");
+            Object bus = busField.get(null);
+            if (bus instanceof EventBus<?> eventBus) {
+                return ((EventBus<net.minecraftforge.eventbus.internal.Event>) eventBus).post(event);
+            }
+        } catch (ReflectiveOperationException exception) {
+            throw new IllegalStateException("Failed to locate Forge event bus for " + event.getClass(), exception);
+        }
+
+        throw new IllegalStateException("Event class " + event.getClass() + " does not expose a static BUS field");
     }
 }

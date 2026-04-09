@@ -1,5 +1,5 @@
 plugins {
-    id "com.github.johnrengelman.shadow" version "8.1.1"
+    id "com.gradleup.shadow" version "8.3.10"
 }
 
 loom {
@@ -29,12 +29,13 @@ configurations {
 }
 
 dependencies {
-    forge "net.minecraftforge:forge:${rootProject.architectury.minecraft}-${rootProject.forge_version}"
+    def forgeMinecraftVersion = rootProject.findProperty("forge_minecraft_version") ?: rootProject.architectury.minecraft
+    forge "net.minecraftforge:forge:${forgeMinecraftVersion}-${rootProject.forge_version}"
 
-    common(project(path: ":common", configuration: "namedElements")) { transitive false }
-    common(project(path: ":forge", configuration: "namedElements")) { transitive false }
-    shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive false }
-    shadowCommon(project(path: ":forge", configuration: "transformProductionForge")) { transitive false }
+    common(project(path: ":common", configuration: "apiElements")) { transitive false }
+    common(project(path: ":forge", configuration: "apiElements")) { transitive false }
+    shadowCommon(project(path: ":common", configuration: "runtimeElements")) { transitive false }
+    shadowCommon(project(path: ":forge", configuration: "runtimeElements")) { transitive false }
 }
 
 processResources {
@@ -64,14 +65,8 @@ shadowJar {
     relocate "dev.architectury.core.item.forge.imitator", "dev.architectury.core.item"
 }
 
-remapJar {
-    input.set shadowJar.archiveFile
-    dependsOn shadowJar
-    archiveClassifier = null
-}
-
-task renameJarForPublication(type: Zip, dependsOn: remapJar) {
-    from remapJar.archiveFile.map { zipTree(it) }
+task renameJarForPublication(type: Zip, dependsOn: shadowJar) {
+    from shadowJar.archiveFile.map { zipTree(it) }
     archiveExtension = "jar"
     metadataCharset "UTF-8"
     destinationDirectory = base.libsDirectory

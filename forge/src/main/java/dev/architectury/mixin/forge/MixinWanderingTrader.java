@@ -17,9 +17,21 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.fluid.forge;
+package dev.architectury.mixin.forge;
 
-public final class ArchitecturyFluidAttributesClient {
-    private ArchitecturyFluidAttributesClient() {
+import dev.architectury.registry.level.entity.trade.forge.TradeRegistryImpl;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+@Mixin(WanderingTrader.class)
+public class MixinWanderingTrader {
+    @Inject(method = "updateTrades", at = @At("RETURN"))
+    private void architectury$appendRegisteredTrades(ServerLevel level, CallbackInfo ci) {
+        WanderingTrader trader = (WanderingTrader) (Object) this;
+        TradeRegistryImpl.appendWanderingTraderTrades(level, trader.getOffers(), trader, trader.getRandom());
     }
 }

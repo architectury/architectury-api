@@ -19,8 +19,9 @@
 
 package dev.architectury.platform.hooks;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.bus.BusGroup;
+import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.ModList;
 
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -29,13 +30,13 @@ public final class EventBusesHooks {
     private EventBusesHooks() {
     }
     
-    @ExpectPlatform
-    public static void whenAvailable(String modId, Consumer<IEventBus> busConsumer) {
-        throw new AssertionError();
+    public static void whenAvailable(String modId, Consumer<BusGroup> busConsumer) {
+        BusGroup bus = getModEventBus(modId).orElseThrow(() -> new IllegalStateException("Mod '" + modId + "' is not available!"));
+        busConsumer.accept(bus);
     }
     
-    @ExpectPlatform
-    public static Optional<IEventBus> getModEventBus(String modId) {
-        throw new AssertionError();
+    public static Optional<BusGroup> getModEventBus(String modId) {
+        return ModList.getModContainerById(modId)
+                .map(ModContainer::getModBusGroup);
     }
 }

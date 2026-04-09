@@ -22,17 +22,17 @@ package dev.architectury.core.fluid.forge.imitator;
 import com.google.common.base.MoreObjects;
 import dev.architectury.core.fluid.ArchitecturyFluidAttributes;
 import dev.architectury.hooks.fluid.forge.FluidStackHooksForge;
-import net.minecraft.Util;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.util.Util;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.material.Fluid;
@@ -99,27 +99,6 @@ class ArchitecturyFluidAttributesForge extends FluidType {
             }
             
             @Override
-            public Identifier getStillTexture(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
-                return attributes.getSourceTexture(state, getter, pos);
-            }
-            
-            @Override
-            public Identifier getFlowingTexture(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
-                return attributes.getFlowingTexture(state, getter, pos);
-            }
-            
-            @Override
-            @Nullable
-            public Identifier getOverlayTexture(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
-                return attributes.getOverlayTexture(state, getter, pos);
-            }
-            
-            @Override
-            public int getTintColor(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
-                return attributes.getColor(state, getter, pos);
-            }
-            
-            @Override
             public int getTintColor(FluidStack stack) {
                 return attributes.getColor(convertSafe(stack));
             }
@@ -148,8 +127,11 @@ class ArchitecturyFluidAttributesForge extends FluidType {
     }
     
     @Override
-    public int getLightLevel(FluidState state, BlockAndTintGetter level, BlockPos pos) {
-        return attributes.getLuminosity(convertSafe(state), level, pos);
+    public int getLightLevel(FluidState state, LevelReader level, BlockPos pos) {
+        if (level instanceof BlockAndTintGetter getter) {
+            return attributes.getLuminosity(convertSafe(state), getter, pos);
+        }
+        return super.getLightLevel(state, level, pos);
     }
     
     @Override
@@ -158,8 +140,11 @@ class ArchitecturyFluidAttributesForge extends FluidType {
     }
     
     @Override
-    public int getDensity(FluidState state, BlockAndTintGetter level, BlockPos pos) {
-        return attributes.getDensity(convertSafe(state), level, pos);
+    public int getDensity(FluidState state, LevelReader level, BlockPos pos) {
+        if (level instanceof BlockAndTintGetter getter) {
+            return attributes.getDensity(convertSafe(state), getter, pos);
+        }
+        return super.getDensity(state, level, pos);
     }
     
     @Override
@@ -168,8 +153,11 @@ class ArchitecturyFluidAttributesForge extends FluidType {
     }
     
     @Override
-    public int getTemperature(FluidState state, BlockAndTintGetter level, BlockPos pos) {
-        return attributes.getTemperature(convertSafe(state), level, pos);
+    public int getTemperature(FluidState state, LevelReader level, BlockPos pos) {
+        if (level instanceof BlockAndTintGetter getter) {
+            return attributes.getTemperature(convertSafe(state), getter, pos);
+        }
+        return super.getTemperature(state, level, pos);
     }
     
     @Override
@@ -178,8 +166,11 @@ class ArchitecturyFluidAttributesForge extends FluidType {
     }
     
     @Override
-    public int getViscosity(FluidState state, BlockAndTintGetter level, BlockPos pos) {
-        return attributes.getViscosity(convertSafe(state), level, pos);
+    public int getViscosity(FluidState state, LevelReader level, BlockPos pos) {
+        if (level instanceof BlockAndTintGetter getter) {
+            return attributes.getViscosity(convertSafe(state), getter, pos);
+        }
+        return super.getViscosity(state, level, pos);
     }
     
     @Override
@@ -232,7 +223,7 @@ class ArchitecturyFluidAttributesForge extends FluidType {
     
     @Override
     @Nullable
-    public SoundEvent getSound(@Nullable Player player, BlockGetter getter, BlockPos pos, SoundAction action) {
+    public SoundEvent getSound(@Nullable LivingEntity player, BlockGetter getter, BlockPos pos, SoundAction action) {
         if (getter instanceof BlockAndTintGetter level) {
             if (BUCKET_FILL.equals(action)) {
                 return attributes.getFillSound(null, level, pos);

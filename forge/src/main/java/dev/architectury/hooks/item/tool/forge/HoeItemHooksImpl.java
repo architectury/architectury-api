@@ -32,7 +32,7 @@ import java.util.function.Predicate;
 
 public class HoeItemHooksImpl {
     public static void addTillable(Block input, Predicate<UseOnContext> predicate, Consumer<UseOnContext> action, Function<UseOnContext, BlockState> function) {
-        MinecraftForge.EVENT_BUS.<BlockEvent.BlockToolModificationEvent>addListener(event -> {
+        BlockEvent.BlockToolModificationEvent.BUS.addListener(event -> {
             UseOnContext context = event.getContext();
             if (ToolActions.HOE_TILL == event.getToolAction() && context.getItemInHand().canPerformAction(ToolActions.HOE_TILL)
                     && event.getState().is(input) && predicate.test(context)) {

@@ -11,9 +11,9 @@
   ],
   "mixins": [
     "MixinFallingBlockEntity",
-    "MixinItemExtension",
     "MixinLevelEvent",
-    "MixinLootDataManager"
+    "MixinVillager",
+    "MixinWanderingTrader"
   ],
   "injectors": {
     "defaultRequire": 1

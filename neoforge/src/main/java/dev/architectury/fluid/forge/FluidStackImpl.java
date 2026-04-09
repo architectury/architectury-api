@@ -71,7 +71,7 @@ public enum FluidStackImpl implements dev.architectury.fluid.FluidStack.FluidSta
     
     @Override
     public Supplier<Fluid> getRawFluidSupplier(FluidStack object) {
-        return () -> object.getFluidHolder().value();
+        return () -> object.typeHolder().value();
     }
     
     @Override
@@ -96,7 +96,7 @@ public enum FluidStackImpl implements dev.architectury.fluid.FluidStack.FluidSta
     
     @Override
     public PatchedDataComponentMap getComponents(FluidStack value) {
-        return value.getComponents();
+        return new PatchedDataComponentMap(value.getComponents());
     }
     
     @Override
