@@ -22,6 +22,7 @@ package dev.architectury.event.forge;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.PlayerEvent;
 import dev.architectury.event.events.common.*;
+import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -29,8 +30,12 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.TriState;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.vehicle.minecart.MinecartSpawner;
+import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -38,6 +43,7 @@ import net.neoforged.neoforge.event.CommandEvent;
 import net.neoforged.neoforge.event.LootTableLoadEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.ServerChatEvent;
+import net.neoforged.neoforge.event.entity.EntityEvent.EnteringSection;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
 import net.neoforged.neoforge.event.entity.living.AnimalTameEvent;
@@ -245,20 +251,34 @@ public class EventHandlerImplCommon {
         }
     }
     
-    // TODO: Hook ourselves when mixin is available
-    //    @SubscribeEvent(priority = EventPriority.HIGH)
-    //    public static void event(EnteringChunk event) {
-    //        EntityEvent.ENTER_SECTION.invoker().enterChunk(event.getEntity(), event.getNewChunkX(), event.getNewChunkZ(), event.getOldChunkX(), event.getOldChunkZ());
-    //    }
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(EnteringSection event) {
+        SectionPos newPos = event.getNewPos();
+        SectionPos oldPos = event.getOldPos();
+        EntityEvent.ENTER_SECTION.invoker().enterSection(
+                event.getEntity(),
+                newPos.x(), newPos.y(), newPos.z(),
+                oldPos.x(), oldPos.y(), oldPos.z());
+    }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventLivingSpawnEvent(FinalizeSpawnEvent event) {
-        EventResult result = EntityEvent.LIVING_CHECK_SPAWN.invoker().canSpawn(event.getEntity(), event.getLevel(), event.getX(), event.getY(), event.getZ(), event.getSpawnType(), null);//TODO FIX: , event.getSpawner());
+        EventResult result = EntityEvent.LIVING_CHECK_SPAWN.invoker().canSpawn(event.getEntity(), event.getLevel(), event.getX(), event.getY(), event.getZ(), event.getSpawnType(), getBaseSpawner(event));
         if (result.interruptsFurtherEvaluation()) {
             if (!result.isEmpty()) {
                 event.setSpawnCancelled(result.value());
             }
         }
+    }
+
+    private static BaseSpawner getBaseSpawner(FinalizeSpawnEvent event) {
+        return event.getSpawner().map(
+                EventHandlerImplCommon::getBaseSpawner,
+                entity -> entity instanceof MinecartSpawner minecartSpawner ? minecartSpawner.getSpawner() : null);
+    }
+
+    private static BaseSpawner getBaseSpawner(BlockEntity blockEntity) {
+        return blockEntity instanceof SpawnerBlockEntity spawnerBlockEntity ? spawnerBlockEntity.getSpawner() : null;
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)

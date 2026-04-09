@@ -54,6 +54,8 @@
     "MixinServerPlayer",
     "MixinServerPlayerGameMode",
     "MixinTamableAnimal",
+    "MixinVillager",
+    "MixinWanderingTrader",
     "PlayerAttackInvoker"
   ],
   "injectors": {
