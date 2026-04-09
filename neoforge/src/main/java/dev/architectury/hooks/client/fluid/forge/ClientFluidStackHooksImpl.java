@@ -115,7 +115,11 @@ public class ClientFluidStackHooksImpl {
         }
 
         FluidState fluidState = state != null ? state : fluid.defaultFluidState();
-        FluidTintSource tint = fluidModel(fluidState).fluidTintSource();
+        @Nullable FluidTintSource tint = fluidModel(fluidState).fluidTintSource();
+        if (tint == null) {
+            return -1;
+        }
+
         if (stack != null) {
             return tint.colorAsStack(FluidStackHooksForge.toForge(stack));
         } else if (level != null && pos != null) {

@@ -22,6 +22,7 @@ package dev.architectury.event.forge;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.PlayerEvent;
 import dev.architectury.event.events.common.*;
+import com.mojang.datafixers.util.Either;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -272,7 +273,12 @@ public class EventHandlerImplCommon {
     }
 
     private static BaseSpawner getBaseSpawner(FinalizeSpawnEvent event) {
-        return event.getSpawner().map(
+        Either<BlockEntity, net.minecraft.world.entity.Entity> spawner = event.getSpawner();
+        if (spawner == null) {
+            return null;
+        }
+
+        return spawner.map(
                 EventHandlerImplCommon::getBaseSpawner,
                 entity -> entity instanceof MinecartSpawner minecartSpawner ? minecartSpawner.getSpawner() : null);
     }
