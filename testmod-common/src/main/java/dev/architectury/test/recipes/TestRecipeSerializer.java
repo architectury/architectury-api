@@ -19,38 +19,14 @@
 
 package dev.architectury.test.recipes;
 
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.FireworkRocketRecipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 
-public class TestRecipeSerializer implements RecipeSerializer<CustomRecipe> {
-    private static final MapCodec<CustomRecipe> CODEC = RecordCodecBuilder.mapCodec(instance ->
-            instance.group(CraftingBookCategory.CODEC.fieldOf("category")
-                    .orElse(CraftingBookCategory.MISC)
-                    .forGetter(CraftingRecipe::category)
-            ).apply(instance, FireworkRocketRecipe::new)
-    );
-    private static final StreamCodec<RegistryFriendlyByteBuf, CustomRecipe> STREAM_CODEC = StreamCodec.of(TestRecipeSerializer::toNetwork, TestRecipeSerializer::fromNetwork);
-    
-    @Override
-    public MapCodec<CustomRecipe> codec() {
-        return CODEC;
+public final class TestRecipeSerializer {
+    private TestRecipeSerializer() {
     }
     
-    @Override
-    public StreamCodec<RegistryFriendlyByteBuf, CustomRecipe> streamCodec() {
-        return STREAM_CODEC;
-    }
-    
-    public static CustomRecipe fromNetwork(FriendlyByteBuf buf) {
-        CraftingBookCategory category = buf.readEnum(CraftingBookCategory.class);
-        return new FireworkRocketRecipe(category);
-    }
-    
-    public static void toNetwork(FriendlyByteBuf buf, CustomRecipe recipe) {
-        buf.writeEnum(recipe.category());
+    public static RecipeSerializer<FireworkRocketRecipe> create() {
+        return new RecipeSerializer<>(FireworkRocketRecipe.MAP_CODEC, FireworkRocketRecipe.STREAM_CODEC);
     }
 }

@@ -99,7 +99,7 @@ public class DebugEvents {
         EntityEvent.ENTER_SECTION.register(((entity, nx, ny, nz, ox, oy, oz) -> {
             if (entity instanceof Player player) {
                 TestMod.SINK.accept("%s switched section: %s => %s", entity.getScoreboardName(), sectionPos(ox, oy, oz), sectionPos(nx, oy, nz));
-                player.displayClientMessage(Component.literal("Entering chunk: " + sectionPos(nx, ny, nz)), true);
+                player.sendOverlayMessage(Component.literal("Entering chunk: " + sectionPos(nx, ny, nz)));
             }
         }));
         EntityEvent.LIVING_CHECK_SPAWN.register(((entity, level, x, y, z, type, spawner) -> {

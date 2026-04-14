@@ -19,10 +19,10 @@
 
 package dev.architectury.test.trade;
 
+import dev.architectury.event.events.common.LifecycleEvent;
 import dev.architectury.registry.level.entity.trade.SimpleTrade;
 import dev.architectury.registry.level.entity.trade.TradeRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.entity.npc.villager.VillagerTrades;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.ItemCost;
 
@@ -30,14 +30,16 @@ import java.util.Optional;
 
 public class TestTrades {
     public static void init() {
-        for (var villagerProfession : BuiltInRegistries.VILLAGER_PROFESSION.registryKeySet()) {
-            TradeRegistry.registerVillagerTrade(villagerProfession, 1, TestTrades.createTrades());
-        }
-        TradeRegistry.registerTradeForWanderingTrader(TradeRegistry.WandererTradeType.GENERIC_TRADES, TestTrades.createTrades());
+        LifecycleEvent.SERVER_BEFORE_START.register(server -> {
+            for (var villagerProfession : BuiltInRegistries.VILLAGER_PROFESSION.registryKeySet()) {
+                TradeRegistry.registerVillagerTrade(villagerProfession, 1, TestTrades.createTrades());
+            }
+            TradeRegistry.registerTradeForWanderingTrader(TradeRegistry.WandererTradeType.GENERIC_TRADES, TestTrades.createTrades());
+        });
     }
     
-    private static VillagerTrades.ItemListing[] createTrades() {
+    private static TradeRegistry.ItemListing[] createTrades() {
         var trade = new SimpleTrade(new ItemCost(Items.APPLE), Optional.empty(), Items.ACACIA_BOAT.getDefaultInstance(), 1, 0, 1.0F);
-        return new VillagerTrades.ItemListing[]{trade};
+        return new TradeRegistry.ItemListing[]{trade};
     }
 }

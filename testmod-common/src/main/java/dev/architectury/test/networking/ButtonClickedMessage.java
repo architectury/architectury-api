@@ -41,6 +41,6 @@ public record ButtonClickedMessage(int buttonId) implements CustomPacketPayload 
     }
     
     public void handle(NetworkManager.PacketContext context) {
-        context.getPlayer().displayClientMessage(Component.literal("You clicked button #" + buttonId), false);
+        context.getPlayer().sendSystemMessage(Component.literal("You clicked button #" + buttonId));
     }
 }

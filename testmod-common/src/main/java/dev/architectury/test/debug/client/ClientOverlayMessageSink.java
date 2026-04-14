@@ -23,7 +23,7 @@ import com.google.common.collect.Lists;
 import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.test.debug.ConsoleMessageSink;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
@@ -49,7 +49,7 @@ public class ClientOverlayMessageSink extends ConsoleMessageSink {
         messages.add(0, new Message(Component.literal(message), Util.getMillis()));
     }
     
-    public void render(GuiGraphics graphics, float delta) {
+    public void render(GuiGraphicsExtractor graphics, float delta) {
         graphics.pose().pushMatrix();
         graphics.pose().scale(0.5f, 0.5f);
         var minecraft = Minecraft.getInstance();
@@ -71,7 +71,7 @@ public class ClientOverlayMessageSink extends ConsoleMessageSink {
                         var textWidth = minecraft.font.width(message.text);
                         var alpha = (int) Mth.clamp((5000 - timeExisted) / 5000f * 400f + 8, 0, 255);
                         graphics.fill(0, y - 1, 2 + textWidth + 1, y + lineHeight - 1, 0x505050 + ((alpha * 144 / 255) << 24));
-                        graphics.drawString(minecraft.font, message.text, 1, y, 0xE0E0E0 + (alpha << 24));
+                        graphics.text(minecraft.font, message.text, 1, y, 0xE0E0E0 + (alpha << 24));
                     }
                     y += lineHeight;
                 }

@@ -55,7 +55,7 @@ public class TestModClient {
                             })));
         });
         ClientGuiEvent.RENDER_CONTAINER_BACKGROUND.register(((screen, graphics, mouseX, mouseY, delta) -> {
-            graphics.renderItem(new ItemStack(Items.DIAMOND), mouseX, mouseY);
+            graphics.item(new ItemStack(Items.DIAMOND), mouseX, mouseY);
         }));
     }
 }

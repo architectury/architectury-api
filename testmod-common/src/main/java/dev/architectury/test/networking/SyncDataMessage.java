@@ -42,6 +42,6 @@ public record SyncDataMessage(CompoundTag serverData) implements CustomPacketPay
     }
     
     public void handle(NetworkManager.PacketContext context) {
-        context.getPlayer().displayClientMessage(Component.literal("Received data from server: " + serverData), false);
+        context.getPlayer().sendSystemMessage(Component.literal("Received data from server: " + serverData));
     }
 }

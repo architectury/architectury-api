@@ -1,12 +1,5 @@
-plugins {
-    id "com.github.johnrengelman.shadow" version "7.0.0"
-    id "com.matthewprenger.cursegradle"
-}
-
 loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
-
-    mixin { useLegacyMixinAp = true }
 }
 
 architectury {
@@ -25,7 +18,14 @@ dependencies {
     implementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     implementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
 
-    implementation project(path: ":fabric", configuration: "namedElements")
-    common(project(path: ":common", configuration: "namedElements")) { transitive false }
-    common(project(path: ":testmod-common", configuration: "namedElements")) { transitive false }
+    implementation project(":fabric")
+    common(project(":common")) { transitive false }
+    common(project(":testmod-common")) { transitive false }
+}
+
+processResources {
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+    inputs.property "version", project.version
 }
