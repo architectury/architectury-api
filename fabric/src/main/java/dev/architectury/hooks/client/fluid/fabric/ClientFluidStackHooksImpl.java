@@ -79,14 +79,14 @@ public class ClientFluidStackHooksImpl {
     
     public static int getColor(Fluid fluid) {
         if (fluid == Fluids.EMPTY) return -1;
-        return FluidVariantRendering.getColor(FluidVariant.of(fluid));
+    return FluidVariantRendering.getColor(FluidVariant.of(fluid));
     }
     
     @Nullable
     private static TextureAtlasSprite getSprite(Fluid fluid, boolean still, @Nullable FluidStack stack) {
         ArchitecturyFluidAttributes attributes = ArchitecturyFlowingFluidImpl.getAttributes(fluid);
-        if (attributes == null) return null;
-        return getBlocksAtlas().getSprite(still ? attributes.getSourceTexture(stack) : attributes.getFlowingTexture(stack));
+        if (attributes == null || stack == null) return null;
+        return getBlocksAtlas().getSprite(still ? attributes.getSourceTexture(stack.getFluid().defaultFluidState()) : attributes.getFlowingTexture(stack.getFluid().defaultFluidState()));
     }
     
     @Nullable

@@ -37,7 +37,7 @@ public class ClientOverlayMessageSink extends ConsoleMessageSink {
     public ClientOverlayMessageSink() {
         ClientGuiEvent.RENDER_POST.register((screen, graphics, mouseX, mouseY, delta) -> render(graphics, delta));
         ClientGuiEvent.RENDER_HUD.register((graphics, delta) -> {
-            if (Minecraft.getInstance().screen == null && !Minecraft.getInstance().gui.getDebugOverlay().showDebugScreen()) {
+            if (Minecraft.getInstance().gui.screen() == null && !Minecraft.getInstance().gui.hud.getDebugOverlay().showDebugScreen()) {
                 render(graphics, delta.getRealtimeDeltaTicks());
             }
         });

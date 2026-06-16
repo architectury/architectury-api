@@ -26,7 +26,7 @@ import net.minecraft.world.level.material.FlowingFluid;
 public final class LiquidBlockHooks {
     /**
      * Returns the fluid contained in the liquid block.
-     * This requires special handling since forge defers the fiuid.
+     * This requires special handling since NeoForge defers the fiuid.
      *
      * @param block the liquid block
      * @return the fluid contained in the liquid block

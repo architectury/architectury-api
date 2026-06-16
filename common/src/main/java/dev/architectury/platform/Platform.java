@@ -41,15 +41,6 @@ public final class Platform {
         return simpleLoaderCache == 0;
     }
     
-    /**
-     * Deprecated in favor of {@link #isNeoForge()}, as NeoForge is the only Forge-like loader supported.
-     * @return
-     */
-    @Deprecated(forRemoval = true)
-    public static boolean isForgeLike() {
-        return isNeoForge();
-    }
-    
     public static boolean isNeoForge() {
         updateLoaderCache();
         return simpleLoaderCache == 2;

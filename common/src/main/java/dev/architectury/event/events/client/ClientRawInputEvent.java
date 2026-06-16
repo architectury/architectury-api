@@ -44,7 +44,7 @@ public interface ClientRawInputEvent {
     interface KeyPressed {
         /**
          * Invoked whenever a key input is performed.
-         * Equivalent to Forge's {@code InputEvent.KeyInputEvent} event.
+         * Equivalent to NeoForge's {@code InputEvent.KeyInputEvent} event.
          *
          * @param client   The Minecraft instance performing it.
          * @param action   The action that should be performed.
@@ -58,7 +58,7 @@ public interface ClientRawInputEvent {
     interface MouseScrolled {
         /**
          * Invoked whenever the mouse scroll wheel is used.
-         * Equivalent to Forge's {@code InputEvent.MouseScrollEvent} event.
+         * Equivalent to NeoForge's {@code InputEvent.MouseScrollEvent} event.
          *
          * @param client  The Minecraft instance performing it.
          * @param amountX The amount of movement on the X axis.

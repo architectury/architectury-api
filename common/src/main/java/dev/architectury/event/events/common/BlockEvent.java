@@ -22,7 +22,6 @@ package dev.architectury.event.events.common;
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
 import dev.architectury.event.EventResult;
-import dev.architectury.utils.value.IntValue;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -33,7 +32,7 @@ import org.jetbrains.annotations.Nullable;
 
 public interface BlockEvent {
     /**
-     * @see Break#breakBlock(Level, BlockPos, BlockState, ServerPlayer, IntValue)
+     * @see Break#breakBlock(Level, BlockPos, BlockState, ServerPlayer)
      */
     Event<Break> BREAK = EventFactory.createEventResult();
     /**
@@ -53,11 +52,10 @@ public interface BlockEvent {
          * @param pos    The position of the block.
          * @param state  The current state of the block.
          * @param player The player who is breaking the block.
-         * @param xp     The experience that are dropped when the block was destroyed. Always {@code null} on fabric.
          * @return A {@link EventResult} determining the outcome of the event,
          * the execution of the vanilla block breaking may be cancelled by the result.
          */
-        EventResult breakBlock(Level level, BlockPos pos, BlockState state, ServerPlayer player, @Nullable IntValue xp);
+        EventResult breakBlock(Level level, BlockPos pos, BlockState state, ServerPlayer player);
     }
     
     interface Place {

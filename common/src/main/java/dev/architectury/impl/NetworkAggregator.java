@@ -53,33 +53,12 @@ public class NetworkAggregator {
             throw new RuntimeException(throwable);
         }
     });
-    public static final Map<Identifier, CustomPacketPayload.Type<BufCustomPacketPayload>> C2S_TYPE = new HashMap<>();
-    public static final Map<Identifier, CustomPacketPayload.Type<BufCustomPacketPayload>> S2C_TYPE = new HashMap<>();
     public static final Map<Identifier, NetworkManager.NetworkReceiver<?>> C2S_RECEIVER = new HashMap<>();
     public static final Map<Identifier, NetworkManager.NetworkReceiver<?>> S2C_RECEIVER = new HashMap<>();
     public static final Map<Identifier, StreamCodec<ByteBuf, ?>> C2S_CODECS = new HashMap<>();
     public static final Map<Identifier, StreamCodec<ByteBuf, ?>> S2C_CODECS = new HashMap<>();
     public static final Map<Identifier, PacketTransformer> C2S_TRANSFORMERS = new HashMap<>();
     public static final Map<Identifier, PacketTransformer> S2C_TRANSFORMERS = new HashMap<>();
-    
-    public static void registerReceiver(NetworkManager.Side side, Identifier id, List<PacketTransformer> packetTransformers, NetworkManager.NetworkReceiver<RegistryFriendlyByteBuf> receiver) {
-        CustomPacketPayload.Type<BufCustomPacketPayload> type = new CustomPacketPayload.Type<>(id);
-        if (side == NetworkManager.Side.C2S) {
-            C2S_TYPE.put(id, type);
-            registerC2SReceiver(type, BufCustomPacketPayload.streamCodec(type), packetTransformers, (value, context) -> {
-                RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(value.payload()), context.registryAccess());
-                receiver.receive(buf, context);
-                buf.release();
-            });
-        } else if (side == NetworkManager.Side.S2C) {
-            S2C_TYPE.put(id, type);
-            registerS2CReceiver(type, BufCustomPacketPayload.streamCodec(type), packetTransformers, (value, context) -> {
-                RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(value.payload()), context.registryAccess());
-                receiver.receive(buf, context);
-                buf.release();
-            });
-        }
-    }
     
     public static <T extends CustomPacketPayload> void registerReceiver(NetworkManager.Side side, CustomPacketPayload.Type<T> type, StreamCodec<? super RegistryFriendlyByteBuf, T> codec, List<PacketTransformer> packetTransformers, NetworkManager.NetworkReceiver<T> receiver) {
         Objects.requireNonNull(type, "Cannot register receiver with a null type!");
@@ -130,14 +109,6 @@ public class NetworkAggregator {
         });
     }
     
-    public static void collectPackets(PacketSink sink, NetworkManager.Side side, Identifier id, RegistryFriendlyByteBuf buf) {
-        if (side == NetworkManager.Side.C2S) {
-            collectPackets(sink, side, new BufCustomPacketPayload(C2S_TYPE.get(id), ByteBufUtil.getBytes(buf)), buf.registryAccess());
-        } else {
-            collectPackets(sink, side, new BufCustomPacketPayload(S2C_TYPE.get(id), ByteBufUtil.getBytes(buf)), buf.registryAccess());
-        }
-    }
-    
     public static <T extends CustomPacketPayload> void collectPackets(PacketSink sink, NetworkManager.Side side, T payload, RegistryAccess access) {
         CustomPacketPayload.Type<T> type = (CustomPacketPayload.Type<T>) payload.type();
         PacketTransformer transformer = side == NetworkManager.Side.C2S ? C2S_TRANSFORMERS.get(type.id()) : S2C_TRANSFORMERS.get(type.id());
@@ -147,13 +118,7 @@ public class NetworkAggregator {
         
         if (transformer != null) {
             transformer.outbound(side, type.id(), buf, (side1, id1, buf1) -> {
-                if (side == NetworkManager.Side.C2S) {
-                    CustomPacketPayload.Type<BufCustomPacketPayload> type1 = C2S_TYPE.getOrDefault(id1, (CustomPacketPayload.Type<BufCustomPacketPayload>) type);
-                    sink.accept(toPacket(side1, new BufCustomPacketPayload(type1, ByteBufUtil.getBytes(buf1))));
-                } else if (side == NetworkManager.Side.S2C) {
-                    CustomPacketPayload.Type<BufCustomPacketPayload> type1 = S2C_TYPE.getOrDefault(id1, (CustomPacketPayload.Type<BufCustomPacketPayload>) type);
-                    sink.accept(toPacket(side1, new BufCustomPacketPayload(type1, ByteBufUtil.getBytes(buf1))));
-                }
+                sink.accept(toPacket(side1, new BufCustomPacketPayload((CustomPacketPayload.Type<BufCustomPacketPayload>) type, ByteBufUtil.getBytes(buf1))));
             });
         } else {
             sink.accept(toPacket(side, new BufCustomPacketPayload((CustomPacketPayload.Type<BufCustomPacketPayload>) type, ByteBufUtil.getBytes(buf))));
@@ -169,12 +134,6 @@ public class NetworkAggregator {
         }
         
         throw new IllegalArgumentException("Invalid side: " + side);
-    }
-    
-    public static void registerS2CType(Identifier id, List<PacketTransformer> packetTransformers) {
-        CustomPacketPayload.Type<BufCustomPacketPayload> type = new CustomPacketPayload.Type<>(id);
-        S2C_TYPE.put(id, type);
-        registerS2CType(type, BufCustomPacketPayload.streamCodec(type), packetTransformers);
     }
     
     public static <T extends CustomPacketPayload> void registerS2CType(CustomPacketPayload.Type<T> type, StreamCodec<? super RegistryFriendlyByteBuf, T> codec, List<PacketTransformer> packetTransformers) {

@@ -59,8 +59,8 @@ public final class RegistrarManager {
     
     /**
      * Listen to registry registration, the callback is called when content should be registered.
-     * On forge, this is invoked after {@code RegistryEvent.Register}.
-     * On fabric, this is invoked immediately.
+     * On NeoForge, this is invoked after {@code RegistryEvent.Register}.
+     * On Fabric, this is invoked immediately.
      *
      * @param key      the key of the registry
      * @param callback the callback to be invoked

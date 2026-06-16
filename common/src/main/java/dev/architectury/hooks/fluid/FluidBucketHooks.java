@@ -26,7 +26,7 @@ import net.minecraft.world.level.material.Fluid;
 public final class FluidBucketHooks {
     /**
      * Returns the fluid contained in the bucket.
-     * This requires special handling since forge defers the fiuid.
+     * This requires special handling since NeoForge defers the fluid.
      *
      * @param item the bucket item
      * @return the fluid contained in the bucket

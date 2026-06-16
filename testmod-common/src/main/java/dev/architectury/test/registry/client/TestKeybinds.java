@@ -21,9 +21,12 @@ package dev.architectury.test.registry.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.architectury.event.events.client.ClientTickEvent;
+import dev.architectury.networking.NetworkManager;
 import dev.architectury.registry.client.keymappings.KeyMappingRegistry;
 import dev.architectury.test.TestMod;
+import dev.architectury.test.networking.ButtonClickedMessage;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.resources.Identifier;
 import org.lwjgl.glfw.GLFW;
@@ -31,11 +34,17 @@ import org.lwjgl.glfw.GLFW;
 public class TestKeybinds {
     public static void initialize() {
         var category = KeyMapping.Category.register(Identifier.fromNamespaceAndPath("architectury", "architectury-test"));
+
         var mapping = new KeyMapping("key.architectury-test.test", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_O, category);
         KeyMappingRegistry.register(mapping);
+
         ClientTickEvent.CLIENT_POST.register(instance -> {
             while (mapping.consumeClick()) {
                 TestMod.SINK.accept("Key \"%s\" pressed!", I18n.get("key.architectury-test.test"));
+                
+                if (Minecraft.getInstance().player != null) {
+                    NetworkManager.sendToServer(new ButtonClickedMessage(1));
+                }
             }
         });
     }

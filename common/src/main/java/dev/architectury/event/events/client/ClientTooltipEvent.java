@@ -62,7 +62,7 @@ public interface ClientTooltipEvent {
     interface Item {
         /**
          * Invoked whenever an item tooltip is rendered.
-         * Equivalent to Forge's {@code ItemTooltipEvent} event and
+         * Equivalent to NeoForge's {@code ItemTooltipEvent} event and
          * Fabric's {@code ItemTooltipCallback}.
          *
          * @param stack          The rendered stack.

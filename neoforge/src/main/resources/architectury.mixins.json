@@ -1,7 +1,7 @@
 {
   "required": true,
-  "package": "dev.architectury.mixin.forge",
-  "plugin": "dev.architectury.plugin.forge.ArchitecturyMixinPlugin",
+  "package": "dev.architectury.mixin.neoforge",
+  "plugin": "dev.architectury.plugin.neoforge.ArchitecturyMixinPlugin",
   "compatibilityLevel": "JAVA_25",
   "minVersion": "0.8",
   "client": [

@@ -24,46 +24,28 @@ import dev.architectury.event.events.common.PlayerEvent;
 import dev.architectury.networking.NetworkManager;
 import dev.architectury.networking.transformers.SplitPacketTransformer;
 import dev.architectury.test.TestMod;
-import io.netty.buffer.Unpooled;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Collections;
 import java.util.List;
 
 public interface TestModNet {
-    Identifier BIG_DATA = Identifier.fromNamespaceAndPath(TestMod.MOD_ID, "big_data");
-    Identifier SERVER_TO_CLIENT_TEST = Identifier.fromNamespaceAndPath(TestMod.MOD_ID, "s2c_test");
     CustomPacketPayload.Type<ServerToClientTestPayload> SERVER_TO_CLIENT_TEST_PAYLOAD = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(TestMod.MOD_ID, "s2c_test_payload"));
     CustomPacketPayload.Type<BigDataPayload> BIG_DATA_PAYLOAD = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(TestMod.MOD_ID, "big_data_payload"));
     String BIG_STRING = StringUtils.repeat('a', 100000);
-    
+
     static void initialize() {
-        NetworkManager.registerReceiver(NetworkManager.Side.C2S, ButtonClickedMessage.TYPE, ButtonClickedMessage.STREAM_CODEC, ButtonClickedMessage::handle);
-        NetworkManager.registerReceiver(NetworkManager.Side.C2S, SyncDataMessage.TYPE, SyncDataMessage.STREAM_CODEC, SyncDataMessage::handle);
-        NetworkManager.registerReceiver(NetworkManager.Side.C2S, BIG_DATA, Collections.singletonList(new SplitPacketTransformer()), (buf, context) -> {
-            String utf = buf.readUtf(Integer.MAX_VALUE / 4);
-            if (utf.equals(BIG_STRING)) {
-                TestMod.SINK.accept("Network Split Packets worked");
-            } else {
-                throw new AssertionError(utf);
-            }
-            utf = buf.readUtf(Integer.MAX_VALUE / 4);
-            if (utf.equals(BIG_STRING)) {
-                TestMod.SINK.accept("Network Split Packets worked");
-            } else {
-                throw new AssertionError(utf);
-            }
-        });
+        NetworkManager.registerC2S(ButtonClickedMessage.TYPE, ButtonClickedMessage.STREAM_CODEC, ButtonClickedMessage::handle);
+        NetworkManager.registerS2C(SyncDataMessage.TYPE, SyncDataMessage.STREAM_CODEC, SyncDataMessage::handle);
         NetworkManager.registerReceiver(NetworkManager.Side.C2S, BIG_DATA_PAYLOAD, new StreamCodec<>() {
             @Override
             public BigDataPayload decode(RegistryFriendlyByteBuf object) {
                 return new BigDataPayload(object.readUtf(Integer.MAX_VALUE / 4));
             }
-            
+
             @Override
             public void encode(RegistryFriendlyByteBuf object, BigDataPayload payload) {
                 object.writeUtf(payload.data, Integer.MAX_VALUE / 4);
@@ -75,22 +57,13 @@ public interface TestModNet {
                 throw new AssertionError(value.data());
             }
         });
-    
-        NetworkManager.registerReceiver(NetworkManager.Side.S2C, SERVER_TO_CLIENT_TEST, (buf, context) -> {
-            long num = buf.readLong();
-            if (num == 0xA4C5E75EC7941L) {
-                TestMod.SINK.accept("S2C worked!, 0xA4C5E75EC7941L");
-            } else {
-                throw new AssertionError(num);
-            }
-        });
-    
-        NetworkManager.registerReceiver(NetworkManager.Side.S2C, SERVER_TO_CLIENT_TEST_PAYLOAD, new StreamCodec<>() {
+
+        NetworkManager.registerS2C(SERVER_TO_CLIENT_TEST_PAYLOAD, new StreamCodec<>() {
             @Override
             public ServerToClientTestPayload decode(RegistryFriendlyByteBuf object) {
                 return new ServerToClientTestPayload(object.readLong());
             }
-        
+
             @Override
             public void encode(RegistryFriendlyByteBuf object, ServerToClientTestPayload payload) {
                 object.writeLong(payload.num);
@@ -102,30 +75,25 @@ public interface TestModNet {
                 throw new AssertionError(value.num());
             }
         });
-    
+
         PlayerEvent.PLAYER_JOIN.register(player -> {
             NetworkManager.sendToPlayer(player, new ServerToClientTestPayload(0xA4C5E75EC7941L));
         });
     }
-    
+
     static void initializeClient() {
         ClientPlayerEvent.CLIENT_PLAYER_JOIN.register(player -> {
-            RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(Unpooled.buffer(), player.registryAccess());
-            buf.writeUtf(BIG_STRING, Integer.MAX_VALUE / 4);
-            // write twice
-            buf.writeUtf(BIG_STRING, Integer.MAX_VALUE / 4);
-            NetworkManager.sendToServer(BIG_DATA, buf);
             NetworkManager.sendToServer(new BigDataPayload(BIG_STRING));
         });
     }
-    
+
     record BigDataPayload(String data) implements CustomPacketPayload {
         @Override
         public Type<? extends CustomPacketPayload> type() {
             return TestModNet.BIG_DATA_PAYLOAD;
         }
     }
-    
+
     record ServerToClientTestPayload(long num) implements CustomPacketPayload {
         @Override
         public Type<? extends CustomPacketPayload> type() {

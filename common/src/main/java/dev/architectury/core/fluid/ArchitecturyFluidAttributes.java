@@ -194,15 +194,12 @@ public interface ArchitecturyFluidAttributes {
      * <p>
      * The vanilla water location is {@code "block/water_still"}.
      *
-     * @param stack the fluid stack, can be {@code null}
+     * @param state the fluid state, can be {@code null}
      * @param level the level, can be {@code null}
      * @param pos   the position, can be {@code null}
      * @return the texture location
-     * @deprecated Please use and override {@link #getSourceTexture(FluidState, BlockAndLightGetter, BlockPos)}
-     * or {@link #getSourceTexture(FluidStack)} instead, this method will be removed in a future version.
      */
-    @Deprecated(forRemoval = true)
-    Identifier getSourceTexture(@Nullable FluidStack stack, @Nullable BlockAndLightGetter level, @Nullable BlockPos pos);
+    Identifier getSourceTexture(@Nullable FluidState state, @Nullable BlockAndLightGetter level, @Nullable BlockPos pos);
     
     /**
      * Returns the texture location of this fluid in its source form.
@@ -210,24 +207,10 @@ public interface ArchitecturyFluidAttributes {
      * The vanilla water location is {@code "block/water_still"}.
      *
      * @param state the fluid state, can be {@code null}
-     * @param level the level, can be {@code null}
-     * @param pos   the position, can be {@code null}
      * @return the texture location
      */
-    default Identifier getSourceTexture(@Nullable FluidState state, @Nullable BlockAndLightGetter level, @Nullable BlockPos pos) {
-        return getSourceTexture(state == null ? null : FluidStack.create(state.getType(), FluidStack.bucketAmount()), level, pos);
-    }
-    
-    /**
-     * Returns the texture location of this fluid in its source form.
-     * <p>
-     * The vanilla water location is {@code "block/water_still"}.
-     *
-     * @param stack the fluid stack, can be {@code null}
-     * @return the texture location
-     */
-    default Identifier getSourceTexture(@Nullable FluidStack stack) {
-        return getSourceTexture(stack, null, null);
+    default Identifier getSourceTexture(@Nullable FluidState state) {
+        return getSourceTexture(state, null, null);
     }
     
     /**
@@ -246,15 +229,12 @@ public interface ArchitecturyFluidAttributes {
      * <p>
      * The vanilla water location is {@code "block/water_flow"}.
      *
-     * @param stack the fluid stack, can be {@code null}
+     * @param state the fluid state, can be {@code null}
      * @param level the level, can be {@code null}
      * @param pos   the position, can be {@code null}
      * @return the texture location
-     * @deprecated Please use and override {@link #getFlowingTexture(FluidState, BlockAndLightGetter, BlockPos)}
-     * or {@link #getFlowingTexture(FluidStack)} instead, this method will be removed in a future version.
      */
-    @Deprecated(forRemoval = true)
-    Identifier getFlowingTexture(@Nullable FluidStack stack, @Nullable BlockAndLightGetter level, @Nullable BlockPos pos);
+    Identifier getFlowingTexture(@Nullable FluidState state, @Nullable BlockAndLightGetter level, @Nullable BlockPos pos);
     
     /**
      * Returns the texture location of this fluid in its flowing form.
@@ -262,24 +242,10 @@ public interface ArchitecturyFluidAttributes {
      * The vanilla water location is {@code "block/water_flow"}.
      *
      * @param state the fluid state, can be {@code null}
-     * @param level the level, can be {@code null}
-     * @param pos   the position, can be {@code null}
      * @return the texture location
      */
-    default Identifier getFlowingTexture(@Nullable FluidState state, @Nullable BlockAndLightGetter level, @Nullable BlockPos pos) {
-        return getFlowingTexture(state == null ? null : FluidStack.create(state.getType(), FluidStack.bucketAmount()), level, pos);
-    }
-    
-    /**
-     * Returns the texture location of this fluid in its flowing form.
-     * <p>
-     * The vanilla water location is {@code "block/water_flow"}.
-     *
-     * @param stack the fluid stack, can be {@code null}
-     * @return the texture location
-     */
-    default Identifier getFlowingTexture(@Nullable FluidStack stack) {
-        return getFlowingTexture(stack, null, null);
+    default Identifier getFlowingTexture(@Nullable FluidState state) {
+        return getFlowingTexture(state, null, null);
     }
     
     /**
@@ -336,36 +302,21 @@ public interface ArchitecturyFluidAttributes {
     /**
      * Returns the color of the fluid.
      *
-     * @param stack the fluid stack, can be {@code null}
-     * @param level the level, can be {@code null}
-     * @param pos   the position, can be {@code null}
-     * @return the color
-     * @deprecated Please use and override {@link #getColor(FluidState, BlockAndLightGetter, BlockPos)}
-     * or {@link #getColor(FluidStack)} instead, this method will be removed in a future version.
-     */
-    @Deprecated(forRemoval = true)
-    int getColor(@Nullable FluidStack stack, @Nullable BlockAndLightGetter level, @Nullable BlockPos pos);
-    
-    /**
-     * Returns the color of the fluid.
-     *
      * @param state the fluid state, can be {@code null}
      * @param level the level, can be {@code null}
      * @param pos   the position, can be {@code null}
      * @return the color
      */
-    default int getColor(@Nullable FluidState state, @Nullable BlockAndLightGetter level, @Nullable BlockPos pos) {
-        return getColor(state == null ? null : FluidStack.create(state.getType(), FluidStack.bucketAmount()), level, pos);
-    }
+    int getColor(@Nullable FluidState state, @Nullable BlockAndLightGetter level, @Nullable BlockPos pos);
     
     /**
      * Returns the color of the fluid.
      *
-     * @param stack the fluid stack, can be {@code null}
+     * @param state the fluid state, can be {@code null}
      * @return the color
      */
-    default int getColor(@Nullable FluidStack stack) {
-        return getColor(stack, null, null);
+    default int getColor(@Nullable FluidState state) {
+        return getColor(state, null, null);
     }
     
     /**
@@ -407,7 +358,7 @@ public interface ArchitecturyFluidAttributes {
     }
     
     /**
-     * Returns the density of the fluid, this is 1000 for water and 3000 for lava on forge.
+     * Returns the density of the fluid, this is 1000 for water and 3000 for lava on NeoForge.
      *
      * @param stack the fluid stack, can be {@code null}
      * @param level the level, can be {@code null}
@@ -417,7 +368,7 @@ public interface ArchitecturyFluidAttributes {
     int getDensity(@Nullable FluidStack stack, @Nullable BlockAndLightGetter level, @Nullable BlockPos pos);
     
     /**
-     * Returns the density of the fluid, this is 1000 for water and 3000 for lava on forge.
+     * Returns the density of the fluid, this is 1000 for water and 3000 for lava on NeoForge.
      *
      * @param stack the fluid stack, can be {@code null}
      * @return the density
@@ -427,7 +378,7 @@ public interface ArchitecturyFluidAttributes {
     }
     
     /**
-     * Returns the density of the fluid, this is 1000 for water and 3000 for lava on forge.
+     * Returns the density of the fluid, this is 1000 for water and 3000 for lava on NeoForge.
      *
      * @return the density
      */

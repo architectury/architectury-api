@@ -45,14 +45,14 @@ public class MixinMouseHandler {
     @WrapOperation(method = "onScroll", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;mouseScrolled(DDDD)Z", ordinal = 0))
     private boolean onGuiMouseClicked(Screen instance, double mouseX, double mouseY, double amountX, double amountY, Operation<Boolean> original) {
         var minecraft = Minecraft.getInstance();
-        var result = ClientScreenInputEvent.MOUSE_SCROLLED_PRE.invoker().mouseScrolled(minecraft, minecraft.screen, mouseX, mouseY, amountX, amountY);
+        var result = ClientScreenInputEvent.MOUSE_SCROLLED_PRE.invoker().mouseScrolled(minecraft, minecraft.gui.screen(), mouseX, mouseY, amountX, amountY);
         if (result.isPresent()) {
             return true;
         }
         if (original.call(instance, mouseX, mouseY, amountX, amountY)) {
             return true;
         }
-        result = ClientScreenInputEvent.MOUSE_SCROLLED_POST.invoker().mouseScrolled(minecraft, minecraft.screen, mouseX, mouseY, amountX, amountY);
+        result = ClientScreenInputEvent.MOUSE_SCROLLED_POST.invoker().mouseScrolled(minecraft, minecraft.gui.screen(), mouseX, mouseY, amountX, amountY);
         return result.isPresent();
     }
     
@@ -69,19 +69,19 @@ public class MixinMouseHandler {
     
     @WrapOperation(method = "onButton", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;mouseClicked(Lnet/minecraft/client/input/MouseButtonEvent;Z)Z"))
     private boolean wrapMouseClicked(Screen screen, MouseButtonEvent buttonEvent, boolean doubleClick, Operation<Boolean> original) {
-        var result = ClientScreenInputEvent.MOUSE_CLICKED_PRE.invoker().mouseClicked(minecraft, minecraft.screen, buttonEvent, doubleClick);
+        var result = ClientScreenInputEvent.MOUSE_CLICKED_PRE.invoker().mouseClicked(minecraft, minecraft.gui.screen(), buttonEvent, doubleClick);
         if (result.isPresent()) {
             return true;
         }
         if (original.call(screen, buttonEvent, doubleClick)) {
             return true;
         }
-        result = ClientScreenInputEvent.MOUSE_CLICKED_POST.invoker().mouseClicked(minecraft, minecraft.screen, buttonEvent, doubleClick);
+        result = ClientScreenInputEvent.MOUSE_CLICKED_POST.invoker().mouseClicked(minecraft, minecraft.gui.screen(), buttonEvent, doubleClick);
         return result.isPresent();
     }
     
     @Inject(method = "onButton", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/client/Minecraft;getOverlay()Lnet/minecraft/client/gui/screens/Overlay;",
+            target = "Lnet/minecraft/client/gui/Gui;overlay()Lnet/minecraft/client/gui/screens/Overlay;",
             ordinal = 0), cancellable = true)
     public void onRawMouseClicked(long handle, MouseButtonInfo buttonInfo, int action, CallbackInfo info) {
         if (!info.isCancelled()) {
@@ -102,14 +102,14 @@ public class MixinMouseHandler {
     
     @WrapOperation(method = "onButton", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;mouseReleased(Lnet/minecraft/client/input/MouseButtonEvent;)Z"))
     private boolean wrapMouseReleased(Screen screen, MouseButtonEvent buttonEvent, Operation<Boolean> original) {
-        var result = ClientScreenInputEvent.MOUSE_RELEASED_PRE.invoker().mouseReleased(minecraft, minecraft.screen, buttonEvent);
+        var result = ClientScreenInputEvent.MOUSE_RELEASED_PRE.invoker().mouseReleased(minecraft, minecraft.gui.screen(), buttonEvent);
         if (result.isPresent()) {
             return true;
         }
         if (original.call(screen, buttonEvent)) {
             return true;
         }
-        result = ClientScreenInputEvent.MOUSE_RELEASED_POST.invoker().mouseReleased(minecraft, minecraft.screen, buttonEvent);
+        result = ClientScreenInputEvent.MOUSE_RELEASED_POST.invoker().mouseReleased(minecraft, minecraft.gui.screen(), buttonEvent);
         return result.isPresent();
     }
     

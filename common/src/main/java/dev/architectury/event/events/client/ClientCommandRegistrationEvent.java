@@ -43,7 +43,7 @@ public interface ClientCommandRegistrationEvent {
     
     /**
      * This event is invoked after the client initializes.
-     * Equivalent to Forge's {@code RegisterClientCommandsEvent} and Fabric's {@code ClientCommandManager}.
+     * Equivalent to NeoForge's {@code RegisterClientCommandsEvent} and Fabric's {@code ClientCommandManager}.
      *
      * @param dispatcher The command dispatcher to register commands to.
      * @param context    The command build context.

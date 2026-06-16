@@ -156,12 +156,12 @@ public class PlatformImpl {
         
         @Override
         public Optional<String> getSources() {
-            return metadata.getContact().get("issues");
+            return metadata.getContact().get("sources");
         }
-        
+
         @Override
         public Optional<String> getIssueTracker() {
-            return metadata.getContact().get("sources");
+            return metadata.getContact().get("issues");
         }
     }
 }

@@ -90,20 +90,6 @@ public final class MenuRegistry {
     }
     
     /**
-     * Creates a simple {@link MenuType}.
-     *
-     * @param factory A functional interface to create the {@link MenuType} from an id (Integer) and inventory
-     * @param <T>     The type of {@link AbstractContainerMenu} that handles the logic for the {@link MenuType}
-     * @return The {@link MenuType} for your {@link AbstractContainerMenu}
-     * @deprecated Use the constructor directly.
-     */
-    @Deprecated(forRemoval = true)
-    @ExpectPlatform
-    public static <T extends AbstractContainerMenu> MenuType<T> of(SimpleMenuTypeFactory<T> factory) {
-        throw new AssertionError();
-    }
-    
-    /**
      * Creates a extended {@link MenuType}.
      *
      * @param factory A functional interface to create the {@link MenuType} from an id (Integer), {@link Inventory}, and {@link FriendlyByteBuf}
@@ -113,23 +99,6 @@ public final class MenuRegistry {
     @ExpectPlatform
     public static <T extends AbstractContainerMenu> MenuType<T> ofExtended(ExtendedMenuTypeFactory<T> factory) {
         throw new AssertionError();
-    }
-    
-    /**
-     * Creates simple menus.
-     *
-     * @param <T> The {@link AbstractContainerMenu} type
-     */
-    @Deprecated(forRemoval = true)
-    @FunctionalInterface
-    public interface SimpleMenuTypeFactory<T extends AbstractContainerMenu> {
-        /**
-         * Creates a new {@link T} that extends {@link AbstractContainerMenu}
-         *
-         * @param id The id for the menu
-         * @return A new {@link T} that extends {@link AbstractContainerMenu}
-         */
-        T create(int id, Inventory inventory);
     }
     
     /**

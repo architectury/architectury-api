@@ -40,7 +40,7 @@ public interface ClientChatEvent {
     interface Send {
         /**
          * Event to cancel clients sending the chat message.
-         * Equivalent to Forge's {@code ClientChatEvent} event.
+         * Equivalent to NeoForge's {@code ClientChatEvent} event.
          *
          * @param message   The chat message.
          * @param component The chat component that was decorated, can be {@code null}.
@@ -54,7 +54,7 @@ public interface ClientChatEvent {
         /**
          * Event to intercept the receiving of an chat message.
          * Invoked as soon as the client receives the chat message packet.
-         * Equivalent to Forge's {@code ClientChatReceivedEvent} event.
+         * Equivalent to NeoForge's {@code ClientChatReceivedEvent} event.
          *
          * @param type    Where was the message emitted from.
          * @param message The chat message.

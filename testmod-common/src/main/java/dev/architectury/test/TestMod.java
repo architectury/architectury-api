@@ -24,6 +24,7 @@ import dev.architectury.test.debug.ConsoleMessageSink;
 import dev.architectury.test.debug.MessageSink;
 import dev.architectury.test.debug.client.ClientOverlayMessageSink;
 import dev.architectury.test.events.DebugEvents;
+import dev.architectury.test.events.EventPriorityTest;
 import dev.architectury.test.gamerule.TestGameRules;
 import dev.architectury.test.item.TestBlockInteractions;
 import dev.architectury.test.loot.TestLoot;
@@ -60,5 +61,6 @@ public class TestMod {
             output.acceptBefore(new ItemStack(Items.OAK_WOOD), sword);
             output.acceptAfter(Blocks.STRIPPED_OAK_LOG, Items.BEDROCK);
         });
+        EventPriorityTest.run();
     }
 }

@@ -34,7 +34,7 @@ public interface CommandRegistrationEvent {
     
     /**
      * This event is invoked after the server registers it's commands.
-     * Equivalent to Forge's {@code RegisterCommandsEvent} and Fabric's {@code CommandRegistrationCallback}.
+     * Equivalent to NeoForge's {@code RegisterCommandsEvent} and Fabric's {@code CommandRegistrationCallback}.
      *
      * @param dispatcher The command dispatcher to register commands to.
      * @param registry   The command registry for building arguments.

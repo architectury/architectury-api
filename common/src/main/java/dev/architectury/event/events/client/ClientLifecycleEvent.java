@@ -38,7 +38,7 @@ public interface ClientLifecycleEvent {
     Event<ClientState> CLIENT_STOPPING = EventFactory.createLoop();
     /**
      * Invoked after a level is loaded only on the client-side.
-     * Equivalent to Forge's {@code WorldEvent.Load} event (on client).
+     * Equivalent to NeoForge's {@code WorldEvent.Load} event (on client).
      */
     Event<ClientLevelState> CLIENT_LEVEL_LOAD = EventFactory.createLoop();
     /**

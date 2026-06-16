@@ -48,8 +48,8 @@ public class MixinBucketItem {
     )
     public void fillBucket(Level level, Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir, ItemStack stack, BlockHitResult target) {
         var result = PlayerEvent.FILL_BUCKET.invoker().fill(player, level, stack, target);
-        if (result != InteractionResult.PASS) {
-            cir.setReturnValue(result);
+        if (result.interruptsFurtherEvaluation()) {
+            cir.setReturnValue(result.asMinecraft());
             cir.cancel();
         }
     }

@@ -48,7 +48,7 @@ public interface ClientRecipeUpdateEvent {
     
     /**
      * Invoked when the client has received an updated list of recipes from the server.
-     * Equivalent to Forge's {@code RecipesUpdatedEvent} event.
+     * Equivalent to NeoForge's {@code RecipesUpdatedEvent} event.
      *
      * @param recipeAccess The recipe access.
      */

@@ -41,6 +41,6 @@ class ArchitecturyFluidRenderingFabric implements FluidVariantRenderHandler, Flu
     
     @Override
     public int getColor(FluidVariant fluidVariant, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos) {
-        return attributes.getColor(FluidStackHooksFabric.fromFabric(fluidVariant, FluidStack.bucketAmount()), level, pos);
+        return attributes.getColor(FluidStackHooksFabric.fromFabric(fluidVariant, FluidStack.bucketAmount()).getFluid().defaultFluidState(), level, pos);
     }
 }

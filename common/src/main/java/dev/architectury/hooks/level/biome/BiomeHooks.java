@@ -309,12 +309,12 @@ public final class BiomeHooks {
         }
         
         @Override
-        public Map<MobCategory, WeightedList.Builder<MobSpawnSettings.SpawnerData>> getSpawners() {
+        public @Nullable Map<MobCategory, WeightedList.Builder<MobSpawnSettings.SpawnerData>> getSpawners() {
             return null;
         }
-        
+
         @Override
-        public Map<EntityType<?>, MobSpawnSettings.MobSpawnCost> getMobSpawnCosts() {
+        public @Nullable Map<EntityType<?>, MobSpawnSettings.MobSpawnCost> getMobSpawnCosts() {
             return null;
         }
     }

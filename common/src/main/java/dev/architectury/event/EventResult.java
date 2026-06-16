@@ -21,6 +21,10 @@ package dev.architectury.event;
 
 import net.minecraft.world.InteractionResult;
 import org.apache.commons.lang3.BooleanUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
 
 /**
  * A result from an event, determines if the event should continue to other listeners,
@@ -28,9 +32,10 @@ import org.apache.commons.lang3.BooleanUtils;
  *
  * @see #pass()
  * @see #interrupt(Boolean)
+ * @see #fromMinecraft(InteractionResult)
  * @see CompoundEventResult
  */
-public final class EventResult {
+public final class EventResult implements EventResultHolder {
     private static final EventResult TRUE = new EventResult(true, true);
     private static final EventResult STOP = new EventResult(true, null);
     private static final EventResult PASS = new EventResult(false, null);
@@ -88,14 +93,40 @@ public final class EventResult {
     public static EventResult interruptFalse() {
         return FALSE;
     }
-    
+
+    /**
+     * Converts a vanilla {@link InteractionResult} into an {@link EventResult}, preserving the exact
+     * result so that {@link #asMinecraft()} round-trips losslessly (including outcomes such as
+     * {@code CONSUME} that the boolean model cannot represent on its own).
+     *
+     * <p>{@link InteractionResult#PASS} maps to {@link #pass()} (does not interrupt). Any other result
+     * interrupts; {@link InteractionResult#FAIL} denotes the {@code false} outcome, and every other
+     * result denotes the {@code true} outcome while carrying the original result.
+     *
+     * @param result the Minecraft result to convert; must not be {@code null}
+     * @return the equivalent {@link EventResult}
+     */
+    public static EventResult fromMinecraft(@NotNull InteractionResult result) {
+        if (result == InteractionResult.PASS) {
+            return PASS;
+        }
+        return new EventResult(true, result != InteractionResult.FAIL, result);
+    }
+
     private final boolean interruptsFurtherEvaluation;
-    
+
     private final Boolean value;
-    
+
+    private final @Nullable InteractionResult mcResult;
+
     EventResult(boolean interruptsFurtherEvaluation, Boolean value) {
+        this(interruptsFurtherEvaluation, value, null);
+    }
+
+    EventResult(boolean interruptsFurtherEvaluation, Boolean value, @Nullable InteractionResult mcResult) {
         this.interruptsFurtherEvaluation = interruptsFurtherEvaluation;
         this.value = value;
+        this.mcResult = mcResult;
     }
     
     /**
@@ -156,10 +187,17 @@ public final class EventResult {
     
     /**
      * Returns the Minecraft-facing result, however ignores {@link #interruptsFurtherEvaluation()}.
+     * If this result was created from an {@link InteractionResult} via
+     * {@link #fromMinecraft(InteractionResult)}, the original result is returned unchanged;
+     * otherwise the boolean outcome is mapped (true → SUCCESS, false → FAIL, none → PASS).
      *
      * @return the Minecraft-facing result
      */
+    @Override
     public InteractionResult asMinecraft() {
+        if (mcResult != null) {
+            return mcResult;
+        }
         if (isPresent()) {
             return value() ? InteractionResult.SUCCESS : InteractionResult.FAIL;
         }

@@ -22,7 +22,6 @@ package dev.architectury.fluid.fabric;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.architectury.fluid.FluidStack;
 import dev.architectury.fluid.FluidStackTemplate;
 import io.netty.buffer.ByteBuf;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;

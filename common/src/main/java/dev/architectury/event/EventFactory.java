@@ -30,6 +30,7 @@ import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -111,12 +112,26 @@ public final class EventFactory {
         }));
     }
     
+    /**
+     * @deprecated Prefer {@link #createEventResult(Class)} returning {@link EventResult}. An
+     * {@link EventResult} can now losslessly represent any vanilla {@link InteractionResult} via
+     * {@link EventResult#fromMinecraft(InteractionResult)} and {@link EventResult#asMinecraft()},
+     * giving the event system a single canonical result model. This factory is retained for the
+     * existing events whose listener interfaces expose a raw {@link InteractionResult}.
+     */
+    @Deprecated(forRemoval = true)
     @SafeVarargs
     public static <T> Event<T> createInteractionResult(T... typeGetter) {
         if (typeGetter.length != 0) throw new IllegalStateException("array must be empty!");
         return createInteractionResult((Class<T>) typeGetter.getClass().getComponentType());
     }
-    
+
+    /**
+     * @deprecated Prefer {@link #createEventResult(Class)} returning {@link EventResult}, which can
+     * now losslessly represent any vanilla {@link InteractionResult} via
+     * {@link EventResult#fromMinecraft(InteractionResult)} and {@link EventResult#asMinecraft()}.
+     */
+    @Deprecated(forRemoval = true)
     @SuppressWarnings("UnstableApiUsage")
     public static <T> Event<T> createInteractionResult(Class<T> clazz) {
         return of(listeners -> (T) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{clazz}, new AbstractInvocationHandler() {
@@ -218,15 +233,19 @@ public final class EventFactory {
     }
     
     private static class EventImpl<T> implements Event<T> {
+        // Stable comparator: orders by priority only, leaving listeners that share a priority
+        // in their original (registration) order when applied via a stable sort.
+        private static final Comparator<Listener<?>> BY_PRIORITY = Comparator.comparingInt(it -> it.priority().ordinal());
+
         private final Function<List<T>, T> function;
         private T invoker = null;
-        private ArrayList<T> listeners;
-        
+        private final ArrayList<Listener<T>> listeners;
+
         public EventImpl(Function<List<T>, T> function) {
             this.function = function;
             this.listeners = new ArrayList<>();
         }
-        
+
         @Override
         public T invoker() {
             if (invoker == null) {
@@ -234,38 +253,66 @@ public final class EventFactory {
             }
             return invoker;
         }
-        
+
         @Override
         public void register(T listener) {
-            listeners.add(listener);
+            register(EventPriority.NORMAL, listener);
+        }
+
+        @Override
+        public void register(EventPriority priority, T listener) {
+            listeners.add(new Listener<>(priority, listener));
             invoker = null;
         }
-        
+
         @Override
         public void unregister(T listener) {
-            listeners.remove(listener);
-            listeners.trimToSize();
-            invoker = null;
+            for (int i = 0; i < listeners.size(); i++) {
+                if (Objects.equals(listeners.get(i).listener(), listener)) {
+                    listeners.remove(i);
+                    listeners.trimToSize();
+                    invoker = null;
+                    return;
+                }
+            }
         }
-        
+
         @Override
         public boolean isRegistered(T listener) {
-            return listeners.contains(listener);
+            for (var entry : listeners) {
+                if (Objects.equals(entry.listener(), listener)) {
+                    return true;
+                }
+            }
+            return false;
         }
-        
+
         @Override
         public void clearListeners() {
             listeners.clear();
             listeners.trimToSize();
             invoker = null;
         }
-        
+
         public void update() {
             if (listeners.size() == 1) {
-                invoker = listeners.getFirst();
+                invoker = listeners.getFirst().listener();
             } else {
-                invoker = function.apply(listeners);
+                invoker = function.apply(sortedListeners());
             }
+        }
+
+        private List<T> sortedListeners() {
+            ArrayList<Listener<T>> sorted = new ArrayList<>(listeners);
+            sorted.sort(BY_PRIORITY);
+            List<T> result = new ArrayList<>(sorted.size());
+            for (var entry : sorted) {
+                result.add(entry.listener());
+            }
+            return result;
+        }
+
+        private record Listener<T>(EventPriority priority, T listener) {
         }
     }
 }

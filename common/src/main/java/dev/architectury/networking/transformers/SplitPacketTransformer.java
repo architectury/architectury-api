@@ -116,7 +116,7 @@ public class SplitPacketTransformer implements PacketTransformer {
                     data.parts.add(buf);
                 }
                 if (data.parts.size() != data.partsExpected) {
-                    LOGGER.warn("Received invalid END packet for SplitPacketTransformer with packet id " + id + " for side " + side + " with size " + data.parts + ", parts expected is " + data.partsExpected);
+                    LOGGER.warn("Received invalid END packet for SplitPacketTransformer with packet id " + id + " for side " + side + " with size " + data.parts.size() + ", parts expected is " + data.partsExpected);
                     for (RegistryFriendlyByteBuf part : data.parts) {
                         if (part != buf) {
                             part.release();

@@ -30,7 +30,7 @@ public final class ItemEntityHooks {
     /**
      * The lifespan of an {@link ItemEntity}.
      * Fabric: Since it doesn't have this, the value will be a readable-only value of 6000.
-     * Forge: Value of lifespan of the forge hook.
+     * Forge: Value of lifespan of the NeoForge hook.
      */
     @ExpectPlatform
     public static IntValue lifespan(ItemEntity entity) {

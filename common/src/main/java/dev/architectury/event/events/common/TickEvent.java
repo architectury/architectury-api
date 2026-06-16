@@ -28,42 +28,42 @@ import net.minecraft.world.level.Level;
 public interface TickEvent<T> {
     /**
      * Invoked before a server tick is processed.
-     * Equivalent to Forge's {@code ServerTickEvent} event in the START Phase.
+     * Equivalent to NeoForge's {@code ServerTickEvent} event in the START Phase.
      *
      * @see #tick(Object)
      */
     Event<Server> SERVER_PRE = EventFactory.createLoop();
     /**
      * Invoked after a server tick has been processed.
-     * Equivalent to Forge's {@code ServerTickEvent} event in the END Phase.
+     * Equivalent to NeoForge's {@code ServerTickEvent} event in the END Phase.
      *
      * @see #tick(Object)
      */
     Event<Server> SERVER_POST = EventFactory.createLoop();
     /**
      * Invoked before a server level tick is processed.
-     * Equivalent to Forge's {@code WorldTickEvent} event in the START Phase.
+     * Equivalent to NeoForge's {@code WorldTickEvent} event in the START Phase.
      *
      * @see #tick(Object)
      */
     Event<ServerLevelTick> SERVER_LEVEL_PRE = EventFactory.createLoop();
     /**
      * Invoked after a server level tick has been processed.
-     * Equivalent to Forge's {@code WorldTickEvent} event in the END Phase.
+     * Equivalent to NeoForge's {@code WorldTickEvent} event in the END Phase.
      *
      * @see #tick(Object)
      */
     Event<ServerLevelTick> SERVER_LEVEL_POST = EventFactory.createLoop();
     /**
      * Invoked before a player tick is processed.
-     * Equivalent to Forge's {@code PlayerTickEvent} event in the START Phase.
+     * Equivalent to NeoForge's {@code PlayerTickEvent} event in the START Phase.
      *
      * @see #tick(Object)
      */
     Event<Player> PLAYER_PRE = EventFactory.createLoop();
     /**
      * Invoked after a player tick has been processed.
-     * Equivalent to Forge's {@code PlayerTickEvent} event in the END Phase.
+     * Equivalent to NeoForge's {@code PlayerTickEvent} event in the END Phase.
      *
      * @see #tick(Object)
      */

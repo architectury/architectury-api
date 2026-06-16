@@ -41,7 +41,7 @@ public interface ChunkEvent {
         /**
          * Invoked when a chunk's data is saved, just before the data is written.
          * Add your own data to the {@link CompoundTag} parameter to get your data saved as well.
-         * Equivalent to Forge's {@code ChunkDataEvent.Save}.
+         * Equivalent to NeoForge's {@code ChunkDataEvent.Save}.
          *
          * @param chunk The chunk that is saved.
          * @param level The level the chunk is in.
@@ -54,7 +54,7 @@ public interface ChunkEvent {
         /**
          * Invoked just before a chunk's data is fully read.
          * You can read out your own data from the {@link CompoundTag} parameter, when you have saved one before.
-         * Equivalent to Forge's {@code ChunkDataEvent.Load}.
+         * Equivalent to NeoForge's {@code ChunkDataEvent.Load}.
          *
          * @param chunk The chunk that is loaded.
          * @param level The level the chunk is in, may be {@code null}.

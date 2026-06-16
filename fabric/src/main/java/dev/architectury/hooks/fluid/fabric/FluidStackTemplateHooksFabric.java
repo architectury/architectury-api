@@ -19,9 +19,7 @@
 
 package dev.architectury.hooks.fluid.fabric;
 
-import dev.architectury.fluid.FluidStack;
 import dev.architectury.fluid.FluidStackTemplate;
-import dev.architectury.fluid.fabric.FluidStackImpl;
 import dev.architectury.fluid.fabric.FluidStackTemplateImpl;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;

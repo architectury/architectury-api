@@ -20,7 +20,6 @@
 package dev.architectury.registry.registries;
 
 import com.google.common.base.Suppliers;
-import dev.architectury.impl.RegistrySupplierImpl;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -92,7 +91,7 @@ public class DeferredRegister<T> implements Iterable<RegistrySupplier<T>> {
         return registriesSupplier.get().get(key);
     }
     
-    private class Entry<R> implements RegistrySupplierImpl<R> {
+    private class Entry<R> implements RegistrySupplier<R> {
         private final Identifier id;
         private final Supplier<R> supplier;
         private RegistrySupplier<R> value;
@@ -106,7 +105,7 @@ public class DeferredRegister<T> implements Iterable<RegistrySupplier<T>> {
         
         @Nullable
         @Override
-        public Holder<R> getHolder() {
+        public Holder<R> asHolder() {
             if (holder != null) return holder;
             return holder = getRegistrar().getHolder(getId());
         }

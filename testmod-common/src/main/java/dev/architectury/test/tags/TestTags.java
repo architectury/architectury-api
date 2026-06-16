@@ -35,7 +35,7 @@ public class TestTags {
         // This will act like a normal tag, we have emerald block here
         var heartParticles2 = TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(TestMod.MOD_ID, "heart_particles2"));
         
-        BlockEvent.BREAK.register((world, pos, state, player, xp) -> {
+        BlockEvent.BREAK.register((world, pos, state, player) -> {
             if (player != null && !world.isClientSide() && (state.is(heartParticles) || state.is(heartParticles2))) {
                 ((ServerLevel) world).sendParticles(player, ParticleTypes.HEART, false, false, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 10, 0.0, 0.0, 0.0, 0.0);
             }

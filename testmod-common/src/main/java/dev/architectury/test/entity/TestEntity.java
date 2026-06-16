@@ -22,10 +22,9 @@ package dev.architectury.test.entity;
 import com.google.common.base.Suppliers;
 import dev.architectury.networking.NetworkManager;
 import dev.architectury.test.TestMod;
-import io.netty.buffer.Unpooled;
+import dev.architectury.test.networking.SyncDataMessage;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.resources.Identifier;
@@ -59,9 +58,7 @@ public class TestEntity extends Cow {
             if (this.getLastAttacker() instanceof ServerPlayer player) {
                 CompoundTag compoundTag = new CompoundTag();
                 compoundTag.putString("DeathCauser", player.getStringUUID());
-                RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(Unpooled.buffer(), this.registryAccess());
-                buf.writeNbt(compoundTag);
-                NetworkManager.sendToPlayer(player, Identifier.fromNamespaceAndPath("architectury_test", "sync_data"), buf);
+                NetworkManager.sendToPlayer(player, new SyncDataMessage(compoundTag));
             }
         }
     }

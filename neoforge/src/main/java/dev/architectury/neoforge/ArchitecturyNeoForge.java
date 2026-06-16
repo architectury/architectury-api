@@ -23,7 +23,7 @@ import dev.architectury.event.EventHandler;
 import dev.architectury.networking.ClientSpawnEntityPacket;
 import dev.architectury.networking.SpawnEntityPacket;
 import dev.architectury.platform.Platform;
-import dev.architectury.registry.level.biome.forge.BiomeModificationsImpl;
+import dev.architectury.registry.level.biome.neoforge.BiomeModificationsImpl;
 import dev.architectury.utils.ArchitecturyConstants;
 import dev.architectury.utils.Env;
 import net.neoforged.fml.common.Mod;

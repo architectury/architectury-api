@@ -66,10 +66,10 @@ public interface ClientGuiEvent {
     interface RenderHud {
         /**
          * Invoked after the in-game hud has been rendered.
-         * Equivalent to Forge's {@code RenderGameOverlayEvent.Post@ElementType#ALL} and Fabric's {@code HudRenderCallback}.
+         * Equivalent to NeoForge's {@code RenderGameOverlayEvent.Post@ElementType#ALL} and Fabric's {@code HudRenderCallback}.
          *
          * @param graphics  The graphics context.
-         * @param tickDelta The tick delta.
+         * @param deltaTracker The tick delta.
          */
         void renderHud(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker);
     }
@@ -77,7 +77,7 @@ public interface ClientGuiEvent {
     interface ScreenInitPre {
         /**
          * Invoked when a screen is being initialized and after the previous widgets have been cleared.
-         * Equivalent to Forge's {@code GuiScreenEvent.InitGuiEvent.Pre} event.
+         * Equivalent to NeoForge's {@code GuiScreenEvent.InitGuiEvent.Pre} event.
          *
          * @param screen The screen.
          * @param access The accessor of the screen.
@@ -90,7 +90,7 @@ public interface ClientGuiEvent {
     interface ScreenInitPost {
         /**
          * Invoked after a screen has been initialized and all the vanilla initialization logic has happened.
-         * Equivalent to Forge's {@code GuiScreenEvent.InitGuiEvent.Post} event.
+         * Equivalent to NeoForge's {@code GuiScreenEvent.InitGuiEvent.Post} event.
          *
          * @param screen The screen.
          * @param access The accessor of the screen.
@@ -101,7 +101,7 @@ public interface ClientGuiEvent {
     interface ScreenRenderPre {
         /**
          * Invoked before any screen is rendered.
-         * Equivalent to Forge's {@code GuiScreenEvent.DrawScreenEvent.Pre} event.
+         * Equivalent to NeoForge's {@code GuiScreenEvent.DrawScreenEvent.Pre} event.
          *
          * @param screen   The screen.
          * @param graphics The graphics context.
@@ -117,7 +117,7 @@ public interface ClientGuiEvent {
     interface ScreenRenderPost {
         /**
          * Invoked after a screen has finished rendering using the vanilla logic.
-         * Equivalent to Forge's {@code GuiScreenEvent.DrawScreenEvent.Post} event.
+         * Equivalent to NeoForge's {@code GuiScreenEvent.DrawScreenEvent.Post} event.
          *
          * @param screen   The screen.
          * @param graphics The graphics context.
@@ -131,7 +131,7 @@ public interface ClientGuiEvent {
     interface ContainerScreenRenderBackground {
         /**
          * Invoked after a container screen's background are rendered.
-         * Equivalent to Forge's {@code ContainerScreenEvent.DrawBackground} event.
+         * Equivalent to NeoForge's {@code ContainerScreenEvent.DrawBackground} event.
          *
          * @param screen   The screen.
          * @param graphics The graphics context.
@@ -145,7 +145,7 @@ public interface ClientGuiEvent {
     interface ContainerScreenRenderForeground {
         /**
          * Invoked after a screen has finished rendering most of the foreground, but before any floating widgets are rendered.
-         * Equivalent to Forge's {@code ContainerScreenEvent.DrawForeground} event.
+         * Equivalent to NeoForge's {@code ContainerScreenEvent.DrawForeground} event.
          *
          * @param screen   The screen.
          * @param graphics The graphics context.
@@ -159,7 +159,7 @@ public interface ClientGuiEvent {
     interface SetScreen {
         /**
          * Invoked before a new screen is set to open.
-         * Equivalent to Forge's {@code GuiOpenEvent} event.
+         * Equivalent to NeoForge's {@code GuiOpenEvent} event.
          *
          * @param screen The screen that is going to be opened.
          * @return A {@link CompoundEventResult} determining the outcome of the event,

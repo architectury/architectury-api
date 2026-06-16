@@ -33,7 +33,7 @@ public class ArchitecturyBucketItem extends BucketItem {
     
     private static <T> T checkPlatform(T obj) {
         if (Platform.isNeoForge()) {
-            throw new IllegalStateException("This class should've been replaced on Forge!");
+            throw new IllegalStateException("This class should've been replaced on NeoForge!");
         }
         
         return obj;

@@ -19,6 +19,8 @@
 
 package dev.architectury.event;
 
+import net.minecraft.world.InteractionResult;
+
 /**
  * A result from an event, determines if the event should continue to other listeners,
  * determines the outcome of the event, and provides extra result for the outcome.
@@ -28,7 +30,7 @@ package dev.architectury.event;
  * @see #interrupt(Boolean, Object)
  * @see EventResult
  */
-public class CompoundEventResult<T> {
+public class CompoundEventResult<T> implements EventResultHolder {
     private static final CompoundEventResult<?> PASS = new CompoundEventResult<>(EventResult.pass(), null);
     private final EventResult result;
     private final T object;
@@ -158,6 +160,17 @@ public class CompoundEventResult<T> {
      */
     public EventResult result() {
         return result;
+    }
+
+    /**
+     * Returns the Minecraft-facing result of the underlying {@link EventResult}.
+     *
+     * @return the Minecraft-facing result
+     * @see EventResult#asMinecraft()
+     */
+    @Override
+    public InteractionResult asMinecraft() {
+        return result.asMinecraft();
     }
     
     /**

@@ -111,19 +111,6 @@ public class FluidStackHooks {
     }
     
     /**
-     * Returns the luminosity of the fluid.
-     *
-     * @param fluid the fluid
-     * @param level the level, can be {@code null}
-     * @param pos   the block position, can be {@code null}
-     * @return the luminosity of the fluid, this ranges from 0 to 15
-     */
-    @ExpectPlatform
-    public static int getLuminosity(Fluid fluid, @Nullable Level level, @Nullable BlockPos pos) {
-        throw new AssertionError();
-    }
-    
-    /**
      * Returns the temperature of the fluid.
      * The temperature is in kelvin, for example, 300 kelvin is equal to room temperature.
      *

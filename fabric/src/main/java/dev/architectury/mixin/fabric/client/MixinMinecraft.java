@@ -19,7 +19,6 @@
 
 package dev.architectury.mixin.fabric.client;
 
-import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.event.events.client.ClientPlayerEvent;
 import dev.architectury.event.events.common.InteractionEvent;
 import net.minecraft.client.Minecraft;
@@ -29,13 +28,11 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.Nullable;
-import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
@@ -46,23 +43,17 @@ public abstract class MixinMinecraft {
     @Shadow
     @Nullable
     public LocalPlayer player;
-    
+
     @Shadow
     @Nullable
     public HitResult hitResult;
-    
-    @Shadow
-    public abstract void setScreen(@Nullable Screen screen);
-    
-    @Unique
-    private ThreadLocal<Boolean> setScreenCancelled = new ThreadLocal<>();
-    
+
     @Inject(method = "Lnet/minecraft/client/Minecraft;disconnect(Lnet/minecraft/client/gui/screens/Screen;ZZ)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/GameNarrator;clear()V"))
     private void handleLogin(Screen screen, boolean retainDownloadedPacks, boolean bl2, CallbackInfo ci) {
         ClientPlayerEvent.CLIENT_PLAYER_QUIT.invoker().quit(player);
     }
-    
+
     @Inject(method = "startUseItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;isEmpty()Z", ordinal = 1),
             locals = LocalCapture.CAPTURE_FAILHARD)
     private void rightClickAir(CallbackInfo ci, InteractionHand[] var1, int var2, int var3, InteractionHand interactionHand, ItemStack itemStack) {
@@ -70,52 +61,9 @@ public abstract class MixinMinecraft {
             InteractionEvent.CLIENT_RIGHT_CLICK_AIR.invoker().click(player, interactionHand);
         }
     }
-    
+
     @Inject(method = "startAttack", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;resetAttackStrengthTicker()V", ordinal = 0))
     private void leftClickAir(CallbackInfoReturnable<Boolean> ci) {
         InteractionEvent.CLIENT_LEFT_CLICK_AIR.invoker().click(player, InteractionHand.MAIN_HAND);
-    }
-    
-    @ModifyVariable(
-            method = "setScreen",
-            at = @At(value = "FIELD",
-                    opcode = Opcodes.PUTFIELD,
-                    target = "Lnet/minecraft/client/Minecraft;screen:Lnet/minecraft/client/gui/screens/Screen;",
-                    shift = At.Shift.BY,
-                    by = -1),
-            argsOnly = true
-    )
-    public Screen modifyScreen(Screen screen) {
-        var old = screen;
-        var event = ClientGuiEvent.SET_SCREEN.invoker().modifyScreen(screen);
-        if (event.isPresent()) {
-            if (event.isFalse()) {
-                setScreenCancelled.set(true);
-                return old;
-            } else {
-                screen = event.object();
-                if (old != null && screen != old) {
-                    old.removed();
-                }
-            }
-        }
-        setScreenCancelled.set(false);
-        return screen;
-    }
-    
-    @Inject(
-            method = "setScreen",
-            at = @At(value = "FIELD",
-                    opcode = Opcodes.PUTFIELD,
-                    target = "Lnet/minecraft/client/Minecraft;screen:Lnet/minecraft/client/gui/screens/Screen;",
-                    shift = At.Shift.BY,
-                    by = -1),
-            cancellable = true
-    )
-    public void cancelSetScreen(@Nullable Screen screen, CallbackInfo ci) {
-        if (setScreenCancelled.get()) {
-            ci.cancel();
-            setScreenCancelled.set(false);
-        }
     }
 }

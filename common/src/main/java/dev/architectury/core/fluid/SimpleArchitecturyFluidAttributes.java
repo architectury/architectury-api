@@ -22,7 +22,6 @@ package dev.architectury.core.fluid;
 import com.google.common.base.Suppliers;
 import dev.architectury.fluid.FluidStack;
 import dev.architectury.registry.registries.RegistrySupplier;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
@@ -318,12 +317,12 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
     }
     
     @Override
-    public Identifier getSourceTexture(@Nullable FluidStack stack, @Nullable BlockAndLightGetter level, @Nullable BlockPos pos) {
+    public Identifier getSourceTexture(@Nullable FluidState state, @Nullable BlockAndLightGetter level, @Nullable BlockPos pos) {
         return sourceTexture;
     }
     
     @Override
-    public Identifier getFlowingTexture(@Nullable FluidStack stack, @Nullable BlockAndLightGetter level, @Nullable BlockPos pos) {
+    public Identifier getFlowingTexture(@Nullable FluidState state, @Nullable BlockAndLightGetter level, @Nullable BlockPos pos) {
         return flowingTexture;
     }
     
@@ -333,7 +332,7 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
     }
     
     @Override
-    public int getColor(@Nullable FluidStack stack, @Nullable BlockAndLightGetter level, @Nullable BlockPos pos) {
+    public int getColor(@Nullable FluidState state, @Nullable BlockAndLightGetter level, @Nullable BlockPos pos) {
         return color;
     }
     

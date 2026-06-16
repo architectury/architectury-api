@@ -1,5 +1,3 @@
-import org.gradle.jvm.tasks.Jar
-
 apply plugin: "com.gradleup.shadow"
 apply plugin: "me.shedaniel.unified-publishing"
 
@@ -13,9 +11,7 @@ loom {
 
 architectury {
     platformSetupLoomIde()
-    neoForge {
-        platformPackage = "forge"
-    }
+    neoForge()
 }
 
 configurations {
@@ -62,9 +58,9 @@ shadowJar {
     exclude "dev/architectury/core/fluid/ArchitecturyFlowingFluid\$Source.class"
     exclude "dev/architectury/core/fluid/ArchitecturyFlowingFluid\$Flowing.class"
     exclude "dev/architectury/core/item/ArchitecturyBucketItem.class"
-    relocate "dev.architectury.core.block.forge.imitator", "dev.architectury.core.block"
-    relocate "dev.architectury.core.fluid.forge.imitator", "dev.architectury.core.fluid"
-    relocate "dev.architectury.core.item.forge.imitator", "dev.architectury.core.item"
+    relocate "dev.architectury.core.block.neoforge.imitator", "dev.architectury.core.block"
+    relocate "dev.architectury.core.fluid.neoforge.imitator", "dev.architectury.core.fluid"
+    relocate "dev.architectury.core.item.neoforge.imitator", "dev.architectury.core.item"
 }
 
 assemble.dependsOn shadowJar

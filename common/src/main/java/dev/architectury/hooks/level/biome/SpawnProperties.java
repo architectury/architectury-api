@@ -23,15 +23,26 @@ import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.MobSpawnSettings;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.function.BiPredicate;
 
 public interface SpawnProperties {
     float getCreatureProbability();
-    
+
+    /**
+     * Returns the spawner data map, or {@code null} when the underlying data is not available
+     * (e.g. when wrapping an already-built {@link MobSpawnSettings} outside of biome modification).
+     */
+    @Nullable
     Map<MobCategory, WeightedList.Builder<MobSpawnSettings.SpawnerData>> getSpawners();
-    
+
+    /**
+     * Returns the mob spawn cost map, or {@code null} when the underlying data is not available
+     * (e.g. when wrapping an already-built {@link MobSpawnSettings} outside of biome modification).
+     */
+    @Nullable
     Map<EntityType<?>, MobSpawnSettings.MobSpawnCost> getMobSpawnCosts();
     
     interface Mutable extends SpawnProperties {

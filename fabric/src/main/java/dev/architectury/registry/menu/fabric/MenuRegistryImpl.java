@@ -21,7 +21,6 @@ package dev.architectury.registry.menu.fabric;
 
 import dev.architectury.registry.menu.ExtendedMenuProvider;
 import dev.architectury.registry.menu.MenuRegistry.ExtendedMenuTypeFactory;
-import dev.architectury.registry.menu.MenuRegistry.SimpleMenuTypeFactory;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
@@ -32,7 +31,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import org.jetbrains.annotations.Nullable;
@@ -62,10 +60,6 @@ public class MenuRegistryImpl {
                 return provider.createMenu(i, inventory, player);
             }
         });
-    }
-    
-    public static <T extends AbstractContainerMenu> MenuType<T> of(SimpleMenuTypeFactory<T> factory) {
-        return new MenuType<>(factory::create, FeatureFlags.VANILLA_SET);
     }
     
     public static <T extends AbstractContainerMenu> MenuType<T> ofExtended(ExtendedMenuTypeFactory<T> factory) {

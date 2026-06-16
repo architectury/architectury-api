@@ -79,10 +79,6 @@ public class FluidStackHooksImpl {
         return FluidVariantAttributes.getLuminance(FluidStackHooksFabric.toFabric(fluid));
     }
     
-    public static int getLuminosity(Fluid fluid, @Nullable Level level, @Nullable BlockPos pos) {
-        return FluidVariantAttributes.getLuminance(FluidVariant.of(fluid));
-    }
-    
     public static int getTemperature(FluidStack fluid, @Nullable Level level, @Nullable BlockPos pos) {
         return FluidVariantAttributes.getTemperature(FluidStackHooksFabric.toFabric(fluid));
     }

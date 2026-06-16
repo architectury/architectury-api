@@ -62,7 +62,7 @@ public interface EntityEvent {
     interface LivingDeath {
         /**
          * Invoked before a living entity dies.
-         * Equivalent to Forge's {@code LivingDeathEvent} event.
+         * Equivalent to NeoForge's {@code LivingDeathEvent} event.
          *
          * @param entity The entity that is about to die.
          * @param source The source of damage triggering the death.
@@ -75,7 +75,7 @@ public interface EntityEvent {
     interface LivingHurt {
         /**
          * Invoked before an entity is hurt by a damage source.
-         * Equivalent to NeoForge's {@code LivingIncomingDamageEvent} or Forge's {@code LivingAttackEvent} event.
+         * Equivalent to NeoForge's {@code LivingIncomingDamageEvent} or NeoForge's {@code LivingAttackEvent} event.
          *
          * <p>You currently cannot override the amount of damage the entity receives.
          *
@@ -92,7 +92,7 @@ public interface EntityEvent {
         /**
          * Invoked before an entity is spawned into the world.
          * This specifically concerns <i>spawning</i> through either a {@link BaseSpawner} or during world generation.
-         * Equivalent to Forge's {@code LivingSpawnEvent.CheckSpawn} event.
+         * Equivalent to NeoForge's {@code LivingSpawnEvent.CheckSpawn} event.
          *
          * @param entity  The entity that is about to spawn.
          * @param world   The level the entity wants to spawn in.
@@ -110,7 +110,7 @@ public interface EntityEvent {
     interface Add {
         /**
          * Invoked when an entity is about to be added to the world.
-         * Equivalent to Forge's {@code EntityJoinWorldEvent} event.
+         * Equivalent to NeoForge's {@code EntityJoinWorldEvent} event.
          *
          * @param entity The entity to add to the level.
          * @param world  The level the entity is added to.
@@ -123,7 +123,7 @@ public interface EntityEvent {
     interface EnterSection {
         /**
          * Invoked whenever an entity enters a chunk.
-         * Equivalent to Forge's {@code EnteringChunk} event.
+         * Equivalent to NeoForge's {@code EnteringChunk} event.
          *
          * @param entity   The entity moving to a different chunk.
          * @param sectionX The chunk x-coordinate.
@@ -140,7 +140,7 @@ public interface EntityEvent {
         /**
          * Invoked before a tamable animal is tamed.
          * This event only works on vanilla mobs. Mods implementing their own entities may want to make their own events or invoke this.
-         * Equivalent to Forge's {@code AnimalTameEvent} event.
+         * Equivalent to NeoForge's {@code AnimalTameEvent} event.
          *
          * @param animal The animal being tamed.
          * @param player The tamer.

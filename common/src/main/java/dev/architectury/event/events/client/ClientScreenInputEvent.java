@@ -68,7 +68,7 @@ public interface ClientScreenInputEvent {
     interface KeyPressed {
         /**
          * Invoked whenever a key press is performed inside a screen.
-         * Equivalent to Forge's {@code GuiScreenEvent.KeyboardKeyPressedEvent} event.
+         * Equivalent to NeoForge's {@code GuiScreenEvent.KeyboardKeyPressedEvent} event.
          *
          * <p> This event is handled in two phases PRE and POST, which are invoked
          * before and after the keys have been processed by the screen, respectively.
@@ -85,7 +85,7 @@ public interface ClientScreenInputEvent {
     interface KeyReleased {
         /**
          * Invoked whenever a held key is released inside a screen.
-         * Equivalent to Forge's {@code GuiScreenEvent.KeyboardKeyReleasedEvent} event.
+         * Equivalent to NeoForge's {@code GuiScreenEvent.KeyboardKeyReleasedEvent} event.
          *
          * <p> This event is handled in two phases PRE and POST, which are invoked
          * before and after the keys have been processed by the screen, respectively.
@@ -102,7 +102,7 @@ public interface ClientScreenInputEvent {
     interface KeyTyped {
         /**
          * Invoked whenever a character is typed within a screen.
-         * Equivalent to Forge's {@code GuiScreenEvent.KeyboardCharTypedEvent} event.
+         * Equivalent to NeoForge's {@code GuiScreenEvent.KeyboardCharTypedEvent} event.
          *
          * <p> This event is handled in two phases PRE and POST, which are invoked
          * before and after the keys have been processed by the screen, respectively.
@@ -119,7 +119,7 @@ public interface ClientScreenInputEvent {
     interface MouseScrolled {
         /**
          * Invoked whenever the mouse scroll wheel is moved.
-         * Equivalent to Forge's {@code GuiScreenEvent.MouseScrollEvent} event.
+         * Equivalent to NeoForge's {@code GuiScreenEvent.MouseScrollEvent} event.
          *
          * <p> This event is handled in two phases PRE and POST, which are invoked
          * before and after the keys have been processed by the screen, respectively.
@@ -139,7 +139,7 @@ public interface ClientScreenInputEvent {
     interface MouseReleased {
         /**
          * Invoked whenever a mouse button is released.
-         * Equivalent to Forge's {@code GuiScreenEvent.MouseReleasedEvent} event.
+         * Equivalent to NeoForge's {@code GuiScreenEvent.MouseReleasedEvent} event.
          *
          * <p> This event is handled in two phases PRE and POST, which are invoked
          * before and after the keys have been processed by the screen, respectively.
@@ -156,7 +156,7 @@ public interface ClientScreenInputEvent {
     interface MouseDragged {
         /**
          * Invoked whenever the mouse is dragged across a screen.
-         * Equivalent to Forge's {@code GuiScreenEvent.MouseDragEvent} event.
+         * Equivalent to NeoForge's {@code GuiScreenEvent.MouseDragEvent} event.
          *
          * <p> This event is handled in two phases PRE and POST, which are invoked
          * before and after the keys have been processed by the screen, respectively.
@@ -175,7 +175,7 @@ public interface ClientScreenInputEvent {
     interface MouseClicked {
         /**
          * Invoked whenever a mouse click is performed. A click consists of the press and release of a mouse button.
-         * Equivalent to Forge's {@code GuiScreenEvent.MouseClickedEvent} event.
+         * Equivalent to NeoForge's {@code GuiScreenEvent.MouseClickedEvent} event.
          *
          * <p> This event is handled in two phases PRE and POST, which are invoked
          * before and after the keys have been processed by the screen, respectively.

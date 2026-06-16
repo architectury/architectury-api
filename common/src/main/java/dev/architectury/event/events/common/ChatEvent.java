@@ -40,7 +40,7 @@ public interface ChatEvent {
     interface Decorate {
         /**
          * Invoked when the server receives a message from a client.
-         * Equivalent to Forge's {@code ServerChatEvent} event.
+         * Equivalent to NeoForge's {@code ServerChatEvent} event.
          *
          * @param player    The player who has sent the message, or null.
          * @param component The message as component.
@@ -52,7 +52,7 @@ public interface ChatEvent {
     interface Received {
         /**
          * Invoked when the server receives a message from a client.
-         * Equivalent to Forge's {@code ServerChatEvent} event.
+         * Equivalent to NeoForge's {@code ServerChatEvent} event.
          *
          * @param player    The player who has sent the message, or null.
          * @param component The message as component.
