@@ -3,6 +3,7 @@ apply plugin: "me.shedaniel.unified-publishing"
 
 loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
+    injectAccessWidener(tasks.named('jar'))
 }
 
 architectury {

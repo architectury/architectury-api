@@ -24,8 +24,6 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
-
 /**
  * A result from an event, determines if the event should continue to other listeners,
  * and determines the outcome of the event.
