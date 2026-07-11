@@ -31,6 +31,8 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLevelEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -60,11 +62,13 @@ public class EventHandlerImpl {
         HudElementRegistry.addLast(Identifier.fromNamespaceAndPath(ArchitecturyConstants.MOD_ID, "render_hud"),
                 (graphics, tickDelta) -> ClientGuiEvent.RENDER_HUD.invoker().renderHud(graphics, tickDelta));
         
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, access) ->
+                ClientCommandRegistrationEvent.EVENT.invoker().register((CommandDispatcher<ClientCommandRegistrationEvent.ClientCommandSourceStack>)
+                (CommandDispatcher<?>) dispatcher, access));
         
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher, access) -> {
-            ClientCommandRegistrationEvent.EVENT.invoker().register((CommandDispatcher<ClientCommandRegistrationEvent.ClientCommandSourceStack>)
-                    (CommandDispatcher<?>) dispatcher, access);
-        });
+        ScreenEvents.AFTER_INIT.register((minecraft, screen, scaledWidth, scaledHeight) ->
+                ScreenKeyboardEvents.allowCharType(screen).register((parent, event) ->
+                ClientScreenInputEvent.CHAR_TYPED_PRE.invoker().charTyped(minecraft, parent, event).isEmpty()));
     }
     
     public static void registerCommon() {

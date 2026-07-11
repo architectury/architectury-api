@@ -23,7 +23,6 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import dev.architectury.event.events.client.ClientRawInputEvent;
 import dev.architectury.event.events.client.ClientScreenInputEvent;
-import dev.architectury.impl.fabric.ScreenInputDelegate;
 import net.minecraft.client.KeyboardHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -41,14 +40,6 @@ public class MixinKeyboardHandler {
     @Shadow
     @Final
     private Minecraft minecraft;
-    
-    @WrapOperation(method = "charTyped", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;charTyped(Lnet/minecraft/client/input/CharacterEvent;)Z"))
-    private boolean wrapCharTyped(Screen screen, CharacterEvent characterEvent, Operation<Boolean> original) {
-        if (screen instanceof ScreenInputDelegate delegate) {
-            return original.call(delegate.architectury_delegateInputs(), characterEvent);
-        }
-        return original.call(screen, characterEvent);
-    }
     
     @WrapOperation(method = "keyPress", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;keyPressed(Lnet/minecraft/client/input/KeyEvent;)Z"))
     private boolean wrapKeyPressed(Screen screen, KeyEvent keyEvent, Operation<Boolean> original) {

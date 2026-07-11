@@ -22,7 +22,6 @@ package dev.architectury.mixin.fabric.client;
 import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.hooks.client.screen.ScreenAccess;
 import dev.architectury.impl.ScreenAccessImpl;
-import dev.architectury.impl.fabric.ScreenInputDelegate;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import org.spongepowered.asm.mixin.Mixin;
@@ -35,7 +34,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.List;
 
 @Mixin(Screen.class)
-public abstract class MixinScreen implements ScreenInputDelegate {
+public abstract class MixinScreen {
     @Unique
     private ScreenAccessImpl access;
     
@@ -55,15 +54,7 @@ public abstract class MixinScreen implements ScreenInputDelegate {
         return access;
     }
     
-    @Override
-    public Screen architectury_delegateInputs() {
-        if (inputDelegate == null) {
-            inputDelegate = new DelegateScreen((Screen) (Object) this);
-        }
-        return inputDelegate;
-    }
-    
-    @Inject(method = "Lnet/minecraft/client/gui/screens/Screen;init(II)V", at = @At(value = "INVOKE",
+    @Inject(method = "init(II)V", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/client/gui/screens/Screen;init()V"), cancellable = true)
     private void preInit(int width, int height, CallbackInfo ci) {
         if (ClientGuiEvent.INIT_PRE.invoker().init((Screen) (Object) this, getAccess()).isFalse()) {
@@ -71,7 +62,7 @@ public abstract class MixinScreen implements ScreenInputDelegate {
         }
     }
     
-    @Inject(method = "Lnet/minecraft/client/gui/screens/Screen;init(II)V", at = @At(value = "INVOKE",
+    @Inject(method = "init(II)V", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/client/gui/screens/Screen;init()V", shift = At.Shift.AFTER))
     private void postInit(CallbackInfo ci) {
         ClientGuiEvent.INIT_POST.invoker().init((Screen) (Object) this, getAccess());
