@@ -27,6 +27,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.BlockAndLightGetter;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.Fluid;
@@ -195,11 +196,11 @@ public interface ArchitecturyFluidAttributes {
      * The vanilla water location is {@code "block/water_still"}.
      *
      * @param state the fluid state, can be {@code null}
-     * @param level the level, can be {@code null}
+     * @param getter the block and light getter, can be {@code null}
      * @param pos   the position, can be {@code null}
      * @return the texture location
      */
-    Identifier getSourceTexture(@Nullable FluidState state, @Nullable BlockAndLightGetter level, @Nullable BlockPos pos);
+    Identifier getSourceTexture(@Nullable FluidState state, @Nullable BlockAndLightGetter getter, @Nullable BlockPos pos);
     
     /**
      * Returns the texture location of this fluid in its source form.
@@ -230,11 +231,11 @@ public interface ArchitecturyFluidAttributes {
      * The vanilla water location is {@code "block/water_flow"}.
      *
      * @param state the fluid state, can be {@code null}
-     * @param level the level, can be {@code null}
+     * @param getter the block and light getter, can be {@code null}
      * @param pos   the position, can be {@code null}
      * @return the texture location
      */
-    Identifier getFlowingTexture(@Nullable FluidState state, @Nullable BlockAndLightGetter level, @Nullable BlockPos pos);
+    Identifier getFlowingTexture(@Nullable FluidState state, @Nullable BlockAndLightGetter getter, @Nullable BlockPos pos);
     
     /**
      * Returns the texture location of this fluid in its flowing form.
@@ -265,12 +266,12 @@ public interface ArchitecturyFluidAttributes {
      * The vanilla water location is {@code "block/water_overlay"}.
      *
      * @param state the fluid state, can be {@code null}
-     * @param level the level, can be {@code null}
+     * @param getter the block and light getter, can be {@code null}
      * @param pos   the position, can be {@code null}
      * @return the texture location, can be {@code null}
      */
     @Nullable
-    default Identifier getOverlayTexture(@Nullable FluidState state, @Nullable BlockAndLightGetter level, @Nullable BlockPos pos) {
+    default Identifier getOverlayTexture(@Nullable FluidState state, @Nullable BlockAndLightGetter getter, @Nullable BlockPos pos) {
         return null;
     }
     
@@ -303,11 +304,11 @@ public interface ArchitecturyFluidAttributes {
      * Returns the color of the fluid.
      *
      * @param state the fluid state, can be {@code null}
-     * @param level the level, can be {@code null}
+     * @param getter the block and light getter, can be {@code null}
      * @param pos   the position, can be {@code null}
      * @return the color
      */
-    int getColor(@Nullable FluidState state, @Nullable BlockAndLightGetter level, @Nullable BlockPos pos);
+    int getColor(@Nullable FluidState state, @Nullable BlockAndLightGetter getter, @Nullable BlockPos pos);
     
     /**
      * Returns the color of the fluid.
@@ -332,11 +333,11 @@ public interface ArchitecturyFluidAttributes {
      * Returns the luminosity of the fluid, this is between 0 and 15.
      *
      * @param stack the fluid stack, can be {@code null}
-     * @param level the level, can be {@code null}
+     * @param getter the block and light getter, can be {@code null}
      * @param pos   the position, can be {@code null}
      * @return the luminosity
      */
-    int getLuminosity(@Nullable FluidStack stack, @Nullable BlockAndLightGetter level, @Nullable BlockPos pos);
+    int getLuminosity(@Nullable FluidStack stack, @Nullable BlockAndLightGetter getter, @Nullable BlockPos pos);
     
     /**
      * Returns the luminosity of the fluid, this is between 0 and 15.
@@ -361,11 +362,11 @@ public interface ArchitecturyFluidAttributes {
      * Returns the density of the fluid, this is 1000 for water and 3000 for lava on NeoForge.
      *
      * @param stack the fluid stack, can be {@code null}
-     * @param level the level, can be {@code null}
+     * @param getter the block and light getter, can be {@code null}
      * @param pos   the position, can be {@code null}
      * @return the density
      */
-    int getDensity(@Nullable FluidStack stack, @Nullable BlockAndLightGetter level, @Nullable BlockPos pos);
+    int getDensity(@Nullable FluidStack stack, @Nullable BlockAndLightGetter getter, @Nullable BlockPos pos);
     
     /**
      * Returns the density of the fluid, this is 1000 for water and 3000 for lava on NeoForge.
@@ -391,11 +392,11 @@ public interface ArchitecturyFluidAttributes {
      * The temperature is in kelvin, for example, 300 kelvin is equal to room temperature.
      *
      * @param stack the fluid stack, can be {@code null}
-     * @param level the level, can be {@code null}
+     * @param getter the block and light getter, can be {@code null}
      * @param pos   the position, can be {@code null}
      * @return the temperature
      */
-    int getTemperature(@Nullable FluidStack stack, @Nullable BlockAndLightGetter level, @Nullable BlockPos pos);
+    int getTemperature(@Nullable FluidStack stack, @Nullable BlockAndLightGetter getter, @Nullable BlockPos pos);
     
     /**
      * Returns the temperature of the fluid.
@@ -423,11 +424,11 @@ public interface ArchitecturyFluidAttributes {
      * The default value is 1000 for water.
      *
      * @param stack the fluid stack, can be {@code null}
-     * @param level the level, can be {@code null}
+     * @param getter the block and light getter, can be {@code null}
      * @param pos   the position, can be {@code null}
      * @return the viscosity
      */
-    int getViscosity(@Nullable FluidStack stack, @Nullable BlockAndLightGetter level, @Nullable BlockPos pos);
+    int getViscosity(@Nullable FluidStack stack, @Nullable BlockAndLightGetter getter, @Nullable BlockPos pos);
     
     /**
      * Returns the viscosity of the fluid. A lower viscosity means that the fluid will flow faster.
@@ -455,11 +456,11 @@ public interface ArchitecturyFluidAttributes {
      * upside down like gas.
      *
      * @param stack the fluid stack, can be {@code null}
-     * @param level the level, can be {@code null}
+     * @param getter the block and light getter, can be {@code null}
      * @param pos   the position, can be {@code null}
      * @return {@code true} if the fluid is lighter than air
      */
-    boolean isLighterThanAir(@Nullable FluidStack stack, @Nullable BlockAndLightGetter level, @Nullable BlockPos pos);
+    boolean isLighterThanAir(@Nullable FluidStack stack, @Nullable BlockAndLightGetter getter, @Nullable BlockPos pos);
     
     /**
      * Returns whether this fluid is lighter than air. This is used to determine whether the fluid should be rendered
@@ -486,11 +487,11 @@ public interface ArchitecturyFluidAttributes {
      * Returns the rarity of the fluid.
      *
      * @param stack the fluid stack, can be {@code null}
-     * @param level the level, can be {@code null}
+     * @param getter the block and light getter, can be {@code null}
      * @param pos   the position, can be {@code null}
      * @return the rarity
      */
-    Rarity getRarity(@Nullable FluidStack stack, @Nullable BlockAndLightGetter level, @Nullable BlockPos pos);
+    Rarity getRarity(@Nullable FluidStack stack, @Nullable BlockAndLightGetter getter, @Nullable BlockPos pos);
     
     /**
      * Returns the rarity of the fluid.
@@ -515,14 +516,14 @@ public interface ArchitecturyFluidAttributes {
      * Returns the fill sound of the fluid.
      *
      * @param stack the fluid stack, can be {@code null}
-     * @param level the level, can be {@code null}
+     * @param getter the block getter, can be {@code null}
      * @param pos   the position, can be {@code null}
      * @return the fill sound
      * @see net.minecraft.sounds.SoundEvents#BUCKET_FILL
      * @see net.minecraft.sounds.SoundEvents#BUCKET_FILL_LAVA
      */
     @Nullable
-    SoundEvent getFillSound(@Nullable FluidStack stack, @Nullable BlockAndLightGetter level, @Nullable BlockPos pos);
+    SoundEvent getFillSound(@Nullable FluidStack stack, @Nullable BlockGetter getter, @Nullable BlockPos pos);
     
     /**
      * Returns the fill sound of the fluid.
@@ -553,14 +554,14 @@ public interface ArchitecturyFluidAttributes {
      * Returns the empty sound of the fluid.
      *
      * @param stack the fluid stack, can be {@code null}
-     * @param level the level, can be {@code null}
+     * @param getter the block getter, can be {@code null}
      * @param pos   the position, can be {@code null}
      * @return the empty sound
      * @see net.minecraft.sounds.SoundEvents#BUCKET_EMPTY
      * @see net.minecraft.sounds.SoundEvents#BUCKET_EMPTY_LAVA
      */
     @Nullable
-    SoundEvent getEmptySound(@Nullable FluidStack stack, @Nullable BlockAndLightGetter level, @Nullable BlockPos pos);
+    SoundEvent getEmptySound(@Nullable FluidStack stack, @Nullable BlockGetter getter, @Nullable BlockPos pos);
     
     /**
      * Returns the empty sound of the fluid.

@@ -30,6 +30,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.BlockAndLightGetter;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.Fluid;
@@ -248,7 +249,7 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
     }
     
     /**
-     * @see ArchitecturyFluidAttributes#getFillSound(FluidStack, BlockAndLightGetter, BlockPos)
+     * @see ArchitecturyFluidAttributes#getFillSound(FluidStack, BlockGetter, BlockPos)
      */
     public SimpleArchitecturyFluidAttributes fillSound(SoundEvent fillSound) {
         this.fillSound = fillSound;
@@ -256,7 +257,7 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
     }
     
     /**
-     * @see ArchitecturyFluidAttributes#getEmptySound(FluidStack, BlockAndLightGetter, BlockPos)
+     * @see ArchitecturyFluidAttributes#getEmptySound(FluidStack, BlockGetter, BlockPos)
      */
     public SimpleArchitecturyFluidAttributes emptySound(SoundEvent emptySound) {
         this.emptySound = emptySound;
@@ -368,13 +369,13 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
     
     @Override
     @Nullable
-    public SoundEvent getFillSound(@Nullable FluidStack stack, @Nullable BlockAndLightGetter level, @Nullable BlockPos pos) {
+    public SoundEvent getFillSound(@Nullable FluidStack stack, @Nullable BlockGetter level, @Nullable BlockPos pos) {
         return fillSound;
     }
     
     @Override
     @Nullable
-    public SoundEvent getEmptySound(@Nullable FluidStack stack, @Nullable BlockAndLightGetter level, @Nullable BlockPos pos) {
+    public SoundEvent getEmptySound(@Nullable FluidStack stack, @Nullable BlockGetter level, @Nullable BlockPos pos) {
         return emptySound;
     }
 }
