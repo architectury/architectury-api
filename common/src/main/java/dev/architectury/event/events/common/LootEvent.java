@@ -21,6 +21,7 @@ package dev.architectury.event.events.common;
 
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -48,7 +49,7 @@ public interface LootEvent {
      * <pre>{@code
      * LootEvent.MODIFY_LOOT_TABLE.register((key, context, builtin) -> {
      *     // Check that the loot table is dirt and built-in
-     *     if (builtin && Blocks.DIRT.getLootTable().equals(key)) {
+     *     if (builtin && Blocks.DIRT.getLootTable().equals(Optional.ofNullable(key))) {
      *         // Create a loot pool with a single item entry of Items.DIAMOND
      *         LootPool.Builder pool = LootPool.lootPool().add(LootItem.lootTableItem(Items.DIAMOND));
      *         context.addPool(pool);
@@ -56,7 +57,7 @@ public interface LootEvent {
      * });
      * }</pre>
      *
-     * @see ModifyLootTable#modifyLootTable(ResourceKey, LootTableModificationContext, boolean)
+     * @see ModifyLootTable#modifyLootTable
      */
     Event<ModifyLootTable> MODIFY_LOOT_TABLE = EventFactory.createLoop();
     
@@ -65,12 +66,13 @@ public interface LootEvent {
         /**
          * Modifies a loot table.
          *
-         * @param key     the loot table key
-         * @param context the context used to modify the loot table
-         * @param builtin if {@code true}, the loot table is built-in;
-         *                if {@code false}, it is from a user data pack
+         * @param registries the registries provider
+         * @param key        the loot table key
+         * @param context    the context used to modify the loot table
+         * @param builtin    if {@code true}, the loot table is built-in;
+         *                   if {@code false}, it is from a user data pack
          */
-        void modifyLootTable(ResourceKey<LootTable> key, LootTableModificationContext context, boolean builtin);
+        void modifyLootTable(HolderLookup.Provider registries, ResourceKey<LootTable> key, LootTableModificationContext context, boolean builtin);
     }
     
     /**

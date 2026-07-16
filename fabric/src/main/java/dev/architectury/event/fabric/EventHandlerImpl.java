@@ -92,7 +92,7 @@ public class EventHandlerImpl {
         AttackBlockCallback.EVENT.register((player, world, hand, pos, face) -> InteractionEvent.LEFT_CLICK_BLOCK.invoker().click(player, hand, pos, face).asMinecraft());
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> PlayerEvent.ATTACK_ENTITY.invoker().attack(player, world, entity, hand, hitResult).asMinecraft());
         
-        LootTableEvents.MODIFY.register((key, tableBuilder, source, provider) -> LootEvent.MODIFY_LOOT_TABLE.invoker().modifyLootTable(key, new LootTableModificationContextImpl(tableBuilder), source.isBuiltin()));
+        LootTableEvents.MODIFY.register((key, tableBuilder, source, provider) -> LootEvent.MODIFY_LOOT_TABLE.invoker().modifyLootTable(provider, key, new LootTableModificationContextImpl(tableBuilder), source.isBuiltin()));
         
         ServerMessageDecoratorEvent.EVENT.register(ServerMessageDecoratorEvent.CONTENT_PHASE, (player, component) -> {
             ChatEvent.ChatComponent chatComponent = new ChatComponentImpl(component);
