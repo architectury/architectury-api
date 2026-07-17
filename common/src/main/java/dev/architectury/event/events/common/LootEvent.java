@@ -47,7 +47,7 @@ public interface LootEvent {
      *
      * <h2>Example: adding diamonds as a drop for dirt</h2>
      * <pre>{@code
-     * LootEvent.MODIFY_LOOT_TABLE.register((key, context, builtin) -> {
+     * LootEvent.MODIFY_LOOT_TABLE.register((registries, key, context, builtin) -> {
      *     // Check that the loot table is dirt and built-in
      *     if (builtin && Blocks.DIRT.getLootTable().equals(Optional.ofNullable(key))) {
      *         // Create a loot pool with a single item entry of Items.DIAMOND
@@ -66,13 +66,28 @@ public interface LootEvent {
         /**
          * Modifies a loot table.
          *
+         * @param key     the loot table key
+         * @param context the context used to modify the loot table
+         * @param builtin if {@code true}, the loot table is built-in;
+         *                if {@code false}, it is from a user data pack
+         * @deprecated Use
+         * {@link #modifyLootTable(HolderLookup.Provider, ResourceKey, LootTableModificationContext, boolean)} instead.
+         */
+        @Deprecated(forRemoval = true)
+        void modifyLootTable(ResourceKey<LootTable> key, LootTableModificationContext context, boolean builtin);
+
+        /**
+         * Modifies a loot table.
+         *
          * @param registries the registries provider
          * @param key        the loot table key
          * @param context    the context used to modify the loot table
          * @param builtin    if {@code true}, the loot table is built-in;
          *                   if {@code false}, it is from a user data pack
          */
-        void modifyLootTable(HolderLookup.Provider registries, ResourceKey<LootTable> key, LootTableModificationContext context, boolean builtin);
+        default void modifyLootTable(HolderLookup.Provider registries, ResourceKey<LootTable> key, LootTableModificationContext context, boolean builtin) {
+            modifyLootTable(key, context, builtin);
+        }
     }
     
     /**
