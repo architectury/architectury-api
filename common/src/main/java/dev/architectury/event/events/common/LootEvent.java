@@ -57,7 +57,7 @@ public interface LootEvent {
      * });
      * }</pre>
      *
-     * @see ModifyLootTable#modifyLootTable
+     * @see ModifyLootTable#modifyLootTable(HolderLookup.Provider, ResourceKey, LootTableModificationContext, boolean)
      */
     Event<ModifyLootTable> MODIFY_LOOT_TABLE = EventFactory.createLoop();
     
