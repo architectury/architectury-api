@@ -409,7 +409,7 @@ public class EventHandlerImplCommon {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(LootTableLoadEvent event) {
-        LootEvent.MODIFY_LOOT_TABLE.invoker().modifyLootTable(ResourceKey.create(Registries.LOOT_TABLE, event.getName()), new LootTableModificationContextImpl(event.getTable()), true);
+        LootEvent.MODIFY_LOOT_TABLE.invoker().modifyLootTable(event.getRegistries(), ResourceKey.create(Registries.LOOT_TABLE, event.getName()), new LootTableModificationContextImpl(event.getTable()), true);
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
