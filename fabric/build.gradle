@@ -126,7 +126,7 @@ unifiedPublishing {
             curseforge {
                 token = CURSE_API_KEY
                 id = rootProject.curseforge_id
-                gameVersions.addAll "Java 25", project.minecraft_version
+                gameVersions.addAll "Java 25", "Client", "Server", project.minecraft_version
             }
         }
 
