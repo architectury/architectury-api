@@ -1,6 +1,6 @@
 plugins {
     id "com.github.johnrengelman.shadow" version "8.1.1"
-    id "me.shedaniel.unified-publishing"
+    id "me.modmuss50.mod-publish-plugin" version "2.1.1"
 }
 
 loom {
@@ -21,13 +21,17 @@ configurations {
 }
 
 repositories {
-    maven { url "https://maven.terraformersmc.com/releases/" }
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+        content { includeGroup "maven.modrinth" }
+    }
 }
 
 dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
-    modCompileOnly("com.terraformersmc:modmenu:${rootProject.mod_menu_version}") { transitive false }
+    modCompileOnly("maven.modrinth:modmenu:${rootProject.mod_menu_version}") { transitive false }
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
@@ -108,38 +112,34 @@ publishing {
     }
 }
 
-unifiedPublishing {
-    project {
-        displayName = "[Fabric $rootProject.supported_version] v$project.version"
-        releaseType = "$rootProject.artifact_type"
-        changelog = releaseChangelog()
-        gameVersions = []
-        gameLoaders = ["fabric"]
-        mainPublication renameJarForPublication
-        relations {
-            depends {
-                curseforge = "fabric-api"
-                modrinth = "fabric-api"
-            }
-        }
+publishMods {
+    file = renameJarForPublication.archiveFile
+    displayName = "[Fabric $rootProject.supported_version] v$project.version"
+    changelog = releaseChangelog()
+    type = STABLE
+    modLoaders.add("fabric")
 
-        var CURSE_API_KEY = project.findProperty("CURSE_API_KEY") ?: System.getenv("CURSE_API_KEY")
-        if (CURSE_API_KEY != null) {
-            curseforge {
-                token = CURSE_API_KEY
-                id = rootProject.curseforge_id
-                gameVersions.addAll "Java 21", project.minecraft_version
-            }
+    var CURSE_API_KEY = project.findProperty("CURSE_API_KEY") ?: System.getenv("CURSE_API_KEY")
+    if (CURSE_API_KEY != null) {
+        curseforge {
+            accessToken = CURSE_API_KEY
+            projectId = rootProject.curseforge_id
+            minecraftVersions.addAll("1.21", "1.21.1")
+            javaVersions.add(JavaVersion.VERSION_21)
+            client = true
+            server = true
+            requires("fabric-api")
         }
+    }
 
-        var MODRINTH_TOKEN = project.findProperty("MODRINTH_TOKEN") ?: System.getenv("MODRINTH_TOKEN")
-        if (MODRINTH_TOKEN != null) {
-            modrinth {
-                token = MODRINTH_TOKEN
-                id = rootProject.modrinth_id
-                version = "$project.version+$project.name"
-                gameVersions.addAll project.minecraft_version
-            }
+    var MODRINTH_TOKEN = project.findProperty("MODRINTH_TOKEN") ?: System.getenv("MODRINTH_TOKEN")
+    if (MODRINTH_TOKEN != null) {
+        modrinth {
+            accessToken = MODRINTH_TOKEN
+            projectId = rootProject.modrinth_id
+            version = "$project.version+$project.name"
+            minecraftVersions.addAll("1.21", "1.21.1")
+            requires("fabric-api")
         }
     }
 }

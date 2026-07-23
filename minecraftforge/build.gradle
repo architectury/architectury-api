@@ -1,6 +1,6 @@
 plugins {
     id "com.github.johnrengelman.shadow" version "8.1.1"
-    id "me.shedaniel.unified-publishing"
+    id "me.modmuss50.mod-publish-plugin" version "2.1.1"
 }
 
 loom {
@@ -124,31 +124,32 @@ publishing {
     }
 }
 
-unifiedPublishing {
-    project {
-        displayName = "[MinecraftForge $rootProject.supported_version] v$project.version"
-        releaseType = "$rootProject.artifact_type"
-        changelog = releaseChangelog()
-        gameVersions = ["1.20.6"]
-        gameLoaders = ["forge"]
-        mainPublication renameJarForPublication
+publishMods {
+    file = renameJarForPublication.archiveFile
+    displayName = "[MinecraftForge $rootProject.supported_version] v$project.version"
+    changelog = releaseChangelog()
+    type = STABLE
+    modLoaders.add("forge")
 
-        var CURSE_API_KEY = project.findProperty("CURSE_API_KEY") ?: System.getenv("CURSE_API_KEY")
-        if (CURSE_API_KEY != null) {
-            curseforge {
-                token = CURSE_API_KEY
-                id = rootProject.curseforge_id
-                gameVersions.addAll "Java 17"
-            }
+    var CURSE_API_KEY = project.findProperty("CURSE_API_KEY") ?: System.getenv("CURSE_API_KEY")
+    if (CURSE_API_KEY != null) {
+        curseforge {
+            accessToken = CURSE_API_KEY
+            projectId = rootProject.curseforge_id
+            minecraftVersions.addAll("1.21", "1.21.1")
+            javaVersions.add(JavaVersion.VERSION_21)
+            client = true
+            server = true
         }
+    }
 
-        var MODRINTH_TOKEN = project.findProperty("MODRINTH_TOKEN") ?: System.getenv("MODRINTH_TOKEN")
-        if (MODRINTH_TOKEN != null) {
-            modrinth {
-                token = MODRINTH_TOKEN
-                id = rootProject.modrinth_id
-                version = "$project.version+$project.name"
-            }
+    var MODRINTH_TOKEN = project.findProperty("MODRINTH_TOKEN") ?: System.getenv("MODRINTH_TOKEN")
+    if (MODRINTH_TOKEN != null) {
+        modrinth {
+            accessToken = MODRINTH_TOKEN
+            projectId = rootProject.modrinth_id
+            version = "$project.version+$project.name"
+            minecraftVersions.addAll("1.21", "1.21.1")
         }
     }
 }
