@@ -1,5 +1,5 @@
 apply plugin: "com.gradleup.shadow"
-apply plugin: "me.shedaniel.unified-publishing"
+apply plugin: "me.modmuss50.mod-publish-plugin"
 
 loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
@@ -114,31 +114,36 @@ publishing {
     }
 }
 
-unifiedPublishing {
-    if (rootProject.neoforge_pr != "") return
-    project {
+if (rootProject.neoforge_pr == "") { // Don't publish PRs
+    publishMods {
+        file = shadowJar.archiveFile
         displayName = "[NeoForge $rootProject.supported_version] v$project.version"
-        releaseType = "$rootProject.artifact_type"
         changelog = releaseChangelog()
-        gameLoaders = ["neoforge"]
-        mainPublication shadowJar
+        modLoaders.add("neoforge")
+
+        var releaseType = ["release": STABLE, "beta": BETA, "alpha": ALPHA][rootProject.artifact_type]
+        if (releaseType == null) throw new GradleException("Unknown artifact_type: $rootProject.artifact_type")
+        type = releaseType
 
         var CURSE_API_KEY = project.findProperty("CURSE_API_KEY") ?: System.getenv("CURSE_API_KEY")
         if (CURSE_API_KEY != null) {
             curseforge {
-                token = CURSE_API_KEY
-                id = rootProject.curseforge_id
-                gameVersions.addAll "Java 25", project.minecraft_version
+                accessToken = CURSE_API_KEY
+                projectId = rootProject.curseforge_id
+                minecraftVersions.add(rootProject.minecraft_version)
+                javaVersions.add(JavaVersion.VERSION_25)
+                client = true
+                server = true
             }
         }
 
         var MODRINTH_TOKEN = project.findProperty("MODRINTH_TOKEN") ?: System.getenv("MODRINTH_TOKEN")
         if (MODRINTH_TOKEN != null) {
             modrinth {
-                token = MODRINTH_TOKEN
-                id = rootProject.modrinth_id
+                accessToken = MODRINTH_TOKEN
+                projectId = rootProject.modrinth_id
                 version = "$project.version+$project.name"
-                gameVersions.addAll project.minecraft_version
+                minecraftVersions.add(rootProject.minecraft_version)
             }
         }
     }

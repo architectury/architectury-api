@@ -1,5 +1,5 @@
 apply plugin: "com.gradleup.shadow"
-apply plugin: "me.shedaniel.unified-publishing"
+apply plugin: "me.modmuss50.mod-publish-plugin"
 
 loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
@@ -20,13 +20,17 @@ configurations {
 }
 
 repositories {
-    maven { url "https://maven.terraformersmc.com/releases/" }
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+        content { includeGroup "maven.modrinth" }
+    }
 }
 
 dependencies {
     api "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     api "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
-    compileOnly("com.terraformersmc:modmenu:${rootProject.mod_menu_version}") { transitive false }
+    compileOnly("maven.modrinth:modmenu:${rootProject.mod_menu_version}") { transitive false }
 
     common(project(path: ":common")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
@@ -106,38 +110,37 @@ publishing {
     }
 }
 
-unifiedPublishing {
-    project {
-        displayName = "[Fabric $rootProject.supported_version] v$project.version"
-        releaseType = "$rootProject.artifact_type"
-        changelog = releaseChangelog()
-        gameVersions = []
-        gameLoaders = ["fabric"]
-        mainPublication shadowJar
-        relations {
-            depends {
-                curseforge = "fabric-api"
-                modrinth = "fabric-api"
-            }
-        }
+publishMods {
+    file = shadowJar.archiveFile
+    displayName = "[Fabric $rootProject.supported_version] v$project.version"
+    changelog = releaseChangelog()
+    modLoaders.add("fabric")
 
-        var CURSE_API_KEY = project.findProperty("CURSE_API_KEY") ?: System.getenv("CURSE_API_KEY")
-        if (CURSE_API_KEY != null) {
-            curseforge {
-                token = CURSE_API_KEY
-                id = rootProject.curseforge_id
-                gameVersions.addAll "Java 25", project.minecraft_version
-            }
-        }
+    var releaseType = ["release": STABLE, "beta": BETA, "alpha": ALPHA][rootProject.artifact_type]
+    if (releaseType == null) throw new GradleException("Unknown artifact_type: $rootProject.artifact_type")
+    type = releaseType
 
-        var MODRINTH_TOKEN = project.findProperty("MODRINTH_TOKEN") ?: System.getenv("MODRINTH_TOKEN")
-        if (MODRINTH_TOKEN != null) {
-            modrinth {
-                token = MODRINTH_TOKEN
-                id = rootProject.modrinth_id
-                version = "$project.version+$project.name"
-                gameVersions.addAll project.minecraft_version
-            }
+    var CURSE_API_KEY = project.findProperty("CURSE_API_KEY") ?: System.getenv("CURSE_API_KEY")
+    if (CURSE_API_KEY != null) {
+        curseforge {
+            accessToken = CURSE_API_KEY
+            projectId = rootProject.curseforge_id
+            minecraftVersions.add(rootProject.minecraft_version)
+            javaVersions.add(JavaVersion.VERSION_25)
+            client = true
+            server = true
+            requires("fabric-api")
+        }
+    }
+
+    var MODRINTH_TOKEN = project.findProperty("MODRINTH_TOKEN") ?: System.getenv("MODRINTH_TOKEN")
+    if (MODRINTH_TOKEN != null) {
+        modrinth {
+            accessToken = MODRINTH_TOKEN
+            projectId = rootProject.modrinth_id
+            version = "$project.version+$project.name"
+            minecraftVersions.add(rootProject.minecraft_version)
+            requires("fabric-api")
         }
     }
 }
