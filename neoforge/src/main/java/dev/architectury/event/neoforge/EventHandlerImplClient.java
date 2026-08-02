@@ -143,11 +143,6 @@ public class EventHandlerImplClient {
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void eventContainerScreenEvent(ContainerScreenEvent.Render.Foreground event) {
-        ClientGuiEvent.RENDER_CONTAINER_FOREGROUND.invoker().render(event.getContainerScreen(), event.getGuiGraphics(), event.getMouseX(), event.getMouseY(), Minecraft.getInstance().getDeltaTracker().getRealtimeDeltaTicks());
-    }
-    
-    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventPlayerInteractEvent(PlayerInteractEvent.RightClickEmpty event) {
         InteractionEvent.CLIENT_RIGHT_CLICK_AIR.invoker().click(event.getEntity(), event.getHand());
     }
