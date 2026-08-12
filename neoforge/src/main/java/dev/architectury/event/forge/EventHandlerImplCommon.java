@@ -292,7 +292,7 @@ public class EventHandlerImplCommon {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(ItemEntityPickupEvent.Post event) {
-        PlayerEvent.PICKUP_ITEM_POST.invoker().pickup(event.getPlayer(), event.getItemEntity(), event.getCurrentStack());
+        PlayerEvent.PICKUP_ITEM_POST.invoker().pickup(event.getPlayer(), event.getItemEntity(), event.getOriginalStack());
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
