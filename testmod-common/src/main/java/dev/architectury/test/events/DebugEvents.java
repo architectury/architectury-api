@@ -19,6 +19,7 @@
 
 package dev.architectury.test.events;
 
+import dev.architectury.event.CompoundEventResult;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.*;
 import dev.architectury.platform.Platform;
@@ -153,6 +154,52 @@ public class DebugEvents {
             TestMod.SINK.accept("%s trampled farmland (%s) at %s in %s (Fall height: %f blocks)", entity, state, pos, level, distance);
             return InteractionResult.PASS;
         });
+        InteractionEvent.USE_ITEM_ON_BLOCK.register((level, player, hand, stack, state, hitResult) -> {
+            TestMod.SINK.accept(player.getScoreboardName() + " uses " + stack.getItem() + " on block " + toShortString(hitResult.getBlockPos()) + logSide(level));
+            return InteractionResult.PASS;
+        });
+        InteractionEvent.USE_BLOCK_WITHOUT_ITEM.register((level, player, state, hitResult) -> {
+            TestMod.SINK.accept(player.getScoreboardName() + " uses block " + toShortString(hitResult.getBlockPos()) + " without an item" + logSide(level));
+            return InteractionResult.PASS;
+        });
+        InteractionEvent.USE_ITEM_ON.register(context -> {
+            TestMod.SINK.accept(context.getItemInHand().getItem() + " is used on " + toShortString(context.getClickedPos()) + logSide(context.getLevel()));
+            return InteractionResult.PASS;
+        });
+        InteractionEvent.USE_ITEM.register((level, player, hand) -> {
+            TestMod.SINK.accept(player.getScoreboardName() + " uses item " + player.getItemInHand(hand).getItem() + logSide(level));
+            return InteractionResult.PASS;
+        });
+        InteractionEvent.PICK_ITEM_FROM_BLOCK.register((player, pos, state, includeData) -> {
+            TestMod.SINK.accept(player.getScoreboardName() + " picks item from block " + toShortString(pos) + " (data: " + includeData + ")");
+            return CompoundEventResult.pass();
+        });
+        InteractionEvent.PICK_ITEM_FROM_ENTITY.register((player, entity, includeData) -> {
+            TestMod.SINK.accept(player.getScoreboardName() + " picks item from " + entity.getScoreboardName() + " (data: " + includeData + ")");
+            return CompoundEventResult.pass();
+        });
+        PlayerEvent.BREAK_SPEED.register((player, state, pos, speed) -> {
+            // Diamond boots double your mining speed, because why not.
+            if (player.getItemBySlot(EquipmentSlot.FEET).getItem() == Items.DIAMOND_BOOTS) {
+                speed.accept(speed.getAsFloat() * 2.0F);
+            }
+            return EventResult.pass();
+        });
+        EntityEvent.LIVING_FALL.register((entity, distance, damageMultiplier) -> {
+            TestMod.SINK.accept("%s fell %.2f blocks (multiplier %.2f)", entity, distance.getAsDouble(), damageMultiplier.getAsFloat());
+            return EventResult.pass();
+        });
+        EntityEvent.MOUNT.register((entity, vehicle, mounting) -> {
+            TestMod.SINK.accept(entity + (mounting ? " mounts " : " dismounts ") + vehicle + logSide(entity.level()));
+            return EventResult.pass();
+        });
+        BlockEvent.PISTON_PRE.register((level, pos, direction, extending) -> {
+            TestMod.SINK.accept("Piston at %s is about to %s facing %s%s", toShortString(pos), extending ? "extend" : "retract", direction, logSide(level));
+            return EventResult.pass();
+        });
+        BlockEvent.PISTON_POST.register((level, pos, direction, extending) -> {
+            TestMod.SINK.accept("Piston at %s %s facing %s%s", toShortString(pos), extending ? "extended" : "retracted", direction, logSide(level));
+        });
         LifecycleEvent.SERVER_BEFORE_START.register(instance -> {
             TestMod.SINK.accept("Server ready to start");
         });
@@ -228,6 +275,65 @@ public class DebugEvents {
         });
         ChunkEvent.SAVE_DATA.register((chunk, level, data) -> {
 //            TestMod.SINK.accept("Chunk saved at x=" + chunk.getPos().x + ", z=" + chunk.getPos().z + " in dimension '" + level.dimension().location() + "'");
+        });
+        EntityEvent.REMOVE.register((entity, level) -> {
+            if (entity instanceof Player) {
+                TestMod.SINK.accept(entity.getScoreboardName() + " was removed from " + level.dimension().identifier().toString() + logSide(level));
+            }
+        });
+        EntityEvent.EQUIPMENT_CHANGE.register((entity, slot, previousStack, currentStack) -> {
+            if (entity instanceof Player) {
+                TestMod.SINK.accept("%s changed %s: %s => %s", entity.getScoreboardName(), slot.getName(), previousStack, currentStack);
+            }
+        });
+        EntityEvent.START_TRACKING.register((entity, player) -> {
+            if (entity instanceof Player) {
+                TestMod.SINK.accept(player.getScoreboardName() + " started tracking " + entity.getScoreboardName());
+            }
+        });
+        EntityEvent.STOP_TRACKING.register((entity, player) -> {
+            if (entity instanceof Player) {
+                TestMod.SINK.accept(player.getScoreboardName() + " stopped tracking " + entity.getScoreboardName());
+            }
+        });
+        EntityEvent.LIVING_DAMAGE_POST.register((entity, source, originalDamage, appliedDamage, blocked) -> {
+            if (entity instanceof Player) {
+                TestMod.SINK.accept("%s took %.2f of %.2f damage from %s (blocked: %s)",
+                        entity.getScoreboardName(), appliedDamage, originalDamage, source.getMsgId(), blocked);
+            }
+        });
+        MobEffectEvent.ALLOW_ADD.register((entity, effect) -> {
+            if (entity instanceof Player) {
+                TestMod.SINK.accept(entity.getScoreboardName() + " is gaining effect " + effect.getEffect().getRegisteredName());
+            }
+            return EventResult.pass();
+        });
+        MobEffectEvent.AFTER_ADD.register((entity, effect) -> {
+            if (entity instanceof Player) {
+                TestMod.SINK.accept(entity.getScoreboardName() + " gained effect " + effect.getEffect().getRegisteredName());
+            }
+        });
+        MobEffectEvent.ALLOW_REMOVE.register((entity, effect) -> {
+            if (entity instanceof Player) {
+                TestMod.SINK.accept(entity.getScoreboardName() + " is losing effect " + effect.getEffect().getRegisteredName());
+            }
+            return EventResult.pass();
+        });
+        ChunkEvent.LOAD.register((chunk, level, newChunk) -> {
+//            TestMod.SINK.accept("Chunk loaded at x=" + chunk.getPos().x + ", z=" + chunk.getPos().z + " (new: " + newChunk + ")" + logSide(level));
+        });
+        ChunkEvent.UNLOAD.register((chunk, level) -> {
+//            TestMod.SINK.accept("Chunk unloaded at x=" + chunk.getPos().x + ", z=" + chunk.getPos().z + logSide(level));
+        });
+        LifecycleEvent.TAGS_UPDATED.register((registries, client) -> {
+            TestMod.SINK.accept("Tags updated (client: " + client + ")");
+        });
+        LifecycleEvent.DATAPACK_SYNC.register((player, joined) -> {
+            TestMod.SINK.accept("Datapack contents synced to " + player.getScoreboardName() + " (joined: " + joined + ")");
+        });
+        LootEvent.REPLACE_LOOT_TABLE.register((registries, key, original) -> {
+//            TestMod.SINK.accept("Loot table loading: " + key.identifier());
+            return CompoundEventResult.pass();
         });
     }
     

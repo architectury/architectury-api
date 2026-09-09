@@ -22,7 +22,9 @@ package dev.architectury.event.events.common;
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
 import dev.architectury.event.EventResult;
+import dev.architectury.utils.value.FloatValue;
 import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -34,6 +36,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.Nullable;
@@ -99,6 +102,11 @@ public interface PlayerEvent {
      * @see AttackEntity#attack(Player, Level, Entity, InteractionHand, EntityHitResult)
      */
     Event<AttackEntity> ATTACK_ENTITY = EventFactory.createEventResult();
+    
+    /**
+     * @see BreakSpeed#breakSpeed(Player, BlockState, BlockPos, FloatValue)
+     */
+    Event<BreakSpeed> BREAK_SPEED = EventFactory.createEventResult();
     
     interface PlayerJoin {
         /**
@@ -284,5 +292,24 @@ public interface PlayerEvent {
          * the attack may be cancelled by the result.
          */
         EventResult attack(Player player, Level level, Entity target, InteractionHand hand, @Nullable EntityHitResult result);
+    }
+    
+    interface BreakSpeed {
+        /**
+         * Invoked when a player's block breaking speed is calculated, from
+         * {@link Player#getDestroySpeed(BlockState)}.
+         *
+         * <p>Equivalent to NeoForge's {@code PlayerEvent.BreakSpeed} event; Architectury supplies it with a mixin on
+         * Fabric.
+         *
+         * @param player The player breaking the block.
+         * @param state  The state of the block being broken.
+         * @param pos    The position of the block, or {@code null} when the caller did not supply one. Fabric never
+         *               supplies one, as vanilla does not pass the position down to this calculation.
+         * @param speed  The destroy speed, pre-filled with the vanilla value and free to be changed.
+         * @return A {@link EventResult} determining the outcome of the event. An interrupted false result stops the
+         * player from breaking the block at all, matching a cancelled NeoForge event.
+         */
+        EventResult breakSpeed(Player player, BlockState state, @Nullable BlockPos pos, FloatValue speed);
     }
 }

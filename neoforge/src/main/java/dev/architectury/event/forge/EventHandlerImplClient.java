@@ -101,8 +101,19 @@ public class EventHandlerImplClient {
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void event(ClientChatReceivedEvent event) {
+    public static void event(ClientChatReceivedEvent.Player event) {
         CompoundEventResult<Component> process = ClientChatEvent.RECEIVED.invoker().process(event.getBoundChatType(), event.getMessage());
+        if (process.isPresent()) {
+            if (process.isFalse())
+                event.setCanceled(true);
+            else if (process.object() != null)
+                event.setMessage(process.object());
+        }
+    }
+    
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(ClientChatReceivedEvent.System event) {
+        CompoundEventResult<Component> process = ClientSystemMessageEvent.RECEIVED.invoker().process(event.getMessage());
         if (process.isPresent()) {
             if (process.isFalse())
                 event.setCanceled(true);
@@ -140,6 +151,16 @@ public class EventHandlerImplClient {
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventDrawScreenEvent(ScreenEvent.Render.Post event) {
         ClientGuiEvent.RENDER_POST.invoker().render(event.getScreen(), event.getGuiGraphics(), event.getMouseX(), event.getMouseY(), event.getPartialTick());
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void eventDrawScreenEvent(ScreenEvent.Render.Background event) {
+        ClientGuiEvent.RENDER_BACKGROUND.invoker().render(event.getScreen(), event.getGuiGraphics(), event.getMouseX(), event.getMouseY(), event.getPartialTick());
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(ScreenEvent.Closing event) {
+        ClientGuiEvent.SCREEN_CLOSING.invoker().closing(event.getScreen());
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
@@ -225,7 +246,7 @@ public class EventHandlerImplClient {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventMouseReleasedEvent(ScreenEvent.MouseButtonReleased.Post event) {
-        ClientScreenInputEvent.MOUSE_RELEASED_PRE.invoker().mouseReleased(Minecraft.getInstance(), event.getScreen(), event.getMouseButtonEvent());
+        ClientScreenInputEvent.MOUSE_RELEASED_POST.invoker().mouseReleased(Minecraft.getInstance(), event.getScreen(), event.getMouseButtonEvent());
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
@@ -292,6 +313,41 @@ public class EventHandlerImplClient {
     public static void event(RegisterClientCommandsEvent event) {
         ClientCommandRegistrationEvent.EVENT.invoker().register((CommandDispatcher<ClientCommandRegistrationEvent.ClientCommandSourceStack>)
                 (CommandDispatcher<?>) event.getDispatcher(), event.getBuildContext());
+    }
+    
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(ExtractLevelRenderStateEvent event) {
+        ClientLevelRenderEvent.END_EXTRACTION.invoker().extract(new LevelExtractionContextImpl(event));
+    }
+    
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(RenderLevelStageEvent.AfterOpaqueBlocks event) {
+        ClientLevelRenderEvent.AFTER_OPAQUE_BLOCKS.invoker().render(new LevelStageContextImpl(event));
+    }
+    
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(SubmitCustomGeometryEvent event) {
+        ClientLevelRenderEvent.COLLECT_SUBMITS.invoker().collectSubmits(new LevelSubmitContextImpl(event));
+    }
+    
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(RenderLevelStageEvent.AfterOpaqueFeatures event) {
+        ClientLevelRenderEvent.AFTER_OPAQUE_FEATURES.invoker().render(new LevelStageContextImpl(event));
+    }
+    
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(RenderLevelStageEvent.AfterTranslucentFeatures event) {
+        ClientLevelRenderEvent.AFTER_TRANSLUCENT_FEATURES.invoker().render(new LevelStageContextImpl(event));
+    }
+    
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(RenderLevelStageEvent.AfterTranslucentBlocks event) {
+        ClientLevelRenderEvent.AFTER_TRANSLUCENT_BLOCKS.invoker().render(new LevelStageContextImpl(event));
+    }
+    
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(RenderLevelStageEvent.AfterTranslucentParticles event) {
+        ClientLevelRenderEvent.AFTER_TRANSLUCENT_PARTICLES.invoker().render(new LevelStageContextImpl(event));
     }
     
     @EventBusSubscriber(modid = "architectury", value = Dist.CLIENT)

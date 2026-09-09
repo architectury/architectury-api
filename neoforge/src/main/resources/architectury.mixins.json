@@ -8,6 +8,7 @@
     "client.MixinClientPacketListener",
     "client.MixinCommandSourceStack",
     "client.MixinAbstractContainerScreen",
+    "client.KeyMappingAccessor",
     "MixinClientLevel",
     "MixinMinecraft"
   ],
@@ -16,8 +17,11 @@
     "neoforge.BucketItemAccessor",
     "neoforge.LiquidBlockAccessor",
     "neoforge.MixinChunkMap",
+    "MixinBlockStateBase",
     "MixinFallingBlockEntity",
-    "MixinLevelEvent"
+    "MixinItemStack",
+    "MixinLevelEvent",
+    "MixinServerGamePacketListenerImpl"
   ],
   "injectors": {
     "defaultRequire": 1

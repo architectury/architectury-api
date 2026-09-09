@@ -58,6 +58,13 @@ public class ClientDebugEvents {
             }
             return CompoundEventResult.pass();
         });
+        ClientSystemMessageEvent.RECEIVED.register(message -> {
+            TestMod.SINK.accept("Client system message received: " + message.getString());
+            if (message.getString().contains("stardew")) {
+                return CompoundEventResult.interruptTrue(message.copy().append(" + stardew valley is a great game!"));
+            }
+            return CompoundEventResult.pass();
+        });
         ClientLifecycleEvent.CLIENT_LEVEL_LOAD.register(world -> {
             TestMod.SINK.accept("Client world loaded: " + world.dimension().identifier().toString());
         });
@@ -85,12 +92,46 @@ public class ClientDebugEvents {
         InteractionEvent.CLIENT_RIGHT_CLICK_AIR.register((player, hand) -> {
             TestMod.SINK.accept(player.getScoreboardName() + " right clicks air" + logSide(player.level()));
         });
+        InteractionEvent.CLIENT_PRE_ATTACK.register((player, clickCount) -> {
+            if (clickCount != 0) {
+                TestMod.SINK.accept(player.getScoreboardName() + " pre-attack (%d clicks)", clickCount);
+            }
+            return EventResult.pass();
+        });
         ClientRecipeUpdateEvent.EVENT.register(recipeManager -> {
             TestMod.SINK.accept("Client recipes received");
         });
 //        ClientTextureStitchEvent.POST.register(atlas -> {
 //            TestMod.SINK.accept("Client texture stitched: " + atlas.location());
 //        });
+        ClientGuiEvent.SCREEN_CLOSING.register(screen -> {
+            TestMod.SINK.accept("Screen closing: " + screen.getClass().getSimpleName());
+        });
+        ClientGuiEvent.RENDER_BACKGROUND.register((screen, graphics, mouseX, mouseY, delta) -> {
+//            TestMod.SINK.accept("Screen background rendered: " + screen.getClass().getSimpleName());
+        });
+        // These fire every frame, so they only log when uncommented.
+        ClientLevelRenderEvent.END_EXTRACTION.register(context -> {
+//            TestMod.SINK.accept("Level render state extracted for " + context.level().dimension().identifier());
+        });
+        ClientLevelRenderEvent.AFTER_OPAQUE_BLOCKS.register(context -> {
+//            TestMod.SINK.accept("After opaque blocks");
+        });
+        ClientLevelRenderEvent.COLLECT_SUBMITS.register(context -> {
+//            TestMod.SINK.accept("Collecting submits into " + context.submitNodeCollector());
+        });
+        ClientLevelRenderEvent.AFTER_OPAQUE_FEATURES.register(context -> {
+//            TestMod.SINK.accept("After opaque features");
+        });
+        ClientLevelRenderEvent.AFTER_TRANSLUCENT_FEATURES.register(context -> {
+//            TestMod.SINK.accept("After translucent features");
+        });
+        ClientLevelRenderEvent.AFTER_TRANSLUCENT_BLOCKS.register(context -> {
+//            TestMod.SINK.accept("After translucent blocks");
+        });
+        ClientLevelRenderEvent.AFTER_TRANSLUCENT_PARTICLES.register(context -> {
+//            TestMod.SINK.accept("After translucent particles");
+        });
         ClientScreenInputEvent.MOUSE_SCROLLED_PRE.register((client, screen, mouseX, mouseY, amountX, amountY) -> {
             TestMod.SINK.accept("Screen Mouse scrolled: %.2f x-distance %.2f y-distance", amountX, amountY);
             return EventResult.pass();
@@ -103,12 +144,24 @@ public class ClientDebugEvents {
             TestMod.SINK.accept("Screen Mouse released: " + event.button());
             return EventResult.pass();
         });
+        ClientScreenInputEvent.MOUSE_RELEASED_POST.register((client, screen, event) -> {
+            TestMod.SINK.accept("Screen Mouse released (post): " + event.button());
+            return EventResult.pass();
+        });
         ClientScreenInputEvent.MOUSE_DRAGGED_PRE.register((client, screen, event, mouseX2, mouseY2) -> {
             TestMod.SINK.accept("Screen Mouse dragged: %d (%d,%d) by (%d,%d)", event.button(), (int) event.x(), (int) event.y(), (int) mouseX2, (int) mouseY2);
             return EventResult.pass();
         });
+        ClientScreenInputEvent.MOUSE_DRAGGED_POST.register((client, screen, event, mouseX2, mouseY2) -> {
+            TestMod.SINK.accept("Screen Mouse dragged (post): %d (%d,%d) by (%d,%d)", event.button(), (int) event.x(), (int) event.y(), (int) mouseX2, (int) mouseY2);
+            return EventResult.pass();
+        });
         ClientScreenInputEvent.CHAR_TYPED_PRE.register((client, screen, characterEvent) -> {
             TestMod.SINK.accept("Screen Char typed: " + characterEvent.codepointAsString());
+            return EventResult.pass();
+        });
+        ClientScreenInputEvent.CHAR_TYPED_POST.register((client, screen, characterEvent) -> {
+            TestMod.SINK.accept("Screen Char typed (post): " + characterEvent.codepointAsString());
             return EventResult.pass();
         });
         ClientScreenInputEvent.KEY_PRESSED_PRE.register((client, screen, keyEvent) -> {
