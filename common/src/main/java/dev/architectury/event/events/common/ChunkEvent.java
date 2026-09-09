@@ -23,7 +23,9 @@ import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.storage.SerializableChunkData;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,7 +38,43 @@ public interface ChunkEvent {
      * @see LoadData#load(ChunkAccess, ServerLevel, SerializableChunkData)
      */
     Event<LoadData> LOAD_DATA = EventFactory.createLoop();
-    
+    /**
+     * @see Load#load(LevelChunk, Level, boolean)
+     */
+    Event<Load> LOAD = EventFactory.createLoop();
+    /**
+     * @see Unload#unload(LevelChunk, Level)
+     */
+    Event<Unload> UNLOAD = EventFactory.createLoop();
+
+    interface Load {
+        /**
+         * Invoked when a chunk is loaded into a level, after the chunk is already in the level.
+         * Equivalent to NeoForge's {@code ChunkEvent.Load} event.
+         *
+         * <p>Fires on both the client and the server.
+         *
+         * @param chunk    The chunk that was loaded.
+         * @param level    The level the chunk was loaded into.
+         * @param newChunk Whether the chunk was newly generated rather than read from disk.
+         *                 Always {@code false} on the client.
+         */
+        void load(LevelChunk chunk, Level level, boolean newChunk);
+    }
+
+    interface Unload {
+        /**
+         * Invoked when a chunk is unloaded from a level, while the chunk is still present in the level.
+         * Equivalent to NeoForge's {@code ChunkEvent.Unload} event.
+         *
+         * <p>Fires on both the client and the server.
+         *
+         * @param chunk The chunk that is being unloaded.
+         * @param level The level the chunk is unloaded from.
+         */
+        void unload(LevelChunk chunk, Level level);
+    }
+
     interface SaveData {
         /**
          * Invoked when a chunk's data is saved, just before the data is written.

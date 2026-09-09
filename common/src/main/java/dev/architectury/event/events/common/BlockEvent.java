@@ -23,6 +23,7 @@ import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
 import dev.architectury.event.EventResult;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.FallingBlockEntity;
@@ -43,7 +44,16 @@ public interface BlockEvent {
      * @see FallingLand#onLand(Level, BlockPos, BlockState, BlockState, FallingBlockEntity)
      */
     Event<FallingLand> FALLING_LAND = EventFactory.createLoop();
-    
+
+    /**
+     * @see PistonPre#piston(Level, BlockPos, Direction, boolean)
+     */
+    Event<PistonPre> PISTON_PRE = EventFactory.createEventResult();
+    /**
+     * @see PistonPost#piston(Level, BlockPos, Direction, boolean)
+     */
+    Event<PistonPost> PISTON_POST = EventFactory.createLoop();
+
     interface Break {
         /**
          * Invoked when a block is destroyed by a player.
@@ -83,5 +93,37 @@ public interface BlockEvent {
          * @param entity    The falling block entity.
          */
         void onLand(Level level, BlockPos pos, BlockState fallState, BlockState landOn, FallingBlockEntity entity);
+    }
+
+    interface PistonPre {
+        /**
+         * Invoked when a piston is about to extend or retract, after vanilla has decided the move should happen but
+         * before any blocks are moved. Fires on both the logical client and the logical server.
+         *
+         * <p>Equivalent to NeoForge's {@code PistonEvent.Pre}; Architectury supplies it with a mixin on Fabric.
+         *
+         * @param level     The level the piston is in.
+         * @param pos       The position of the piston base.
+         * @param direction The direction the piston faces.
+         * @param extending {@code true} when extending, {@code false} when retracting.
+         * @return A {@link EventResult} determining the outcome of the event. An interrupted false result stops the
+         * piston from moving.
+         */
+        EventResult piston(Level level, BlockPos pos, Direction direction, boolean extending);
+    }
+
+    interface PistonPost {
+        /**
+         * Invoked after a piston has successfully extended or retracted. Does not fire when the move was refused, by
+         * vanilla or by {@link #PISTON_PRE}.
+         *
+         * <p>Equivalent to NeoForge's {@code PistonEvent.Post}; Architectury supplies it with a mixin on Fabric.
+         *
+         * @param level     The level the piston is in.
+         * @param pos       The position of the piston base.
+         * @param direction The direction the piston faces.
+         * @param extending {@code true} when extending, {@code false} when retracting.
+         */
+        void piston(Level level, BlockPos pos, Direction direction, boolean extending);
     }
 }

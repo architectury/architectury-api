@@ -115,7 +115,7 @@ public class MixinMouseHandler {
     
     @WrapOperation(method = "handleAccumulatedMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;mouseDragged(Lnet/minecraft/client/input/MouseButtonEvent;DD)Z"))
     private boolean wrapMouseDragged(Screen screen, MouseButtonEvent event, double deltaX, double deltaY, Operation<Boolean> original) {
-        var result = ClientScreenInputEvent.MOUSE_DRAGGED_POST.invoker().mouseDragged(minecraft, screen, event, deltaX, deltaY);
+        var result = ClientScreenInputEvent.MOUSE_DRAGGED_PRE.invoker().mouseDragged(minecraft, screen, event, deltaX, deltaY);
         if (result.isPresent()) {
             return true;
         }

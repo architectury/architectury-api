@@ -11,7 +11,7 @@ authors = "shedaniel"
 description = '''
 An intermediary api aimed to ease developing multiplatform mods.
 '''
-logoFile = "icon.png"
+iconFile = "icon.png"
 license = "LGPL-3"
 
 [[dependencies.architectury]]
@@ -24,7 +24,7 @@ side = "BOTH"
 [[dependencies.architectury]]
 modId = "neoforge"
 type = "required"
-versionRange = "[26.2.0.40-beta,)"
+versionRange = "[26.2.0.82,)"
 ordering = "NONE"
 side = "BOTH"
 

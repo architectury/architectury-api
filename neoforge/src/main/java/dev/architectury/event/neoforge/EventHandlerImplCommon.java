@@ -19,9 +19,13 @@
 
 package dev.architectury.event.neoforge;
 
+import com.mojang.datafixers.util.Either;
+import dev.architectury.event.CompoundEventResult;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.*;
 import dev.architectury.event.events.common.PlayerEvent;
+import dev.architectury.utils.value.DoubleValue;
+import dev.architectury.utils.value.FloatValue;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -29,38 +33,56 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.TriState;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.minecart.MinecartSpawner;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
+import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.phys.EntityHitResult;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.event.CommandEvent;
 import net.neoforged.neoforge.event.LootTableLoadEvent;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.ServerChatEvent;
+import net.neoforged.neoforge.event.TagsUpdatedEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
+import net.neoforged.neoforge.event.entity.EntityMountEvent;
 import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
 import net.neoforged.neoforge.event.entity.living.AnimalTameEvent;
 import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.neoforged.neoforge.event.entity.living.LivingEquipmentChangeEvent;
+import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
 import net.neoforged.neoforge.event.entity.player.*;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.*;
 import net.neoforged.neoforge.event.level.BlockEvent.EntityPlaceEvent;
 import net.neoforged.neoforge.event.level.BlockEvent.FarmlandTrampleEvent;
 import net.neoforged.neoforge.event.level.ChunkDataEvent;
+import net.neoforged.neoforge.event.level.ChunkEvent;
 import net.neoforged.neoforge.event.level.ExplosionEvent.Detonate;
 import net.neoforged.neoforge.event.level.ExplosionEvent.Start;
 import net.neoforged.neoforge.event.level.LevelEvent;
+import net.neoforged.neoforge.event.level.PistonEvent;
 import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 import net.neoforged.neoforge.event.server.*;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.Nullable;
 
 public class EventHandlerImplCommon {
     @SubscribeEvent(priority = EventPriority.HIGH)
@@ -242,6 +264,87 @@ public class EventHandlerImplCommon {
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(EntityLeaveLevelEvent event) {
+        EntityEvent.REMOVE.invoker().remove(event.getEntity(), event.getLevel());
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(LivingEquipmentChangeEvent event) {
+        EntityEvent.EQUIPMENT_CHANGE.invoker().change(event.getEntity(), event.getSlot(), event.getFrom(), event.getTo());
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(StartTracking event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            EntityEvent.START_TRACKING.invoker().startTracking(event.getTarget(), player);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(StopTracking event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            EntityEvent.STOP_TRACKING.invoker().stopTracking(event.getTarget(), player);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(LivingDamageEvent.Post event) {
+        EntityEvent.LIVING_DAMAGE_POST.invoker().damage(event.getEntity(), event.getSource(),
+                event.getOriginalDamage(), event.getHealthDamage(), event.getBlockedDamage() > 0.0F);
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(MobEffectEvent.Applicable event) {
+        EventResult result = dev.architectury.event.events.common.MobEffectEvent.ALLOW_ADD.invoker()
+                .allowAdd(event.getEntity(), event.getEffectInstance());
+        if (result.isFalse()) {
+            event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(MobEffectEvent.Added event) {
+        dev.architectury.event.events.common.MobEffectEvent.AFTER_ADD.invoker()
+                .afterAdd(event.getEntity(), event.getEffectInstance());
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(MobEffectEvent.Remove event) {
+        MobEffectInstance effect = event.getEffectInstance();
+        if (effect == null) return;
+        EventResult result = dev.architectury.event.events.common.MobEffectEvent.ALLOW_REMOVE.invoker()
+                .allowRemove(event.getEntity(), effect);
+        if (result.isFalse()) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(ChunkEvent.Load event) {
+        if (event.getLevel() instanceof Level level) {
+            dev.architectury.event.events.common.ChunkEvent.LOAD.invoker().load(event.getChunk(), level, event.isNewChunk());
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(ChunkEvent.Unload event) {
+        if (event.getLevel() instanceof Level level) {
+            dev.architectury.event.events.common.ChunkEvent.UNLOAD.invoker().unload(event.getChunk(), level);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(TagsUpdatedEvent event) {
+        LifecycleEvent.TAGS_UPDATED.invoker().tagsUpdated(event.getRegistries(), event instanceof TagsUpdatedEvent.ClientPacketReceived);
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(OnDatapackSyncEvent event) {
+        boolean joined = event.getPlayer() != null;
+        event.getRelevantPlayers().forEach(player -> LifecycleEvent.DATAPACK_SYNC.invoker().sync(player, joined));
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(FarmlandTrampleEvent event) {
         if (event.getLevel() instanceof Level && InteractionEvent.FARMLAND_TRAMPLE.invoker().trample((Level) event.getLevel(), event.getPos(), event.getState(), event.getFallDistance(), event.getEntity()).interruptsFurtherEvaluation()) {
             event.setCanceled(true);
@@ -255,19 +358,25 @@ public class EventHandlerImplCommon {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventLivingSpawnEvent(FinalizeSpawnEvent event) {
-        // NeoForge exposes the spawn source as Either<BlockEntity, Entity>; the common API's BaseSpawner
-        // param only models a classic mob spawner, so extract it when present (null otherwise, as before).
-        BaseSpawner spawner = null;
-        var spawnerSource = event.getSpawner();
-        if (spawnerSource != null && spawnerSource.left().orElse(null) instanceof SpawnerBlockEntity blockEntity) {
-            spawner = blockEntity.getSpawner();
-        }
-        EventResult result = EntityEvent.LIVING_CHECK_SPAWN.invoker().canSpawn(event.getEntity(), event.getLevel(), event.getX(), event.getY(), event.getZ(), event.getSpawnType(), spawner);
+        EventResult result = EntityEvent.LIVING_CHECK_SPAWN.invoker().canSpawn(event.getEntity(), event.getLevel(), event.getX(), event.getY(), event.getZ(), event.getSpawnType(), unwrapSpawner(event.getSpawner()));
         if (result.interruptsFurtherEvaluation()) {
             if (!result.isEmpty()) {
                 event.setSpawnCancelled(result.value());
             }
         }
+    }
+    
+    /**
+     * NeoForge exposes the spawn source as {@code Either<BlockEntity, Entity>}; the common API's {@link BaseSpawner}
+     * parameter only models a classic mob spawner, so extract it from either side when present.
+     */
+    @Nullable
+    private static BaseSpawner unwrapSpawner(@Nullable Either<BlockEntity, Entity> spawner) {
+        if (spawner == null) return null;
+        return spawner.map(
+                blockEntity -> blockEntity instanceof SpawnerBlockEntity spawnerBlockEntity ? spawnerBlockEntity.getSpawner() : null,
+                entity -> entity instanceof MinecartSpawner minecartSpawner ? minecartSpawner.getSpawner() : null
+        );
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
@@ -305,7 +414,9 @@ public class EventHandlerImplCommon {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(ItemTossEvent event) {
-        PlayerEvent.DROP_ITEM.invoker().drop(event.getPlayer(), event.getEntity());
+        if (PlayerEvent.DROP_ITEM.invoker().drop(event.getPlayer(), event.getEntity()).isFalse()) {
+            event.setCanceled(true);
+        }
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
@@ -360,6 +471,98 @@ public class EventHandlerImplCommon {
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(BreakSpeed event) {
+        EventResult result = PlayerEvent.BREAK_SPEED.invoker().breakSpeed(event.getEntity(), event.getState(),
+                event.getPosition().orElse(null), new FloatValue() {
+                    @Override
+                    public float getAsFloat() {
+                        return event.getNewSpeed();
+                    }
+
+                    @Override
+                    public void accept(float value) {
+                        event.setNewSpeed(value);
+                    }
+                });
+        if (result.isFalse()) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(LivingFallEvent event) {
+        EventResult result = EntityEvent.LIVING_FALL.invoker().fall(event.getEntity(), new DoubleValue() {
+            @Override
+            public double getAsDouble() {
+                return event.getDistance();
+            }
+
+            @Override
+            public void accept(double value) {
+                event.setDistance(value);
+            }
+        }, new FloatValue() {
+            @Override
+            public float getAsFloat() {
+                return event.getDamageMultiplier();
+            }
+
+            @Override
+            public void accept(float value) {
+                event.setDamageMultiplier(value);
+            }
+        });
+        if (result.isFalse()) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(EntityMountEvent event) {
+        EventResult result = EntityEvent.MOUNT.invoker().mount(event.getEntityMounting(), event.getEntityBeingMounted(), event.isMounting());
+        if (result.isFalse()) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(PistonEvent.Pre event) {
+        EventResult result = BlockEvent.PISTON_PRE.invoker().piston((Level) event.getLevel(), event.getPos(),
+                event.getDirection(), event.getPistonMoveType() == PistonEvent.PistonMoveType.EXTEND);
+        if (result.isFalse()) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(PistonEvent.Post event) {
+        BlockEvent.PISTON_POST.invoker().piston((Level) event.getLevel(), event.getPos(),
+                event.getDirection(), event.getPistonMoveType() == PistonEvent.PistonMoveType.EXTEND);
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void event(UseItemOnBlockEvent event) {
+        UseOnContext context = event.getUseOnContext();
+        EventResult result;
+        switch (event.getUsePhase()) {
+            case BLOCK -> {
+                Player player = context.getPlayer();
+                // The block phase is only reached from BlockStateBase#useItemOn, which always has a player.
+                if (player == null) return;
+                result = InteractionEvent.USE_ITEM_ON_BLOCK.invoker().useItemOn(context.getLevel(), player, context.getHand(),
+                        context.getItemInHand(), context.getLevel().getBlockState(context.getClickedPos()), context.getHitResult());
+            }
+            case ITEM_AFTER_BLOCK -> result = InteractionEvent.USE_ITEM_ON.invoker().useOn(context);
+            default -> {
+                return;
+            }
+        }
+        if (result.interruptsFurtherEvaluation()) {
+            event.cancelWithResult(result.asMinecraft());
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(BreakBlockEvent event) {
         if (event.getPlayer() instanceof ServerPlayer && event.getLevel() instanceof Level) {
             EventResult result = BlockEvent.BREAK.invoker().breakBlock((Level) event.getLevel(), event.getPos(), event.getState(), (ServerPlayer) event.getPlayer());
@@ -394,7 +597,7 @@ public class EventHandlerImplCommon {
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void eventChunkDataEvent(ChunkDataEvent.Save event) {
         if (event.getLevel() instanceof ServerLevel) {
-            ChunkEvent.SAVE_DATA.invoker().save(event.getChunk(), (ServerLevel) event.getLevel(), event.getData());
+            dev.architectury.event.events.common.ChunkEvent.SAVE_DATA.invoker().save(event.getChunk(), (ServerLevel) event.getLevel(), event.getData());
         }
     }
     
@@ -404,12 +607,17 @@ public class EventHandlerImplCommon {
         if (!(level instanceof ServerLevel) && event instanceof LevelEventAttachment) {
             level = ((LevelEventAttachment) event).architectury$getAttachedLevel();
         }
-        ChunkEvent.LOAD_DATA.invoker().load(event.getChunk(), level instanceof ServerLevel ? (ServerLevel) level : null, event.getData());
+        dev.architectury.event.events.common.ChunkEvent.LOAD_DATA.invoker().load(event.getChunk(), level instanceof ServerLevel ? (ServerLevel) level : null, event.getData());
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void event(LootTableLoadEvent event) {
-        LootEvent.MODIFY_LOOT_TABLE.invoker().modifyLootTable(event.getRegistries(), ResourceKey.create(Registries.LOOT_TABLE, event.getName()), new LootTableModificationContextImpl(event.getTable()), true);
+        ResourceKey<LootTable> key = ResourceKey.create(Registries.LOOT_TABLE, event.getName());
+        CompoundEventResult<LootTable> replacement = LootEvent.REPLACE_LOOT_TABLE.invoker().replaceLootTable(event.getRegistries(), key, event.getTable());
+        if (replacement.isPresent() && replacement.object() != null) {
+            event.setTable(replacement.object());
+        }
+        LootEvent.MODIFY_LOOT_TABLE.invoker().modifyLootTable(event.getRegistries(), key, new LootTableModificationContextImpl(event.getTable()), true);
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)

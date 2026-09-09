@@ -22,12 +22,14 @@ package dev.architectury.mixin.fabric;
 import dev.architectury.event.events.common.InteractionEvent;
 import dev.architectury.event.events.common.PlayerEvent;
 import dev.architectury.event.events.common.TickEvent;
+import dev.architectury.utils.value.FloatValue;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -63,5 +65,22 @@ public class MixinPlayer {
         if (result.isPresent()) {
             cir.setReturnValue(result.asMinecraft());
         }
+    }
+
+    @Inject(method = "getDestroySpeed", at = @At("RETURN"), cancellable = true)
+    private void breakSpeed(BlockState blockState, CallbackInfoReturnable<Float> cir) {
+        float[] speed = {cir.getReturnValueF()};
+        var result = PlayerEvent.BREAK_SPEED.invoker().breakSpeed((Player) (Object) this, blockState, null, new FloatValue() {
+            @Override
+            public float getAsFloat() {
+                return speed[0];
+            }
+
+            @Override
+            public void accept(float value) {
+                speed[0] = value;
+            }
+        });
+        cir.setReturnValue(result.isFalse() ? -1.0F : speed[0]);
     }
 }
