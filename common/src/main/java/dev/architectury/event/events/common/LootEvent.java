@@ -19,6 +19,7 @@
 
 package dev.architectury.event.events.common;
 
+import dev.architectury.event.CompoundEventResult;
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
 import net.minecraft.core.HolderLookup;
@@ -42,8 +43,9 @@ public interface LootEvent {
      * Otherwise, it's from a user data pack. The parameter can be used to only modify built-in loot tables
      * and let user-provided loot tables act as full "overwrites".
      *
-     * <p>This event only runs for built-in loot tables on Forge due to the limitations of
-     * {@code LootTableLoadEvent}.
+     * <p>On NeoForge, {@code builtin} is always {@code true}: the event runs for every loot table,
+     * but {@code LootTableLoadEvent} does not expose where the table came from, so data pack tables
+     * cannot be told apart from built-in ones. Only Fabric reports the real value.
      *
      * <h2>Example: adding diamonds as a drop for dirt</h2>
      * <pre>{@code
@@ -60,7 +62,35 @@ public interface LootEvent {
      * @see ModifyLootTable#modifyLootTable(HolderLookup.Provider, ResourceKey, LootTableModificationContext, boolean)
      */
     Event<ModifyLootTable> MODIFY_LOOT_TABLE = EventFactory.createLoop();
-    
+
+    /**
+     * An event to replace loot tables outright as they are loaded.
+     *
+     * <p>Unlike {@link #MODIFY_LOOT_TABLE}, which appends pools to the existing table, this event
+     * swaps the whole table for a different one. Interrupt the result with the replacement table to
+     * take effect; the first listener to interrupt wins and later listeners still see the original.
+     *
+     * <p>Equivalent to NeoForge's {@code LootTableLoadEvent#setTable} and
+     * Fabric's {@code LootTableEvents#REPLACE}.
+     *
+     * @see ReplaceLootTable#replaceLootTable(HolderLookup.Provider, ResourceKey, LootTable)
+     */
+    Event<ReplaceLootTable> REPLACE_LOOT_TABLE = EventFactory.createCompoundEventResult();
+
+    @FunctionalInterface
+    interface ReplaceLootTable {
+        /**
+         * Replaces a loot table.
+         *
+         * @param registries the registries provider
+         * @param key        the loot table key
+         * @param original   the loot table that would otherwise be used
+         * @return a {@link CompoundEventResult} carrying the replacement table,
+         * or {@link CompoundEventResult#pass()} to leave the table alone
+         */
+        CompoundEventResult<LootTable> replaceLootTable(HolderLookup.Provider registries, ResourceKey<LootTable> key, LootTable original);
+    }
+
     @FunctionalInterface
     interface ModifyLootTable {
         /**

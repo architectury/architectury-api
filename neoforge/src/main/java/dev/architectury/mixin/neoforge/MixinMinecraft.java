@@ -19,23 +19,69 @@
 
 package dev.architectury.mixin.neoforge;
 
-import dev.architectury.event.events.client.ClientLifecycleEvent;
+import dev.architectury.event.events.common.InteractionEvent;
+import dev.architectury.mixin.neoforge.client.KeyMappingAccessor;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.Options;
+import net.minecraft.client.multiplayer.MultiPlayerGameMode;
+import net.minecraft.client.player.LocalPlayer;
+import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-// adopted from fabric
+/**
+ * Only the pre-attack hook lives here. Client start/stop are fired from NeoForge's own
+ * {@code ClientStartedEvent}/{@code ClientStoppingEvent} in {@code EventHandlerImplClient} instead.
+ */
 @Mixin(Minecraft.class)
 public abstract class MixinMinecraft {
-    @Inject(at = @At(value = "INVOKE", target = "Ljava/lang/Runtime;getRuntime()Ljava/lang/Runtime;", ordinal = 0), method = "run")
-    private void onStart(CallbackInfo ci) {
-        ClientLifecycleEvent.CLIENT_STARTED.invoker().stateChanged((Minecraft) (Object) this);
+    @Shadow
+    @Final
+    public Options options;
+    
+    @Shadow
+    @Nullable
+    public LocalPlayer player;
+    
+    @Shadow
+    @Nullable
+    public MultiPlayerGameMode gameMode;
+    
+    @Unique
+    private boolean architectury$attackCancelled;
+    
+    /**
+     * Fabric exposes this natively as {@code ClientPreAttackCallback}; NeoForge has no equivalent, so the same three
+     * injection points Fabric uses are replicated here.
+     */
+    @Inject(method = "handleKeybinds", at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/client/player/LocalPlayer;isUsingItem()Z", ordinal = 0))
+    private void preAttack(CallbackInfo ci) {
+        int clickCount = ((KeyMappingAccessor) options.keyAttack).architectury$getClickCount();
+        architectury$attackCancelled = (options.keyAttack.isDown() || clickCount != 0)
+                && InteractionEvent.CLIENT_PRE_ATTACK.invoker().preAttack(player, clickCount).isFalse();
     }
     
-    @Inject(at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;info(Ljava/lang/String;)V", shift = At.Shift.AFTER, remap = false), method = "exitWorldAndClose")
-    private void onStopping(CallbackInfo ci) {
-        ClientLifecycleEvent.CLIENT_STOPPING.invoker().stateChanged((Minecraft) (Object) this);
+    @Inject(method = "startAttack", at = @At("HEAD"), cancellable = true)
+    private void cancelStartAttack(CallbackInfoReturnable<Boolean> cir) {
+        if (architectury$attackCancelled) {
+            cir.setReturnValue(false);
+        }
+    }
+    
+    @Inject(method = "continueAttack", at = @At("HEAD"), cancellable = true)
+    private void cancelContinueAttack(boolean breaking, CallbackInfo ci) {
+        if (architectury$attackCancelled) {
+            if (gameMode != null) {
+                gameMode.stopDestroyBlock();
+            }
+            ci.cancel();
+        }
     }
 }

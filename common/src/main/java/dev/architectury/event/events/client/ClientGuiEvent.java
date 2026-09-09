@@ -59,10 +59,47 @@ public interface ClientGuiEvent {
      */
     Event<ContainerScreenRenderForeground> RENDER_CONTAINER_FOREGROUND = EventFactory.createLoop();
     /**
+     * @see ScreenRenderBackground#render(Screen, GuiGraphicsExtractor, int, int, float)
+     */
+    Event<ScreenRenderBackground> RENDER_BACKGROUND = EventFactory.createLoop();
+    /**
      * @see SetScreen#modifyScreen(Screen)
      */
     Event<SetScreen> SET_SCREEN = EventFactory.createCompoundEventResult();
-    
+    /**
+     * @see ScreenClosing#closing(Screen)
+     */
+    Event<ScreenClosing> SCREEN_CLOSING = EventFactory.createLoop();
+
+    interface ScreenRenderBackground {
+        /**
+         * Invoked after a screen's background has been drawn and before its contents.
+         * Equivalent to NeoForge's {@code ScreenEvent.Render.Background} event and
+         * Fabric's {@code ScreenEvents#afterBackground}.
+         *
+         * <p>Unlike {@link ContainerScreenRenderBackground}, this fires for every screen,
+         * not just container screens.
+         *
+         * @param screen   The screen being rendered.
+         * @param graphics The graphics context.
+         * @param mouseX   The x-position of the mouse.
+         * @param mouseY   The y-position of the mouse.
+         * @param delta    The tick delta.
+         */
+        void render(Screen screen, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta);
+    }
+
+    interface ScreenClosing {
+        /**
+         * Invoked when a screen is being closed and removed.
+         * Equivalent to NeoForge's {@code ScreenEvent.Closing} event and
+         * Fabric's {@code ScreenEvents#remove}.
+         *
+         * @param screen The screen being closed.
+         */
+        void closing(Screen screen);
+    }
+
     interface RenderHud {
         /**
          * Invoked after the in-game hud has been rendered.

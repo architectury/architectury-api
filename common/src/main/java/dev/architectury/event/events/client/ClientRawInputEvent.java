@@ -51,6 +51,7 @@ public interface ClientRawInputEvent {
          * @param keyEvent The key event.
          * @return A {@link EventResult} determining the outcome of the event,
          * the execution of the vanilla pressing mechanism may be cancelled by the result.
+         * The result is ignored on NeoForge, as {@code InputEvent.Key} is not cancellable there.
          */
         EventResult keyPressed(Minecraft client, int action, KeyEvent keyEvent);
     }

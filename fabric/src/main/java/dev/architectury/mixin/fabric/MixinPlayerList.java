@@ -20,29 +20,21 @@
 package dev.architectury.mixin.fabric;
 
 import dev.architectury.event.events.common.PlayerEvent;
-import net.minecraft.network.Connection;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+/**
+ * Only respawn lives here. Join and quit come from Fabric's own {@code ServerPlayerEvents.JOIN}/{@code LEAVE};
+ * respawn stays a mixin because Fabric's {@code AFTER_RESPAWN} does not carry the {@link Entity.RemovalReason}
+ * that {@code PlayerEvent.PLAYER_RESPAWN} exposes.
+ */
 @Mixin(PlayerList.class)
 public class MixinPlayerList {
-    @Inject(method = "placeNewPlayer", at = @At("RETURN"))
-    private void placeNewPlayer(Connection connection, ServerPlayer serverPlayer, CommonListenerCookie commonListenerCookie, CallbackInfo ci) {
-        PlayerEvent.PLAYER_JOIN.invoker().join(serverPlayer);
-    }
-    
-    @Inject(method = "remove", at = @At("HEAD"))
-    private void remove(ServerPlayer serverPlayer, CallbackInfo ci) {
-        PlayerEvent.PLAYER_QUIT.invoker().quit(serverPlayer);
-    }
-    
     @Inject(method = "respawn", at = @At("RETURN"))
     private void respawn(ServerPlayer serverPlayer, boolean bl, Entity.RemovalReason removalReason, CallbackInfoReturnable<ServerPlayer> cir) {
         PlayerEvent.PLAYER_RESPAWN.invoker().respawn(cir.getReturnValue(), bl, removalReason);

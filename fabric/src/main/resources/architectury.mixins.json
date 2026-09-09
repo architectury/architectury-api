@@ -44,6 +44,7 @@
     "MixinPatrolSpawner",
     "MixinPersistentEntitySectionManager",
     "MixinPhantomSpawner",
+    "MixinPistonBaseBlock",
     "MixinPlayer",
     "MixinPlayerAdvancements",
     "MixinPlayerList",
