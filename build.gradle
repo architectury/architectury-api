@@ -48,6 +48,69 @@ allprojects {
         options.release = 25
     }
 
+    // architectury-transformer 5.2.91 (the newest published) bundles an ASM that only understands
+    // class files up to Java 26 (major 70). LWJGL 3.4.3, which MC 26.3 pulls in, is a multi-release
+    // jar carrying Java 27 classes under META-INF/versions/27, and tiny-remapper reads every class
+    // entry on the transformer classpath -- including versioned ones this JVM can never load -- so
+    // the dev runtime dies with "Unsupported class file major version 71".
+    // Hand the transformer copies of such jars with the unusable version trees stripped out. Only
+    // "architectury.classpath" is rewritten, and that is a remap-analysis classpath, so the game
+    // itself still runs against the untouched jars. Drop this once the transformer ships a newer ASM.
+    tasks.withType(JavaExec).configureEach {
+        def argPrefix = "-Darchitectury.properties="
+        def patchedDir = new File(rootProject.layout.buildDirectory.get().asFile, "transformer-classpath")
+
+        doFirst {
+            def propertiesArg = jvmArgs.find { it.toString().startsWith(argPrefix) }
+            if (propertiesArg == null) return
+
+            def propertiesFile = new File(propertiesArg.toString().substring(argPrefix.length()))
+            if (!propertiesFile.isFile()) return
+
+            def properties = new Properties()
+            propertiesFile.withInputStream { properties.load(it) }
+            def classpath = properties.getProperty("architectury.classpath")
+            if (classpath == null) return
+
+            def runtimeFeature = Integer.parseInt(JavaVersion.current().majorVersion)
+            def versioned = ~$/^META-INF/versions/(\d+)/.+/$
+            def unusable = { java.util.zip.ZipEntry entry ->
+                def matcher = versioned.matcher(entry.name)
+                matcher.matches() && Integer.parseInt(matcher.group(1)) > runtimeFeature
+            }
+
+            def patchedAny = false
+            def patchedClasspath = classpath.split(File.pathSeparator).collect { entry ->
+                def jar = new File(entry)
+                if (!jar.isFile() || !entry.toLowerCase().endsWith(".jar")) return entry
+                if (!new java.util.zip.ZipFile(jar).withCloseable { zip -> Collections.list(zip.entries()).any(unusable) }) return entry
+
+                patchedAny = true
+                def patched = new File(patchedDir, jar.name)
+                if (!patched.isFile() || patched.lastModified() < jar.lastModified()) {
+                    patchedDir.mkdirs()
+                    new java.util.zip.ZipFile(jar).withCloseable { zip ->
+                        new java.util.zip.ZipOutputStream(patched.newOutputStream()).withCloseable { out ->
+                            for (zipEntry in Collections.list(zip.entries())) {
+                                if (unusable(zipEntry)) continue
+                                out.putNextEntry(new java.util.zip.ZipEntry(zipEntry.name))
+                                if (!zipEntry.directory) zip.getInputStream(zipEntry).withCloseable { out << it }
+                                out.closeEntry()
+                            }
+                        }
+                    }
+                    logger.lifecycle("Stripped class files newer than Java $runtimeFeature out of $jar.name for the architectury transformer")
+                }
+                return patched.absolutePath
+            }.join(File.pathSeparator)
+
+            if (patchedAny) {
+                properties.setProperty("architectury.classpath", patchedClasspath)
+                propertiesFile.withOutputStream { properties.store(it, null) }
+            }
+        }
+    }
+
     javadoc {
         // common javadoc has references to platform code that cannot be resolved normally
         failOnError = false

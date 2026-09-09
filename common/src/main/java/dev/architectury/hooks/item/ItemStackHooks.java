@@ -23,6 +23,7 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.item.ItemStack;
 
 public final class ItemStackHooks {
@@ -39,7 +40,7 @@ public final class ItemStackHooks {
         var bl = player.getInventory().add(stack);
         if (bl && stack.isEmpty()) {
             stack.setCount(1);
-            var entity = player.drop(stack, false);
+            var entity = player.drop(stack, false, Prediction.SERVER_ONLY);
             if (entity != null) {
                 entity.makeFakeItem();
             }
@@ -47,7 +48,7 @@ public final class ItemStackHooks {
             player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, ((player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F);
             player.inventoryMenu.broadcastChanges();
         } else {
-            var entity = player.drop(stack, false);
+            var entity = player.drop(stack, false, Prediction.SERVER_ONLY);
             if (entity != null) {
                 entity.setNoPickUpDelay();
                 entity.setTarget(player.getUUID());

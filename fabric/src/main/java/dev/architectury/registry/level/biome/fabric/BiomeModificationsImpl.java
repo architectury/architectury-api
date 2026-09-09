@@ -39,7 +39,7 @@ import net.minecraft.world.level.biome.Biome.TemperatureModifier;
 import net.minecraft.world.level.biome.BiomeSpecialEffects.GrassColorModifier;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
+import net.minecraft.world.level.levelgen.carver.WorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
@@ -153,8 +153,8 @@ public class BiomeModificationsImpl {
         }
         
         @Override
-        public Mutable addCarver(Holder<ConfiguredWorldCarver<?>> feature) {
-            Either<ResourceKey<ConfiguredWorldCarver<?>>, ConfiguredWorldCarver<?>> unwrap = feature.unwrap();
+        public Mutable addCarver(Holder<WorldCarver> feature) {
+            Either<ResourceKey<WorldCarver>, WorldCarver> unwrap = feature.unwrap();
             if (unwrap.left().isPresent()) {
                 this.context.addCarver(unwrap.left().get());
             } else {
@@ -164,7 +164,7 @@ public class BiomeModificationsImpl {
         }
         
         @Override
-        public Mutable addCarver(ResourceKey<ConfiguredWorldCarver<?>> feature) {
+        public Mutable addCarver(ResourceKey<WorldCarver> feature) {
             this.context.addCarver(feature);
             return this;
         }
@@ -176,7 +176,7 @@ public class BiomeModificationsImpl {
         }
         
         @Override
-        public Mutable removeCarver(ResourceKey<ConfiguredWorldCarver<?>> feature) {
+        public Mutable removeCarver(ResourceKey<WorldCarver> feature) {
             context.removeCarver(feature);
             return this;
         }

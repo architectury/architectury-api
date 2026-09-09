@@ -19,12 +19,7 @@
 
 package dev.architectury.test.item;
 
-import dev.architectury.hooks.item.tool.AxeItemHooks;
-import dev.architectury.hooks.item.tool.HoeItemHooks;
-import dev.architectury.hooks.item.tool.ShovelItemHooks;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Player;
+import dev.architectury.hooks.item.tool.BlockTransformerHooks;
 import net.minecraft.world.level.block.Blocks;
 
 public final class TestBlockInteractions {
@@ -32,19 +27,8 @@ public final class TestBlockInteractions {
     }
     
     public static void init() {
-        AxeItemHooks.addStrippable(Blocks.QUARTZ_PILLAR, Blocks.OAK_LOG);
-        ShovelItemHooks.addFlattenable(Blocks.IRON_ORE, Blocks.DIAMOND_BLOCK.defaultBlockState());
-        HoeItemHooks.addTillable(Blocks.COAL_BLOCK, ctx -> {
-            return ctx.getLevel().isDarkOutside();
-        }, ctx -> {
-            BlockPos pos = ctx.getClickedPos();
-            if (!ctx.getLevel().isClientSide()) {
-                Player player = ctx.getPlayer();
-                if (player != null)
-                    player.sendSystemMessage(Component.literal("Thou has successfully committed the dark arts of alchemy!!"));
-            }
-        }, ctx -> {
-            return Blocks.DIAMOND_BLOCK.defaultBlockState();
-        });
+        BlockTransformerHooks.addStrippable(Blocks.QUARTZ_PILLAR, Blocks.OAK_LOG);
+        BlockTransformerHooks.addFlattenable(Blocks.IRON_ORE, Blocks.DIAMOND_BLOCK.defaultBlockState());
+        BlockTransformerHooks.addTillable(Blocks.COAL_BLOCK, Blocks.DIAMOND_BLOCK.defaultBlockState());
     }
 }

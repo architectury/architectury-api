@@ -26,9 +26,7 @@ import dev.architectury.utils.value.FloatValue;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
@@ -47,13 +45,6 @@ public class MixinPlayer {
     @Inject(method = "tick", at = @At("RETURN"))
     private void postTick(CallbackInfo ci) {
         TickEvent.PLAYER_POST.invoker().tick((Player) (Object) this);
-    }
-    
-    @Inject(method = "drop(Lnet/minecraft/world/item/ItemStack;Z)Lnet/minecraft/world/entity/item/ItemEntity;", at = @At("RETURN"), cancellable = true)
-    private void drop(ItemStack itemStack, boolean bl, CallbackInfoReturnable<ItemEntity> cir) {
-        if (cir.getReturnValue() != null && PlayerEvent.DROP_ITEM.invoker().drop((Player) (Object) this, cir.getReturnValue()).isFalse()) {
-            cir.setReturnValue(null);
-        }
     }
     
     @Inject(method = "interactOn", at = @At(value = "INVOKE",

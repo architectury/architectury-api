@@ -22,18 +22,18 @@ package dev.architectury.mixin.fabric.client;
 import dev.architectury.event.events.common.EntityEvent;
 import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(value = {RemotePlayer.class})
+@Mixin(value = {Entity.class})
 public class ClientPlayerAttackInvoker {
     @Inject(method = "hurtClient", at = @At("HEAD"), cancellable = true)
     private void hurt(DamageSource damageSource, CallbackInfoReturnable<Boolean> cir) {
-        if (EntityEvent.LIVING_HURT.invoker().hurt((LivingEntity) (Object) this, damageSource, 0).isFalse() && (Object) this instanceof Player) {
+        if ((Object) this instanceof RemotePlayer && EntityEvent.LIVING_HURT.invoker().hurt((LivingEntity) (Object) this, damageSource, 0).isFalse()) {
             cir.setReturnValue(false);
         }
     }

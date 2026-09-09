@@ -40,7 +40,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
+import net.minecraft.world.level.levelgen.carver.WorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.neoforged.neoforge.common.world.*;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
@@ -202,7 +202,7 @@ public class BiomeModificationsImpl {
         }
         
         @Override
-        public Iterable<Holder<ConfiguredWorldCarver<?>>> getCarvers() {
+        public Iterable<Holder<WorldCarver>> getCarvers() {
             return generation.getCarvers();
         }
         
@@ -416,18 +416,18 @@ public class BiomeModificationsImpl {
         }
         
         @Override
-        public Mutable addCarver(Holder<ConfiguredWorldCarver<?>> feature) {
+        public Mutable addCarver(Holder<WorldCarver> feature) {
             generation.addCarver(feature);
             return this;
         }
         
         @Override
-        public Mutable addCarver(ResourceKey<ConfiguredWorldCarver<?>> feature) {
+        public Mutable addCarver(ResourceKey<WorldCarver> feature) {
             MinecraftServer server = GameInstance.getServer();
             if (server != null) {
-                Optional<? extends Registry<ConfiguredWorldCarver<?>>> registry = server.registryAccess().lookup(Registries.CONFIGURED_CARVER);
+                Optional<? extends Registry<WorldCarver>> registry = server.registryAccess().lookup(Registries.CONFIGURED_CARVER);
                 if (registry.isPresent()) {
-                    Optional<Holder.Reference<ConfiguredWorldCarver<?>>> holder = registry.get().get(feature);
+                    Optional<Holder.Reference<WorldCarver>> holder = registry.get().get(feature);
                     if (holder.isPresent()) {
                         return addCarver(holder.get());
                     } else {
@@ -445,7 +445,7 @@ public class BiomeModificationsImpl {
         }
         
         @Override
-        public Mutable removeCarver(ResourceKey<ConfiguredWorldCarver<?>> feature) {
+        public Mutable removeCarver(ResourceKey<WorldCarver> feature) {
             generation.getCarvers().removeIf(supplier -> supplier.is(feature));
             return this;
         }

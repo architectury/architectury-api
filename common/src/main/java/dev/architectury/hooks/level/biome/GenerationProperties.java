@@ -22,14 +22,14 @@ package dev.architectury.hooks.level.biome;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
+import net.minecraft.world.level.levelgen.carver.WorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.List;
 
 public interface GenerationProperties {
-    Iterable<Holder<ConfiguredWorldCarver<?>>> getCarvers();
+    Iterable<Holder<WorldCarver>> getCarvers();
     
     Iterable<Holder<PlacedFeature>> getFeatures(GenerationStep.Decoration decoration);
     
@@ -41,13 +41,13 @@ public interface GenerationProperties {
         @ApiStatus.Experimental
         Mutable addFeature(GenerationStep.Decoration decoration, ResourceKey<PlacedFeature> feature);
         
-        Mutable addCarver(Holder<ConfiguredWorldCarver<?>> feature);
+        Mutable addCarver(Holder<WorldCarver> feature);
         
         @ApiStatus.Experimental
-        Mutable addCarver(ResourceKey<ConfiguredWorldCarver<?>> feature);
+        Mutable addCarver(ResourceKey<WorldCarver> feature);
         
         Mutable removeFeature(GenerationStep.Decoration decoration, ResourceKey<PlacedFeature> feature);
         
-        Mutable removeCarver(ResourceKey<ConfiguredWorldCarver<?>> feature);
+        Mutable removeCarver(ResourceKey<WorldCarver> feature);
     }
 }

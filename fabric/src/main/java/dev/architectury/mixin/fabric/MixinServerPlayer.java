@@ -22,6 +22,7 @@ package dev.architectury.mixin.fabric;
 import dev.architectury.event.events.common.PlayerEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.Container;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.animal.equine.AbstractHorse;
@@ -66,8 +67,8 @@ public class MixinServerPlayer {
         PlayerEvent.CHANGE_DIMENSION.invoker().change((ServerPlayer) (Object) this, serverLevel.dimension(), ((ServerPlayer) (Object) this).level().dimension());
     }
     
-    @Inject(method = "drop(Lnet/minecraft/world/item/ItemStack;ZZ)Lnet/minecraft/world/entity/item/ItemEntity;", at = @At("RETURN"), cancellable = true)
-    private void dropItem(ItemStack itemStack, boolean bl, boolean bl2, CallbackInfoReturnable<ItemEntity> cir) {
+    @Inject(method = "drop(Lnet/minecraft/world/item/ItemStack;ZLnet/minecraft/util/Prediction;)Lnet/minecraft/world/entity/item/ItemEntity;", at = @At("RETURN"), cancellable = true)
+    private void dropItem(ItemStack itemStack, boolean bl, Prediction prediction, CallbackInfoReturnable<ItemEntity> cir) {
         if (cir.getReturnValue() != null && PlayerEvent.DROP_ITEM.invoker().drop((ServerPlayer) (Object) this, cir.getReturnValue()).isFalse()) {
             cir.setReturnValue(null);
         }

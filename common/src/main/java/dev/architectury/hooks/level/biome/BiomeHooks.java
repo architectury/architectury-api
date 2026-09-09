@@ -22,6 +22,7 @@ package dev.architectury.hooks.level.biome;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.Holder;
 import net.minecraft.util.random.WeightedList;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.Biome;
@@ -30,7 +31,7 @@ import net.minecraft.world.level.biome.BiomeSpecialEffects;
 import net.minecraft.world.level.biome.BiomeSpecialEffects.GrassColorModifier;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
+import net.minecraft.world.level.levelgen.carver.WorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import org.jetbrains.annotations.Nullable;
 
@@ -136,6 +137,26 @@ public final class BiomeHooks {
     @ExpectPlatform
     private static Biome.ClimateSettings extractClimateSettings(Biome biome) {
         return null;
+    }
+    
+    /**
+     * Returns the natural mob spawns of a biome, which are stored as an
+     * {@linkplain net.minecraft.world.attribute.EnvironmentAttributeMap environment attribute} rather than
+     * directly on the biome.
+     */
+    public static MobSpawnSettings extractMobSpawnSettings(Biome biome) {
+        return biome.getAttributes().applyModifier(EnvironmentAttributes.NATURAL_MOB_SPAWNS,
+                EnvironmentAttributes.NATURAL_MOB_SPAWNS.defaultValue());
+    }
+    
+    /**
+     * Returns the world gen creature spawn probability of a biome, which is stored as an
+     * {@linkplain net.minecraft.world.attribute.EnvironmentAttributeMap environment attribute} rather than
+     * directly on the biome.
+     */
+    public static float extractCreatureProbability(Biome biome) {
+        return biome.getAttributes().applyModifier(EnvironmentAttributes.CREATURE_WORLD_GEN_SPAWN_PROBABILITY,
+                EnvironmentAttributes.CREATURE_WORLD_GEN_SPAWN_PROBABILITY.defaultValue());
     }
     
     public static class ClimateWrapped implements ClimateProperties.Mutable {
@@ -274,7 +295,7 @@ public final class BiomeHooks {
         }
         
         @Override
-        public Iterable<Holder<ConfiguredWorldCarver<?>>> getCarvers() {
+        public Iterable<Holder<WorldCarver>> getCarvers() {
             return settings.getCarvers();
         }
         
@@ -294,18 +315,24 @@ public final class BiomeHooks {
     
     public static class SpawnSettingsWrapped implements SpawnProperties {
         protected final MobSpawnSettings settings;
+        protected final float creatureProbability;
         
         public SpawnSettingsWrapped(Biome biome) {
-            this(biome.getMobSettings());
+            this(extractMobSpawnSettings(biome), extractCreatureProbability(biome));
         }
         
         public SpawnSettingsWrapped(MobSpawnSettings settings) {
+            this(settings, MobSpawnSettings.DEFAULT_CREATURE_WORLD_GEN_SPAWN_PROBABILITY);
+        }
+        
+        public SpawnSettingsWrapped(MobSpawnSettings settings, float creatureProbability) {
             this.settings = settings;
+            this.creatureProbability = creatureProbability;
         }
         
         @Override
         public float getCreatureProbability() {
-            return this.settings.getCreatureProbability();
+            return this.creatureProbability;
         }
         
         @Override

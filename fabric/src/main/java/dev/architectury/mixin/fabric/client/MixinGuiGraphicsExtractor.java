@@ -48,12 +48,12 @@ public abstract class MixinGuiGraphicsExtractor {
     }
     
     @Inject(method = "tooltip", at = @At("RETURN"))
-    private void postRenderTooltipItem(Font font, List<ClientTooltipComponent> list, int i, int j, ClientTooltipPositioner clientTooltipPositioner, Identifier resourceLocation, CallbackInfo ci) {
+    private void postRenderTooltipItem(Font font, List<ClientTooltipComponent> list, int i, int j, ClientTooltipPositioner clientTooltipPositioner, Identifier resourceLocation, boolean bl, CallbackInfo ci) {
         ClientTooltipEvent.additionalContexts().setItem(null);
     }
     
     @Inject(method = "tooltip", at = @At("HEAD"), cancellable = true)
-    private void renderTooltip(Font font, List<ClientTooltipComponent> list, int x, int y, ClientTooltipPositioner positioner, @Nullable Identifier background, CallbackInfo ci) {
+    private void renderTooltip(Font font, List<ClientTooltipComponent> list, int x, int y, ClientTooltipPositioner positioner, @Nullable Identifier background, boolean bl, CallbackInfo ci) {
         if (!list.isEmpty()) {
             var positionContext = tooltipPositionContext.get();
             positionContext.reset(x, y);

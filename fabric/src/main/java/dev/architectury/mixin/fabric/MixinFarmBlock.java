@@ -36,23 +36,23 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(FarmlandBlock.class)
 public abstract class MixinFarmBlock {
     @Unique
-    private static ThreadLocal<Triple<Long, Double, Entity>> turnToDirtLocal = new ThreadLocal<>();
+    private static ThreadLocal<Triple<Long, Double, Entity>> turnToBaseBlockLocal = new ThreadLocal<>();
     
     @Inject(
             method = "fallOn",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/level/block/FarmlandBlock;turnToDirt(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;)V"
+                    target = "Lnet/minecraft/world/level/block/FarmlandBlock;turnToBaseBlock(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;)V"
             )
     )
     private void fallOn(Level level, BlockState blockState, BlockPos blockPos, Entity entity, double d, CallbackInfo ci) {
-        turnToDirtLocal.set(Triple.of(blockPos.asLong(), d, entity));
+        turnToBaseBlockLocal.set(Triple.of(blockPos.asLong(), d, entity));
     }
     
-    @Inject(method = "turnToDirt", at = @At("HEAD"), cancellable = true)
-    private static void turnToDirt(@Nullable Entity entity, BlockState state, Level level, BlockPos pos, CallbackInfo ci) {
-        var triple = turnToDirtLocal.get();
-        turnToDirtLocal.remove();
+    @Inject(method = "turnToBaseBlock", at = @At("HEAD"), cancellable = true)
+    private void turnToBaseBlock(@Nullable Entity entity, BlockState state, Level level, BlockPos pos, CallbackInfo ci) {
+        var triple = turnToBaseBlockLocal.get();
+        turnToBaseBlockLocal.remove();
         if (triple != null && triple.getLeft() == pos.asLong() && triple.getRight() == entity) {
             if (InteractionEvent.FARMLAND_TRAMPLE.invoker().trample(level, pos, state, triple.getMiddle(), entity).interruptsFurtherEvaluation()) {
                 ci.cancel();

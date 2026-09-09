@@ -160,7 +160,7 @@ public class TestRegistries {
             // In example mod the neoforge class isn't being replaced, this is not required in mods depending on architectury
             return (LiquidBlock) Class.forName(!Platform.isNeoForge() ? "dev.architectury.core.block.ArchitecturyLiquidBlock" : "dev.architectury.core.block.neoforge.imitator.ArchitecturyLiquidBlock")
                     .getDeclaredConstructor(Supplier.class, BlockBehaviour.Properties.class)
-                    .newInstance(TestRegistries.TEST_FLUID, BlockBehaviour.Properties.ofFullCopy(Blocks.WATER).replaceable().noCollision().strength(100.0F).pushReaction(PushReaction.DESTROY).noLootTable().liquid().sound(SoundType.EMPTY).setId(id(Registries.BLOCK, "test_fluid")));
+                    .newInstance(TestRegistries.TEST_FLUID, BlockBehaviour.Properties.ofFullCopy(Blocks.WATER).replaceable().noCollision().strength(100.0F).pushReaction(PushReaction.POPPED).noLootTable().liquid().sound(SoundType.EMPTY).setId(id(Registries.BLOCK, "test_fluid")));
         } catch (InstantiationException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException |
                  IllegalAccessException e) {
             throw new RuntimeException(e);

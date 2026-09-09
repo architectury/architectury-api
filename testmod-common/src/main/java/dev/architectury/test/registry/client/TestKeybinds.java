@@ -29,13 +29,12 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.resources.Identifier;
-import org.lwjgl.glfw.GLFW;
 
 public class TestKeybinds {
     public static void initialize() {
         var category = KeyMapping.Category.register(Identifier.fromNamespaceAndPath("architectury", "architectury-test"));
 
-        var mapping = new KeyMapping("key.architectury-test.test", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_O, category);
+        var mapping = new KeyMapping("key.architectury-test.test", InputConstants.Type.KEYBOARD, InputConstants.KEY_O, category);
         KeyMappingRegistry.register(mapping);
 
         ClientTickEvent.CLIENT_POST.register(instance -> {

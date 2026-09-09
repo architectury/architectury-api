@@ -20,25 +20,35 @@
 package dev.architectury.registry.fuel;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.entity.FuelValues;
-import org.jetbrains.annotations.Nullable;
 
 public final class FuelRegistry {
     private FuelRegistry() {
     }
     
     /**
-     * Registers a burn time for items.
+     * Registers a burn time for items, smelting at the normal speed.
      *
      * @param time  the new burn time, use {@code 0} for non-fuel items,
      *              and {@code -1} to use vanilla logic
      * @param items the array of items to register for
      */
-    @ExpectPlatform
     public static void register(int time, ItemLike... items) {
+        register(time, 1.0F, items);
+    }
+    
+    /**
+     * Registers a burn time for items.
+     *
+     * @param time            the new burn time, use {@code 0} for non-fuel items,
+     *                        and {@code -1} to use vanilla logic
+     * @param speedMultiplier how fast the fuel smelts, {@code 1.0} being the normal speed
+     * @param items           the array of items to register for
+     */
+    @ExpectPlatform
+    public static void register(int time, float speedMultiplier, ItemLike... items) {
         throw new AssertionError();
     }
     
@@ -46,10 +56,11 @@ public final class FuelRegistry {
      * Returns the burn time of an {@link ItemStack}.
      *
      * @param stack the stack
+     * @param level the level used to resolve the stack's cooking fuel component
      * @return the burn time of the stack, returns {@code 0} if not a fuel
      */
     @ExpectPlatform
-    public static int get(ItemStack stack, @Nullable RecipeType<?> recipeType, FuelValues fuelValues) {
+    public static int get(ItemStack stack, ServerLevel level) {
         throw new AssertionError();
     }
 }
