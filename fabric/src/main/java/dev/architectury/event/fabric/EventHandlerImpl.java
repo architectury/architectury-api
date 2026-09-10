@@ -52,11 +52,6 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import org.jetbrains.annotations.Nullable;
 
 public class EventHandlerImpl {
-    @Environment(EnvType.CLIENT)
-    public static void registerClient() {
-        ClientEventHandlerImpl.registerClient();
-    }
-    
     public static void registerCommon() {
         ServerLifecycleEvents.SERVER_STARTING.register(instance -> LifecycleEvent.SERVER_BEFORE_START.invoker().stateChanged(instance));
         ServerLifecycleEvents.SERVER_STARTED.register(instance -> LifecycleEvent.SERVER_STARTED.invoker().stateChanged(instance));

@@ -39,11 +39,11 @@ import net.fabricmc.fabric.api.event.client.player.ClientPreAttackCallback;
 import net.minecraft.resources.Identifier;
 
 @Environment(EnvType.CLIENT)
-final class ClientEventHandlerImpl {
+public final class ClientEventHandlerImpl {
     private ClientEventHandlerImpl() {
     }
 
-    static void registerClient() {
+    public static void registerClient() {
         ClientLifecycleEvents.CLIENT_STARTED.register(instance -> ClientLifecycleEvent.CLIENT_STARTED.invoker().stateChanged(instance));
         ClientLifecycleEvents.CLIENT_STOPPING.register(instance -> ClientLifecycleEvent.CLIENT_STOPPING.invoker().stateChanged(instance));
 

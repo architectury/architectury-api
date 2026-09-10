@@ -33,15 +33,10 @@ public final class EventHandler {
         if (initialized) return;
         initialized = true;
         if (Platform.getEnvironment() == Env.CLIENT)
-            registerClient();
+            ClientEventHandler.registerClient();
         registerCommon();
         if (Platform.getEnvironment() == Env.SERVER)
             registerServer();
-    }
-    
-    @ExpectPlatform
-    private static void registerClient() {
-        throw new AssertionError();
     }
     
     @ExpectPlatform
