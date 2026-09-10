@@ -29,7 +29,7 @@ import java.util.Optional;
 
 public class TestLoot {
     public static void init() {
-        LootEvent.MODIFY_LOOT_TABLE.register((key, context, builtin) -> {
+        LootEvent.MODIFY_LOOT_TABLE.register((registries, key, context, builtin) -> {
             // Check that the loot table is dirt and built-in
             if (builtin && Blocks.DIRT.getLootTable().equals(Optional.ofNullable(key))) {
                 // Create a loot pool with a single item entry of Items.DIAMOND

@@ -23,7 +23,6 @@ import com.google.common.reflect.AbstractInvocationHandler;
 import dev.architectury.annotations.ForgeEvent;
 import dev.architectury.annotations.ForgeEventCancellable;
 import dev.architectury.injectables.annotations.ExpectPlatform;
-import net.minecraft.world.InteractionResult;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.lang.invoke.MethodHandles;
@@ -108,42 +107,6 @@ public final class EventFactory {
                     }
                 }
                 return CompoundEventResult.pass();
-            }
-        }));
-    }
-    
-    /**
-     * @deprecated Prefer {@link #createEventResult(Class)} returning {@link EventResult}. An
-     * {@link EventResult} can now losslessly represent any vanilla {@link InteractionResult} via
-     * {@link EventResult#fromMinecraft(InteractionResult)} and {@link EventResult#asMinecraft()},
-     * giving the event system a single canonical result model. This factory is retained for the
-     * existing events whose listener interfaces expose a raw {@link InteractionResult}.
-     */
-    @Deprecated(forRemoval = true)
-    @SafeVarargs
-    public static <T> Event<T> createInteractionResult(T... typeGetter) {
-        if (typeGetter.length != 0) throw new IllegalStateException("array must be empty!");
-        return createInteractionResult((Class<T>) typeGetter.getClass().getComponentType());
-    }
-
-    /**
-     * @deprecated Prefer {@link #createEventResult(Class)} returning {@link EventResult}, which can
-     * now losslessly represent any vanilla {@link InteractionResult} via
-     * {@link EventResult#fromMinecraft(InteractionResult)} and {@link EventResult#asMinecraft()}.
-     */
-    @Deprecated(forRemoval = true)
-    @SuppressWarnings("UnstableApiUsage")
-    public static <T> Event<T> createInteractionResult(Class<T> clazz) {
-        return of(listeners -> (T) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{clazz}, new AbstractInvocationHandler() {
-            @Override
-            protected Object handleInvocation(Object proxy, Method method, Object[] args) throws Throwable {
-                for (var listener : listeners) {
-                    var result = (InteractionResult) Objects.requireNonNull(invokeMethod(listener, method, args));
-                    if (result != InteractionResult.PASS) {
-                        return result;
-                    }
-                }
-                return InteractionResult.PASS;
             }
         }));
     }

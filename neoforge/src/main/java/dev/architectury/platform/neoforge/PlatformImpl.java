@@ -128,17 +128,16 @@ public class PlatformImpl {
         
         @Override
         public List<Path> getFilePaths() {
-            return List.of(getFilePath());
+            return List.of(filePath());
         }
         
-        @Override
-        public Path getFilePath() {
+        private Path filePath() {
             return this.info.getOwningFile().getFile().getFilePath();
         }
         
         @Override
         public Optional<Path> findResource(String... path) {
-            return Optional.of(this.getFilePath().resolve(String.join("/", path))).filter(Files::exists);
+            return Optional.of(this.filePath().resolve(String.join("/", path))).filter(Files::exists);
         }
         
         @Override

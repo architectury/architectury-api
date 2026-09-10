@@ -96,28 +96,13 @@ public interface LootEvent {
         /**
          * Modifies a loot table.
          *
-         * @param key     the loot table key
-         * @param context the context used to modify the loot table
-         * @param builtin if {@code true}, the loot table is built-in;
-         *                if {@code false}, it is from a user data pack
-         * @deprecated Use
-         * {@link #modifyLootTable(HolderLookup.Provider, ResourceKey, LootTableModificationContext, boolean)} instead.
-         */
-        @Deprecated(forRemoval = true)
-        void modifyLootTable(ResourceKey<LootTable> key, LootTableModificationContext context, boolean builtin);
-
-        /**
-         * Modifies a loot table.
-         *
          * @param registries the registries provider
          * @param key        the loot table key
          * @param context    the context used to modify the loot table
          * @param builtin    if {@code true}, the loot table is built-in;
          *                   if {@code false}, it is from a user data pack
          */
-        default void modifyLootTable(HolderLookup.Provider registries, ResourceKey<LootTable> key, LootTableModificationContext context, boolean builtin) {
-            modifyLootTable(key, context, builtin);
-        }
+        void modifyLootTable(HolderLookup.Provider registries, ResourceKey<LootTable> key, LootTableModificationContext context, boolean builtin);
     }
     
     /**

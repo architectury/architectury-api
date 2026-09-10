@@ -52,11 +52,6 @@ public final class RegistrarManager {
         return this.provider.get(key);
     }
     
-    @Deprecated
-    public <T> Registrar<T> get(Registry<T> registry) {
-        return this.provider.get(registry);
-    }
-    
     /**
      * Listen to registry registration, the callback is called when content should be registered.
      * On NeoForge, this is invoked after {@code RegistryEvent.Register}.
@@ -84,19 +79,10 @@ public final class RegistrarManager {
     public static <T> Identifier getId(T object, @Nullable ResourceKey<Registry<T>> fallback) {
         if (fallback == null)
             return null;
-        return getId(object, (Registry<T>) BuiltInRegistries.REGISTRY.getValue(fallback.identifier()));
-    }
-    
-    /**
-     * Forge: If the object is {@code IForgeRegistryEntry}, use `getRegistryName`, else null
-     * Fabric: Use registry
-     */
-    @Nullable
-    @Deprecated
-    public static <T> Identifier getId(T object, @Nullable Registry<T> fallback) {
-        if (fallback == null)
+        Registry<T> registry = (Registry<T>) BuiltInRegistries.REGISTRY.getValue(fallback.identifier());
+        if (registry == null)
             return null;
-        return fallback.getKey(object);
+        return registry.getKey(object);
     }
     
     @ExpectPlatform
@@ -111,9 +97,6 @@ public final class RegistrarManager {
     @ApiStatus.Internal
     public interface RegistryProvider {
         <T> Registrar<T> get(ResourceKey<Registry<T>> key);
-        
-        @Deprecated
-        <T> Registrar<T> get(Registry<T> registry);
         
         <T> void forRegistry(ResourceKey<Registry<T>> key, Consumer<Registrar<T>> consumer);
         

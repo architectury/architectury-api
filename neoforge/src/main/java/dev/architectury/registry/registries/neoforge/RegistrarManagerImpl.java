@@ -122,7 +122,6 @@ public class RegistrarManagerImpl {
             throw new IllegalArgumentException("Registry " + registryKey + " does not exist!");
         }
         
-        @Override
         public <T> Registrar<T> get(Registry<T> registry) {
             return new RegistrarImpl<>(modId, this.registry, registry);
         }

@@ -81,11 +81,6 @@ public class RegistrarManagerImpl {
         }
         
         @Override
-        public <T> Registrar<T> get(Registry<T> registry) {
-            return new RegistrarImpl<>(modId, registry);
-        }
-        
-        @Override
         public <T> void forRegistry(ResourceKey<Registry<T>> key, Consumer<Registrar<T>> consumer) {
             consumer.accept(get(key));
         }
@@ -139,7 +134,7 @@ public class RegistrarManagerImpl {
                     ? FabricRegistryBuilder.create(type, registryId)
                     : FabricRegistryBuilder.createDefaulted(type, registryId, defaultId);
             apply.forEach(consumer -> consumer.accept(builder));
-            return RegistrarManager.get(modId).get(builder.buildAndRegister());
+            return new RegistrarImpl<>(modId, builder.buildAndRegister());
         }
         
         @Override

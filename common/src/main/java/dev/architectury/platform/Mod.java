@@ -53,12 +53,6 @@ public interface Mod {
     List<Path> getFilePaths();
     
     /**
-     * @deprecated Use {@link #getFilePaths()} instead
-     */
-    @Deprecated(forRemoval = true)
-    Path getFilePath();
-    
-    /**
      * Gets an NIO Path to the given resource contained within the mod file / folder.
      * The path is verified to exist, and an empty optional is returned if it doesn't.
      *

@@ -128,11 +128,6 @@ public class PlatformImpl {
         }
     
         @Override
-        public Path getFilePath() {
-            return container.getRootPath();
-        }
-    
-        @Override
         public Optional<Path> findResource(String... path) {
             return container.findPath(String.join("/", path));
         }
