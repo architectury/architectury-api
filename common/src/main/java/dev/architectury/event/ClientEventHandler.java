@@ -17,20 +17,16 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dev.architectury.event.forge;
+package dev.architectury.event;
 
-import dev.architectury.platform.hooks.EventBusesHooks;
-import dev.architectury.utils.ArchitecturyConstants;
-import net.neoforged.neoforge.common.NeoForge;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 
-public class EventHandlerImpl {
-    public static void registerCommon() {
-        NeoForge.EVENT_BUS.register(EventHandlerImplCommon.class);
-        EventBusesHooks.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
-            bus.register(EventHandlerImplCommon.ModBasedEventHandler.class);
-        });
+public final class ClientEventHandler {
+    private ClientEventHandler() {
     }
     
-    public static void registerServer() {
+    @ExpectPlatform
+    public static void registerClient() {
+        throw new AssertionError();
     }
 }

@@ -19,18 +19,8 @@
 
 package dev.architectury.event.forge;
 
-import dev.architectury.platform.hooks.EventBusesHooks;
-import dev.architectury.utils.ArchitecturyConstants;
-import net.neoforged.neoforge.common.NeoForge;
-
-public class EventHandlerImpl {
-    public static void registerCommon() {
-        NeoForge.EVENT_BUS.register(EventHandlerImplCommon.class);
-        EventBusesHooks.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
-            bus.register(EventHandlerImplCommon.ModBasedEventHandler.class);
-        });
-    }
-    
-    public static void registerServer() {
+public class ClientEventHandlerImpl {
+    public static void registerClient() {
+        // Client events are registered through @EventBusSubscriber.
     }
 }
