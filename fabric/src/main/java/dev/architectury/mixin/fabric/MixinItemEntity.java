@@ -20,6 +20,7 @@
 package dev.architectury.mixin.fabric;
 
 import dev.architectury.event.events.common.PlayerEvent;
+import dev.architectury.hooks.level.entity.fabric.ItemEntityHooksImpl;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -27,7 +28,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ItemEntity.class)
@@ -56,5 +59,10 @@ public abstract class MixinItemEntity {
         }
         
         this.cache = null;
+    }
+    
+    @ModifyConstant(method = "tick", constant = @Constant(intValue = ItemEntityHooksImpl.DEFAULT_LIFESPAN))
+    private int architectury$modifyLifespan(int constant) {
+        return ((ItemEntity) (Object) this).getAttachedOrElse(ItemEntityHooksImpl.LIFESPAN, constant);
     }
 }

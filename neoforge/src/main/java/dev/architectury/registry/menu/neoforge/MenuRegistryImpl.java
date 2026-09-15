@@ -19,19 +19,36 @@
 
 package dev.architectury.registry.menu.neoforge;
 
+import dev.architectury.registry.menu.ExtendedMenuDataProvider;
 import dev.architectury.registry.menu.ExtendedMenuProvider;
+import dev.architectury.registry.menu.MenuRegistry.ExtendedMenuDataFactory;
 import dev.architectury.registry.menu.MenuRegistry.ExtendedMenuTypeFactory;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 
 public class MenuRegistryImpl {
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     public static void openExtendedMenu(ServerPlayer player, ExtendedMenuProvider provider) {
         player.openMenu(provider, provider::saveExtraData);
     }
     
+    public static <D> void openExtendedMenu(ServerPlayer player, ExtendedMenuDataProvider<D> provider) {
+        StreamCodec<? super RegistryFriendlyByteBuf, D> codec = provider.getExtraDataCodec();
+        player.openMenu(provider, buf -> codec.encode(buf, provider.getExtraData(player)));
+    }
+    
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     public static <T extends AbstractContainerMenu> MenuType<T> ofExtended(ExtendedMenuTypeFactory<T> factory) {
         return IMenuTypeExtension.create(factory::create);
+    }
+    
+    public static <T extends AbstractContainerMenu, D> MenuType<T> ofExtended(ExtendedMenuDataFactory<T, D> factory, StreamCodec<? super RegistryFriendlyByteBuf, D> codec) {
+        return IMenuTypeExtension.create((id, inventory, buf) -> factory.create(id, inventory, codec.decode(buf)));
     }
 }

@@ -21,6 +21,7 @@ package dev.architectury.utils.fabric;
 
 import dev.architectury.event.EventHandler;
 import dev.architectury.event.events.common.LifecycleEvent;
+import dev.architectury.hooks.level.entity.fabric.ItemEntityHooksImpl;
 import dev.architectury.platform.Platform;
 import dev.architectury.utils.Env;
 import net.fabricmc.api.EnvType;
@@ -42,6 +43,7 @@ public class GameInstanceImpl {
     
     public static void init() {
         EventHandler.init();
+        ItemEntityHooksImpl.init();
         LifecycleEvent.SERVER_BEFORE_START.register(server -> GameInstanceImpl.server = server);
         LifecycleEvent.SERVER_STOPPED.register(server -> GameInstanceImpl.server = null);
     }

@@ -18,6 +18,7 @@
     "neoforge.LiquidBlockAccessor",
     "neoforge.MixinChunkMap",
     "MixinBlockStateBase",
+    "MixinBlockTransformer",
     "MixinFallingBlockEntity",
     "MixinItemStack",
     "MixinLevelEvent",

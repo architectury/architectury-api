@@ -34,6 +34,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.random.WeightedList;
+import net.minecraft.world.attribute.EnvironmentAttributeMap;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.Biome;
@@ -161,7 +163,7 @@ public class BiomeModificationsImpl {
                     new MutableClimatePropertiesWrapped(event.getClimateSettings()),
                     new MutableEffectsPropertiesWrapped(event.getSpecialEffects()),
                     new GenerationSettingsBuilderWrapped(event.getGenerationSettings()),
-                    new SpawnSettingsBuilderWrapped(event.getMobSpawnSettings())
+                    new SpawnSettingsBuilderWrapped(event)
             );
         }
         
@@ -219,24 +221,43 @@ public class BiomeModificationsImpl {
     
     private static class SpawnSettingsBuilderWrapped implements SpawnProperties {
         protected final MobSpawnSettingsBuilder builder;
+
+        protected final EnvironmentAttributeMapBuilder attributes;
         
-        public SpawnSettingsBuilderWrapped(MobSpawnSettingsBuilder builder) {
-            this.builder = builder;
+        public SpawnSettingsBuilderWrapped(ModifiableBiomeInfo.BiomeInfo.Builder event) {
+            this.builder = event.getMobSpawnSettings();
+            this.attributes = event.getAttributes();
         }
         
         @Override
         public float getCreatureProbability() {
-            return builder.getProbability();
+            EnvironmentAttributeMap.Entry<Float, ?> entry = attributes.get(EnvironmentAttributes.CREATURE_WORLD_GEN_SPAWN_PROBABILITY);
+            float defaultValue = EnvironmentAttributes.CREATURE_WORLD_GEN_SPAWN_PROBABILITY.defaultValue();
+            return entry == null ? defaultValue : entry.applyModifier(defaultValue);
         }
         
         @Override
         public Map<MobCategory, WeightedList.Builder<MobSpawnSettings.SpawnerData>> getSpawners() {
-            return builder.spawners;
+            Map<MobCategory, WeightedList.Builder<MobSpawnSettings.SpawnerData>> spawners = new LinkedHashMap<>();
+            for (MobCategory category : builder.getSpawnerTypes()) {
+                WeightedList.Builder<MobSpawnSettings.SpawnerData> spawner = builder.getSpawner(category);
+                if (spawner != null) {
+                    spawners.put(category, spawner);
+                }
+            }
+            return spawners;
         }
         
         @Override
         public Map<EntityType<?>, MobSpawnSettings.MobSpawnCost> getMobSpawnCosts() {
-            return builder.mobSpawnCosts;
+            Map<EntityType<?>, MobSpawnSettings.MobSpawnCost> costs = new LinkedHashMap<>();
+            for (EntityType<?> entityType : builder.getEntityTypes()) {
+                MobSpawnSettings.MobSpawnCost cost = builder.getCost(entityType);
+                if (cost != null) {
+                    costs.put(entityType, cost);
+                }
+            }
+            return costs;
         }
     }
     
@@ -246,7 +267,7 @@ public class BiomeModificationsImpl {
                     new MutableClimatePropertiesWrapped(event.getClimateSettings()),
                     new MutableEffectsPropertiesWrapped(event.getSpecialEffects()),
                     new MutableGenerationSettingsBuilderWrapped(event.getGenerationSettings()),
-                    new MutableSpawnSettingsBuilderWrapped(event.getMobSpawnSettings())
+                    new MutableSpawnSettingsBuilderWrapped(event)
             );
         }
         
@@ -425,7 +446,7 @@ public class BiomeModificationsImpl {
         public Mutable addCarver(ResourceKey<WorldCarver> feature) {
             MinecraftServer server = GameInstance.getServer();
             if (server != null) {
-                Optional<? extends Registry<WorldCarver>> registry = server.registryAccess().lookup(Registries.CONFIGURED_CARVER);
+                Optional<? extends Registry<WorldCarver>> registry = server.registryAccess().lookup(Registries.CARVER);
                 if (registry.isPresent()) {
                     Optional<Holder.Reference<WorldCarver>> holder = registry.get().get(feature);
                     if (holder.isPresent()) {
@@ -452,19 +473,19 @@ public class BiomeModificationsImpl {
     }
     
     private static class MutableSpawnSettingsBuilderWrapped extends SpawnSettingsBuilderWrapped implements SpawnProperties.Mutable {
-        public MutableSpawnSettingsBuilderWrapped(MobSpawnSettingsBuilder builder) {
-            super(builder);
+        public MutableSpawnSettingsBuilderWrapped(ModifiableBiomeInfo.BiomeInfo.Builder event) {
+            super(event);
         }
         
         @Override
         public Mutable setCreatureProbability(float probability) {
-            builder.creatureGenerationProbability(probability);
+            attributes.set(EnvironmentAttributes.CREATURE_WORLD_GEN_SPAWN_PROBABILITY, probability);
             return this;
         }
         
         @Override
         public Mutable addSpawn(MobCategory category, MobSpawnSettings.SpawnerData data, int weight) {
-            builder.addSpawn(category, weight, data);
+            builder.addSpawn(data.type(), category, weight, data.count());
             return this;
         }
         
@@ -483,19 +504,19 @@ public class BiomeModificationsImpl {
         
         @Override
         public Mutable setSpawnCost(EntityType<?> entityType, MobSpawnSettings.MobSpawnCost cost) {
-            builder.addMobCharge(entityType, cost.charge(), cost.energyBudget());
+            builder.addMobSpawnCost(entityType, cost.charge(), cost.energyBudget());
             return this;
         }
         
         @Override
         public Mutable setSpawnCost(EntityType<?> entityType, double charge, double energyBudget) {
-            builder.addMobCharge(entityType, charge, energyBudget);
+            builder.addMobSpawnCost(entityType, charge, energyBudget);
             return this;
         }
         
         @Override
         public Mutable clearSpawnCost(EntityType<?> entityType) {
-            getMobSpawnCosts().remove(entityType);
+            builder.removeSpawnCost(entityType);
             return this;
         }
     }

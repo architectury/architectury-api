@@ -19,20 +19,32 @@
 
 package dev.architectury.hooks.level.entity.fabric;
 
+import com.mojang.serialization.Codec;
 import dev.architectury.utils.value.IntValue;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.item.ItemEntity;
 
 public class ItemEntityHooksImpl {
+    public static final int DEFAULT_LIFESPAN = 6000;
+    
+    public static final AttachmentType<Integer> LIFESPAN = AttachmentRegistry.createPersistent(
+            Identifier.fromNamespaceAndPath("architectury", "item_entity_lifespan"), Codec.INT);
+    
+    public static void init() {
+    }
+    
     public static IntValue lifespan(ItemEntity entity) {
         return new IntValue() {
             @Override
             public void accept(int value) {
-                
+                entity.setAttached(LIFESPAN, value);
             }
             
             @Override
             public int getAsInt() {
-                return 6000;
+                return entity.getAttachedOrElse(LIFESPAN, DEFAULT_LIFESPAN);
             }
         };
     }

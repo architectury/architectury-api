@@ -22,6 +22,12 @@ package dev.architectury.registry.menu;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.MenuProvider;
 
+/**
+ * @deprecated Use {@link ExtendedMenuDataProvider}, which serializes the extra data through a
+ * {@link net.minecraft.network.codec.StreamCodec} instead of a raw {@link FriendlyByteBuf}.
+ * Scheduled for removal in Architectury 23.
+ */
+@Deprecated(forRemoval = true)
 public interface ExtendedMenuProvider extends MenuProvider {
     void saveExtraData(FriendlyByteBuf buf);
 }

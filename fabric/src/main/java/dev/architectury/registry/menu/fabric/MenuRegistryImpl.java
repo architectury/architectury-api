@@ -19,15 +19,19 @@
 
 package dev.architectury.registry.menu.fabric;
 
+import dev.architectury.registry.menu.ExtendedMenuDataProvider;
 import dev.architectury.registry.menu.ExtendedMenuProvider;
+import dev.architectury.registry.menu.MenuRegistry.ExtendedMenuDataFactory;
 import dev.architectury.registry.menu.MenuRegistry.ExtendedMenuTypeFactory;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
 import net.fabricmc.fabric.api.networking.v1.FriendlyByteBufs;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -38,6 +42,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Function;
 
 public class MenuRegistryImpl {
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     public static void openExtendedMenu(ServerPlayer player, ExtendedMenuProvider provider) {
         player.openMenu(new net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider<byte[]>() {
             @Override
@@ -62,6 +68,28 @@ public class MenuRegistryImpl {
         });
     }
     
+    public static <D> void openExtendedMenu(ServerPlayer player, ExtendedMenuDataProvider<D> provider) {
+        player.openMenu(new net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider<D>() {
+            @Override
+            public D getScreenOpeningData(ServerPlayer player) {
+                return provider.getExtraData(player);
+            }
+            
+            @Override
+            public Component getDisplayName() {
+                return provider.getDisplayName();
+            }
+            
+            @Nullable
+            @Override
+            public AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
+                return provider.createMenu(i, inventory, player);
+            }
+        });
+    }
+    
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     public static <T extends AbstractContainerMenu> MenuType<T> ofExtended(ExtendedMenuTypeFactory<T> factory) {
         return new ExtendedMenuType<>((syncId, inventory, data) -> {
             FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(data));
@@ -69,5 +97,9 @@ public class MenuRegistryImpl {
             buf.release();
             return menu;
         }, ByteBufCodecs.BYTE_ARRAY.mapStream(Function.identity()));
+    }
+    
+    public static <T extends AbstractContainerMenu, D> MenuType<T> ofExtended(ExtendedMenuDataFactory<T, D> factory, StreamCodec<? super RegistryFriendlyByteBuf, D> codec) {
+        return new ExtendedMenuType<>(factory::create, codec);
     }
 }

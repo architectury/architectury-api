@@ -19,40 +19,59 @@
 
 package dev.architectury.registry.fuel.neoforge;
 
-import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import dev.architectury.platform.hooks.EventBusesHooks;
+import dev.architectury.utils.ArchitecturyConstants;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.component.CookingFuel;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.entity.FuelValues;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.providers.number.floats.ResolvableFloat;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ResolvableInt;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.furnace.FurnaceFuelBurnTimeEvent;
+import net.neoforged.neoforge.event.ModifyDefaultComponentsEvent;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
+
 public class FuelRegistryImpl {
-    private static final Object2IntMap<ItemLike> ITEMS = new Object2IntLinkedOpenHashMap<>();
+    private static final Map<Item, @Nullable CookingFuel> FUELS = new LinkedHashMap<>();
     
-    static {
-        NeoForge.EVENT_BUS.register(FuelRegistryImpl.class);
-    }
-    
-    public static void register(int time, ItemLike... items) {
-        for (ItemLike item : items) {
-            ITEMS.put(item, time);
+    public static void register(int time, float speedMultiplier, ItemLike... items) {
+        for (var item : items) {
+            if (time < 0) {
+                FUELS.remove(item.asItem());
+            } else {
+                FUELS.put(item.asItem(), time == 0 ? null : new CookingFuel(new ResolvableInt.Constant(time),
+                        new ResolvableFloat.Constant(speedMultiplier)));
+            }
         }
     }
     
-    public static int get(ItemStack stack, @Nullable RecipeType<?> recipeType, FuelValues fuelValues) {
-        return stack.getBurnTime(recipeType, fuelValues);
+    public static int get(ItemStack stack, ServerLevel level) {
+        return ResolvableInt.getFromItem(stack, DataComponents.COOKING_FUEL, CookingFuel::burnTime, createLootContext(level), 0);
+    }
+    
+    private static LootContext createLootContext(ServerLevel level) {
+        return new LootContext.Builder(new LootParams.Builder(level).create(LootContextParamSets.EMPTY))
+                .create(Optional.empty());
+    }
+    
+    static {
+        EventBusesHooks.whenAvailable(ArchitecturyConstants.MOD_ID, bus -> {
+            bus.register(FuelRegistryImpl.class);
+        });
     }
     
     @SubscribeEvent
-    public static void event(FurnaceFuelBurnTimeEvent event) {
-        if (event.getItemStack().isEmpty()) return;
-        int time = ITEMS.getOrDefault(event.getItemStack().getItem(), Integer.MIN_VALUE);
-        if (time != Integer.MIN_VALUE) {
-            event.setBurnTime(time);
-        }
+    public static void event(ModifyDefaultComponentsEvent event) {
+        FUELS.forEach((item, fuel) -> event.modify(item, (components, context, target) ->
+                components.set(DataComponents.COOKING_FUEL, fuel)));
     }
 }
