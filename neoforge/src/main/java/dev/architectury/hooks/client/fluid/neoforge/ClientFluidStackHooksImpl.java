@@ -25,9 +25,9 @@ import dev.architectury.hooks.fluid.neoforge.FluidStackHooksForge;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.FluidModel;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
@@ -142,6 +142,6 @@ public class ClientFluidStackHooksImpl {
         if (texture == null) {
             return null;
         }
-        return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(TextureAtlas.LOCATION_BLOCKS).getSprite(texture);
+        return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS).getSprite(texture);
     }
 }
