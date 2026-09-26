@@ -43,7 +43,7 @@ public class ClientSpawnEntityPacket {
             entity.setUUID(payload.uuid());
             entity.setId(payload.id());
             entity.syncPacketPositionCodec(payload.x(), payload.y(), payload.z());
-            entity.snapTo(payload.x(), payload.y(), payload.z(), payload.xRot(), payload.yRot());
+            entity.snapTo(payload.x(), payload.y(), payload.z(), payload.yRot(), payload.xRot());
             entity.setYHeadRot(payload.yHeadRot());
             entity.setYBodyRot(payload.yHeadRot());
             if (entity instanceof EntitySpawnExtension ext) {
