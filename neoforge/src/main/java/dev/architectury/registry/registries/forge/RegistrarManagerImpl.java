@@ -23,6 +23,7 @@ import com.google.common.base.Objects;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.mojang.serialization.Codec;
 import dev.architectury.impl.RegistrySupplierImpl;
 import dev.architectury.platform.hooks.EventBusesHooks;
 import dev.architectury.registry.registries.Registrar;
@@ -395,6 +396,16 @@ public class RegistrarManagerImpl {
         @Nullable
         public Holder<T> getHolder(ResourceKey<T> key) {
             return delegate.getHolder(key).orElse(null);
+        }
+        
+        @Override
+        public Codec<T> codec() {
+            return delegate.byNameCodec();
+        }
+        
+        @Override
+        public Codec<Holder<T>> holderCodec() {
+            return delegate.holderByNameCodec();
         }
         
         @Override

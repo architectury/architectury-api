@@ -19,6 +19,7 @@
 
 package dev.architectury.registry.registries;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -76,6 +77,10 @@ public interface Registrar<T> extends Iterable<T> {
     default Holder<T> getHolder(ResourceLocation id) {
         return getHolder(ResourceKey.create(key(), id));
     }
+    
+    Codec<T> codec();
+    
+    Codec<Holder<T>> holderCodec();
     
     /**
      * Listens to when the registry entry is registered, and calls the given action.
