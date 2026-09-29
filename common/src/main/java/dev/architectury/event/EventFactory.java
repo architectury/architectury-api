@@ -25,32 +25,46 @@ import dev.architectury.annotations.ForgeEventCancellable;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 public final class EventFactory {
+    private static final MethodType INVOKER_TYPE = MethodType.methodType(Object.class, Object.class, Object[].class);
+    private static final Map<Method, MethodHandle> INVOKERS = new ConcurrentHashMap<>();
+
     private EventFactory() {
     }
-    
+
     public static <T> Event<T> of(Function<List<T>, T> function) {
         return new EventImpl<>(function);
     }
-    
+
     @SafeVarargs
     public static <T> Event<T> createLoop(T... typeGetter) {
         if (typeGetter.length != 0) throw new IllegalStateException("array must be empty!");
         return createLoop((Class<T>) typeGetter.getClass().getComponentType());
     }
-    
+
     private static <T, R> R invokeMethod(T listener, Method method, Object[] args) throws Throwable {
-        return (R) MethodHandles.lookup().unreflect(method)
-                .bindTo(listener).invokeWithArguments(args);
+        MethodHandle invoker = INVOKERS.get(method);
+        if (invoker == null) {
+            invoker = MethodHandles.lookup().unreflect(method)
+                    .asSpreader(Object[].class, method.getParameterCount())
+                    .asType(INVOKER_TYPE);
+            INVOKERS.putIfAbsent(method, invoker);
+        }
+        Object result = invoker.invokeExact((Object) listener, args);
+        return (R) result;
     }
     
     @SuppressWarnings("UnstableApiUsage")
