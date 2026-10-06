@@ -34,7 +34,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(BlockTransformer.class)
 public class MixinBlockTransformer {
-    @WrapOperation(method = "transformBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/levelgen/feature/stateproviders/BlockStateProvider;getOptionalState(Lnet/minecraft/world/level/LevelAccessor;Lnet/minecraft/util/RandomSource;Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;"))
+    @WrapOperation(method = "transformBlock(Lnet/minecraft/world/item/context/UseOnContext;Lnet/minecraft/core/Holder;)Lnet/minecraft/world/InteractionResult;", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/levelgen/feature/stateproviders/BlockStateProvider;getOptionalState(Lnet/minecraft/world/level/LevelAccessor;Lnet/minecraft/util/RandomSource;Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;"))
     private BlockState architectury$resolveRegisteredTransform(BlockStateProvider provider, LevelAccessor level, RandomSource random, BlockPos pos, Operation<BlockState> original, UseOnContext context) {
         BlockState result = BlockTransformerHooksImpl.resolve(context);
         return result != null ? result : original.call(provider, level, random, pos);

@@ -28,6 +28,7 @@ import dev.architectury.utils.ArchitecturyConstants;
 import dev.architectury.utils.GameInstance;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -95,7 +96,7 @@ public class BiomeModificationsImpl {
         private static final BiomeModifierImpl INSTANCE = new BiomeModifierImpl();
         
         @Override
-        public void modify(Holder<Biome> arg, Phase phase, ModifiableBiomeInfo.BiomeInfo.Builder builder) {
+        public void modify(RegistryAccess registries, Holder<Biome> arg, Phase phase, ModifiableBiomeInfo.BiomeInfo.Builder builder) {
             List<Pair<Predicate<BiomeContext>, BiConsumer<BiomeContext, BiomeProperties.Mutable>>> list = switch (phase) {
                 case ADD -> ADDITIONS;
                 case REMOVE -> REMOVALS;
