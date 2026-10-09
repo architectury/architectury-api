@@ -20,6 +20,7 @@
 package dev.architectury.registry.client.particle;
 
 import dev.architectury.event.events.client.ClientLifecycleEvent;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
@@ -56,14 +57,14 @@ public final class ParticleProviderRegistry {
         supplier.listen(it -> register(it, provider));
     }
     
-    // @ExpectPlatform
+    @ExpectPlatform
     public static <T extends ParticleOptions> void register(ParticleType<T> type, ParticleProvider<T> provider) {
-        // throw new AssertionError();
+        throw new AssertionError();
     }
     
-    // @ExpectPlatform
+    @ExpectPlatform
     public static <T extends ParticleOptions> void register(ParticleType<T> type, DeferredParticleProvider<T> provider) {
-        // throw new AssertionError();
+        throw new AssertionError();
     }
     
     @FunctionalInterface
