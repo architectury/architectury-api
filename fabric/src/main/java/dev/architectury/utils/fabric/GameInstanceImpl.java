@@ -35,7 +35,10 @@ public class GameInstanceImpl {
         MinecraftServer server = null;
         if (GameInstanceImpl.server != null) server = GameInstanceImpl.server;
         if (Platform.getEnvironment() == Env.CLIENT) {
-            server = getServerFromClient();
+            MinecraftServer fromClient = getServerFromClient();
+            if (server == null && fromClient != null) {
+                return fromClient;
+            }
         }
         return server;
     }
