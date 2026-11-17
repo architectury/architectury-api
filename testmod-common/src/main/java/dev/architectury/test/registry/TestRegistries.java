@@ -124,9 +124,9 @@ public class TestRegistries {
             .arch$tab(TestRegistries.TEST_TAB)
             .setId(id(Registries.ITEM, "test_edible"))));
     public static final RegistrySupplier<Item> TEST_SPAWN_EGG = ITEMS.register("test_spawn_egg", () ->
-            new SpawnEggItem(new Item.Properties().arch$tab(TestRegistries.TEST_TAB).setId(id(Registries.ITEM, "test_spawn_egg")).spawnEgg(TestRegistries.TEST_ENTITY.get())));
+            new SpawnEggItem(new Item.Properties().arch$tab(TestRegistries.TEST_TAB).setId(id(Registries.ITEM, "test_spawn_egg")).spawns(TestRegistries.TEST_ENTITY.get())));
     public static final RegistrySupplier<Item> TEST_SPAWN_EGG_2 = ITEMS.register("test_spawn_egg_2", () ->
-            new SpawnEggItem(new Item.Properties().arch$tab(TestRegistries.TEST_TAB).setId(id(Registries.ITEM, "test_spawn_egg_2")).spawnEgg(TestRegistries.TEST_ENTITY_2.get())));
+            new SpawnEggItem(new Item.Properties().arch$tab(TestRegistries.TEST_TAB).setId(id(Registries.ITEM, "test_spawn_egg_2")).spawns(TestRegistries.TEST_ENTITY_2.get())));
     
     public static final RegistrySupplier<Item> TEST_FLUID_BUCKET = ITEMS.register("test_fluid_bucket", () -> {
         try {
