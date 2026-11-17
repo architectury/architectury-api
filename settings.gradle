@@ -13,9 +13,9 @@ if (JavaVersion.current().ordinal() + 1 < 25) {
 
 include("common")
 include("fabric")
-include("neoforge")
+//include("neoforge")
 include("testmod-common")
 include("testmod-fabric")
-include("testmod-neoforge")
+//include("testmod-neoforge")
 
 rootProject.name = "architectury"

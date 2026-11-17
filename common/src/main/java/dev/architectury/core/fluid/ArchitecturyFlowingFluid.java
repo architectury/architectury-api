@@ -23,6 +23,8 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.platform.Platform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.Item;
@@ -35,19 +37,26 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.FogType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public abstract class ArchitecturyFlowingFluid extends FlowingFluid {
+/**
+ * A fluid backed by {@link ArchitecturyFluidAttributes}.
+ * <p>
+ * Since 26.4, a fluid is a single {@link Fluid} whose states hold both the source and the flowing
+ * forms, through the {@link FlowingFluid#SOURCE} and {@link FlowingFluid#LEVEL} properties.
+ * Register one instance of this class per fluid.
+ */
+public class ArchitecturyFlowingFluid extends FlowingFluid {
     private final ArchitecturyFluidAttributes attributes;
     
-    ArchitecturyFlowingFluid(ArchitecturyFluidAttributes attributes) {
-        checkPlatform(null);
+    public ArchitecturyFlowingFluid(ArchitecturyFluidAttributes attributes) {
+        super(checkPlatform(Fluid.Properties.of()));
         this.attributes = attributes;
         if (Platform.isFabric()) {
             addFabricFluidAttributes(this, attributes);
@@ -69,23 +78,12 @@ public abstract class ArchitecturyFlowingFluid extends FlowingFluid {
     }
     
     @Override
-    public Fluid getFlowing() {
-        return attributes.getFlowingFluid();
-    }
-    
-    @Override
-    public Fluid getSource() {
-        return attributes.getSourceFluid();
-    }
-    
-    @Override
     protected boolean canConvertToSource(ServerLevel level) {
         return attributes.canConvertToSource();
     }
     
     @Override
     protected void beforeDestroyingBlock(LevelAccessor level, BlockPos pos, BlockState state) {
-        // Same implementation as in WaterFluid.
         BlockEntity blockEntity = state.hasBlockEntity() ? level.getBlockEntity(pos) : null;
         Block.dropResources(state, level, pos, blockEntity);
     }
@@ -101,15 +99,16 @@ public abstract class ArchitecturyFlowingFluid extends FlowingFluid {
     }
     
     @Override
-    public Item getBucket() {
+    public ResourceKey<Item> getBucket() {
         Item item = attributes.getBucketItem();
-        return item == null ? Items.AIR : item;
+        return BuiltInRegistries.ITEM.getResourceKey(item == null ? Items.AIR : item)
+                .orElseGet(() -> BuiltInRegistries.ITEM.getResourceKey(Items.AIR).orElseThrow());
     }
     
     @Override
-    protected boolean canBeReplacedWith(FluidState state, BlockGetter level, BlockPos pos, Fluid fluid, Direction direction) {
+    protected boolean canBeReplacedWith(FluidState state, BlockGetter level, BlockPos pos, FluidState other, Direction direction) {
         // Same implementation as in WaterFluid.
-        return direction == Direction.DOWN && !this.isSame(fluid);
+        return direction == Direction.DOWN && !other.is(this);
     }
     
     @Override
@@ -123,6 +122,21 @@ public abstract class ArchitecturyFlowingFluid extends FlowingFluid {
     }
     
     @Override
+    public float getDrag() {
+        return attributes.getDrag();
+    }
+    
+    @Override
+    public FogType getFogType() {
+        return attributes.getFogType();
+    }
+    
+    @Override
+    public float getFallDistanceMultiplier() {
+        return attributes.getFallDistanceMultiplier();
+    }
+    
+    @Override
     protected BlockState createLegacyBlock(FluidState state) {
         LiquidBlock block = attributes.getBlock();
         if (block == null) return Blocks.AIR.defaultBlockState();
@@ -133,49 +147,5 @@ public abstract class ArchitecturyFlowingFluid extends FlowingFluid {
     @Override
     public Optional<SoundEvent> getPickupSound() {
         return Optional.ofNullable(attributes.getFillSound());
-    }
-    
-    @Override
-    public boolean isSame(Fluid fluid) {
-        return fluid == getSource() || fluid == getFlowing();
-    }
-    
-    public static class Source extends ArchitecturyFlowingFluid {
-        public Source(ArchitecturyFluidAttributes attributes) {
-            super(attributes);
-        }
-        
-        @Override
-        public int getAmount(FluidState state) {
-            return 8;
-        }
-        
-        @Override
-        public boolean isSource(FluidState state) {
-            return true;
-        }
-    }
-    
-    public static class Flowing extends ArchitecturyFlowingFluid {
-        public Flowing(ArchitecturyFluidAttributes attributes) {
-            super(attributes);
-            this.registerDefaultState(this.getStateDefinition().any().setValue(LEVEL, 7));
-        }
-        
-        @Override
-        protected void createFluidStateDefinition(StateDefinition.Builder<Fluid, FluidState> builder) {
-            super.createFluidStateDefinition(builder);
-            builder.add(LEVEL);
-        }
-        
-        @Override
-        public int getAmount(FluidState state) {
-            return state.getValue(LEVEL);
-        }
-        
-        @Override
-        public boolean isSource(FluidState state) {
-            return false;
-        }
     }
 }

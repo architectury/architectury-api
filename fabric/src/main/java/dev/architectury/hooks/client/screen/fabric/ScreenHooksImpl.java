@@ -44,7 +44,9 @@ public class ScreenHooksImpl {
     }
     
     public static <T extends Renderable> T addRenderableOnly(Screen screen, T listener) {
-        return screen.addRenderableOnly(listener);
+        // Screen#addRenderableOnly was removed in 26.4, it only added to the renderables list.
+        screen.renderables.add(listener);
+        return listener;
     }
     
     public static <T extends GuiEventListener & NarratableEntry> T addWidget(Screen screen, T listener) {

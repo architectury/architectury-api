@@ -36,16 +36,16 @@ public abstract class MixinAbstractContainerScreen extends Screen {
     }
     
     @Inject(method = "extractContents",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V",
                     ordinal = 0, shift = At.Shift.AFTER))
-    public void renderBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        ClientGuiEvent.RENDER_CONTAINER_BACKGROUND.invoker().render((AbstractContainerScreen<?>) (Object) this, graphics, mouseX, mouseY, delta);
+    public void renderBackground(GuiGraphicsExtractor graphics, CallbackInfo ci) {
+        ClientGuiEvent.RENDER_CONTAINER_BACKGROUND.invoker().render((AbstractContainerScreen<?>) (Object) this, graphics, graphics.mouseX(), graphics.mouseY(), graphics.partialTicks());
     }
     
     @Inject(method = "extractContents",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;extractLabels(Lnet/minecraft/client/gui/GuiGraphicsExtractor;II)V",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;extractLabels(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V",
                     ordinal = 0, shift = At.Shift.AFTER))
-    public void renderForeground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        ClientGuiEvent.RENDER_CONTAINER_FOREGROUND.invoker().render((AbstractContainerScreen<?>) (Object) this, graphics, mouseX, mouseY, delta);
+    public void renderForeground(GuiGraphicsExtractor graphics, CallbackInfo ci) {
+        ClientGuiEvent.RENDER_CONTAINER_FOREGROUND.invoker().render((AbstractContainerScreen<?>) (Object) this, graphics, graphics.mouseX(), graphics.mouseY(), graphics.partialTicks());
     }
 }

@@ -19,8 +19,12 @@
 
 package dev.architectury.registry.client.level.entity.fabric;
 
-import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.minecraft.client.core.registries.BuiltInClientRegistries;
+import net.minecraft.client.core.registries.ClientRegistries;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
@@ -28,6 +32,8 @@ import java.util.function.Supplier;
 
 public class EntityRendererRegistryImpl {
     public static <T extends Entity> void register(Supplier<? extends EntityType<? extends T>> type, EntityRendererProvider<T> provider) {
-        EntityRendererRegistry.register(type.get(), provider);
+        // Entity renderers are a vanilla client registry since 26.4, keyed by the entity type id.
+        Registry.register(BuiltInClientRegistries.ENTITY_RENDERER,
+                ResourceKey.create(ClientRegistries.ENTITY_RENDERER, BuiltInRegistries.ENTITY_TYPE.getKey(type.get())), provider);
     }
 }

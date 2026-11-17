@@ -19,14 +19,20 @@
 
 package dev.architectury.registry.client.rendering.fabric;
 
-import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
+import net.minecraft.client.core.registries.BuiltInClientRegistries;
+import net.minecraft.client.core.registries.ClientRegistries;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class BlockEntityRendererRegistryImpl {
     public static <E extends BlockEntity, S extends BlockEntityRenderState> void register(BlockEntityType<E> type, BlockEntityRendererProvider<? super E, ? super S> provider) {
-        BlockEntityRendererRegistry.register(type, provider);
+        // Block entity renderers are a vanilla client registry since 26.4, keyed by the block entity type id.
+        Registry.register(BuiltInClientRegistries.BLOCK_ENTITY_RENDERER,
+                ResourceKey.create(ClientRegistries.BLOCK_ENTITY_RENDERER, BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(type)), provider);
     }
 }

@@ -58,7 +58,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FlowingFluid;
@@ -98,7 +97,7 @@ public class TestRegistries {
             CreativeTabRegistry.create(Component.translatable("category.architectury_test"),
                     () -> new ItemStack(TestRegistries.TEST_ITEM.get())));
     
-    public static final ArchitecturyFluidAttributes TEST_FLUID_ATTRIBUTES = SimpleArchitecturyFluidAttributes.ofSupplier(() -> TestRegistries.TEST_FLUID_FLOWING, () -> TestRegistries.TEST_FLUID)
+    public static final ArchitecturyFluidAttributes TEST_FLUID_ATTRIBUTES = SimpleArchitecturyFluidAttributes.ofSupplier(() -> TestRegistries.TEST_FLUID)
             .convertToSource(true)
             .flowingTexture(Identifier.withDefaultNamespace("block/water_flow"))
             .sourceTexture(Identifier.withDefaultNamespace("block/water_still"))
@@ -160,7 +159,7 @@ public class TestRegistries {
             // In example mod the neoforge class isn't being replaced, this is not required in mods depending on architectury
             return (LiquidBlock) Class.forName(!Platform.isNeoForge() ? "dev.architectury.core.block.ArchitecturyLiquidBlock" : "dev.architectury.core.block.neoforge.imitator.ArchitecturyLiquidBlock")
                     .getDeclaredConstructor(Supplier.class, BlockBehaviour.Properties.class)
-                    .newInstance(TestRegistries.TEST_FLUID, BlockBehaviour.Properties.ofFullCopy(Blocks.WATER).replaceable().noCollision().strength(100.0F).pushReaction(PushReaction.POPPED).noLootTable().liquid().sound(SoundType.EMPTY).setId(id(Registries.BLOCK, "test_fluid")));
+                    .newInstance(TestRegistries.TEST_FLUID, BlockBehaviour.Properties.ofFullCopy(Blocks.WATER).replaceable().noCollision().strength(100.0F).pushReaction(PushReaction.POPPED).noLootTable().liquid().noSound().setId(id(Registries.BLOCK, "test_fluid")));
         } catch (InstantiationException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException |
                  IllegalAccessException e) {
             throw new RuntimeException(e);
@@ -170,19 +169,7 @@ public class TestRegistries {
     public static final RegistrySupplier<Fluid> TEST_FLUID = FLUIDS.register("test_fluid", () -> {
         try {
             // In example mod the neoforge class isn't being replaced, this is not required in mods depending on architectury
-            return (FlowingFluid) Class.forName(!Platform.isNeoForge() ? "dev.architectury.core.fluid.ArchitecturyFlowingFluid$Source" : "dev.architectury.core.fluid.neoforge.imitator.ArchitecturyFlowingFluid$Source")
-                    .getDeclaredConstructor(ArchitecturyFluidAttributes.class)
-                    .newInstance(TestRegistries.TEST_FLUID_ATTRIBUTES);
-        } catch (InstantiationException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException |
-                 IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    });
-    
-    public static final RegistrySupplier<Fluid> TEST_FLUID_FLOWING = FLUIDS.register("test_fluid_flowing", () -> {
-        try {
-            // In example mod the neoforge class isn't being replaced, this is not required in mods depending on architectury
-            return (FlowingFluid) Class.forName(!Platform.isNeoForge() ? "dev.architectury.core.fluid.ArchitecturyFlowingFluid$Flowing" : "dev.architectury.core.fluid.neoforge.imitator.ArchitecturyFlowingFluid$Flowing")
+            return (FlowingFluid) Class.forName(!Platform.isNeoForge() ? "dev.architectury.core.fluid.ArchitecturyFlowingFluid" : "dev.architectury.core.fluid.neoforge.imitator.ArchitecturyFlowingFluid")
                     .getDeclaredConstructor(ArchitecturyFluidAttributes.class)
                     .newInstance(TestRegistries.TEST_FLUID_ATTRIBUTES);
         } catch (InstantiationException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException |

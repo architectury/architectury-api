@@ -20,14 +20,22 @@
 package dev.architectury.registry.client.gui.fabric;
 
 import dev.architectury.registry.client.gui.MenuScreenRegistry.ScreenFactory;
+import net.minecraft.client.core.registries.BuiltInClientRegistries;
+import net.minecraft.client.core.registries.ClientRegistries;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 
 public class MenuScreenRegistryImpl {
     public static <H extends AbstractContainerMenu, S extends Screen & MenuAccess<H>> void registerScreenFactory(MenuType<? extends H> type, ScreenFactory<H, S> factory) {
-        MenuScreens.register(type, factory::create);
+        // Menu screens are a vanilla client registry since 26.4, keyed by the menu type id.
+        Registry.register(BuiltInClientRegistries.MENU_SCREEN,
+                ResourceKey.create(ClientRegistries.MENU_SCREEN, BuiltInRegistries.MENU.getKey(type)),
+                (MenuScreens.ScreenConstructor<H, S>) factory::create);
     }
 }

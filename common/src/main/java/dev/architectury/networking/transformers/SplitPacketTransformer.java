@@ -123,7 +123,7 @@ public class SplitPacketTransformer implements PacketTransformer {
                         }
                     }
                 } else {
-                    RegistryFriendlyByteBuf byteBuf = new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(data.parts.toArray(new ByteBuf[0])), buf.registryAccess());
+                    RegistryFriendlyByteBuf byteBuf = new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(data.parts.toArray(new ByteBuf[0])), buf.registries(), buf.ids());
                     sink.accept(side, data.id, byteBuf);
                     byteBuf.release();
                 }
@@ -143,13 +143,13 @@ public class SplitPacketTransformer implements PacketTransformer {
         if (buf.readableBytes() <= maxSize) {
             ByteBuf stateBuf = Unpooled.buffer(1);
             stateBuf.writeByte(ONLY);
-            RegistryFriendlyByteBuf packetBuffer = new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(stateBuf, buf), buf.registryAccess());
+            RegistryFriendlyByteBuf packetBuffer = new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(stateBuf, buf), buf.registries(), buf.ids());
             sink.accept(side, id, packetBuffer);
         } else {
             int partSize = maxSize - 4;
             int parts = (int) Math.ceil(buf.readableBytes() / (float) partSize);
             for (int i = 0; i < parts; i++) {
-                RegistryFriendlyByteBuf packetBuffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), buf.registryAccess());
+                RegistryFriendlyByteBuf packetBuffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), buf.registries(), buf.ids());
                 if (i == 0) {
                     packetBuffer.writeByte(START);
                     packetBuffer.writeInt(parts);

@@ -93,7 +93,7 @@ public enum FluidStackTemplateImpl implements FluidStackTemplate.FluidStackTempl
     public Pair of(Supplier<Fluid> fluid, long amount, @Nullable DataComponentPatch patch) {
         Fluid fluidType = Objects.requireNonNull(fluid).get();
         if (fluidType instanceof FlowingFluid flowingFluid) {
-            fluidType = flowingFluid.getSource();
+            fluidType = flowingFluid.getSource().getType();
         }
         return new Pair(fluidType, patch, amount);
     }

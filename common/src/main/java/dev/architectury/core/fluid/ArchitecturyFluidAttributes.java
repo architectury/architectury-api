@@ -32,6 +32,7 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.FogType;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -79,18 +80,11 @@ public interface ArchitecturyFluidAttributes {
     }
     
     /**
-     * Returns the flowing fluid.
+     * Returns the fluid. Since 26.4, the source and flowing forms are states of this single fluid.
      *
-     * @return the flowing fluid
+     * @return the fluid
      */
-    Fluid getFlowingFluid();
-    
-    /**
-     * Returns the still fluid.
-     *
-     * @return the still fluid
-     */
-    Fluid getSourceFluid();
+    Fluid getFluid();
     
     /**
      * Returns whether this fluid can be converted to a source block when a flowing fluid is adjacent to two source blocks.
@@ -179,6 +173,39 @@ public interface ArchitecturyFluidAttributes {
      * @see net.minecraft.world.level.material.LavaFluid#getExplosionResistance()
      */
     float getExplosionResistance();
+    
+    /**
+     * Returns the drag applied to entities moving through this fluid.
+     * Lower values slow entities down more, {@code 1.0} applies no drag.
+     *
+     * @return the drag
+     * @see net.minecraft.world.level.material.Fluid.Properties#drag(float)
+     */
+    default float getDrag() {
+        return 1.0F;
+    }
+    
+    /**
+     * Returns the fog rendered while the camera is inside this fluid.
+     *
+     * @return the fog type
+     * @see net.minecraft.world.level.material.Fluid.Properties#fogType(FogType)
+     */
+    default FogType getFogType() {
+        return FogType.NONE;
+    }
+    
+    /**
+     * Returns the multiplier applied to the fall distance of entities inside this fluid.
+     * {@code 0.0} resets the fall distance like water, {@code 0.5} halves it like lava,
+     * and {@code 1.0} leaves it unchanged.
+     *
+     * @return the fall distance multiplier
+     * @see net.minecraft.world.level.material.Fluid.Properties#fallDistanceMultiplier(float)
+     */
+    default float getFallDistanceMultiplier() {
+        return 1.0F;
+    }
     
     /**
      * Returns the block form of this fluid.
