@@ -6,6 +6,7 @@
   "client": [
   ],
   "mixins": [
+    "inject.MixinAttachmentHolder",
     "inject.MixinBlock",
     "inject.MixinBucketItem",
     "inject.MixinEntityType",

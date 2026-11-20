@@ -20,6 +20,7 @@
 package dev.architectury.test;
 
 import dev.architectury.registry.CreativeTabRegistry;
+import dev.architectury.test.attachment.TestAttachments;
 import dev.architectury.test.debug.ConsoleMessageSink;
 import dev.architectury.test.debug.MessageSink;
 import dev.architectury.test.debug.client.ClientOverlayMessageSink;
@@ -55,6 +56,7 @@ public class TestMod {
         TestBlockInteractions.init();
         TestLoot.init();
         TestWorldGeneration.initialize();
+        TestAttachments.initialize();
         EnvExecutor.runInEnv(Env.CLIENT, () -> TestModClient::initializeClient);
         CreativeTabRegistry.modifyBuiltin(BuiltInRegistries.CREATIVE_MODE_TAB.getValue(CreativeModeTabs.BUILDING_BLOCKS), (flags, output, canUseGameMasterBlocks) -> {
             ItemStack sword = Items.DIAMOND_SWORD.getDefaultInstance();

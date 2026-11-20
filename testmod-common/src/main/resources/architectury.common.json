@@ -20,6 +20,18 @@
     ],
     "net/minecraft/world/level/block/LiquidBlock": [
       "dev/architectury/extensions/injected/InjectedLiquidBlockExtension"
+    ],
+    "net/minecraft/world/entity/Entity": [
+      "dev/architectury/extensions/injected/InjectedAttachmentHolderExtension"
+    ],
+    "net/minecraft/world/level/block/entity/BlockEntity": [
+      "dev/architectury/extensions/injected/InjectedAttachmentHolderExtension"
+    ],
+    "net/minecraft/world/level/chunk/ChunkAccess": [
+      "dev/architectury/extensions/injected/InjectedAttachmentHolderExtension"
+    ],
+    "net/minecraft/world/level/Level": [
+      "dev/architectury/extensions/injected/InjectedAttachmentHolderExtension"
     ]
   }
 }
