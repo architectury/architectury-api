@@ -34,9 +34,9 @@
   },
   "icon": "icon.png",
   "depends": {
-    "minecraft": ">=26.3",
-    "fabricloader": ">=0.19.5",
-    "fabric-api": ">=0.160.5"
+    "minecraft": ">=26.4-",
+    "fabricloader": ">=0.20.0",
+    "fabric-api": ">=0.166.3"
   },
   "custom": {
     "modmenu": {

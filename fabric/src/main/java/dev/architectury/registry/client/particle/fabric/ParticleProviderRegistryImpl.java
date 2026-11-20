@@ -56,6 +56,11 @@ public class ParticleProviderRegistryImpl {
         public TextureAtlasSprite first() {
             return delegate.first();
         }
+        
+        @Override
+        public int size() {
+            return delegate.size();
+        }
     }
     
     public static <T extends ParticleOptions> void register(ParticleType<T> type, ParticleProvider<T> provider) {

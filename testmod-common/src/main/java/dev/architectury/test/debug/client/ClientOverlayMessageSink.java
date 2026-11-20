@@ -25,7 +25,6 @@ import dev.architectury.test.debug.ConsoleMessageSink;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
 
 import java.util.Collections;
@@ -69,7 +68,7 @@ public class ClientOverlayMessageSink extends ConsoleMessageSink {
                 } else {
                     if (y - 1 < minecraft.getWindow().getGuiScaledHeight()) {
                         var textWidth = minecraft.font.width(message.text);
-                        var alpha = (int) Mth.clamp((5000 - timeExisted) / 5000f * 400f + 8, 0, 255);
+                        var alpha = (int) Math.clamp((5000 - timeExisted) / 5000f * 400f + 8, 0f, 255f);
                         graphics.fill(0, y - 1, 2 + textWidth + 1, y + lineHeight - 1, 0x505050 + ((alpha * 144 / 255) << 24));
                         graphics.text(minecraft.font, message.text, 1, y, 0xE0E0E0 + (alpha << 24));
                     }

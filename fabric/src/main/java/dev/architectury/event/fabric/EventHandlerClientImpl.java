@@ -66,7 +66,7 @@ public final class EventHandlerClientImpl {
         ItemTooltipCallback.EVENT.register((itemStack, tooltipContext, tooltipFlag, list) -> ClientTooltipEvent.ITEM.invoker().append(itemStack, list, tooltipContext, tooltipFlag));
         
         HudElementRegistry.addLast(Identifier.fromNamespaceAndPath(ArchitecturyConstants.MOD_ID, "render_hud"),
-                (graphics, tickDelta) -> ClientGuiEvent.RENDER_HUD.invoker().renderHud(graphics, tickDelta));
+                graphics -> ClientGuiEvent.RENDER_HUD.invoker().renderHud(graphics, graphics.deltaTracker()));
         
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, access) ->
                 ClientCommandRegistrationEvent.EVENT.invoker().register((CommandDispatcher<ClientCommandRegistrationEvent.ClientCommandSourceStack>)
@@ -77,8 +77,8 @@ public final class EventHandlerClientImpl {
                     ClientScreenInputEvent.CHAR_TYPED_PRE.invoker().charTyped(minecraft, parent, event).isEmpty());
             ScreenKeyboardEvents.afterCharType(screen).register((parent, event) ->
                     ClientScreenInputEvent.CHAR_TYPED_POST.invoker().charTyped(minecraft, parent, event));
-            ScreenEvents.afterBackground(screen).register((parent, graphics, mouseX, mouseY, tickProgress) ->
-                    ClientGuiEvent.RENDER_BACKGROUND.invoker().render(parent, graphics, mouseX, mouseY, tickProgress));
+            ScreenEvents.afterBackground(screen).register((parent, graphics) ->
+                    ClientGuiEvent.RENDER_BACKGROUND.invoker().render(parent, graphics, graphics.mouseX(), graphics.mouseY(), graphics.partialTicks()));
             ScreenEvents.remove(screen).register(parent ->
                     ClientGuiEvent.SCREEN_CLOSING.invoker().closing(parent));
         });

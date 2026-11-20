@@ -35,6 +35,7 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.FogType;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -42,14 +43,16 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttributes {
-    private final Supplier<? extends Fluid> flowingFluid;
-    private final Supplier<? extends Fluid> sourceFluid;
+    private final Supplier<? extends Fluid> fluid;
     private boolean canConvertToSource = false;
     private int slopeFindDistance = 4;
     private int dropOff = 1;
     private Supplier<? extends Optional<? extends Item>> bucketItem = Optional::empty;
     private int tickDelay = 5;
     private float explosionResistance = 100.0F;
+    private float drag = 1.0F;
+    private FogType fogType = FogType.NONE;
+    private float fallDistanceMultiplier = 1.0F;
     private Supplier<? extends Optional<? extends LiquidBlock>> block = Optional::empty;
     @Nullable
     private Identifier sourceTexture;
@@ -68,20 +71,19 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
     private SoundEvent fillSound = SoundEvents.BUCKET_FILL;
     @Nullable
     private SoundEvent emptySound = SoundEvents.BUCKET_EMPTY;
-    private final Supplier<String> defaultTranslationKey = Suppliers.memoize(() -> Util.makeDescriptionId("fluid", getSourceFluid().arch$registryName()));
+    private final Supplier<String> defaultTranslationKey = Suppliers.memoize(() -> Util.makeDescriptionId("fluid", getFluid().arch$registryName()));
     
-    public static SimpleArchitecturyFluidAttributes ofSupplier(Supplier<? extends Supplier<? extends Fluid>> flowingFluid, Supplier<? extends Supplier<? extends Fluid>> sourceFluid) {
-        return of(() -> flowingFluid.get().get(), () -> sourceFluid.get().get());
+    public static SimpleArchitecturyFluidAttributes ofSupplier(Supplier<? extends Supplier<? extends Fluid>> fluid) {
+        return of(() -> fluid.get().get());
     }
     
     
-    public static SimpleArchitecturyFluidAttributes of(Supplier<? extends Fluid> flowingFluid, Supplier<? extends Fluid> sourceFluid) {
-        return new SimpleArchitecturyFluidAttributes(flowingFluid, sourceFluid);
+    public static SimpleArchitecturyFluidAttributes of(Supplier<? extends Fluid> fluid) {
+        return new SimpleArchitecturyFluidAttributes(fluid);
     }
     
-    protected SimpleArchitecturyFluidAttributes(Supplier<? extends Fluid> flowingFluid, Supplier<? extends Fluid> sourceFluid) {
-        this.flowingFluid = flowingFluid;
-        this.sourceFluid = sourceFluid;
+    protected SimpleArchitecturyFluidAttributes(Supplier<? extends Fluid> fluid) {
+        this.fluid = fluid;
     }
     
     /**
@@ -143,6 +145,30 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
      */
     public SimpleArchitecturyFluidAttributes explosionResistance(float explosionResistance) {
         this.explosionResistance = explosionResistance;
+        return this;
+    }
+    
+    /**
+     * @see ArchitecturyFluidAttributes#getDrag()
+     */
+    public SimpleArchitecturyFluidAttributes drag(float drag) {
+        this.drag = drag;
+        return this;
+    }
+    
+    /**
+     * @see ArchitecturyFluidAttributes#getFogType()
+     */
+    public SimpleArchitecturyFluidAttributes fogType(FogType fogType) {
+        this.fogType = Objects.requireNonNull(fogType);
+        return this;
+    }
+    
+    /**
+     * @see ArchitecturyFluidAttributes#getFallDistanceMultiplier()
+     */
+    public SimpleArchitecturyFluidAttributes fallDistanceMultiplier(float fallDistanceMultiplier) {
+        this.fallDistanceMultiplier = fallDistanceMultiplier;
         return this;
     }
     
@@ -271,13 +297,8 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
     }
     
     @Override
-    public final Fluid getFlowingFluid() {
-        return flowingFluid.get();
-    }
-    
-    @Override
-    public final Fluid getSourceFluid() {
-        return sourceFluid.get();
+    public final Fluid getFluid() {
+        return fluid.get();
     }
     
     @Override
@@ -309,6 +330,21 @@ public class SimpleArchitecturyFluidAttributes implements ArchitecturyFluidAttri
     @Override
     public float getExplosionResistance() {
         return explosionResistance;
+    }
+    
+    @Override
+    public float getDrag() {
+        return drag;
+    }
+    
+    @Override
+    public FogType getFogType() {
+        return fogType;
+    }
+    
+    @Override
+    public float getFallDistanceMultiplier() {
+        return fallDistanceMultiplier;
     }
     
     @Override
