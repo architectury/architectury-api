@@ -64,13 +64,16 @@ public class MixinGui {
     }
     
     @WrapOperation(method = "extractRenderState",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;extractRenderStateWithTooltipAndSubtitles(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;extractRenderStateWithTooltipAndSubtitles(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V",
                     ordinal = 0))
-    public void wrapRenderScreen(Screen screen, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, Operation<Void> original) {
+    public void wrapRenderScreen(Screen screen, GuiGraphicsExtractor graphics, Operation<Void> original) {
+        int mouseX = graphics.mouseX();
+        int mouseY = graphics.mouseY();
+        float delta = graphics.partialTicks();
         if (ClientGuiEvent.RENDER_PRE.invoker().render(screen, graphics, mouseX, mouseY, delta).isFalse()) {
             return;
         }
-        original.call(screen, graphics, mouseX, mouseY, delta);
+        original.call(screen, graphics);
         ClientGuiEvent.RENDER_POST.invoker().render(screen, graphics, mouseX, mouseY, delta);
     }
 }

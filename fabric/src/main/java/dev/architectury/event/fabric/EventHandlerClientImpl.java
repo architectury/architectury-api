@@ -34,6 +34,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelExtractionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
@@ -66,7 +67,7 @@ public final class EventHandlerClientImpl {
         ItemTooltipCallback.EVENT.register((itemStack, tooltipContext, tooltipFlag, list) -> ClientTooltipEvent.ITEM.invoker().append(itemStack, list, tooltipContext, tooltipFlag));
         
         HudElementRegistry.addLast(Identifier.fromNamespaceAndPath(ArchitecturyConstants.MOD_ID, "render_hud"),
-                (graphics, tickDelta) -> ClientGuiEvent.RENDER_HUD.invoker().renderHud(graphics, tickDelta));
+                graphics -> ClientGuiEvent.RENDER_HUD.invoker().renderHud(graphics, graphics.deltaTracker()));
         
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, access) ->
                 ClientCommandRegistrationEvent.EVENT.invoker().register((CommandDispatcher<ClientCommandRegistrationEvent.ClientCommandSourceStack>)
@@ -77,8 +78,8 @@ public final class EventHandlerClientImpl {
                     ClientScreenInputEvent.CHAR_TYPED_PRE.invoker().charTyped(minecraft, parent, event).isEmpty());
             ScreenKeyboardEvents.afterCharType(screen).register((parent, event) ->
                     ClientScreenInputEvent.CHAR_TYPED_POST.invoker().charTyped(minecraft, parent, event));
-            ScreenEvents.afterBackground(screen).register((parent, graphics, mouseX, mouseY, tickProgress) ->
-                    ClientGuiEvent.RENDER_BACKGROUND.invoker().render(parent, graphics, mouseX, mouseY, tickProgress));
+            ScreenEvents.afterBackground(screen).register((parent, graphics) ->
+                    ClientGuiEvent.RENDER_BACKGROUND.invoker().render(parent, graphics, graphics.mouseX(), graphics.mouseY(), graphics.partialTicks()));
             ScreenEvents.remove(screen).register(parent ->
                     ClientGuiEvent.SCREEN_CLOSING.invoker().closing(parent));
         });
@@ -91,19 +92,19 @@ public final class EventHandlerClientImpl {
         ClientPreAttackCallback.EVENT.register((client, player, clickCount) ->
                 InteractionEvent.CLIENT_PRE_ATTACK.invoker().preAttack(player, clickCount).isFalse());
 
-        LevelRenderEvents.END_EXTRACTION.register(context ->
+        LevelExtractionEvents.END_EXTRACTION.register(context ->
                 ClientLevelRenderEvent.END_EXTRACTION.invoker().extract(new LevelExtractionContextImpl(context)));
-        LevelRenderEvents.AFTER_OPAQUE_TERRAIN.register(context ->
-                ClientLevelRenderEvent.AFTER_OPAQUE_BLOCKS.invoker().render(new LevelRenderContextImpl(context)));
         LevelRenderEvents.COLLECT_SUBMITS.register(context ->
                 ClientLevelRenderEvent.COLLECT_SUBMITS.invoker().collectSubmits(new LevelSubmitContextImpl(context)));
+        LevelRenderEvents.AFTER_OPAQUE_TERRAIN.register(context ->
+                ClientLevelRenderEvent.AFTER_OPAQUE_BLOCKS.invoker().render(new LevelRenderPassContextImpl(context)));
         LevelRenderEvents.AFTER_SOLID_FEATURES.register(context ->
-                ClientLevelRenderEvent.AFTER_OPAQUE_FEATURES.invoker().render(new LevelSubmitContextImpl(context)));
+                ClientLevelRenderEvent.AFTER_OPAQUE_FEATURES.invoker().render(new LevelRenderPassContextImpl(context)));
         LevelRenderEvents.AFTER_TRANSLUCENT_FEATURES.register(context ->
-                ClientLevelRenderEvent.AFTER_TRANSLUCENT_FEATURES.invoker().render(new LevelSubmitContextImpl(context)));
+                ClientLevelRenderEvent.AFTER_TRANSLUCENT_FEATURES.invoker().render(new LevelTranslucentContextImpl(context)));
         LevelRenderEvents.AFTER_TRANSLUCENT_TERRAIN.register(context ->
-                ClientLevelRenderEvent.AFTER_TRANSLUCENT_BLOCKS.invoker().render(new LevelSubmitContextImpl(context)));
+                ClientLevelRenderEvent.AFTER_TRANSLUCENT_BLOCKS.invoker().render(new LevelTranslucentContextImpl(context)));
         LevelRenderEvents.END_MAIN.register(context ->
-                ClientLevelRenderEvent.AFTER_TRANSLUCENT_PARTICLES.invoker().render(new LevelSubmitContextImpl(context)));
+                ClientLevelRenderEvent.AFTER_TRANSLUCENT_PARTICLES.invoker().render(new LevelRenderPassContextImpl(context)));
     }
 }

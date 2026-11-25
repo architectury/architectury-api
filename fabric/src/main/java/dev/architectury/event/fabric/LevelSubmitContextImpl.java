@@ -23,14 +23,14 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.architectury.event.events.client.ClientLevelRenderEvent;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelSubmitContext;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 
 @Environment(EnvType.CLIENT)
 final class LevelSubmitContextImpl extends LevelRenderContextImpl implements ClientLevelRenderEvent.SubmitContext {
-    private final LevelRenderContext context;
+    private final LevelSubmitContext context;
 
-    LevelSubmitContextImpl(LevelRenderContext context) {
+    LevelSubmitContextImpl(LevelSubmitContext context) {
         super(context);
         this.context = context;
     }

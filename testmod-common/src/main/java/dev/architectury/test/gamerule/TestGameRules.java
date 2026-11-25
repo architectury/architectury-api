@@ -19,8 +19,9 @@
 
 package dev.architectury.test.gamerule;
 
-import com.mojang.brigadier.arguments.BoolArgumentType;
-import com.mojang.brigadier.arguments.IntegerArgumentType;
+import net.minecraft.advancements.predicates.MinMaxBounds;
+import net.minecraft.commands.arguments.BooleanArgument;
+import net.minecraft.commands.arguments.IntegerArgument;
 import com.mojang.serialization.Codec;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.DeferredSupplier;
@@ -42,7 +43,7 @@ public class TestGameRules {
     public static final DeferredSupplier<GameRule<Boolean>> SIMPLE_BOOL = GAME_RULE.register("simple_bool", () -> new GameRule<>(
             GameRuleCategory.MISC,
             GameRuleType.BOOL,
-            BoolArgumentType.bool(),
+            BooleanArgument.INSTANCE,
             GameRuleTypeVisitor::visitBoolean,
             Codec.BOOL,
             gameRuleValue -> gameRuleValue ? 1 : 0,
@@ -55,7 +56,7 @@ public class TestGameRules {
             () -> new GameRule<>(
                     GameRuleCategory.MISC,
                     GameRuleType.INT,
-                    IntegerArgumentType.integer(0, 5),
+                    new IntegerArgument(MinMaxBounds.Bounds.between(0, 5)),
                     GameRuleTypeVisitor::visitInteger,
                     Codec.intRange(0, 5),
                     gameRuleValue -> gameRuleValue,

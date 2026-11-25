@@ -20,22 +20,37 @@
 package dev.architectury.mixin.fabric;
 
 import com.google.common.base.Throwables;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.brigadier.ParseResults;
+import com.mojang.brigadier.context.CommandContextBuilder;
 import com.mojang.brigadier.context.ContextChain;
 import dev.architectury.event.events.common.CommandPerformEvent;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.commands.ParseBox;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.Map;
 
 @Mixin(Commands.class)
 public class MixinCommands {
-    @ModifyVariable(method = "finishParsing",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/commands/Commands;validateParseResults(Lcom/mojang/brigadier/ParseResults;)V"), argsOnly = true)
-    private static ParseResults<CommandSourceStack> finishParsing(ParseResults<CommandSourceStack> results) {
+    /**
+     * Since 26.4, commands are parsed against a detached {@link net.minecraft.commands.ParseContext}
+     * instead of the {@link CommandSourceStack}. To keep {@link CommandPerformEvent} behaving as before,
+     * listeners get a copy of the parse results whose source is the actual command sender.
+     */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    @WrapOperation(method = "finishParsing",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/commands/ParseBox$Result;unpack()Lcom/mojang/brigadier/context/ContextChain;"))
+    private static ContextChain<CommandSourceStack> finishParsing(ParseBox.Result command, Operation<ContextChain<CommandSourceStack>> original,
+                                                                  @Local(argsOnly = true) CommandSourceStack sender) {
+        ParseResults<?> parsed = command.parseResults;
+        CommandContextBuilder<CommandSourceStack> context = ((CommandContextBuilder) parsed.getContext().copy()).withSource(sender);
+        ParseResults<CommandSourceStack> results = new ParseResults<>(context, parsed.getReader(), (Map) parsed.getExceptions());
+        
         var event = new CommandPerformEvent(results, null);
         if (CommandPerformEvent.EVENT.invoker().act(event).isPresent()) {
             if (event.getThrowable() != null) {
@@ -43,12 +58,11 @@ public class MixinCommands {
             }
             return null;
         }
-        return event.getResults();
-    }
-    
-    @Inject(method = "finishParsing",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/commands/Commands;validateParseResults(Lcom/mojang/brigadier/ParseResults;)V"), cancellable = true)
-    private static void finishParsing(ParseResults<CommandSourceStack> results, String command, CommandSourceStack stack, CallbackInfoReturnable<ContextChain<CommandSourceStack>> cir) {
-        if (results == null) cir.setReturnValue(null);
+        
+        if (event.getResults() != results) {
+            command = new ParseBox.Result(command.commandString(), (ParseResults) event.getResults());
+        }
+        
+        return original.call(command);
     }
 }

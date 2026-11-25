@@ -28,7 +28,7 @@ import dev.architectury.event.EventFactory;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.commands.CommandBuildContext;
-import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.suggestions.SuggestionContext;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
@@ -58,7 +58,7 @@ public interface ClientCommandRegistrationEvent {
         return RequiredArgumentBuilder.argument(name, type);
     }
     
-    interface ClientCommandSourceStack extends SharedSuggestionProvider {
+    interface ClientCommandSourceStack extends SuggestionContext {
         void arch$sendSuccess(Supplier<Component> message, boolean broadcastToAdmins);
         
         void arch$sendFailure(Component message);
